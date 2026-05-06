@@ -27,7 +27,7 @@
     
     <link rel="icon" href="https://i.ibb.co/B22R1g9r/IMG.jpg" type="image/jpeg">
 
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script type="application/ld+json">
@@ -106,7 +106,7 @@
         }
 
         /* الأساسيات وتصغير الخطوط */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; transition: background-color 0.4s, color 0.4s, border-color 0.4s; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; transition: background-color 0.4s, color 0.4s, border-color 0.4s; }
         body { background-color: var(--bg-color); color: var(--text-color); overflow-x: hidden; line-height: 1.7; font-size: 14px; }
         a { text-decoration: none; color: inherit; }
         ul { list-style: none; }
@@ -116,20 +116,53 @@
         html[lang="ur"] .ar { display: none !important; }
         html[lang="ar"] .ur { display: none !important; }
 
-        /* شاشة التحميل */
+        /* شاشة التحميل الجديدة */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-color); z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease;
         }
-        .loader-ring {
-            width: 100px; height: 100px; border-radius: 50%;
-            border: 3px solid transparent; border-top-color: var(--primary-color); border-bottom-color: var(--secondary-color);
-            animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; position: relative;
-            display: flex; justify-content: center; align-items: center; box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+
+        .loader-logo {
+            width: 90px; height: 90px; border-radius: 16px;
+            object-fit: cover; margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
+            border: 2px solid var(--primary-color);
+            animation: float-pulse 2s ease-in-out infinite;
         }
-        .loader-ring img { width: 65px; height: 65px; border-radius: 50%; animation: spin-reverse 1.5s linear infinite; object-fit: cover; }
-        .loader-text { margin-top: 15px; font-size: 1rem; font-weight: 800; color: var(--secondary-color); letter-spacing: 1px; }
+
+        @keyframes float-pulse {
+            0% { transform: translateY(0) scale(1); box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3); }
+            50% { transform: translateY(-10px) scale(1.05); box-shadow: 0 15px 35px rgba(245, 158, 11, 0.5); }
+            100% { transform: translateY(0) scale(1); box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3); }
+        }
+
+        .typewriter-wrapper {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 8px; direction: rtl; text-align: center;
+        }
+
+        .tw-line {
+            overflow: hidden; white-space: nowrap;
+            border-left: 2px solid var(--primary-color);
+            max-width: 0; margin: 0;
+        }
+
+        .tw-line-1 {
+            font-size: 1.15rem; font-weight: 800; color: var(--secondary-color);
+            animation: typing 1.5s steps(40, end) forwards, blink-cursor 0.5s step-end 3, remove-cursor 0s 1.5s forwards;
+        }
+        [data-theme="dark"] .tw-line-1 { color: #fff; }
+
+        .tw-line-2 {
+            font-size: 0.95rem; font-weight: 600; color: var(--primary-color);
+            animation: typing 1.5s steps(40, end) 1.5s forwards, blink-cursor 0.5s step-end infinite 1.5s;
+        }
+
+        @keyframes typing { from { max-width: 0; } to { max-width: 100vw; } }
+        @keyframes blink-cursor { from, to { border-color: transparent; } 50% { border-color: var(--primary-color); } }
+        @keyframes remove-cursor { to { border-left-color: transparent; } }
 
         /* الهيدر العائم الدائري */
         header {
@@ -349,21 +382,16 @@
         }
 
         /* رسوم متحركة */
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes spin-reverse { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
         @keyframes pulse-wa { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6); } 70% { box-shadow: 0 0 0 12px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
     </style>
 </head>
 <body>
 
     <div id="loader">
-        <div class="loader-ring">
-            <img src="https://i.ibb.co/B22R1g9r/IMG.jpg" alt="Logo">
-        </div>
-        <div class="loader-text">
-            <span class="ar">جاري التجهيز...</span>
-            <span class="en">Loading...</span>
-            <span class="ur">لوڈ ہو رہا ہے...</span>
+        <img src="https://i.ibb.co/B22R1g9r/IMG.jpg" alt="Logo" class="loader-logo">
+        <div class="typewriter-wrapper">
+            <p class="tw-line tw-line-1">تعاود للمقاولات ، نبني المستقبل بإبداع وإتقان</p>
+            <p class="tw-line tw-line-2">ورؤية هندسية بحلول متكاملة</p>
         </div>
     </div>
 
@@ -600,10 +628,11 @@
 
     <script>
         window.addEventListener('load', () => {
+            // تم زيادة الوقت لـ 3.5 ثانية عشان الانيميشن الخاص بالكتابة يكتمل براحته
             setTimeout(() => {
                 document.getElementById('loader').style.opacity = '0';
                 setTimeout(() => { document.getElementById('loader').style.display = 'none'; }, 500);
-            }, 1000);
+            }, 3500);
         });
 
         const htmlTag = document.documentElement;
