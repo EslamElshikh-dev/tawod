@@ -149,14 +149,16 @@
             max-width: 0; margin: 0;
         }
 
+        /* تم تصغير الخط بنسبة 30% ليصبح متناسق مع الجوال */
         .tw-line-1 {
-            font-size: 1.15rem; font-weight: 800; color: var(--secondary-color);
+            font-size: 0.85rem; font-weight: 800; color: var(--secondary-color);
             animation: typing 1.5s steps(40, end) forwards, blink-cursor 0.5s step-end 3, remove-cursor 0s 1.5s forwards;
         }
         [data-theme="dark"] .tw-line-1 { color: #fff; }
 
+        /* تم تصغير السطر الثاني للحفاظ على التناسق الهرمي */
         .tw-line-2 {
-            font-size: 0.95rem; font-weight: 600; color: var(--primary-color);
+            font-size: 0.75rem; font-weight: 600; color: var(--primary-color);
             animation: typing 1.5s steps(40, end) 1.5s forwards, blink-cursor 0.5s step-end infinite 1.5s;
         }
 
