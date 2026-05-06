@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" data-theme="light">
 <head>
@@ -76,33 +75,33 @@
     </script>
 
     <style>
-        /* المتغيرات الأساسية */
+        /* المتغيرات الأساسية (ألوان الهوية الجديدة) */
         :root {
             --bg-color: #f8fafc;
-            --text-color: #1e293b;
-            --primary-color: #f59e0b;
-            --primary-dark: #d97706;
-            --secondary-color: #1e3a8a;
+            --text-color: #1D1E26; /* لون النص المطلوب */
+            --primary-color: #F2A461; /* التدرج الفاتح */
+            --primary-dark: #BA6E3B; /* التدرج الداكن */
+            --secondary-color: #1D1E26; /* استخدام لون النص كخلفيات داكنة وتناسق */
             --card-bg: #ffffff;
             --header-bg: rgba(255, 255, 255, 0.95);
             --border-color: #e2e8f0;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            --hover-shadow: 0 10px 30px rgba(245, 158, 11, 0.15);
+            --hover-shadow: 0 10px 30px rgba(242, 164, 97, 0.2); /* ظل متناسق مع اللون الجديد */
             --form-bg: #f1f5f9;
         }
 
         [data-theme="dark"] {
-            --bg-color: #0f172a;
+            --bg-color: #121318; /* خلفية داكنة متناسقة مع لون النص الأصلي */
             --text-color: #f8fafc;
-            --primary-color: #fbbf24;
-            --primary-dark: #f59e0b;
-            --secondary-color: #1e293b;
-            --card-bg: #1e293b;
-            --header-bg: rgba(15, 23, 42, 0.95);
-            --border-color: #334155;
+            --primary-color: #F2A461;
+            --primary-dark: #BA6E3B;
+            --secondary-color: #ffffff;
+            --card-bg: #1D1E26; /* كروت بنفس درجة النص الأصلية لتبدو فخمة */
+            --header-bg: rgba(29, 30, 38, 0.95);
+            --border-color: #2c2d38;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-            --hover-shadow: 0 10px 30px rgba(251, 191, 36, 0.15);
-            --form-bg: #0f172a;
+            --hover-shadow: 0 10px 30px rgba(242, 164, 97, 0.15);
+            --form-bg: #121318;
         }
 
         /* الأساسيات وتوسيط جميع النصوص */
@@ -128,15 +127,15 @@
         .loader-logo {
             width: 90px; height: 90px; border-radius: 16px;
             object-fit: cover; margin-bottom: 25px;
-            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
+            box-shadow: 0 10px 25px rgba(242, 164, 97, 0.3);
             border: 2px solid var(--primary-color);
             animation: float-pulse 2s ease-in-out infinite;
         }
 
         @keyframes float-pulse {
-            0% { transform: translateY(0) scale(1); box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3); }
-            50% { transform: translateY(-10px) scale(1.05); box-shadow: 0 15px 35px rgba(245, 158, 11, 0.5); }
-            100% { transform: translateY(0) scale(1); box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3); }
+            0% { transform: translateY(0) scale(1); box-shadow: 0 10px 25px rgba(242, 164, 97, 0.3); }
+            50% { transform: translateY(-10px) scale(1.05); box-shadow: 0 15px 35px rgba(242, 164, 97, 0.5); }
+            100% { transform: translateY(0) scale(1); box-shadow: 0 10px 25px rgba(242, 164, 97, 0.3); }
         }
 
         .typewriter-wrapper {
@@ -150,7 +149,6 @@
             max-width: 0; margin: 0 auto; display: inline-block;
         }
 
-        /* تصغير خط التحميل بنسبة 30% للتناسق مع الجوال */
         .tw-line-1 {
             font-size: clamp(0.75rem, 3vw, 0.85rem); font-weight: 800; color: var(--secondary-color);
             animation: typing 1.5s steps(40, end) forwards, blink-cursor 0.5s step-end 3, remove-cursor 0s 1.5s forwards;
@@ -158,7 +156,7 @@
         [data-theme="dark"] .tw-line-1 { color: #fff; }
 
         .tw-line-2 {
-            font-size: clamp(0.65rem, 2.5vw, 0.75rem); font-weight: 700; color: var(--primary-color);
+            font-size: clamp(0.65rem, 2.5vw, 0.75rem); font-weight: 700; color: var(--primary-dark);
             animation: typing 1.5s steps(40, end) 1.5s forwards, blink-cursor 0.5s step-end infinite 1.5s;
         }
 
@@ -226,21 +224,21 @@
             position: relative; z-index: 1; 
         }
         [data-theme="dark"] .hero h1 { color: #ffffff; }
-        .hero h1 span { color: var(--primary-color); border-bottom: 2px dashed var(--primary-color); padding-bottom: 5px;}
+        .hero h1 span { color: var(--primary-dark); border-bottom: 2px dashed var(--primary-dark); padding-bottom: 5px;}
         
         .hero p { font-size: 1rem; font-weight: 600; max-width: 750px; margin: 0 auto 30px; color: var(--text-color); opacity: 0.85; position: relative; z-index: 1; text-align: center; }
         
         .cr-badge {
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 6px 18px; background: rgba(245, 158, 11, 0.1); border: 1px solid var(--primary-color);
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 6px 18px; background: rgba(242, 164, 97, 0.1); border: 1px solid var(--primary-color);
             color: var(--secondary-color); border-radius: 6px; font-size: 0.9rem; font-weight: 800; margin-bottom: 20px; position: relative; z-index: 1;
         }
         [data-theme="dark"] .cr-badge { color: var(--primary-color); }
 
         .btn-primary {
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 30px; background: var(--primary-color); color: white !important;
-            border-radius: 25px; font-weight: 800; font-size: 1rem; box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3); border: 2px solid var(--primary-color); transition: 0.3s; position: relative; z-index: 1;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 30px; background: linear-gradient(45deg, var(--primary-dark), var(--primary-color)); color: white !important;
+            border-radius: 25px; font-weight: 800; font-size: 1rem; box-shadow: 0 5px 15px rgba(242, 164, 97, 0.3); border: 2px solid transparent; transition: 0.3s; position: relative; z-index: 1;
         }
-        .btn-primary:hover { background: transparent; color: var(--primary-color) !important; transform: translateY(-3px); }
+        .btn-primary:hover { background: transparent; color: var(--primary-dark) !important; border-color: var(--primary-dark); transform: translateY(-3px); }
 
         /* الأقسام العامة */
         .section-title { text-align: center; font-size: 1.6rem; font-weight: 900; margin-bottom: 15px; color: var(--secondary-color); position: relative; display: inline-block; }
@@ -262,51 +260,47 @@
         .feature-card:hover { transform: translateY(-5px); box-shadow: var(--hover-shadow); border-color: var(--primary-color); }
         
         .feature-icon {
-            width: 60px; height: 60px; margin: 0 auto 12px; background: rgba(245, 158, 11, 0.1); border: 1px solid var(--primary-color);
+            width: 60px; height: 60px; margin: 0 auto 12px; background: rgba(242, 164, 97, 0.1); border: 1px solid var(--primary-color);
             border-radius: 50%; display: flex; justify-content: center; align-items: center;
-            font-size: 1.5rem; color: var(--primary-color); transition: 0.5s;
+            font-size: 1.5rem; color: var(--primary-dark); transition: 0.5s;
         }
         .feature-card:hover .feature-icon { background: var(--primary-color); color: white; transform: rotate(360deg); }
         .feature-card h3 { font-size: 1.1rem; font-weight: 800; color: var(--secondary-color); margin-bottom: 8px; text-align: center; }
         [data-theme="dark"] .feature-card h3 { color: #ffffff; }
         .feature-card p { font-size: 0.85rem; font-weight: 500; opacity: 0.85; line-height: 1.6; text-align: center; }
 
-        /* كروت الخدمات - بتصميم جديد وإطار خفيف */
+        /* كروت الخدمات */
         .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; width: 100%; max-width: 1200px; }
         .service-card {
             background: var(--card-bg); border-radius: 16px; padding: 30px 20px;
-            box-shadow: var(--shadow); border: 1px solid rgba(245, 158, 11, 0.35); /* إطار خفيف وجذاب */
+            box-shadow: var(--shadow); border: 1px solid rgba(242, 164, 97, 0.35);
             transition: all 0.4s; position: relative; overflow: hidden;
             display: flex; flex-direction: column; align-items: center; text-align: center;
         }
-        .service-card:hover { transform: translateY(-5px); box-shadow: var(--hover-shadow); border-color: var(--primary-color); }
+        .service-card:hover { transform: translateY(-5px); box-shadow: var(--hover-shadow); border-color: var(--primary-dark); }
         
-        /* أيقونة الخدمة داخل إطار دائري نحيف ومتناسق */
         .service-icon-circle {
             width: 70px; height: 70px; background: transparent; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center; font-size: 1.8rem; color: var(--primary-color);
+            display: flex; justify-content: center; align-items: center; font-size: 1.8rem; color: var(--primary-dark);
             border: 1px solid var(--primary-color); margin-bottom: 18px; transition: 0.4s;
-            box-shadow: inset 0 0 12px rgba(245, 158, 11, 0.1);
+            box-shadow: inset 0 0 12px rgba(242, 164, 97, 0.1);
         }
-        .service-card:hover .service-icon-circle { background: var(--primary-color); color: white; transform: scale(1.1); box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3); }
+        .service-card:hover .service-icon-circle { background: var(--primary-color); color: white; transform: scale(1.1); box-shadow: 0 5px 15px rgba(242, 164, 97, 0.3); }
         
-        /* اسم الخدمة بلمسة إبداعية */
         .service-card h3 { 
             font-size: 1.2rem; font-weight: 900; margin-bottom: 15px; color: var(--secondary-color); 
-            position: relative; display: inline-block; padding-bottom: 8px; border-bottom: 2px dashed var(--primary-color);
+            position: relative; display: inline-block; padding-bottom: 8px; border-bottom: 2px dashed var(--primary-dark);
         }
         [data-theme="dark"] .service-card h3 { color: #ffffff; }
         
-        /* وصف الخدمة الاحترافي (حوالي 450 حرف) */
         .service-card p { font-size: 0.9rem; font-weight: 600; color: var(--text-color); opacity: 0.85; margin-bottom: 25px; line-height: 1.8; text-align: center; flex-grow: 1; }
         
-        /* زر الطلب مستطيل بحواف شبه دائرية */
         .btn-order {
             display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 25px; background: var(--form-bg); border: 1px solid var(--primary-color);
             color: var(--secondary-color) !important; border-radius: 25px; font-weight: 800; font-size: 0.95rem; transition: 0.3s; width: 85%; margin: 0 auto;
         }
         [data-theme="dark"] .btn-order { color: #fff !important; background: transparent; }
-        .btn-order:hover { background: var(--primary-color); color: white !important; transform: translateY(-2px); box-shadow: 0 5px 12px rgba(245, 158, 11, 0.2); }
+        .btn-order:hover { background: var(--primary-dark); border-color: var(--primary-dark); color: white !important; transform: translateY(-2px); box-shadow: 0 5px 12px rgba(186, 110, 59, 0.2); }
 
         /* نموذج الاتصال والخريطة */
         .contact-wrapper { display: grid; grid-template-columns: 1fr; gap: 25px; width: 100%; max-width: 1200px; }
@@ -327,17 +321,19 @@
             width: 100%; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 6px;
             background: var(--form-bg); color: var(--text-color); font-size: 0.9rem; font-weight: 700; outline: none; transition: 0.3s; text-align: center;
         }
-        .form-control:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
+        .form-control:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(242, 164, 97, 0.2); }
         textarea.form-control { resize: vertical; min-height: 100px; }
         .btn-submit {
             width: 100%; padding: 12px; background: var(--secondary-color); color: white; border: none;
             border-radius: 25px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px;
         }
-        .btn-submit:hover { background: var(--primary-color); transform: translateY(-2px); }
+        .btn-submit:hover { background: var(--primary-dark); transform: translateY(-2px); }
 
-        .address-box { margin-top: 20px; text-align: center; font-size: 0.9rem; font-weight: 700; color: var(--text-color); padding: 15px; background: var(--form-bg); border-radius: 8px; border: 1px dashed var(--primary-color); width: 100%; }
-        .address-box p { display: flex; justify-content: center; align-items: center; gap: 5px; }
-        .address-box i { color: var(--primary-color); font-size: 1.1rem; }
+        .address-box { margin-top: 20px; text-align: center; color: var(--text-color); padding: 15px; background: var(--form-bg); border-radius: 8px; border: 1px dashed var(--primary-dark); width: 100%; }
+        
+        /* تصغير خط العنوان ليكون على سطر واحد */
+        .address-box p { display: flex; justify-content: center; align-items: center; gap: 5px; font-size: clamp(0.6rem, 2vw, 0.65rem); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .address-box i { color: var(--primary-dark); font-size: 1rem; }
 
         /* الأزرار العائمة */
         .floating-actions { position: fixed; bottom: 105px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 999; transition: 0.3s; }
@@ -350,7 +346,7 @@
         .float-call { background: var(--secondary-color); border: 2px solid var(--primary-color); }
         .float-btn:hover { transform: translateY(-4px) scale(1.05); }
 
-        /* البار السفلي الدائري بتصميم فخم وإطار نحيف للأيقونات */
+        /* البار السفلي الدائري */
         .bottom-nav {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             width: 90%; max-width: 450px; 
@@ -362,23 +358,22 @@
         }
         .bottom-nav a { display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 800; color: var(--text-color); gap: 5px; opacity: 0.7; transition: 0.3s; }
         
-        /* الإطار الدائري النحيف فوق الأيقونة */
         .bottom-nav a i {
             width: 44px; height: 44px; border-radius: 50%;
             background: transparent;
             display: flex; justify-content: center; align-items: center;
-            font-size: 1.2rem; border: 1px solid rgba(245, 158, 11, 0.6); /* إطار نحيف وجذاب */
+            font-size: 1.2rem; border: 1px solid rgba(242, 164, 97, 0.6);
             transition: 0.3s; box-shadow: inset 0 0 8px rgba(0,0,0,0.03);
         }
         
         .bottom-nav a.active i, .bottom-nav a:hover i {
             background: var(--primary-color); color: #fff;
             border-color: var(--primary-color);
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+            box-shadow: 0 4px 12px rgba(242, 164, 97, 0.4);
             transform: translateY(-4px) scale(1.05);
         }
         
-        .bottom-nav a.active, .bottom-nav a:hover { opacity: 1; color: var(--primary-color); }
+        .bottom-nav a.active, .bottom-nav a:hover { opacity: 1; color: var(--primary-dark); }
         
         @media (min-width: 769px) { .bottom-nav { display: none; } .floating-actions{ bottom: 30px; } }
 
@@ -387,7 +382,11 @@
         .footer-info { margin-bottom: 15px; font-size: 0.95rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; align-items: center; width: 100%;}
         .footer-info span { padding: 6px 12px; background: rgba(255,255,255,0.1); border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; gap: 6px;}
         .footer-info i { color: var(--primary-color); }
-        .designer-badge { display: inline-flex; justify-content: center; align-items: center; margin-top: 20px; padding: 8px 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--primary-color); border-radius: 25px; font-size: 0.8rem; color: white; transition: 0.3s; }
+        
+        /* تصغير خط الحقوق 30% */
+        footer > p { font-size: clamp(0.6rem, 2vw, 0.65rem); margin-bottom: 10px; }
+        
+        .designer-badge { display: inline-flex; justify-content: center; align-items: center; margin-top: 15px; padding: 8px 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--primary-color); border-radius: 25px; font-size: 0.8rem; color: white; transition: 0.3s; }
         .designer-badge:hover { background: var(--primary-color); color: var(--secondary-color); transform: translateY(-2px); }
 
         /* استعلامات الوسائط */
@@ -592,12 +591,30 @@
                                 <option value="" disabled selected class="ar">-- اختر الخدمة --</option>
                                 <option value="" disabled selected class="en">-- Select Service --</option>
                                 <option value="" disabled selected class="ur">-- سروس منتخب کریں --</option>
-                                <option value="أعمال البناء والإنشاءات">أعمال البناء والإنشاءات / Construction</option>
-                                <option value="تسليم مفتاح">تسليم مفتاح / Turnkey Projects</option>
-                                <option value="ترميم مباني">ترميم مباني / Restoration</option>
-                                <option value="تشطيب مباني">تشطيب مباني / Finishing</option>
-                                <option value="ديكورات">ديكورات / Decorations</option>
-                                <option value="تأسيس السباكة والكهرباء">تأسيس السباكة والكهرباء / Plumbing & Electrical</option>
+                                
+                                <option value="أعمال البناء والإنشاءات" class="ar">أعمال البناء والإنشاءات</option>
+                                <option value="أعمال البناء والإنشاءات" class="en">Construction</option>
+                                <option value="أعمال البناء والإنشاءات" class="ur">تعمیر و ترقی</option>
+                                
+                                <option value="تسليم مفتاح" class="ar">تسليم مفتاح</option>
+                                <option value="تسليم مفتاح" class="en">Turnkey Projects</option>
+                                <option value="تسليم مفتاح" class="ur">ٹرن کی پروجیکٹس</option>
+                                
+                                <option value="ترميم مباني" class="ar">ترميم مباني</option>
+                                <option value="ترميم مباني" class="en">Restoration</option>
+                                <option value="ترميم مباني" class="ur">عمارت کی بحالی</option>
+                                
+                                <option value="تشطيب مباني" class="ar">تشطيب مباني</option>
+                                <option value="تشطيب مباني" class="en">Finishing</option>
+                                <option value="تشطيب مباني" class="ur">تکمیلی کام</option>
+                                
+                                <option value="ديكورات" class="ar">ديكورات</option>
+                                <option value="ديكورات" class="en">Decorations</option>
+                                <option value="ديكورات" class="ur">سجاوٹ</option>
+                                
+                                <option value="تأسيس السباكة والكهرباء" class="ar">تأسيس السباكة والكهرباء</option>
+                                <option value="تأسيس السباكة والكهرباء" class="en">Plumbing & Electrical</option>
+                                <option value="تأسيس السباكة والكهرباء" class="ur">پلمبنگ و بجلی</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -735,5 +752,3 @@
     </script>
 </body>
 </html>
-
-```
