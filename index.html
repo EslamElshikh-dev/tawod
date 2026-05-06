@@ -27,7 +27,7 @@
     
     <link rel="icon" href="https://i.ibb.co/B22R1g9r/IMG.jpg" type="image/jpeg">
 
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Lalezar&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script type="application/ld+json">
@@ -105,9 +105,9 @@
             --form-bg: #0f172a;
         }
 
-        /* الأساسيات وتصغير الخطوط */
+        /* الأساسيات وتوسيط النصوص */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; transition: background-color 0.4s, color 0.4s, border-color 0.4s; }
-        body { background-color: var(--bg-color); color: var(--text-color); overflow-x: hidden; line-height: 1.7; font-size: 14px; }
+        body { background-color: var(--bg-color); color: var(--text-color); overflow-x: hidden; line-height: 1.7; font-size: 14px; text-align: center; } /* توسيط النصوص هنا */
         a { text-decoration: none; color: inherit; }
         ul { list-style: none; }
 
@@ -150,13 +150,14 @@
         }
 
         .tw-line-1 {
-            font-size: 0.8rem; font-weight: 800; color: var(--secondary-color);
+            font-size: 0.8rem; /* تم التصغير 30% تقريباً (من 1.15 لـ 0.8) */
+            font-weight: 800; color: var(--secondary-color);
             animation: typing 1.5s steps(40, end) forwards, blink-cursor 0.5s step-end 3, remove-cursor 0s 1.5s forwards;
         }
         [data-theme="dark"] .tw-line-1 { color: #fff; }
 
         .tw-line-2 {
-            font-size: 0.7rem; font-weight: 600; color: var(--primary-color);
+            font-size: 0.8rem; font-weight: 600; color: var(--primary-color);
             animation: typing 1.5s steps(40, end) 1.5s forwards, blink-cursor 0.5s step-end infinite 1.5s;
         }
 
@@ -191,10 +192,11 @@
         .sidebar {
             position: fixed; top: 0; width: 280px; height: 100vh; background: var(--card-bg);
             z-index: 1001; padding: 30px 25px; box-shadow: var(--shadow); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: right; /* إعادة توجيه النص لليمين في القائمة */
         }
         html[dir="rtl"] .sidebar { right: -320px; border-left: 3px solid var(--primary-color); }
         html[dir="rtl"] .sidebar.active { right: 0; }
-        html[dir="ltr"] .sidebar { left: -320px; border-right: 3px solid var(--primary-color); }
+        html[dir="ltr"] .sidebar { left: -320px; border-right: 3px solid var(--primary-color); text-align: left;}
         html[dir="ltr"] .sidebar.active { left: 0; }
         
         .sidebar-close { font-size: 1.4rem; cursor: pointer; margin-bottom: 30px; display: block; color: var(--text-color); transition: 0.3s; }
@@ -214,9 +216,42 @@
         .hero::after { content: '\f7d9'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; font-size: 250px; color: var(--primary-color); opacity: 0.03; right: -40px; bottom: -40px; transform: rotate(-15deg); }
         html[dir="ltr"] .hero::after { right: auto; left: -40px; transform: rotate(15deg); }
         
-        .hero h1 { font-size: 2.2rem; font-weight: 900; color: var(--secondary-color); margin-bottom: 15px; line-height: 1.4; position: relative; z-index: 1; }
+        .hero-title-container {
+            display: flex; justify-content: center; align-items: center; margin-bottom: 15px;
+            animation: slideUpFade 1.2s ease-out forwards; opacity: 0; transform: translateY(20px);
+        }
+
+        .hero h1 { 
+            font-family: 'Lalezar', cursive; /* خط جذاب للعناوين */
+            font-size: 1.3rem; /* تصغير بنسبة 40% ليكون على سطر واحد */
+            font-weight: 400; color: var(--secondary-color); 
+            line-height: 1.4; position: relative; z-index: 1; letter-spacing: 0.5px;
+            animation: heroFloat 3s ease-in-out infinite;
+        }
         [data-theme="dark"] .hero h1 { color: #ffffff; }
-        .hero h1 span { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); }
+        .hero h1 span { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); display: inline-block;}
+        
+        /* تأثير النقطتين المبتكر */
+        .ta-dots-helmet { position: relative; display: inline-block; }
+        .ta-dots-helmet::before, .ta-dots-helmet::after {
+            content: '\e58f'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+            position: absolute; top: -14px; font-size: 0.5rem; color: var(--secondary-color);
+            transform: scaleX(-1); /* عكس الخوذة لو أردت */
+        }
+        [data-theme="dark"] .ta-dots-helmet::before, [data-theme="dark"] .ta-dots-helmet::after { color: #fff; }
+        .ta-dots-helmet::before { right: 2px; }
+        .ta-dots-helmet::after { right: 10px; }
+
+
+        @keyframes slideUpFade {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes heroFloat {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+
         .hero p { font-size: 1rem; font-weight: 600; max-width: 750px; margin: 0 auto 30px; color: var(--text-color); opacity: 0.85; position: relative; z-index: 1; }
         
         .cr-badge {
@@ -281,7 +316,7 @@
         
         .service-card h3 { font-size: 1.15rem; font-weight: 900; margin-bottom: 10px; color: var(--secondary-color); }
         [data-theme="dark"] .service-card h3 { color: #ffffff; }
-        .service-card p { font-size: 0.9rem; font-weight: 600; color: var(--text-color); opacity: 0.85; margin-bottom: 20px; line-height: 1.7; text-align: justify; text-align-last: center; flex-grow: 1; }
+        .service-card p { font-size: 0.9rem; font-weight: 600; color: var(--text-color); opacity: 0.85; margin-bottom: 20px; line-height: 1.7; flex-grow: 1; }
         
         .btn-order {
             display: inline-block; padding: 8px 20px; background: var(--form-bg); border: 1px solid var(--border-color);
@@ -300,7 +335,9 @@
         .contact-form {
             background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color);
             box-shadow: var(--shadow); position: relative; overflow: hidden;
+            text-align: right; /* توجيه النموذج لليمين */
         }
+        html[dir="ltr"] .contact-form { text-align: left; }
         .contact-form h3 { font-size: 1.3rem; font-weight: 900; color: var(--secondary-color); margin-bottom: 20px; text-align: center; }
         [data-theme="dark"] .contact-form h3 { color: #ffffff; }
         .form-group { margin-bottom: 15px; }
@@ -330,7 +367,7 @@
         .float-call { background: var(--secondary-color); border: 2px solid var(--primary-color); }
         .float-btn:hover { transform: translateY(-4px) scale(1.05); }
 
-        /* البار السفلي الدائري الأنيق */
+        /* البار السفلي الدائري الأنيق المعدل */
         .bottom-nav {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             width: 90%; max-width: 450px; 
@@ -340,21 +377,33 @@
             border: 1px solid var(--border-color); border-top: 2px solid var(--primary-color);
             border-radius: 35px;
         }
-        .bottom-nav a { display: flex; flex-direction: column; align-items: center; font-size: 0.65rem; font-weight: 800; color: var(--text-color); gap: 4px; opacity: 0.7; transition: 0.3s; }
+        .bottom-nav a { display: flex; flex-direction: column; align-items: center; font-size: 0.65rem; font-weight: 800; color: var(--text-color); gap: 4px; opacity: 0.7; transition: 0.3s; position: relative;}
         
+        .icon-ring {
+            width: 46px; height: 46px; border-radius: 50%;
+            border: 1px solid transparent; /* إطار مخفي في البداية */
+            display: flex; justify-content: center; align-items: center;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
         .bottom-nav a i {
-            width: 42px; height: 42px; border-radius: 50%;
+            width: 38px; height: 38px; border-radius: 50%;
             background: var(--bg-color);
             display: flex; justify-content: center; align-items: center;
-            font-size: 1.15rem; border: 1px solid var(--border-color);
-            transition: 0.3s;
+            font-size: 1.1rem; border: 1px solid var(--border-color);
+            transition: 0.3s; z-index: 2;
         }
         
+        .bottom-nav a.active .icon-ring, .bottom-nav a:hover .icon-ring {
+            border-color: var(--primary-color); /* يظهر الإطار الدائري عند التفعيل */
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+        }
+
         .bottom-nav a.active i, .bottom-nav a:hover i {
             background: var(--primary-color); color: #fff;
             border-color: var(--primary-color);
+            transform: translateY(-4px); /* بروز خفيف للأيقونة */
             box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
-            transform: translateY(-3px);
         }
         
         .bottom-nav a.active, .bottom-nav a:hover { opacity: 1; color: var(--primary-color); }
@@ -371,7 +420,7 @@
 
         /* استعلامات الوسائط (Mobile Adjustments) */
         @media (max-width: 768px) {
-            .hero h1 { font-size: 1.8rem; }
+            .hero h1 { font-size: 1.1rem; } /* تصغير العنوان الأساسي في الموبايل */
             .section-title { font-size: 1.4rem; }
             .floating-actions { bottom: 110px; transform: scale(0.9); transform-origin: right bottom;}
             header { padding: 10px 4%; width: 92%; left: 4%; }
@@ -431,9 +480,11 @@
                 <span class="ur">کمرشل رجسٹریشن: 7033495099</span>
             </div>
 
-            <h1 class="ar">شركة تعاود <span>للمقاولات العامة</span></h1>
-            <h1 class="en">Tawod <span>General Contracting</span></h1>
-            <h1 class="ur">تعاود <span>جنرل کنٹریکٹنگ</span></h1>
+            <div class="hero-title-container">
+                <h1 class="ar">شركة تعاود <span>للمقاولات العام<span class="ta-dots-helmet">ه</span></span></h1>
+                <h1 class="en">Tawod <span>General Contracting</span></h1>
+                <h1 class="ur">تعاود <span>جنرل کنٹریکٹنگ</span></h1>
+            </div>
             
             <p class="ar">شريكك الموثوق في عالم البناء والإنشاءات. نقدم حلولاً هندسية متكاملة للمشاريع السكنية والتجارية، من التخطيط والتأسيس وحتى التشطيب وتسليم المفتاح بأعلى معايير الجودة والالتزام.</p>
             <p class="en">Your trusted partner in construction. We provide integrated engineering solutions for residential and commercial projects, from planning to turnkey delivery with the highest quality standards.</p>
@@ -496,7 +547,7 @@
                 <div class="service-card">
                     <div class="service-icon-circle"><i class="fa-solid fa-trowel-bricks"></i></div>
                     <h3 class="ar">البناء والإنشاءات</h3><h3 class="en">Construction</h3><h3 class="ur">تعمیر و ترقی</h3>
-                    <p class="ar">بناء وتأسيس متكامل للمشاريع السكنية والتجارية مع الالتزام بالكود السعودي للبناء وأفضل المواد المعتمدة.</p>
+                    <p class="ar">نقدم خدمات بناء وتأسيس متكاملة للمشاريع السكنية والتجارية بالرياض وكافة مناطق المملكة. نضمن الالتزام التام بتطبيق الكود السعودي للبناء لضمان متانة وصلابة الهياكل. نعتمد في أعمالنا على استخدام أفضل المواد الإنشائية المعتمدة والمطابقة للمواصفات العالمية، تحت إشراف طاقم هندسي محترف يسعى لتقديم أعلى درجات الجودة والاحترافية لتحويل حلمك إلى واقع ملموس.</p>
                     <p class="en">Complete building services ensuring strong structures compliant with the Saudi Building Code.</p>
                     <p class="ur">سعودی بلڈنگ کوڈ کے مطابق رہائشی اور تجارتی منصوبوں کے لیے مکمل تعمیراتی خدمات۔</p>
                     <a href="https://wa.me/966551128884?text=أريد الاستفسار عن أعمال البناء والإنشاءات" class="btn-order"><span class="ar">طلب الخدمة</span><span class="en">Order</span><span class="ur">آرڈر</span></a>
@@ -505,7 +556,7 @@
                 <div class="service-card">
                     <div class="service-icon-circle"><i class="fa-solid fa-key"></i></div>
                     <h3 class="ar">تسليم مفتاح</h3><h3 class="en">Turnkey Projects</h3><h3 class="ur">ٹرن کی پروجیکٹس</h3>
-                    <p class="ar">راحة بال تامة، نتولى إدارة المشروع من استلام الأرض الفضاء وحتى التشطيبات الفاخرة وتسليم المفتاح.</p>
+                    <p class="ar">نوفر لك راحة بال تامة من خلال خدمة تسليم المفتاح المتكاملة. نتولى إدارة مشروعك بالكامل ابتداءً من استلام الأرض الفضاء، مروراً بمرحلة التصميم المعماري واستخراج التراخيص، وصولاً إلى أدق التفاصيل في التشطيبات الفاخرة والديكورات النهائية. نضمن لك الالتزام الدقيق بالجدول الزمني المحدد والميزانية المتفق عليها، لتستلم مفتاح عقارك وهو جاهز تماماً للاستخدام.</p>
                     <p class="en">We manage your project entirely from empty land to handing over the key with luxury finishes.</p>
                     <p class="ur">خالی زمین سے لے کر چابی کے حوالے کرنے تک پورے پروجیکٹ کا انتظام۔</p>
                     <a href="https://wa.me/966551128884?text=أريد الاستفسار عن خدمة تسليم مفتاح" class="btn-order"><span class="ar">طلب الخدمة</span><span class="en">Order</span><span class="ur">آرڈر</span></a>
@@ -514,7 +565,7 @@
                 <div class="service-card">
                     <div class="service-icon-circle"><i class="fa-solid fa-house-crack"></i></div>
                     <h3 class="ar">ترميم مباني</h3><h3 class="en">Restoration</h3><h3 class="ur">عمارت کی بحالی</h3>
-                    <p class="ar">معالجة التشققات وتدعيم الهياكل وتحديث الواجهات لإعادة الحياة للمباني القديمة وزيادة عمرها الافتراضي.</p>
+                    <p class="ar">حلول هندسية متطورة في مجال ترميم وصيانة المباني لزيادة عمرها الافتراضي وإعادة رونقها. نقوم بمعالجة شاملة للتشققات وتدعيم الهياكل الخرسانية باستخدام أحدث التقنيات. بالإضافة إلى تحديث وتجديد الواجهات الخارجية والداخلية لتواكب أحدث التصاميم المعمارية. شركة تعاود تعيد الحياة لمبانيك القديمة وتجعلها آمنة وعصرية تلبي كافة احتياجاتك السكنية أو التجارية.</p>
                     <p class="en">Treating cracks and reinforcing structures to modernize and increase the lifespan of buildings.</p>
                     <p class="ur">دراڑوں کا علاج اور ڈھانچے کو مضبوط بنا کر پرانی عمارتوں میں جان ڈالنا۔</p>
                     <a href="https://wa.me/966551128884?text=أريد الاستفسار عن ترميم المباني" class="btn-order"><span class="ar">طلب الخدمة</span><span class="en">Order</span><span class="ur">آرڈر</span></a>
@@ -523,25 +574,25 @@
                 <div class="service-card">
                     <div class="service-icon-circle"><i class="fa-solid fa-paint-roller"></i></div>
                     <h3 class="ar">تشطيب مباني</h3><h3 class="en">Finishing</h3><h3 class="ur">تکمیلی کام</h3>
-                    <p class="ar">تشطيبات داخلية وخارجية (ديلوكس وسوبر ديلوكس) بأفضل خامات الدهانات والأسقف والأرضيات.</p>
+                    <p class="ar">أعمال تشطيبات متكاملة وعصرية (ديلوكس وسوبر ديلوكس) للفلل والمكاتب والمشاريع التجارية. نهتم بأدق تفاصيل الجودة باستخدام أفضل خامات الدهانات العالمية، وتركيب الأسقف المستعارة، وتنفيذ أرقى أنواع الأرضيات من الرخام والسيراميك والبورسلين. فريقنا من الفنيين المتخصصين يضمن لك دقة في التنفيذ وتشطيبات نهائية تعكس الفخامة وتناسب ذوقك الرفيع بكل احترافية.</p>
                     <p class="en">Elegant interior and exterior deluxe finishes using the best materials matching your taste.</p>
                     <p class="ur">بہترین اندرونی اور بیرونی تکمیلی کام، پینٹ اور فرش کے لیے بہترین مواد کا استعمال۔</p>
                     <a href="https://wa.me/966551128884?text=أريد الاستفسار عن تشطيب المباني" class="btn-order"><span class="ar">طلب الخدمة</span><span class="en">Order</span><span class="ur">آرڈر</span></a>
                 </div>
 
                 <div class="service-card">
-                    <div class="service-icon-circle"><i class="fa-solid fa-couch"></i></div>
+                    <div class="service-icon-circle"><i class="fa-solid fa-layer-group"></i></div>
                     <h3 class="ar">ديكورات</h3><h3 class="en">Decorations</h3><h3 class="ur">سجاوٹ</h3>
-                    <p class="ar">تصميم وتنفيذ أرقى الديكورات الجبسية، الإضاءة المخفية والتكسيات الخشبية لتنسيق عصري وجذاب.</p>
+                    <p class="ar">لمسات فنية وإبداعية في تصميم وتنفيذ الديكورات الداخلية والخارجية التي تحول المساحات إلى تحف معمارية. نقدم أحدث تصاميم الديكورات الجبسية، التكسيات الخشبية العصرية، بديل الرخام وبديل الخشب، مع تنسيق احترافي للإضاءة المخفية والمباشرة. ندمج الجمال بالوظيفة العملية لخلق بيئة مريحة وجذابة تلبي طموحاتك وتواكب أحدث خطوط الموضة في عالم التصميم الداخلي.</p>
                     <p class="en">Designing and executing fine interior decor including gypsum, hidden lighting, and claddings.</p>
                     <p class="ur">بہترین اندرونی سجاوٹ، جپسم بورڈ اور پوشیدہ لائٹنگ کے ساتھ جدید حل۔</p>
                     <a href="https://wa.me/966551128884?text=أريد الاستفسار عن الديكورات" class="btn-order"><span class="ar">طلب الخدمة</span><span class="en">Order</span><span class="ur">آرڈر</span></a>
                 </div>
 
                 <div class="service-card">
-                    <div class="service-icon-circle"><i class="fa-solid fa-plug-circle-bolt"></i></div>
+                    <div class="service-icon-circle"><i class="fa-solid fa-plug-circle-check"></i></div>
                     <h3 class="ar">تأسيس سباكة وكهرباء</h3><h3 class="en">Plumbing & Electrical</h3><h3 class="ur">پلمبنگ و بجلی</h3>
-                    <p class="ar">تأسيس احترافي بأفضل المواد المعتمدة لضمان أمان تام وتجنب التسريبات أو المشاكل المستقبلية.</p>
+                    <p class="ar">تأسيس شبكات السباكة والكهرباء وفق أعلى معايير الأمان والجودة لضمان استدامة وكفاءة التشغيل. نستخدم أفضل المواد والأنابيب والكابلات المعتمدة من الهيئات السعودية، لتجنب حدوث أي تسربات أو مشاكل كهربائية مستقبلية. يتم التنفيذ والاختبار بواسطة مهندسين وفنيين خبراء، مما يمنحك منزلاً أو مبنى تجارياً آمناً ومجهزاً بأفضل البنى التحتية الموثوقة والمستدامة.</p>
                     <p class="en">Professional setup using certified brands to ensure safety and prevent future issues.</p>
                     <p class="ur">مستقبل کے مسائل سے بچنے کے لیے بہترین برانڈز کا استعمال کرتے ہوئے محفوظ سیٹ اپ۔</p>
                     <a href="https://wa.me/966551128884?text=أريد الاستفسار عن تأسيس السباكة والكهرباء" class="btn-order"><span class="ar">طلب الخدمة</span><span class="en">Order</span><span class="ur">آرڈر</span></a>
@@ -604,10 +655,22 @@
     </div>
 
     <div class="bottom-nav">
-        <a href="#hero" class="active"><i><i class="fa-solid fa-building"></i></i><span class="ar">الرئيسية</span><span class="en">Home</span><span class="ur">ہوم</span></a>
-        <a href="#about"><i><i class="fa-solid fa-certificate"></i></i><span class="ar">عنا</span><span class="en">About</span><span class="ur">ہم</span></a>
-        <a href="#services"><i><i class="fa-solid fa-helmet-safety"></i></i><span class="ar">خدمات</span><span class="en">Services</span><span class="ur">خدمات</span></a>
-        <a href="#contact"><i><i class="fa-solid fa-envelope"></i></i><span class="ar">تواصل</span><span class="en">Contact</span><span class="ur">رابطہ</span></a>
+        <a href="#hero" class="active">
+            <div class="icon-ring"><i><i class="fa-solid fa-house-chimney"></i></i></div>
+            <span class="ar">الرئيسية</span><span class="en">Home</span><span class="ur">ہوم</span>
+        </a>
+        <a href="#about">
+            <div class="icon-ring"><i><i class="fa-solid fa-building-user"></i></i></div>
+            <span class="ar">عنا</span><span class="en">About</span><span class="ur">ہم</span>
+        </a>
+        <a href="#services">
+            <div class="icon-ring"><i><i class="fa-solid fa-layer-group"></i></i></div>
+            <span class="ar">خدمات</span><span class="en">Services</span><span class="ur">خدمات</span>
+        </a>
+        <a href="#contact">
+            <div class="icon-ring"><i><i class="fa-solid fa-headset"></i></i></div>
+            <span class="ar">تواصل</span><span class="en">Contact</span><span class="ur">رابطہ</span>
+        </a>
     </div>
 
     <footer>
