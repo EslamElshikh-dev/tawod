@@ -401,8 +401,6 @@
         .btn-submit:hover { background: var(--primary-dark); transform: translateY(-2px); }
 
         .address-box { margin-top: 20px; text-align: center; color: var(--text-color); padding: 15px; background: var(--form-bg); border-radius: 8px; border: 1px dashed var(--primary-dark); width: 100%; }
-        
-        /* تصغير خط العنوان ليكون على سطر واحد */
         .address-box p { display: flex; justify-content: center; align-items: center; gap: 5px; font-size: clamp(0.6rem, 2vw, 0.65rem); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .address-box i { color: var(--primary-dark); font-size: 1rem; }
 
@@ -512,17 +510,14 @@
 
     <main>
         <section id="hero" class="hero">
-            <!-- خلفية الفيديو المتحركة (تعكس روح صورة الغروب والمقاولات) -->
+            <!-- خلفية الفيديو المتحركة لمشهد المقاولات الخاص بك -->
             <video autoplay muted loop playsinline class="hero-video">
-                <source src="https://cdn.pixabay.com/video/2019/11/10/28881-372132791_large.mp4" type="video/mp4">
+                <source src="https://www.image2url.com/r2/default/videos/1778683204592-3ab1afc3-d2a1-424e-8fec-bff225eb8ad3.mp4" type="video/mp4">
             </video>
             
-            <!-- طبقة التمويه (الماسك) بألوان الهوية -->
             <div class="hero-overlay"></div>
 
-            <!-- المحتوى الذي يظهر فوق الفيديو (الشعار والنصوص) -->
             <div class="hero-content">
-                <!-- الشعار بتنسيق وحركة احترافية -->
                 <img src="https://i.ibb.co/B22R1g9r/IMG.jpg" alt="شعار شركة تعاود للمقاولات" class="hero-logo-center">
 
                 <div class="cr-badge">
