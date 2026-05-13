@@ -236,7 +236,6 @@
             object-fit: cover;
         }
 
-        /* الماسك (التمويه) بلون داكن لإبراز النصوص */
         .hero-overlay {
             position: absolute;
             top: 0;
@@ -267,7 +266,6 @@
             object-fit: cover;
         }
 
-        /* فرض اللون الأبيض على النصوص مع ظل قوي لوضوح أفضل */
         .hero h1, .hero p, .hero .cr-badge { 
             color: #ffffff !important; 
             text-shadow: 0 2px 15px rgba(0,0,0,0.8);
@@ -335,26 +333,43 @@
         [data-theme="dark"] .feature-card h3 { color: #ffffff; }
         .feature-card p { font-size: 0.85rem; font-weight: 500; opacity: 0.85; line-height: 1.6; text-align: center; }
 
-        /* كروت الخدمات */
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; width: 100%; max-width: 1200px; }
+        /* كروت الخدمات الجديدة مع الصور والتأثيرات الإبداعية */
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; width: 100%; max-width: 1200px; }
         .service-card {
-            background: var(--card-bg); border-radius: 16px; padding: 30px 20px;
+            background: var(--card-bg); border-radius: 16px; padding: 0; /* إزالة الـ padding لدمج الصورة بالكامل */
             box-shadow: var(--shadow); border: 1px solid rgba(242, 164, 97, 0.35);
-            transition: all 0.4s; position: relative; overflow: hidden;
-            display: flex; flex-direction: column; align-items: center; text-align: center;
+            transition: all 0.4s ease; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; text-align: center;
         }
-        .service-card:hover { transform: translateY(-5px); box-shadow: var(--hover-shadow); border-color: var(--primary-dark); }
+        .service-card:hover { transform: translateY(-10px); box-shadow: var(--hover-shadow); border-color: var(--primary-dark); }
         
-        .service-icon-circle {
-            width: 70px; height: 70px; background: transparent; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center; font-size: 1.8rem; color: var(--primary-dark);
-            border: 1px solid var(--primary-color); margin-bottom: 18px; transition: 0.4s;
-            box-shadow: inset 0 0 12px rgba(242, 164, 97, 0.1);
+        /* إعدادات حاوية الصورة مع الفيد (Fade) الاحترافي */
+        .service-image {
+            width: 100%;
+            height: 240px;
+            position: relative;
+            overflow: hidden;
         }
-        .service-card:hover .service-icon-circle { background: var(--primary-color); color: white; transform: scale(1.1); box-shadow: 0 5px 15px rgba(242, 164, 97, 0.3); }
+        .service-image::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 50%;
+            background: linear-gradient(to bottom, transparent, var(--card-bg)); /* يندمج مع لون الكرت النهاري أو الليلي */
+            z-index: 1; pointer-events: none;
+        }
+        .service-image img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .service-card:hover .service-image img { transform: scale(1.1); }
+        
+        /* حاوية المحتوى أسفل الصورة */
+        .service-content {
+            padding: 0 25px 30px;
+            display: flex; flex-direction: column; flex-grow: 1; align-items: center;
+            position: relative; z-index: 2; margin-top: -20px; /* سحب المحتوى للأعلى قليلاً ليندمج مع تأثير الـ Fade */
+        }
         
         .service-card h3 { 
-            font-size: 1.2rem; font-weight: 900; margin-bottom: 15px; color: var(--secondary-color); 
+            font-size: 1.25rem; font-weight: 900; margin-bottom: 15px; color: var(--secondary-color); 
             position: relative; display: inline-block; padding-bottom: 8px; border-bottom: 2px dashed var(--primary-dark);
         }
         [data-theme="dark"] .service-card h3 { color: #ffffff; }
@@ -570,59 +585,85 @@
             <h2 class="section-title"><span class="ar">خدماتنا الإنشائية</span><span class="en">Our Services</span><span class="ur">ہماری خدمات</span></h2>
             
             <div class="services-grid">
+                
                 <div class="service-card">
-                    <div class="service-icon-circle"><i class="fa-solid fa-trowel-bricks"></i></div>
-                    <h3 class="ar">البناء والإنشاءات</h3><h3 class="en">Construction</h3><h3 class="ur">تعمیر و ترقی</h3>
-                    <p class="ar">شركة تعاود للمقاولات العامة تقدم أفضل خدمات البناء والإنشاءات المتكاملة بالرياض بمعايير هندسية عالمية. نضمن تنفيذ مشاريعك السكنية والتجارية بدقة متناهية والتزام كامل بالكود السعودي للبناء. نعتمد على أقوى المواد لضمان استدامة ومتانة المباني، تحت إشراف طاقم هندسي محترف يسعى لتحويل رؤيتك لواقع ملموس بتكاليف تنافسية، لنوفر لك بيئة آمنة تعيش وتعمل بها براحة واطمئنان تام لسنوات طويلة دون القلق من أي عيوب إنشائية.</p>
-                    <p class="en">Tawod Contracting offers top-tier construction services in Riyadh with global engineering standards. We ensure precise execution of residential and commercial projects with full compliance to the Saudi Building Code, using the strongest materials for long-lasting durability under expert supervision.</p>
-                    <p class="ur">تعاود کنٹریکٹنگ ریاض میں عالمی انجینئرنگ کے معیار کے ساتھ بہترین تعمیراتی خدمات پیش کرتی ہے۔ ہم سعودی بلڈنگ کوڈ کی مکمل تعمیل کے ساتھ رہائشی اور تجارتی منصوبوں کی درست تکمیل کو یقینی بناتے ہیں، ماہرین کی نگرانی میں پائیداری کے لیے مضبوط ترین مواد کا استعمال کرتے ہیں۔</p>
-                    <a href="https://wa.me/966551128884?text=أريد طلب هذه الخدمة: البناء والإنشاءات" class="btn-order"><i class="fa-brands fa-whatsapp"></i> <span class="ar">اطلب هذه الخدمة</span><span class="en">Order this service</span><span class="ur">یہ سروس آرڈر کریں</span></a>
+                    <div class="service-image">
+                        <img src="https://i.ibb.co/TD6BJB2t/pngtree-architect-engineer-check-work-construction-in-a-building-site-with-sunset-image-15730251.png" alt="البناء والإنشاءات">
+                    </div>
+                    <div class="service-content">
+                        <h3 class="ar">البناء والإنشاءات</h3><h3 class="en">Construction</h3><h3 class="ur">تعمیر و ترقی</h3>
+                        <p class="ar">شركة تعاود للمقاولات العامة تقدم أفضل خدمات البناء والإنشاءات المتكاملة بالرياض بمعايير هندسية عالمية. نضمن تنفيذ مشاريعك السكنية والتجارية بدقة متناهية والتزام كامل بالكود السعودي للبناء. نعتمد على أقوى المواد لضمان استدامة ومتانة المباني، تحت إشراف طاقم هندسي محترف يسعى لتحويل رؤيتك لواقع ملموس بتكاليف تنافسية، لنوفر لك بيئة آمنة تعيش وتعمل بها براحة واطمئنان تام لسنوات طويلة دون القلق من أي عيوب إنشائية.</p>
+                        <p class="en">Tawod Contracting offers top-tier construction services in Riyadh with global engineering standards. We ensure precise execution of residential and commercial projects with full compliance to the Saudi Building Code, using the strongest materials for long-lasting durability under expert supervision.</p>
+                        <p class="ur">تعاود کنٹریکٹنگ ریاض میں عالمی انجینئرنگ کے معیار کے ساتھ بہترین تعمیراتی خدمات پیش کرتی ہے۔ ہم سعودی بلڈنگ کوڈ کی مکمل تعمیل کے ساتھ رہائشی اور تجارتی منصوبوں کی درست تکمیل کو یقینی بناتے ہیں، ماہرین کی نگرانی میں پائیداری کے لیے مضبوط ترین مواد کا استعمال کرتے ہیں۔</p>
+                        <a href="service-construction.html" class="btn-order"><i class="fa-solid fa-circle-info"></i> <span class="ar">معرفة المزيد</span><span class="en">Learn More</span><span class="ur">مزید جانیں</span></a>
+                    </div>
                 </div>
 
                 <div class="service-card">
-                    <div class="service-icon-circle"><i class="fa-solid fa-key"></i></div>
-                    <h3 class="ar">تسليم مفتاح</h3><h3 class="en">Turnkey Projects</h3><h3 class="ur">ٹرن کی پروجیکٹس</h3>
-                    <p class="ar">تخلص من عناء المتابعة والإشراف مع خدمة تسليم المفتاح الفاخرة من شركة تعاود. نتولى إدارة مشروعك بالكامل من مرحلة المخططات واستلام الأرض الفضاء وحتى أحدث التشطيبات وتركيب الديكورات النهائية. نوفر لك راحة البال التامة عبر التزامنا الصارم بالميزانية المحددة والجدول الزمني لتسليم المشروع. استلم مبناك جاهزاً للسكن أو العمل بأرقى مستويات الجودة والرفاهية التي تليق بتطلعاتك الاستثمارية والعقارية في السوق السعودي.</p>
-                    <p class="en">Eliminate the hassle of supervision with Tawod's luxury turnkey service. We manage your project entirely from the planning stage and empty land to the latest finishes and final decor installations. Receive your building ready for living or working with the highest quality and luxury standards.</p>
-                    <p class="ur">تعاود کی لگژری ٹرن کی سروس کے ساتھ نگرانی کی پریشانی کو ختم کریں۔ ہم آپ کے پروجیکٹ کا مکمل انتظام منصوبہ بندی اور خالی زمین سے لے کر جدید ترین تکمیلی کاموں اور حتمی سجاوٹ تک کرتے ہیں۔ اپنی عمارت کو اعلیٰ ترین معیار کے ساتھ رہائش یا کام کے لیے تیار حاصل کریں۔</p>
-                    <a href="https://wa.me/966551128884?text=أريد طلب هذه الخدمة: تسليم مفتاح" class="btn-order"><i class="fa-brands fa-whatsapp"></i> <span class="ar">اطلب هذه الخدمة</span><span class="en">Order this service</span><span class="ur">یہ سروس آرڈر کریں</span></a>
+                    <div class="service-image">
+                        <img src="https://i.ibb.co/s9mZ5VxJ/images-5.jpg" alt="تسليم مفتاح">
+                    </div>
+                    <div class="service-content">
+                        <h3 class="ar">تسليم مفتاح</h3><h3 class="en">Turnkey Projects</h3><h3 class="ur">ٹرن کی پروجیکٹس</h3>
+                        <p class="ar">تخلص من عناء المتابعة والإشراف مع خدمة تسليم المفتاح الفاخرة من شركة تعاود. نتولى إدارة مشروعك بالكامل من مرحلة المخططات واستلام الأرض الفضاء وحتى أحدث التشطيبات وتركيب الديكورات النهائية. نوفر لك راحة البال التامة عبر التزامنا الصارم بالميزانية المحددة والجدول الزمني لتسليم المشروع. استلم مبناك جاهزاً للسكن أو العمل بأرقى مستويات الجودة والرفاهية التي تليق بتطلعاتك الاستثمارية والعقارية في السوق السعودي.</p>
+                        <p class="en">Eliminate the hassle of supervision with Tawod's luxury turnkey service. We manage your project entirely from the planning stage and empty land to the latest finishes and final decor installations. Receive your building ready for living or working with the highest quality and luxury standards.</p>
+                        <p class="ur">تعاود کی لگژری ٹرن کی سروس کے ساتھ نگرانی کی پریشانی کو ختم کریں۔ ہم آپ کے پروجیکٹ کا مکمل انتظام منصوبہ بندی اور خالی زمین سے لے کر جدید ترین تکمیلی کاموں اور حتمی سجاوٹ تک کرتے ہیں۔ اپنی عمارت کو اعلیٰ ترین معیار کے ساتھ رہائش یا کام کے لیے تیار حاصل کریں۔</p>
+                        <a href="service-turnkey.html" class="btn-order"><i class="fa-solid fa-circle-info"></i> <span class="ar">معرفة المزيد</span><span class="en">Learn More</span><span class="ur">مزید جانیں</span></a>
+                    </div>
                 </div>
 
                 <div class="service-card">
-                    <div class="service-icon-circle"><i class="fa-solid fa-house-crack"></i></div>
-                    <h3 class="ar">ترميم مباني</h3><h3 class="en">Restoration</h3><h3 class="ur">عمارت کی بحالی</h3>
-                    <p class="ar">نعيد الحياة لمبناك القديم مع خدمات الترميم الشاملة والمبتكرة من تعاود. نقوم بمعالجة كافة التصدعات والتشققات وتدعيم الهياكل الخرسانية بأحدث التقنيات الهندسية. نعمل على تحديث وتطوير الواجهات الخارجية والمساحات الداخلية لتواكب أحدث التصاميم العصرية. خطوة ذكية لزيادة العمر الافتراضي لمنشأتك ورفع قيمتها السوقية بشكل مضاعف، مع الالتزام التام بأعلى معايير الأمن والسلامة لجميع المستخدمين في العاصمة الرياض.</p>
-                    <p class="en">Bring your old building back to life with comprehensive restoration services. We treat cracks, reinforce concrete structures using modern engineering techniques, and update facades to match modern designs, safely increasing your facility's lifespan and market value.</p>
-                    <p class="ur">جامع بحالی کی خدمات کے ساتھ اپنی پرانی عمارت کو دوبارہ زندہ کریں۔ ہم دراڑوں کا علاج کرتے ہیں، جدید انجینئرنگ تکنیک کا استعمال کرتے ہوئے کنکریٹ کے ڈھانچے کو مضبوط کرتے ہیں، اور عمارت کی عمر اور مارکیٹ ویلیو کو محفوظ طریقے سے بڑھاتے ہیں۔</p>
-                    <a href="https://wa.me/966551128884?text=أريد طلب هذه الخدمة: ترميم مباني" class="btn-order"><i class="fa-brands fa-whatsapp"></i> <span class="ar">اطلب هذه الخدمة</span><span class="en">Order this service</span><span class="ur">یہ سروس آرڈر کریں</span></a>
+                    <div class="service-image">
+                        <img src="https://i.ibb.co/p69tXXY2/1.jpg" alt="ترميم مباني">
+                    </div>
+                    <div class="service-content">
+                        <h3 class="ar">ترميم مباني</h3><h3 class="en">Restoration</h3><h3 class="ur">عمارت کی بحالی</h3>
+                        <p class="ar">نعيد الحياة لمبناك القديم مع خدمات الترميم الشاملة والمبتكرة من تعاود. نقوم بمعالجة كافة التصدعات والتشققات وتدعيم الهياكل الخرسانية بأحدث التقنيات الهندسية. نعمل على تحديث وتطوير الواجهات الخارجية والمساحات الداخلية لتواكب أحدث التصاميم العصرية. خطوة ذكية لزيادة العمر الافتراضي لمنشأتك ورفع قيمتها السوقية بشكل مضاعف، مع الالتزام التام بأعلى معايير الأمن والسلامة لجميع المستخدمين في العاصمة الرياض.</p>
+                        <p class="en">Bring your old building back to life with comprehensive restoration services. We treat cracks, reinforce concrete structures using modern engineering techniques, and update facades to match modern designs, safely increasing your facility's lifespan and market value.</p>
+                        <p class="ur">جامع بحالی کی خدمات کے ساتھ اپنی پرانی عمارت کو دوبارہ زندہ کریں۔ ہم دراڑوں کا علاج کرتے ہیں، جدید انجینئرنگ تکنیک کا استعمال کرتے ہوئے کنکریٹ کے ڈھانچے کو مضبوط کرتے ہیں، اور عمارت کی عمر اور مارکیٹ ویلیو کو محفوظ طریقے سے بڑھاتے ہیں۔</p>
+                        <a href="service-restoration.html" class="btn-order"><i class="fa-solid fa-circle-info"></i> <span class="ar">معرفة المزيد</span><span class="en">Learn More</span><span class="ur">مزید جانیں</span></a>
+                    </div>
                 </div>
 
                 <div class="service-card">
-                    <div class="service-icon-circle"><i class="fa-solid fa-paint-roller"></i></div>
-                    <h3 class="ar">تشطيب مباني</h3><h3 class="en">Finishing</h3><h3 class="ur">تکمیلی کام</h3>
-                    <p class="ar">تألق بمساحتك الخاصة مع خدمات التشطيب الداخلي والخارجي الفاخرة (ديلوكس وسوبر ديلوكس). نستخدم أجود أنواع الخامات العالمية في الدهانات، الأسقف المعلقة، وتكسيات الأرضيات. يحرص فريقنا الفني على دمج الألوان والمواد بخبرة واحترافية ليخلق بيئة ساحرة تعكس شخصيتك الفريدة. نهتم بأدق التفاصيل الجمالية التي تبرز روعة المكان وتضفي عليه طابعاً من الفخامة والرقي يناسب الفلل، القصور، والمكاتب التجارية الحديثة.</p>
-                    <p class="en">Shine with luxurious interior and exterior finishing services (Deluxe & Super Deluxe). We use the finest global materials for paints, suspended ceilings, and flooring. Our expert team perfectly blends colors and materials to create a charming environment tailored to your unique taste.</p>
-                    <p class="ur">پرتعیش اندرونی اور بیرونی تکمیلی خدمات (ڈیلکس اور سپر ڈیلکس) کے ساتھ چمکیں۔ ہم پینٹ، چھتوں اور فرش کے لیے بہترین عالمی مواد استعمال کرتے ہیں۔ ہماری ماہر ٹیم آپ کے منفرد ذوق کے مطابق دلکش ماحول بنانے کے لیے رنگوں اور مواد کو مہارت سے ملاتی ہے۔</p>
-                    <a href="https://wa.me/966551128884?text=أريد طلب هذه الخدمة: تشطيب مباني" class="btn-order"><i class="fa-brands fa-whatsapp"></i> <span class="ar">اطلب هذه الخدمة</span><span class="en">Order this service</span><span class="ur">یہ سروس آرڈر کریں</span></a>
+                    <div class="service-image">
+                        <img src="https://i.ibb.co/xSccH82X/7ee61cfad0361860bd311a1b2f763f3a.jpg" alt="تشطيب مباني">
+                    </div>
+                    <div class="service-content">
+                        <h3 class="ar">تشطيب مباني</h3><h3 class="en">Finishing</h3><h3 class="ur">تکمیلی کام</h3>
+                        <p class="ar">تألق بمساحتك الخاصة مع خدمات التشطيب الداخلي والخارجي الفاخرة (ديلوكس وسوبر ديلوكس). نستخدم أجود أنواع الخامات العالمية في الدهانات، الأسقف المعلقة، وتكسيات الأرضيات. يحرص فريقنا الفني على دمج الألوان والمواد بخبرة واحترافية ليخلق بيئة ساحرة تعكس شخصيتك الفريدة. نهتم بأدق التفاصيل الجمالية التي تبرز روعة المكان وتضفي عليه طابعاً من الفخامة والرقي يناسب الفلل، القصور، والمكاتب التجارية الحديثة.</p>
+                        <p class="en">Shine with luxurious interior and exterior finishing services (Deluxe & Super Deluxe). We use the finest global materials for paints, suspended ceilings, and flooring. Our expert team perfectly blends colors and materials to create a charming environment tailored to your unique taste.</p>
+                        <p class="ur">پرتعیش اندرونی اور بیرونی تکمیلی خدمات (ڈیلکس اور سپر ڈیلکس) کے ساتھ چمکیں۔ ہم پینٹ، چھتوں اور فرش کے لیے بہترین عالمی مواد استعمال کرتے ہیں۔ ہماری ماہر ٹیم آپ کے منفرد ذوق کے مطابق دلکش ماحول بنانے کے لیے رنگوں اور مواد کو مہارت سے ملاتی ہے۔</p>
+                        <a href="service-finishing.html" class="btn-order"><i class="fa-solid fa-circle-info"></i> <span class="ar">معرفة المزيد</span><span class="en">Learn More</span><span class="ur">مزید جانیں</span></a>
+                    </div>
                 </div>
 
                 <div class="service-card">
-                    <div class="service-icon-circle"><i class="fa-solid fa-couch"></i></div>
-                    <h3 class="ar">ديكورات</h3><h3 class="en">Decorations</h3><h3 class="ur">سجاوٹ</h3>
-                    <p class="ar">حوّل منزلك أو مقر عملك إلى تحفة فنية تلفت الأنظار مع خدمات الديكور الاستثنائية. نتميز بتصميم وتنفيذ أرقى الديكورات الجبسية، التكسيات الخشبية، بديل الرخام، وحلول الإضاءة المخفية والذكية لتنسيق عصري وجذاب مريح للعين. نبتكر مساحات تنبض بالحياة تجمع بين الجمال والعملية. نواكب أحدث الصيحات العالمية في التصميم الداخلي لنمنحك بيئة فريدة تعكس ذوقك الرفيع وتوفر أقصى درجات الراحة النفسية لك ولضيوفك.</p>
-                    <p class="en">Transform your space into a masterpiece with our exceptional decoration services. We excel in designing and executing the finest gypsum decors, wood cladding, marble alternatives, and smart lighting solutions to create an inspiring, modern, and perfectly functional environment.</p>
-                    <p class="ur">ہماری غیر معمولی سجاوٹ کی خدمات کے ساتھ اپنی جگہ کو ایک شاہکار میں تبدیل کریں۔ ہم بہترین جپسم ڈیکور، لکڑی کی کلیڈنگ، ماربل کے متبادل اور سمارٹ لائٹنگ کے حل کو ڈیزائن اور انجام دینے میں مہارت رکھتے ہیں تاکہ ایک جدید اور فعال ماحول بنایا جا سکے۔</p>
-                    <a href="https://wa.me/966551128884?text=أريد طلب هذه الخدمة: ديكورات" class="btn-order"><i class="fa-brands fa-whatsapp"></i> <span class="ar">اطلب هذه الخدمة</span><span class="en">Order this service</span><span class="ur">یہ سروس آرڈر کریں</span></a>
+                    <div class="service-image">
+                        <img src="https://i.ibb.co/xSccH82X/7ee61cfad0361860bd311a1b2f763f3a.jpg" alt="ديكورات خارجية وداخلية">
+                    </div>
+                    <div class="service-content">
+                        <h3 class="ar">ديكورات خارجية وداخلية</h3><h3 class="en">Exterior & Interior Decor</h3><h3 class="ur">بیرونی اور اندرونی سجاوٹ</h3>
+                        <p class="ar">حوّل منزلك أو مقر عملك إلى تحفة فنية تلفت الأنظار مع خدمات الديكور الاستثنائية. نتميز بتصميم وتنفيذ أرقى الديكورات الجبسية، التكسيات الخشبية، بديل الرخام، وحلول الإضاءة المخفية والذكية لتنسيق عصري وجذاب مريح للعين. نبتكر مساحات تنبض بالحياة تجمع بين الجمال والعملية. نواكب أحدث الصيحات العالمية في التصميم الداخلي لنمنحك بيئة فريدة تعكس ذوقك الرفيع وتوفر أقصى درجات الراحة النفسية لك ولضيوفك.</p>
+                        <p class="en">Transform your space into a masterpiece with our exceptional decoration services. We excel in designing and executing the finest gypsum decors, wood cladding, marble alternatives, and smart lighting solutions to create an inspiring, modern, and perfectly functional environment.</p>
+                        <p class="ur">ہماری غیر معمولی سجاوٹ کی خدمات کے ساتھ اپنی جگہ کو ایک شاہکار میں تبدیل کریں۔ ہم بہترین جپسم ڈیکور، لکڑی کی کلیڈنگ، ماربل کے متبادل اور سمارٹ لائٹنگ کے حل کو ڈیزائن اور انجام دینے میں مہارت رکھتے ہیں تاکہ ایک جدید اور فعال ماحول بنایا جا سکے۔</p>
+                        <a href="service-decor.html" class="btn-order"><i class="fa-solid fa-circle-info"></i> <span class="ar">معرفة المزيد</span><span class="en">Learn More</span><span class="ur">مزید جانیں</span></a>
+                    </div>
                 </div>
 
                 <div class="service-card">
-                    <div class="service-icon-circle"><i class="fa-solid fa-plug-circle-bolt"></i></div>
-                    <h3 class="ar">تأسيس سباكة وكهرباء</h3><h3 class="en">Plumbing & Electrical</h3><h3 class="ur">پلمبنگ و بجلی</h3>
-                    <p class="ar">تأسيس السباكة والكهرباء هو العصب الحقيقي لأي مبنى ناجح. في تعاود نقدم خدمات تأسيس احترافية فائقة الدقة لضمان استدامة وأمان تام على المدى الطويل. نعتمد على تركيب أفضل العلامات التجارية المعتمدة لتجنب التسريبات المائية أو الأعطال والمخاطر الكهربائية. يتم العمل بواسطة فنيين خبراء تحت إشراف هندسي صارم لضمان التوزيع الأمثل للأحمال وشبكات الصرف، مما يوفر لك بيئة آمنة وخالية من المشاكل والمتاعب مستقبلاً.</p>
-                    <p class="en">Plumbing and electrical foundations are the core of any successful building. We offer ultra-precise professional setup ensuring long-term safety and sustainability. Relying on certified brands prevents leaks and electrical hazards, executed by experts under strict engineering supervision.</p>
-                    <p class="ur">پلمبنگ اور برقی بنیادیں کسی بھی کامیاب عمارت کا مرکز ہیں۔ ہم انتہائی درست پیشہ ورانہ سیٹ اپ پیش کرتے ہیں جو طویل مدتی حفاظت اور پائیداری کو یقینی بناتا ہے۔ منظور شدہ برانڈز پر انحصار پانی کے رساؤ اور برقی خطرات کو روکتا ہے، جو سخت نگرانی میں مکمل ہوتا ہے۔</p>
-                    <a href="https://wa.me/966551128884?text=أريد طلب هذه الخدمة: تأسيس سباكة وكهرباء" class="btn-order"><i class="fa-brands fa-whatsapp"></i> <span class="ar">اطلب هذه الخدمة</span><span class="en">Order this service</span><span class="ur">یہ سروس آرڈر کریں</span></a>
+                    <div class="service-image">
+                        <img src="https://i.ibb.co/tpk2nmTh/images-6.jpg" alt="تأسيس سباكة وكهرباء">
+                    </div>
+                    <div class="service-content">
+                        <h3 class="ar">تأسيس سباكة وكهرباء</h3><h3 class="en">Plumbing & Electrical</h3><h3 class="ur">پلمبنگ و بجلی</h3>
+                        <p class="ar">تأسيس السباكة والكهرباء هو العصب الحقيقي لأي مبنى ناجح. في تعاود نقدم خدمات تأسيس احترافية فائقة الدقة لضمان استدامة وأمان تام على المدى الطويل. نعتمد على تركيب أفضل العلامات التجارية المعتمدة لتجنب التسريبات المائية أو الأعطال والمخاطر الكهربائية. يتم العمل بواسطة فنيين خبراء تحت إشراف هندسي صارم لضمان التوزيع الأمثل للأحمال وشبكات الصرف، مما يوفر لك بيئة آمنة وخالية من المشاكل والمتاعب مستقبلاً.</p>
+                        <p class="en">Plumbing and electrical foundations are the core of any successful building. We offer ultra-precise professional setup ensuring long-term safety and sustainability. Relying on certified brands prevents leaks and electrical hazards, executed by experts under strict engineering supervision.</p>
+                        <p class="ur">پلمبنگ اور برقی بنیادیں کسی بھی کامیاب عمارت کا مرکز ہیں۔ ہم انتہائی درست پیشہ ورانہ سیٹ اپ پیش کرتے ہیں جو طویل مدتی حفاظت اور پائیداری کو یقینی بناتا ہے۔ منظور شدہ برانڈز پر انحصار پانی کے رساؤ اور برقی خطرات کو روکتا ہے، جو سخت نگرانی میں مکمل ہوتا ہے۔</p>
+                        <a href="service-mep.html" class="btn-order"><i class="fa-solid fa-circle-info"></i> <span class="ar">معرفة المزيد</span><span class="en">Learn More</span><span class="ur">مزید جانیں</span></a>
+                    </div>
                 </div>
+
             </div>
         </section>
 
@@ -668,9 +709,9 @@
                                 <option value="تشطيب مباني" class="en">Finishing</option>
                                 <option value="تشطيب مباني" class="ur">تکمیلی کام</option>
                                 
-                                <option value="ديكورات" class="ar">ديكورات</option>
-                                <option value="ديكورات" class="en">Decorations</option>
-                                <option value="ديكورات" class="ur">سجاوٹ</option>
+                                <option value="ديكورات خارجية وداخلية" class="ar">ديكورات خارجية وداخلية</option>
+                                <option value="ديكورات خارجية وداخلية" class="en">Exterior & Interior Decor</option>
+                                <option value="ديكورات خارجية وداخلية" class="ur">بیرونی اور اندرونی سجاوٹ</option>
                                 
                                 <option value="تأسيس السباكة والكهرباء" class="ar">تأسيس السباكة والكهرباء</option>
                                 <option value="تأسيس السباكة والكهرباء" class="en">Plumbing & Electrical</option>
