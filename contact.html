@@ -205,31 +205,46 @@
             max-width: 500px;
         }
 
-        /* أزرار السوشيال ميديا */
+        /* أزرار السوشيال ميديا والتواصل المعدلة */
         .tree-btn {
             display: flex;
             align-items: center;
             padding: 16px 20px;
             background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px; /* حواف دائرية نحيفة */
+            /* برواز نحيف بلون الهوية */
+            border: 1.5px solid var(--primary-color);
+            border-radius: 16px; 
             text-decoration: none;
             color: var(--secondary-color);
             font-size: 1.1rem;
             font-weight: 800;
-            box-shadow: var(--shadow);
+            box-shadow: 0 4px 15px rgba(242, 164, 97, 0.1); /* ظل خفيف بلون الهوية */
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            z-index: 1;
         }
-        [data-theme="dark"] .tree-btn { color: #ffffff; }
+        [data-theme="dark"] .tree-btn { color: #ffffff; background: var(--card-bg); }
+
+        /* تأثير إبداعي داخل الزر عند التمرير (لمعة ضوء) */
+        .tree-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(242, 164, 97, 0.15), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
 
         /* تأثير الـ Hover على الأزرار */
+        .tree-btn:hover::before {
+            left: 100%;
+        }
         .tree-btn:hover {
             transform: translateY(-5px);
-            border-color: var(--primary-color);
-            box-shadow: var(--hover-shadow);
-            background: var(--form-bg);
+            border-color: var(--primary-dark); /* اللون الداكن عند التمرير */
+            box-shadow: 0 8px 25px rgba(186, 110, 59, 0.25);
         }
 
         .tree-btn i {
@@ -250,6 +265,10 @@
         .insta-btn i { background: -webkit-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .snap-btn i { color: #FFFC00; text-shadow: 0 0 2px rgba(0,0,0,0.3); }
         .x-btn i { color: #000000; } [data-theme="dark"] .x-btn i { color: #ffffff; }
+        
+        /* ألوان أزرار الاتصال الجديدة */
+        .wa-btn i { color: #25D366; }
+        .call-btn i { color: var(--secondary-color); } [data-theme="dark"] .call-btn i { color: var(--primary-color); }
 
         .tree-btn:hover i { transform: scale(1.2) rotate(8deg); }
 
@@ -287,14 +306,6 @@
         .address-box p { display: flex; justify-content: center; align-items: center; gap: 8px; font-size: clamp(0.7rem, 2.5vw, 0.9rem); font-weight: 700; }
         .address-box i { color: var(--primary-dark); font-size: 1.2rem; }
 
-        /* الأزرار العائمة */
-        .floating-actions { position: fixed; bottom: 30px; left: 20px; right: auto; display: flex; flex-direction: column; gap: 15px; z-index: 999; transition: 0.3s; }
-        html[dir="ltr"] .floating-actions { left: auto; right: 20px; }
-        .float-btn { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.6rem; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: 0.3s; }
-        .float-wa { background: #25D366; animation: pulse-wa 2s infinite; }
-        .float-call { background: var(--secondary-color); border: 2px solid var(--primary-color); }
-        .float-btn:hover { transform: translateY(-5px) scale(1.08); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
-
         /* الفوتر */
         footer { background: var(--secondary-color); color: white; padding: 40px 5% 50px; text-align: center; border-top: 4px solid var(--primary-color); font-weight: 700; display: flex; flex-direction: column; align-items: center; }
         .footer-info { margin-bottom: 15px; font-size: 0.95rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; align-items: center; width: 100%;}
@@ -312,10 +323,17 @@
             .tree-btn i { font-size: 1.5rem; width: 40px; }
             .tree-btn span { margin-inline-end: 40px; }
         }
-        @keyframes pulse-wa { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6); } 70% { box-shadow: 0 0 0 12px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
     </style>
 </head>
 <body>
+
+    <div id="loader">
+        <img src="https://i.ibb.co/B22R1g9r/IMG.jpg" alt="Logo" class="loader-logo">
+        <div class="typewriter-wrapper">
+            <p class="tw-line tw-line-1">تعاود للمقاولات ، نبني المستقبل بإبداع وإتقان</p>
+            <p class="tw-line tw-line-2">ورؤية هندسية بحلول متكاملة</p>
+        </div>
+    </div>
 
     <header>
         <div class="logo">
@@ -387,6 +405,24 @@
                     <span class="en">X Platform - Tawodco</span>
                     <span class="ur">ایکس پلیٹ فارم - Tawodco</span>
                 </a>
+
+                <hr style="border: 0; height: 1px; background: var(--border-color); margin: 15px 0; opacity: 0.5;">
+
+                <!-- واتساب -->
+                <a href="https://wa.me/966551128884" target="_blank" class="tree-btn wa-btn">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <span class="ar">تواصل واتساب</span>
+                    <span class="en">WhatsApp Contact</span>
+                    <span class="ur">واٹس ایپ رابطہ</span>
+                </a>
+
+                <!-- اتصال -->
+                <a href="tel:0551128884" class="tree-btn call-btn">
+                    <i class="fa-solid fa-phone"></i>
+                    <span class="ar">اتصال مباشر</span>
+                    <span class="en">Direct Call</span>
+                    <span class="ur">براہ راست کال</span>
+                </a>
             </div>
         </section>
 
@@ -412,11 +448,6 @@
             </div>
         </section>
     </main>
-
-    <div class="floating-actions">
-        <a href="https://wa.me/966551128884" class="float-btn float-wa" target="_blank" title="واتساب"><i class="fa-brands fa-whatsapp"></i></a>
-        <a href="tel:0551128884" class="float-btn float-call" title="اتصال"><i class="fa-solid fa-phone"></i></a>
-    </div>
 
     <footer>
         <div class="footer-info">
