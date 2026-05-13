@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    
+    <!-- كود إحصائيات جوجل وإعلانات جوجل -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18076308535"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'AW-18076308535');
+      gtag('config', 'G-YE1NT4R4YT');
+    </script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="تواصل مع شركة تعاود للمقاولات العامة في الرياض. تابعنا على منصات التواصل الاجتماعي (تيك توك، انستقرام، سناب شات، اكس) أو شرفنا بزيارتك في مقرنا.">
+    <meta name="keywords" content="تواصل مع تعاود, منصات شركة تعاود, تيك توك تعاود, انستقرام تعاود, سناب شات مقاولات, مقر شركة تعاود">
+    
+    <title class="ar">تواصل معنا | شركة تعاود للمقاولات</title>
+    <title class="en" style="display:none;">Contact Us | Tawod Contracting</title>
+    <title class="ur" style="display:none;">رابطہ کریں | تعاود کنٹریکٹنگ</title>
+    
+    <link rel="icon" href="https://i.ibb.co/B22R1g9r/IMG.jpg" type="image/jpeg">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* المتغيرات الأساسية للهوية */
+        :root {
+            --bg-color: #f8fafc;
+            --text-color: #1D1E26;
+            --primary-color: #F2A461;
+            --primary-dark: #BA6E3B;
+            --secondary-color: #1D1E26;
+            --card-bg: #ffffff;
+            --header-bg: rgba(255, 255, 255, 0.95);
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --hover-shadow: 0 10px 30px rgba(242, 164, 97, 0.2);
+            --form-bg: #f1f5f9;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121318;
+            --text-color: #f8fafc;
+            --primary-color: #F2A461;
+            --primary-dark: #BA6E3B;
+            --secondary-color: #ffffff;
+            --card-bg: #1D1E26;
+            --header-bg: rgba(29, 30, 38, 0.95);
+            --border-color: #2c2d38;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            --hover-shadow: 0 10px 30px rgba(242, 164, 97, 0.15);
+            --form-bg: #121318;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; transition: background-color 0.4s, color 0.4s, border-color 0.4s; }
+        body { background-color: var(--bg-color); color: var(--text-color); overflow-x: hidden; line-height: 1.7; font-size: 14px; text-align: center; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        p, h1, h2, h3, h4, h5, h6, span, div, input, textarea, select { text-align: center; }
+
+        html[dir="rtl"] .en { display: none !important; }
+        html[dir="ltr"] .ar, html[dir="ltr"] .ur { display: none !important; }
+        html[lang="ur"] .ar { display: none !important; }
+        html[lang="ar"] .ur { display: none !important; }
+
+        /* شاشة التحميل */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color); z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader-logo {
+            width: 90px; height: 90px; border-radius: 16px;
+            object-fit: cover; margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(242, 164, 97, 0.3);
+            border: 2px solid var(--primary-color);
+            animation: float-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes float-pulse {
+            0% { transform: translateY(0) scale(1); box-shadow: 0 10px 25px rgba(242, 164, 97, 0.3); }
+            50% { transform: translateY(-10px) scale(1.05); box-shadow: 0 15px 35px rgba(242, 164, 97, 0.5); }
+            100% { transform: translateY(0) scale(1); box-shadow: 0 10px 25px rgba(242, 164, 97, 0.3); }
+        }
+
+        .typewriter-wrapper {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 8px; direction: rtl; text-align: center;
+        }
+
+        .tw-line {
+            overflow: hidden; white-space: nowrap;
+            border-left: 2px solid var(--primary-color);
+            max-width: 0; margin: 0 auto; display: inline-block;
+        }
+
+        .tw-line-1 {
+            font-size: clamp(0.75rem, 3vw, 0.85rem); font-weight: 800; color: var(--secondary-color);
+            animation: typing 1.5s steps(40, end) forwards, blink-cursor 0.5s step-end 3, remove-cursor 0s 1.5s forwards;
+        }
+        [data-theme="dark"] .tw-line-1 { color: #fff; }
+
+        .tw-line-2 {
+            font-size: clamp(0.65rem, 2.5vw, 0.75rem); font-weight: 700; color: var(--primary-dark);
+            animation: typing 1.5s steps(40, end) 1.5s forwards, blink-cursor 0.5s step-end infinite 1.5s;
+        }
+
+        @keyframes typing { from { max-width: 0; } to { max-width: 100vw; } }
+        @keyframes blink-cursor { from, to { border-color: transparent; } 50% { border-color: var(--primary-color); } }
+        @keyframes remove-cursor { to { border-left-color: transparent; } }
+
+        /* الهيدر */
+        header {
+            position: fixed; top: 15px; width: 94%; left: 3%; padding: 10px 4%;
+            background: var(--header-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
+            border: 1px solid var(--border-color); border-bottom: 2px solid var(--primary-color);
+            border-radius: 20px;
+        }
+        .logo { display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 800; font-size: 1.1rem; color: var(--secondary-color); }
+        [data-theme="dark"] .logo { color: var(--primary-color); }
+        .logo img { width: 40px; height: 40px; border-radius: 8px; border: 1px solid var(--primary-color); object-fit: cover; }
+        .header-actions { display: flex; gap: 8px; align-items: center; justify-content: center; }
+        
+        .theme-btn, .action-btn {
+            background: var(--form-bg); border: 1px solid var(--border-color); color: var(--secondary-color);
+            width: 38px; height: 38px; border-radius: 10px; 
+            display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 1rem; transition: 0.3s;
+        }
+        [data-theme="dark"] .theme-btn, [data-theme="dark"] .action-btn { color: var(--primary-color); }
+        .theme-btn:hover, .action-btn:hover { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+
+        /* القائمة الجانبية */
+        .sidebar {
+            position: fixed; top: 0; width: 280px; height: 100vh; background: var(--card-bg);
+            z-index: 1001; padding: 30px 25px; box-shadow: var(--shadow); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        html[dir="rtl"] .sidebar { right: -320px; border-left: 3px solid var(--primary-color); }
+        html[dir="rtl"] .sidebar.active { right: 0; }
+        html[dir="ltr"] .sidebar { left: -320px; border-right: 3px solid var(--primary-color); }
+        html[dir="ltr"] .sidebar.active { left: 0; }
+        
+        .sidebar-close { font-size: 1.4rem; cursor: pointer; margin-bottom: 30px; display: block; color: var(--text-color); transition: 0.3s; text-align: right; }
+        html[dir="ltr"] .sidebar-close { text-align: left; }
+        .sidebar-close:hover { color: var(--primary-color); transform: rotate(90deg); }
+        .sidebar ul li { margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .sidebar ul li a { font-size: 1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; }
+        .sidebar ul li a i { color: var(--primary-color); width: 20px; text-align: center; }
+        .sidebar ul li a:hover { color: var(--primary-color); transform: scale(1.05); }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); z-index: 1000; display: none; }
+
+        /* قسم اللينك تري (Linktree Style) */
+        .linktree-section {
+            padding: 130px 5% 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 70vh;
+            background: linear-gradient(135deg, var(--bg-color) 0%, var(--form-bg) 100%);
+        }
+
+        .tree-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .tree-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 25px;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 10px 30px rgba(242, 164, 97, 0.4);
+            margin-bottom: 20px;
+            animation: float-pulse 3s ease-in-out infinite;
+            object-fit: cover;
+        }
+
+        .tree-header h1 {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+        }
+        [data-theme="dark"] .tree-header h1 { color: #ffffff; }
+
+        .tree-header p {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .tree-links-container {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        /* أزرار السوشيال ميديا */
+        .tree-btn {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px; /* حواف دائرية نحيفة */
+            text-decoration: none;
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            font-weight: 800;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        [data-theme="dark"] .tree-btn { color: #ffffff; }
+
+        /* تأثير الـ Hover على الأزرار */
+        .tree-btn:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: var(--hover-shadow);
+            background: var(--form-bg);
+        }
+
+        .tree-btn i {
+            font-size: 1.8rem;
+            width: 50px;
+            text-align: center;
+            transition: 0.4s ease;
+        }
+
+        .tree-btn span {
+            flex-grow: 1;
+            text-align: center;
+            margin-inline-end: 50px; /* لعمل توازن مع الأيقونة في المنتصف */
+        }
+
+        /* ألوان الأيقونات */
+        .tiktok-btn i { color: #000000; } [data-theme="dark"] .tiktok-btn i { color: #ffffff; }
+        .insta-btn i { background: -webkit-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .snap-btn i { color: #FFFC00; text-shadow: 0 0 2px rgba(0,0,0,0.3); }
+        .x-btn i { color: #000000; } [data-theme="dark"] .x-btn i { color: #ffffff; }
+
+        .tree-btn:hover i { transform: scale(1.2) rotate(8deg); }
+
+        /* قسم الخريطة الجديد */
+        .map-section {
+            padding: 40px 5% 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .section-title { font-size: 1.6rem; font-weight: 900; margin-bottom: 30px; color: var(--secondary-color); position: relative; display: inline-block; }
+        [data-theme="dark"] .section-title { color: #ffffff; }
+        .section-title::after { content: ''; position: absolute; bottom: -10px; left: 25%; width: 50%; height: 3px; background: var(--primary-color); border-radius: 2px; }
+
+        .map-full-container {
+            width: 100%;
+            max-width: 1000px;
+            height: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+        
+        .map-full-container iframe { width: 100%; height: 100%; border: none; filter: var(--map-filter); }
+
+        .address-box { 
+            text-align: center; color: var(--text-color); padding: 15px 30px; 
+            background: var(--form-bg); border-radius: 12px; border: 1px dashed var(--primary-dark); 
+            width: 100%; max-width: 800px; margin: 0 auto;
+        }
+        .address-box p { display: flex; justify-content: center; align-items: center; gap: 8px; font-size: clamp(0.7rem, 2.5vw, 0.9rem); font-weight: 700; }
+        .address-box i { color: var(--primary-dark); font-size: 1.2rem; }
+
+        /* الأزرار العائمة */
+        .floating-actions { position: fixed; bottom: 30px; left: 20px; right: auto; display: flex; flex-direction: column; gap: 15px; z-index: 999; transition: 0.3s; }
+        html[dir="ltr"] .floating-actions { left: auto; right: 20px; }
+        .float-btn { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.6rem; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: 0.3s; }
+        .float-wa { background: #25D366; animation: pulse-wa 2s infinite; }
+        .float-call { background: var(--secondary-color); border: 2px solid var(--primary-color); }
+        .float-btn:hover { transform: translateY(-5px) scale(1.08); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
+
+        /* الفوتر */
+        footer { background: var(--secondary-color); color: white; padding: 40px 5% 50px; text-align: center; border-top: 4px solid var(--primary-color); font-weight: 700; display: flex; flex-direction: column; align-items: center; }
+        .footer-info { margin-bottom: 15px; font-size: 0.95rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; align-items: center; width: 100%;}
+        .footer-info span { padding: 6px 12px; background: rgba(255,255,255,0.1); border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; gap: 6px;}
+        .footer-info i { color: var(--primary-color); }
+        footer > p { font-size: clamp(0.6rem, 2vw, 0.65rem); margin-bottom: 10px; }
+        .designer-badge { display: inline-flex; justify-content: center; align-items: center; margin-top: 15px; padding: 8px 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--primary-color); border-radius: 25px; font-size: 0.8rem; color: white; transition: 0.3s; }
+        .designer-badge:hover { background: var(--primary-color); color: var(--secondary-color); transform: translateY(-2px); }
+
+        @media (max-width: 768px) {
+            header { padding: 10px 4%; width: 92%; left: 4%; }
+            .logo img { width: 35px; height: 35px; }
+            .theme-btn, .action-btn { width: 35px; height: 35px; font-size: 0.95rem; }
+            .tree-btn { font-size: 1rem; padding: 12px 15px; }
+            .tree-btn i { font-size: 1.5rem; width: 40px; }
+            .tree-btn span { margin-inline-end: 40px; }
+        }
+        @keyframes pulse-wa { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6); } 70% { box-shadow: 0 0 0 12px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="https://i.ibb.co/B22R1g9r/IMG.jpg" alt="Logo">
+            <span class="ar">تعاود للمقاولات</span>
+            <span class="en">Tawod Cont.</span>
+            <span class="ur">تعاود کنٹریکٹنگ</span>
+        </div>
+        <div class="header-actions">
+            <div class="theme-btn" id="theme-toggle" title="تغيير المظهر">
+                <i class="fa-solid fa-moon"></i>
+            </div>
+            <div class="action-btn" id="lang-toggle" title="تغيير اللغة"><i class="fa-solid fa-language"></i></div>
+            <div class="action-btn" id="menu-toggle"><i class="fa-solid fa-bars-staggered"></i></div>
+        </div>
+    </header>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="sidebar" id="sidebar">
+        <i class="fa-solid fa-xmark sidebar-close" id="close-sidebar"></i>
+        <ul>
+            <li><a href="index.html#hero"><i class="fa-solid fa-building"></i> <span class="ar">الرئيسية</span><span class="en">Home</span><span class="ur">ہوم</span></a></li>
+            <li><a href="about.html"><i class="fa-solid fa-certificate"></i> <span class="ar">من نحن</span><span class="en">About Us</span><span class="ur">ہمارے بارے میں</span></a></li>
+            <li><a href="index.html#services"><i class="fa-solid fa-helmet-safety"></i> <span class="ar">خدماتنا</span><span class="en">Services</span><span class="ur">خدمات</span></a></li>
+            <li><a href="contact.html" class="close-on-click"><i class="fa-solid fa-envelope"></i> <span class="ar">تواصل معنا</span><span class="en">Contact</span><span class="ur">رابطہ کریں</span></a></li>
+        </ul>
+    </div>
+
+    <main>
+        <!-- قسم الروابط (ستايل لينك تري) -->
+        <section class="linktree-section">
+            <div class="tree-header">
+                <img src="https://i.ibb.co/B22R1g9r/IMG.jpg" alt="شعار شركة تعاود" class="tree-logo">
+                <h1 class="ar">شركة تعاود للمقاولات العامة</h1>
+                <h1 class="en">Tawod General Contracting</h1>
+                <h1 class="ur">تعاود جنرل کنٹریکٹنگ</h1>
+                <p class="ar">تواصل معنا وتابع أحدث أعمالنا عبر منصاتنا الرسمية</p>
+            </div>
+
+            <div class="tree-links-container">
+                <!-- تيك توك -->
+                <a href="https://www.tiktok.com/@Tawodco" target="_blank" class="tree-btn tiktok-btn">
+                    <i class="fa-brands fa-tiktok"></i>
+                    <span class="ar">تيك توك - Tawodco</span>
+                    <span class="en">TikTok - Tawodco</span>
+                    <span class="ur">ٹک ٹاک - Tawodco</span>
+                </a>
+                
+                <!-- انستقرام -->
+                <a href="https://www.instagram.com/tawodco1/" target="_blank" class="tree-btn insta-btn">
+                    <i class="fa-brands fa-instagram"></i>
+                    <span class="ar">انستقرام - tawodco1</span>
+                    <span class="en">Instagram - tawodco1</span>
+                    <span class="ur">انسٹاگرام - tawodco1</span>
+                </a>
+
+                <!-- سناب شات -->
+                <a href="https://www.snapchat.com/add/Tawodco" target="_blank" class="tree-btn snap-btn">
+                    <i class="fa-brands fa-snapchat"></i>
+                    <span class="ar">سناب شات - Tawodco</span>
+                    <span class="en">Snapchat - Tawodco</span>
+                    <span class="ur">سنیپ چیٹ - Tawodco</span>
+                </a>
+
+                <!-- منصة إكس -->
+                <a href="https://x.com/Tawodco" target="_blank" class="tree-btn x-btn">
+                    <i class="fa-brands fa-x-twitter"></i>
+                    <span class="ar">منصة إكس - Tawodco</span>
+                    <span class="en">X Platform - Tawodco</span>
+                    <span class="ur">ایکس پلیٹ فارم - Tawodco</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- قسم الخريطة والعنوان -->
+        <section class="map-section">
+            <h2 class="section-title">
+                <span class="ar">موقعنا على الخريطة</span>
+                <span class="en">Our Location</span>
+                <span class="ur">ہمارا مقام</span>
+            </h2>
+            
+            <div class="map-full-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7781.811427752943!2d46.69983649999999!3d24.792731099999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2efdb5a75296e1%3A0x8cb063463a755f11!2z2LTYsdmD2Kkg2KrYudin2YjYryDZhNmE2YXZgtin2YjZhNin2Ko!5e1!3m2!1sar!2ssa!4v1776261446756!5m2!1sar!2ssa" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+
+            <div class="address-box">
+                <p>
+                    <i class="fa-solid fa-map-location-dot"></i> 
+                    <span class="ar">المقر الرئيسي: 4206 طريق عثمان بن عفان الفرعي، الرياض</span>
+                    <span class="en">HQ: 4206 Othman Bin Affan Branch Rd, Riyadh</span>
+                    <span class="ur">ہیڈکوارٹر: 4206 عثمان بن عفان برانچ روڈ، ریاض</span>
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <div class="floating-actions">
+        <a href="https://wa.me/966551128884" class="float-btn float-wa" target="_blank" title="واتساب"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="tel:0551128884" class="float-btn float-call" title="اتصال"><i class="fa-solid fa-phone"></i></a>
+    </div>
+
+    <footer>
+        <div class="footer-info">
+            <span class="ar"><i class="fa-solid fa-file-signature"></i> سجل تجاري: 7033495099</span>
+            <span dir="ltr"><i class="fa-solid fa-envelope"></i> info@tawodco.com</span>
+        </div>
+        <p>
+            <span class="ar">جميع الحقوق محفوظة © 2026 - شركة تعاود للمقاولات العامة</span>
+        </p>
+        <a href="https://wa.me/966547194788" class="designer-badge" style="text-decoration: none;"><span>👑 تطوير وتصميم م. إسلام 👑</span></a>
+    </footer>
+
+    <script>
+        const htmlTag = document.documentElement;
+        const langToggleBtn = document.getElementById('lang-toggle');
+        const langs = ['ar', 'en', 'ur'];
+        let userLang = navigator.language || navigator.userLanguage;
+        let currentLang = 'en';
+        if (userLang.startsWith('ar')) currentLang = 'ar';
+        else if (userLang.startsWith('ur')) currentLang = 'ur';
+        
+        function setLanguage(lang) {
+            htmlTag.setAttribute('lang', lang);
+            if (lang === 'en') { htmlTag.setAttribute('dir', 'ltr'); } 
+            else { htmlTag.setAttribute('dir', 'rtl'); }
+        }
+        setLanguage(currentLang);
+
+        langToggleBtn.addEventListener('click', () => {
+            let currentIndex = langs.indexOf(htmlTag.getAttribute('lang'));
+            let nextIndex = (currentIndex + 1) % langs.length;
+            setLanguage(langs[nextIndex]);
+        });
+
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = themeToggleBtn.querySelector('i');
+        function setTheme(isDark) {
+            if (isDark) {
+                htmlTag.setAttribute('data-theme', 'dark');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                htmlTag.setAttribute('data-theme', 'light');
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+        }
+        themeToggleBtn.addEventListener('click', () => {
+            setTheme(htmlTag.getAttribute('data-theme') !== 'dark');
+        });
+
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const closeSidebar = document.getElementById('close-sidebar');
+        const overlay = document.getElementById('overlay');
+        const closeLinks = document.querySelectorAll('.close-on-click');
+
+        function toggleMenu() {
+            sidebar.classList.toggle('active');
+            overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
+        }
+
+        menuToggle.addEventListener('click', toggleMenu);
+        closeSidebar.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+        closeLinks.forEach(link => link.addEventListener('click', toggleMenu));
+    </script>
+</body>
+</html>
