@@ -79,25 +79,25 @@
         /* المتغيرات الأساسية (ألوان الهوية الجديدة) */
         :root {
             --bg-color: #f8fafc;
-            --text-color: #1D1E26; /* لون النص المطلوب */
-            --primary-color: #F2A461; /* التدرج الفاتح */
-            --primary-dark: #BA6E3B; /* التدرج الداكن */
-            --secondary-color: #1D1E26; /* استخدام لون النص كخلفيات داكنة وتناسق */
+            --text-color: #1D1E26;
+            --primary-color: #F2A461;
+            --primary-dark: #BA6E3B;
+            --secondary-color: #1D1E26;
             --card-bg: #ffffff;
             --header-bg: rgba(255, 255, 255, 0.95);
             --border-color: #e2e8f0;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            --hover-shadow: 0 10px 30px rgba(242, 164, 97, 0.2); /* ظل متناسق مع اللون الجديد */
+            --hover-shadow: 0 10px 30px rgba(242, 164, 97, 0.2);
             --form-bg: #f1f5f9;
         }
 
         [data-theme="dark"] {
-            --bg-color: #121318; /* خلفية داكنة متناسقة مع لون النص الأصلي */
+            --bg-color: #121318;
             --text-color: #f8fafc;
             --primary-color: #F2A461;
             --primary-dark: #BA6E3B;
             --secondary-color: #ffffff;
-            --card-bg: #1D1E26; /* كروت بنفس درجة النص الأصلية لتبدو فخمة */
+            --card-bg: #1D1E26;
             --header-bg: rgba(29, 30, 38, 0.95);
             --border-color: #2c2d38;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
@@ -117,7 +117,7 @@
         html[lang="ur"] .ar { display: none !important; }
         html[lang="ar"] .ur { display: none !important; }
 
-        /* شاشة التحميل معدلة الحجم للنصوص */
+        /* شاشة التحميل */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-color); z-index: 9999;
@@ -223,7 +223,6 @@
         
         .hero::after { display: none; }
 
-        /* إعدادات الفيديو ليكون متجاوب ويملأ الشاشة */
         .hero-video {
             position: absolute;
             top: 50%;
@@ -237,18 +236,17 @@
             object-fit: cover;
         }
 
-        /* الماسك (التمويه) المدمج بألوان هويتك */
+        /* الماسك (التمويه) بلون داكن لإبراز النصوص */
         .hero-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(29, 30, 38, 0.85) 0%, rgba(186, 110, 59, 0.6) 100%);
+            background: rgba(0, 0, 0, 0.65); /* ماسك أسود شفاف يبرز النص بوضوح */
             z-index: 1;
         }
 
-        /* حاوية المحتوى فوق الفيديو */
         .hero-content {
             position: relative;
             z-index: 2;
@@ -258,7 +256,6 @@
             width: 100%;
         }
 
-        /* الشعار بشكله الجديد مع حركة النبض */
         .hero-logo-center {
             width: 120px;
             height: 120px;
@@ -270,10 +267,10 @@
             object-fit: cover;
         }
 
-        /* فرض اللون الأبيض على جميع النصوص فوق الفيديو لتكون واضحة وجذابة */
+        /* فرض اللون الأبيض على النصوص مع ظل قوي لوضوح أفضل */
         .hero h1, .hero p, .hero .cr-badge { 
             color: #ffffff !important; 
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            text-shadow: 0 2px 15px rgba(0,0,0,0.8);
         }
         
         .hero h1 { 
@@ -297,12 +294,10 @@
         }
         
         .hero .cr-badge {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
             display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 6px 18px; 
+            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 6px; font-size: 0.9rem; font-weight: 800; margin-bottom: 20px; position: relative; z-index: 1;
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
         }
 
         .btn-primary {
@@ -404,55 +399,39 @@
         .address-box p { display: flex; justify-content: center; align-items: center; gap: 5px; font-size: clamp(0.6rem, 2vw, 0.65rem); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .address-box i { color: var(--primary-dark); font-size: 1rem; }
 
-        /* الأزرار العائمة */
-        .floating-actions { position: fixed; bottom: 105px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 999; transition: 0.3s; }
+        /* الأزرار العائمة المعدلة (أكثر تناسقاً وتستقر باليمين دائمًا) */
+        .floating-actions { 
+            position: fixed; 
+            bottom: 30px; 
+            right: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; 
+            z-index: 999; 
+            transition: 0.3s; 
+        }
         html[dir="ltr"] .floating-actions { right: auto; left: 20px; }
+        
         .float-btn {
-            width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
-            font-size: 1.4rem; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: 0.3s;
+            width: 55px; 
+            height: 55px; 
+            border-radius: 50%; 
+            display: flex; justify-content: center; align-items: center;
+            font-size: 1.6rem; 
+            color: white; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+            transition: 0.3s;
         }
         .float-wa { background: #25D366; animation: pulse-wa 2s infinite; }
         .float-call { background: var(--secondary-color); border: 2px solid var(--primary-color); }
-        .float-btn:hover { transform: translateY(-4px) scale(1.05); }
-
-        /* البار السفلي الدائري */
-        .bottom-nav {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 450px; 
-            background: var(--header-bg); backdrop-filter: blur(15px);
-            display: flex; justify-content: space-around; padding: 10px 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1); z-index: 1000; 
-            border: 1px solid var(--border-color); border-top: 2px solid var(--primary-color);
-            border-radius: 35px;
-        }
-        .bottom-nav a { display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 800; color: var(--text-color); gap: 5px; opacity: 0.7; transition: 0.3s; }
-        
-        .bottom-nav a i {
-            width: 44px; height: 44px; border-radius: 50%;
-            background: transparent;
-            display: flex; justify-content: center; align-items: center;
-            font-size: 1.2rem; border: 1px solid rgba(242, 164, 97, 0.6);
-            transition: 0.3s; box-shadow: inset 0 0 8px rgba(0,0,0,0.03);
-        }
-        
-        .bottom-nav a.active i, .bottom-nav a:hover i {
-            background: var(--primary-color); color: #fff;
-            border-color: var(--primary-color);
-            box-shadow: 0 4px 12px rgba(242, 164, 97, 0.4);
-            transform: translateY(-4px) scale(1.05);
-        }
-        
-        .bottom-nav a.active, .bottom-nav a:hover { opacity: 1; color: var(--primary-dark); }
-        
-        @media (min-width: 769px) { .bottom-nav { display: none; } .floating-actions{ bottom: 30px; } }
+        .float-btn:hover { transform: translateY(-5px) scale(1.08); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
 
         /* الفوتر */
-        footer { background: var(--secondary-color); color: white; padding: 40px 5% 120px; text-align: center; border-top: 4px solid var(--primary-color); font-weight: 700; display: flex; flex-direction: column; align-items: center; }
+        footer { background: var(--secondary-color); color: white; padding: 40px 5% 50px; text-align: center; border-top: 4px solid var(--primary-color); font-weight: 700; display: flex; flex-direction: column; align-items: center; }
         .footer-info { margin-bottom: 15px; font-size: 0.95rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; align-items: center; width: 100%;}
         .footer-info span { padding: 6px 12px; background: rgba(255,255,255,0.1); border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; gap: 6px;}
         .footer-info i { color: var(--primary-color); }
         
-        /* تصغير خط الحقوق 30% */
         footer > p { font-size: clamp(0.6rem, 2vw, 0.65rem); margin-bottom: 10px; }
         
         .designer-badge { display: inline-flex; justify-content: center; align-items: center; margin-top: 15px; padding: 8px 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--primary-color); border-radius: 25px; font-size: 0.8rem; color: white; transition: 0.3s; }
@@ -461,7 +440,7 @@
         /* استعلامات الوسائط */
         @media (max-width: 768px) {
             .section-title { font-size: 1.4rem; }
-            .floating-actions { bottom: 110px; transform: scale(0.9); transform-origin: right bottom;}
+            .floating-actions { bottom: 30px; transform: scale(0.9); transform-origin: right bottom;} /* تثبيت الأزرار بالأسفل بعد حذف البار السفلي */
             header { padding: 10px 4%; width: 92%; left: 4%; }
             .logo img { width: 35px; height: 35px; }
             .theme-btn, .action-btn { width: 35px; height: 35px; font-size: 0.95rem; }
@@ -510,7 +489,6 @@
 
     <main>
         <section id="hero" class="hero">
-            <!-- خلفية الفيديو المتحركة لمشهد المقاولات الخاص بك -->
             <video autoplay muted loop playsinline class="hero-video">
                 <source src="https://www.image2url.com/r2/default/videos/1778683204592-3ab1afc3-d2a1-424e-8fec-bff225eb8ad3.mp4" type="video/mp4">
             </video>
@@ -718,13 +696,6 @@
         <a href="tel:0551128884" class="float-btn float-call" title="اتصال"><i class="fa-solid fa-phone"></i></a>
     </div>
 
-    <div class="bottom-nav">
-        <a href="#hero" class="active"><i><i class="fa-solid fa-building"></i></i><span class="ar">الرئيسية</span><span class="en">Home</span><span class="ur">ہوم</span></a>
-        <a href="#about"><i><i class="fa-solid fa-certificate"></i></i><span class="ar">عنا</span><span class="en">About</span><span class="ur">ہم</span></a>
-        <a href="#services"><i><i class="fa-solid fa-helmet-safety"></i></i><span class="ar">خدمات</span><span class="en">Services</span><span class="ur">خدمات</span></a>
-        <a href="#contact"><i><i class="fa-solid fa-envelope"></i></i><span class="ar">تواصل</span><span class="en">Contact</span><span class="ur">رابطہ</span></a>
-    </div>
-
     <footer>
         <div class="footer-info">
             <span class="ar"><i class="fa-solid fa-file-signature"></i> سجل تجاري: 7033495099</span>
@@ -803,21 +774,6 @@
         closeSidebar.addEventListener('click', toggleMenu);
         overlay.addEventListener('click', toggleMenu);
         closeLinks.forEach(link => link.addEventListener('click', toggleMenu));
-
-        const sections = document.querySelectorAll('section');
-        const navLinks = document.querySelectorAll('.bottom-nav a');
-
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (scrollY >= sectionTop - 150) { current = section.getAttribute('id'); }
-            });
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').includes(current)) { link.classList.add('active'); }
-            });
-        });
 
         function sendWhatsApp() {
             let name = document.getElementById('name').value;
