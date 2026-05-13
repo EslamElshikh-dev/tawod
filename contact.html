@@ -67,54 +67,6 @@
         html[lang="ur"] .ar { display: none !important; }
         html[lang="ar"] .ur { display: none !important; }
 
-        /* شاشة التحميل */
-        #loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color); z-index: 9999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 0.5s ease;
-        }
-
-        .loader-logo {
-            width: 90px; height: 90px; border-radius: 16px;
-            object-fit: cover; margin-bottom: 25px;
-            box-shadow: 0 10px 25px rgba(242, 164, 97, 0.3);
-            border: 2px solid var(--primary-color);
-            animation: float-pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes float-pulse {
-            0% { transform: translateY(0) scale(1); box-shadow: 0 10px 25px rgba(242, 164, 97, 0.3); }
-            50% { transform: translateY(-10px) scale(1.05); box-shadow: 0 15px 35px rgba(242, 164, 97, 0.5); }
-            100% { transform: translateY(0) scale(1); box-shadow: 0 10px 25px rgba(242, 164, 97, 0.3); }
-        }
-
-        .typewriter-wrapper {
-            display: flex; flex-direction: column; align-items: center;
-            gap: 8px; direction: rtl; text-align: center;
-        }
-
-        .tw-line {
-            overflow: hidden; white-space: nowrap;
-            border-left: 2px solid var(--primary-color);
-            max-width: 0; margin: 0 auto; display: inline-block;
-        }
-
-        .tw-line-1 {
-            font-size: clamp(0.75rem, 3vw, 0.85rem); font-weight: 800; color: var(--secondary-color);
-            animation: typing 1.5s steps(40, end) forwards, blink-cursor 0.5s step-end 3, remove-cursor 0s 1.5s forwards;
-        }
-        [data-theme="dark"] .tw-line-1 { color: #fff; }
-
-        .tw-line-2 {
-            font-size: clamp(0.65rem, 2.5vw, 0.75rem); font-weight: 700; color: var(--primary-dark);
-            animation: typing 1.5s steps(40, end) 1.5s forwards, blink-cursor 0.5s step-end infinite 1.5s;
-        }
-
-        @keyframes typing { from { max-width: 0; } to { max-width: 100vw; } }
-        @keyframes blink-cursor { from, to { border-color: transparent; } 50% { border-color: var(--primary-color); } }
-        @keyframes remove-cursor { to { border-left-color: transparent; } }
-
         /* الهيدر */
         header {
             position: fixed; top: 15px; width: 94%; left: 3%; padding: 10px 4%;
@@ -156,7 +108,7 @@
         .sidebar ul li a:hover { color: var(--primary-color); transform: scale(1.05); }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); z-index: 1000; display: none; }
 
-        /* قسم اللينك تري (Linktree Style) */
+        /* قسم الروابط (ستايل لينك تري) */
         .linktree-section {
             padding: 130px 5% 60px;
             display: flex;
@@ -178,24 +130,14 @@
             border: 3px solid var(--primary-color);
             box-shadow: 0 10px 30px rgba(242, 164, 97, 0.4);
             margin-bottom: 20px;
-            animation: float-pulse 3s ease-in-out infinite;
+            animation: float-logo 3s ease-in-out infinite;
             object-fit: cover;
         }
+        @keyframes float-logo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        .tree-header h1 {
-            font-size: 1.6rem;
-            font-weight: 900;
-            color: var(--secondary-color);
-            margin-bottom: 5px;
-        }
+        .tree-header h1 { font-size: 1.6rem; font-weight: 900; color: var(--secondary-color); margin-bottom: 5px; }
         [data-theme="dark"] .tree-header h1 { color: #ffffff; }
-
-        .tree-header p {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-color);
-            opacity: 0.8;
-        }
+        .tree-header p { font-size: 1rem; font-weight: 600; color: var(--text-color); opacity: 0.8; }
 
         .tree-links-container {
             display: flex;
@@ -205,20 +147,19 @@
             max-width: 500px;
         }
 
-        /* أزرار السوشيال ميديا والتواصل المعدلة */
+        /* أزرار السوشيال ميديا والتواصل المعدلة مع برواز لمعة */
         .tree-btn {
             display: flex;
             align-items: center;
             padding: 16px 20px;
             background: var(--card-bg);
-            /* برواز نحيف بلون الهوية */
-            border: 1.5px solid var(--primary-color);
+            border: 1.5px solid var(--primary-color); /* برواز نحيف بلون الهوية */
             border-radius: 16px; 
             text-decoration: none;
             color: var(--secondary-color);
             font-size: 1.1rem;
             font-weight: 800;
-            box-shadow: 0 4px 15px rgba(242, 164, 97, 0.1); /* ظل خفيف بلون الهوية */
+            box-shadow: 0 4px 15px rgba(242, 164, 97, 0.15);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
@@ -226,25 +167,27 @@
         }
         [data-theme="dark"] .tree-btn { color: #ffffff; background: var(--card-bg); }
 
-        /* تأثير إبداعي داخل الزر عند التمرير (لمعة ضوء) */
-        .tree-btn::before {
+        /* تأثير لمعة الضوء (Sweep Animation) */
+        .tree-btn::after {
             content: '';
             position: absolute;
             top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(242, 164, 97, 0.15), transparent);
-            transition: 0.5s;
+            width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(242, 164, 97, 0.3), transparent);
+            transform: skewX(-25deg);
+            transition: 0.6s;
             z-index: -1;
         }
 
-        /* تأثير الـ Hover على الأزرار */
-        .tree-btn:hover::before {
-            left: 100%;
+        .tree-btn:hover::after {
+            left: 150%;
         }
+
         .tree-btn:hover {
             transform: translateY(-5px);
-            border-color: var(--primary-dark); /* اللون الداكن عند التمرير */
-            box-shadow: 0 8px 25px rgba(186, 110, 59, 0.25);
+            border-color: var(--primary-dark);
+            box-shadow: 0 8px 25px rgba(186, 110, 59, 0.3);
+            background: var(--form-bg);
         }
 
         .tree-btn i {
@@ -257,7 +200,7 @@
         .tree-btn span {
             flex-grow: 1;
             text-align: center;
-            margin-inline-end: 50px; /* لعمل توازن مع الأيقونة في المنتصف */
+            margin-inline-end: 50px;
         }
 
         /* ألوان الأيقونات */
@@ -265,14 +208,12 @@
         .insta-btn i { background: -webkit-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .snap-btn i { color: #FFFC00; text-shadow: 0 0 2px rgba(0,0,0,0.3); }
         .x-btn i { color: #000000; } [data-theme="dark"] .x-btn i { color: #ffffff; }
-        
-        /* ألوان أزرار الاتصال الجديدة */
         .wa-btn i { color: #25D366; }
-        .call-btn i { color: var(--secondary-color); } [data-theme="dark"] .call-btn i { color: var(--primary-color); }
+        .call-btn i { color: var(--primary-dark); }
 
         .tree-btn:hover i { transform: scale(1.2) rotate(8deg); }
 
-        /* قسم الخريطة الجديد */
+        /* قسم الخريطة */
         .map-section {
             padding: 40px 5% 80px;
             display: flex;
@@ -326,14 +267,6 @@
     </style>
 </head>
 <body>
-
-    <div id="loader">
-        <img src="https://i.ibb.co/B22R1g9r/IMG.jpg" alt="Logo" class="loader-logo">
-        <div class="typewriter-wrapper">
-            <p class="tw-line tw-line-1">تعاود للمقاولات ، نبني المستقبل بإبداع وإتقان</p>
-            <p class="tw-line tw-line-2">ورؤية هندسية بحلول متكاملة</p>
-        </div>
-    </div>
 
     <header>
         <div class="logo">
@@ -411,17 +344,17 @@
                 <!-- واتساب -->
                 <a href="https://wa.me/966551128884" target="_blank" class="tree-btn wa-btn">
                     <i class="fa-brands fa-whatsapp"></i>
-                    <span class="ar">تواصل واتساب</span>
-                    <span class="en">WhatsApp Contact</span>
-                    <span class="ur">واٹس ایپ رابطہ</span>
+                    <span class="ar">تواصل عبر الواتساب</span>
+                    <span class="en">Contact via WhatsApp</span>
+                    <span class="ur">واٹس ایپ کے ذریعے رابطہ کریں</span>
                 </a>
 
                 <!-- اتصال -->
                 <a href="tel:0551128884" class="tree-btn call-btn">
                     <i class="fa-solid fa-phone"></i>
-                    <span class="ar">اتصال مباشر</span>
-                    <span class="en">Direct Call</span>
-                    <span class="ur">براہ راست کال</span>
+                    <span class="ar">إتصال هاتفي مباشر</span>
+                    <span class="en">Direct Phone Call</span>
+                    <span class="ur">براہ راست فون کال</span>
                 </a>
             </div>
         </section>
