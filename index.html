@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18076308535"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'AW-18076308535');
-  gtag('config', 'G-YE1NT4R4YT');
-</script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18076308535"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'AW-18076308535');
+      gtag('config', 'G-YE1NT4R4YT');
+    </script>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -207,39 +207,109 @@
         .sidebar ul li a:hover { color: var(--primary-color); transform: scale(1.05); }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); z-index: 1000; display: none; }
 
-        /* قسم البداية Hero */
+        /* قسم البداية Hero مع خلفية الفيديو */
         .hero {
-            padding: 130px 5% 80px; text-align: center;
-            background: linear-gradient(135deg, var(--bg-color) 0%, var(--form-bg) 100%);
-            position: relative; overflow: hidden; border-bottom: 3px solid var(--primary-color);
-            display: flex; flex-direction: column; align-items: center;
+            position: relative;
+            padding: 160px 5% 100px;
+            text-align: center;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 90vh;
+            border-bottom: 4px solid var(--primary-color);
         }
-        .hero::after { content: '\f7d9'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; font-size: 250px; color: var(--primary-color); opacity: 0.03; right: -40px; bottom: -40px; transform: rotate(-15deg); }
-        html[dir="ltr"] .hero::after { right: auto; left: -40px; transform: rotate(15deg); }
         
-        /* تصغير الخط 40% وإجباره على سطر واحد */
+        .hero::after { display: none; }
+
+        /* إعدادات الفيديو ليكون متجاوب ويملأ الشاشة */
+        .hero-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translateX(-50%) translateY(-50%);
+            z-index: 0;
+            object-fit: cover;
+        }
+
+        /* الماسك (التمويه) المدمج بألوان هويتك */
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(29, 30, 38, 0.85) 0%, rgba(186, 110, 59, 0.6) 100%);
+            z-index: 1;
+        }
+
+        /* حاوية المحتوى فوق الفيديو */
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* الشعار بشكله الجديد مع حركة النبض */
+        .hero-logo-center {
+            width: 120px;
+            height: 120px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            animation: float-pulse 3s ease-in-out infinite;
+            object-fit: cover;
+        }
+
+        /* فرض اللون الأبيض على جميع النصوص فوق الفيديو لتكون واضحة وجذابة */
+        .hero h1, .hero p, .hero .cr-badge { 
+            color: #ffffff !important; 
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        
         .hero h1 { 
             font-size: clamp(1rem, 4vw, 1.4rem); 
-            font-weight: 900; color: var(--secondary-color); margin-bottom: 15px; 
+            font-weight: 900; margin-bottom: 15px; 
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
-            position: relative; z-index: 1; 
         }
-        [data-theme="dark"] .hero h1 { color: #ffffff; }
-        .hero h1 span { color: var(--primary-dark); border-bottom: 2px dashed var(--primary-dark); padding-bottom: 5px;}
         
-        .hero p { font-size: 1rem; font-weight: 600; max-width: 750px; margin: 0 auto 30px; color: var(--text-color); opacity: 0.85; position: relative; z-index: 1; text-align: center; }
-        
-        .cr-badge {
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 6px 18px; background: rgba(242, 164, 97, 0.1); border: 1px solid var(--primary-color);
-            color: var(--secondary-color); border-radius: 6px; font-size: 0.9rem; font-weight: 800; margin-bottom: 20px; position: relative; z-index: 1;
+        .hero h1 span { 
+            color: var(--primary-color) !important; 
+            border-bottom: 2px dashed var(--primary-color); 
+            padding-bottom: 5px;
         }
-        [data-theme="dark"] .cr-badge { color: var(--primary-color); }
+        
+        .hero p { 
+            font-size: 1rem; 
+            font-weight: 600; 
+            max-width: 750px; 
+            margin: 0 auto 30px; 
+            opacity: 0.95; 
+        }
+        
+        .hero .cr-badge {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 6px 18px; 
+            border-radius: 6px; font-size: 0.9rem; font-weight: 800; margin-bottom: 20px; position: relative; z-index: 1;
+        }
 
         .btn-primary {
             display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 30px; background: linear-gradient(45deg, var(--primary-dark), var(--primary-color)); color: white !important;
             border-radius: 25px; font-weight: 800; font-size: 1rem; box-shadow: 0 5px 15px rgba(242, 164, 97, 0.3); border: 2px solid transparent; transition: 0.3s; position: relative; z-index: 1;
         }
-        .btn-primary:hover { background: transparent; color: var(--primary-dark) !important; border-color: var(--primary-dark); transform: translateY(-3px); }
+        .btn-primary:hover { background: transparent; color: var(--primary-color) !important; border-color: var(--primary-color); transform: translateY(-3px); }
 
         /* الأقسام العامة */
         .section-title { text-align: center; font-size: 1.6rem; font-weight: 900; margin-bottom: 15px; color: var(--secondary-color); position: relative; display: inline-block; }
@@ -442,25 +512,39 @@
 
     <main>
         <section id="hero" class="hero">
-            <div class="cr-badge">
-                <i class="fa-solid fa-file-signature"></i> 
-                <span class="ar">سجل تجاري: 7033495099</span>
-                <span class="en">CR: 7033495099</span>
-                <span class="ur">کمرشل رجسٹریشن: 7033495099</span>
-            </div>
-
-            <h1 class="ar">شركة تعاود <span>للمقاولات العامة</span></h1>
-            <h1 class="en">Tawod <span>General Contracting</span></h1>
-            <h1 class="ur">تعاود <span>جنرل کنٹریکٹنگ</span></h1>
+            <!-- خلفية الفيديو المتحركة (تعكس روح صورة الغروب والمقاولات) -->
+            <video autoplay muted loop playsinline class="hero-video">
+                <source src="https://cdn.pixabay.com/video/2019/11/10/28881-372132791_large.mp4" type="video/mp4">
+            </video>
             
-            <p class="ar">شريكك الموثوق في عالم البناء والإنشاءات. نقدم حلولاً هندسية متكاملة للمشاريع السكنية والتجارية، من التخطيط والتأسيس وحتى التشطيب وتسليم المفتاح بأعلى معايير الجودة والالتزام.</p>
-            <p class="en">Your trusted partner in construction. We provide integrated engineering solutions for residential and commercial projects, from planning to turnkey delivery with the highest quality standards.</p>
-            <p class="ur">تعمیرات میں آپ کا قابل اعتماد ساتھی۔ ہم رہائشی اور تجارتی منصوبوں کے لیے اعلیٰ معیار کے ساتھ انجینئرنگ کے مکمل حل فراہم کرتے ہیں۔</p>
+            <!-- طبقة التمويه (الماسك) بألوان الهوية -->
+            <div class="hero-overlay"></div>
 
-            <a href="https://wa.me/966551128884" class="btn-primary">
-                <i class="fa-brands fa-whatsapp"></i>
-                <span class="ar">تواصل مع الإدارة</span><span class="en">Contact Management</span><span class="ur">انتظامیہ سے رابطہ کریں</span>
-            </a>
+            <!-- المحتوى الذي يظهر فوق الفيديو (الشعار والنصوص) -->
+            <div class="hero-content">
+                <!-- الشعار بتنسيق وحركة احترافية -->
+                <img src="https://i.ibb.co/B22R1g9r/IMG.jpg" alt="شعار شركة تعاود للمقاولات" class="hero-logo-center">
+
+                <div class="cr-badge">
+                    <i class="fa-solid fa-file-signature"></i> 
+                    <span class="ar">سجل تجاري: 7033495099</span>
+                    <span class="en">CR: 7033495099</span>
+                    <span class="ur">کمرشل رجسٹریشن: 7033495099</span>
+                </div>
+
+                <h1 class="ar">شركة تعاود <span>للمقاولات العامة</span></h1>
+                <h1 class="en">Tawod <span>General Contracting</span></h1>
+                <h1 class="ur">تعاود <span>جنرل کنٹریکٹنگ</span></h1>
+                
+                <p class="ar">شريكك الموثوق في عالم البناء والإنشاءات. نقدم حلولاً هندسية متكاملة للمشاريع السكنية والتجارية، من التخطيط والتأسيس وحتى التشطيب وتسليم المفتاح بأعلى معايير الجودة والالتزام.</p>
+                <p class="en">Your trusted partner in construction. We provide integrated engineering solutions for residential and commercial projects, from planning to turnkey delivery with the highest quality standards.</p>
+                <p class="ur">تعمیرات میں آپ کا قابل اعتماد ساتھی۔ ہم رہائشی اور تجارتی منصوبوں کے لیے اعلیٰ معیار کے ساتھ انجینئرنگ کے مکمل حل فراہم کرتے ہیں۔</p>
+
+                <a href="https://wa.me/966551128884" class="btn-primary">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <span class="ar">تواصل مع الإدارة</span><span class="en">Contact Management</span><span class="ur">انتظامیہ سے رابطہ کریں</span>
+                </a>
+            </div>
         </section>
 
         <section id="about">
