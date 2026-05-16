@@ -24,8 +24,8 @@
     <link rel="canonical" href="https://tawodco.com/">
     
     <title class="ar">شركة تعاود للمقاولات العامة</title>
-    <title class="en" style="display:none;">Tawod General Contracting Co.</title>
-    <title class="ur" style="display:none;">تعاود جنرل کنٹریکٹنگ کمپنی</title>
+    <title class="en">Tawod General Contracting Co.</title>
+    <title class="ur">تعاود جنرل کنٹریکٹنگ کمپنی</title>
     
     <link rel="icon" href="https://i.ibb.co/B22R1g9r/IMG.jpg" type="image/jpeg">
 
@@ -85,16 +85,16 @@
             --form-bg: #121318;
         }
 
+        /* برمجة الترجمة واللغات (السر لعدم اختفاء النصوص) */
+        html:not([lang="ar"]) .ar { display: none !important; }
+        html:not([lang="en"]) .en { display: none !important; }
+        html:not([lang="ur"]) .ur { display: none !important; }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; transition: background-color 0.4s, color 0.4s, border-color 0.4s; }
         body { background-color: var(--bg-color); color: var(--text-color); overflow-x: hidden; line-height: 1.7; font-size: 14px; text-align: center; scroll-behavior: smooth;}
         a { text-decoration: none; color: inherit; }
         ul { list-style: none; }
         p, h1, h2, h3, h4, h5, h6, span, div, input, textarea, select { text-align: center; }
-
-        html[dir="rtl"] .en { display: none !important; }
-        html[dir="ltr"] .ar, html[dir="ltr"] .ur { display: none !important; }
-        html[lang="ur"] .ar { display: none !important; }
-        html[lang="ar"] .ur { display: none !important; }
 
         /* الهيدر العائم */
         header {
@@ -184,7 +184,7 @@
         .hero-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; width: 100%; }
         .hero h1, .hero p, .hero .cr-badge { color: #ffffff !important; text-shadow: 0 2px 15px rgba(0,0,0,0.8); }
         .hero h1 { font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 900; margin-bottom: 15px; }
-        .hero h1 span { color: var(--primary-color) !important; } /* إزالة الخط المتقطع */
+        .hero h1 span { color: var(--primary-color) !important; } /* تم إزالة الخط المتقطع */
         .hero p { font-size: 1.2rem; font-weight: 600; max-width: 750px; margin: 0 auto 30px; line-height: 1.8; }
         .hero .cr-badge { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 20px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; font-size: 1rem; font-weight: 800; margin-bottom: 30px; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
 
@@ -223,10 +223,6 @@
         [data-theme="dark"] .btn-order { color: #fff !important; background: transparent; }
         .btn-order:hover { background: var(--primary-dark); border-color: var(--primary-dark); color: white !important; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(186, 110, 59, 0.2); }
 
-        /* ضبط أيقونة السهم في اللغات المختلفة */
-        html[dir="rtl"] .icon-ltr { display: none !important; }
-        html[dir="ltr"] .icon-rtl { display: none !important; }
-
         /* الأزرار العائمة */
         .floating-actions { position: fixed; bottom: 30px; left: 20px; right: auto; display: flex; flex-direction: column; gap: 15px; z-index: 999; transition: 0.3s; }
         html[dir="ltr"] .floating-actions { left: auto; right: 20px; }
@@ -252,22 +248,18 @@
         [data-theme="dark"] .social-tiktok { border-color: #fff; }
         .social-tiktok:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.5); transform: translateY(-5px); }
 
-        .social-insta { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); border: 2px solid transparent; }
+        .social-insta { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%); border: 2px solid transparent; }
         .social-insta:hover { box-shadow: 0 5px 15px rgba(220,39,67,0.5); transform: translateY(-5px); }
 
         .social-snap { background: #FFFC00; color: #000 !important; border: 2px solid #FFFC00; }
         .social-snap:hover { box-shadow: 0 5px 15px rgba(255,252,0,0.5); transform: translateY(-5px); }
 
-        /* أيقونة منصة إكس بالصورة المخصصة */
-        .social-x { background: #000; border: 2px solid #000; padding: 6px;}
-        [data-theme="dark"] .social-x { background: #fff; border-color: #fff; }
-        .social-x img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%;} 
-        .social-x:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.5); transform: translateY(-5px); }
-        [data-theme="dark"] .social-x:hover { box-shadow: 0 5px 15px rgba(255,255,255,0.3); }
-
-        .footer-info { margin-bottom: 15px; font-size: 0.95rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; align-items: center; width: 100%;}
-        .footer-info span { padding: 8px 15px; background: rgba(255,255,255,0.1); border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; gap: 8px;}
-        .footer-info i { color: var(--primary-color); }
+        /* أيقونة منصة إكس بالصورة المخصصة والتحكم في الدارك واللايت */
+        .social-x { background: transparent !important; border: none !important; padding: 0 !important; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .social-x img { width: 35px; height: 35px; object-fit: contain; }
+        .social-x:hover { transform: translateY(-5px); }
+        [data-theme="dark"] .x-light { display: none !important; }
+        [data-theme="dark"] .x-dark { display: block !important; }
         
         footer > p { font-size: clamp(0.7rem, 2vw, 0.8rem); margin-bottom: 15px; opacity: 0.8; }
         .designer-badge { display: inline-flex; justify-content: center; align-items: center; padding: 8px 20px; background: rgba(0,0,0,0.4); border: 1px solid var(--primary-color); border-radius: 25px; font-size: 0.85rem; color: white; transition: 0.3s; }
@@ -294,11 +286,11 @@
             <span class="ur">تعاود کنٹریکٹنگ</span>
         </div>
         
-        <!-- شريط البحث الجديد -->
+        <!-- شريط البحث المضاف للهيدر -->
         <div class="header-search">
             <input type="text" placeholder="بحث..." class="ar">
-            <input type="text" placeholder="Search..." class="en" style="display:none;">
-            <input type="text" placeholder="تلاش کریں..." class="ur" style="display:none;">
+            <input type="text" placeholder="Search..." class="en">
+            <input type="text" placeholder="تلاش کریں..." class="ur">
             <i class="fa-solid fa-magnifying-glass"></i>
         </div>
 
@@ -315,8 +307,8 @@
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h2 class="ar">القائمة الرئيسية</h2>
-            <h2 class="en" style="display:none;">Main Menu</h2>
-            <h2 class="ur" style="display:none;">مرکزی مینو</h2>
+            <h2 class="en">Main Menu</h2>
+            <h2 class="ur">مرکزی مینو</h2>
             <i class="fa-solid fa-xmark sidebar-close" id="close-sidebar"></i>
         </div>
         <div class="sidebar-links">
@@ -385,32 +377,53 @@
                 <span class="ur">مصدقہ جنرل کنٹریکٹنگ کمپنی۔ ریاض اور پورے مملکت میں تعمیرات، تکمیلی کام اور ٹرن کی حل ماہر انجینئرنگ کی نگرانی میں فراہم کرتے ہیں۔</span>
             </div>
 
+            <!-- الكلمات مترجمة الآن في كل اللغات -->
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon"><i class="fa-solid fa-bullseye"></i></div>
                     <h3 class="ar">الدقة في التنفيذ</h3>
+                    <h3 class="en">Precision</h3>
+                    <h3 class="ur">درستگی</h3>
                     <p class="ar">نلتزم بتنفيذ المشاريع بأعلى معايير الدقة والاحترافية، لضمان تسليم مشاريع متينة ومطابقة للمواصفات.</p>
+                    <p class="en">Executing projects with the highest standards of precision and engineering professionalism.</p>
+                    <p class="ur">منصوبوں کو اعلیٰ ترین درستگی اور پیشہ ورانہ مہارت کے ساتھ انجام دینا۔</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon"><i class="fa-solid fa-users-gear"></i></div>
                     <h3 class="ar">مهندسون محترفون</h3>
+                    <h3 class="en">Pro Team</h3>
+                    <h3 class="ur">پیشہ ور ٹیم</h3>
                     <p class="ar">نضم نخبة من المهندسين والعمالة المدربة، لنضمن جودة تتجاوز التوقعات في كل مرحلة بناء.</p>
+                    <p class="en">An elite group of architects and highly trained workers ensuring top-quality execution.</p>
+                    <p class="ur">بہترین انجینئرز اور اعلیٰ تربیت یافتہ کارکنان جو اعلیٰ معیار کو یقینی بناتے ہیں۔</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon"><i class="fa-solid fa-handshake-angle"></i></div>
                     <h3 class="ar">أمانة والتزام</h3>
+                    <h3 class="en">Commitment</h3>
+                    <h3 class="ur">وابستگی</h3>
                     <p class="ar">شفافية والتزام صارم بالجدول الزمني والميزانية لراحة بالك طوال فترة المشروع.</p>
+                    <p class="en">Strict adherence to project timelines and budget, providing a hassle-free experience.</p>
+                    <p class="ur">وقت اور بجٹ کی سختی سے پابندی تاکہ آپ کو پریشانی سے پاک تجربہ ملے۔</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon"><i class="fa-solid fa-money-bill-trend-up"></i></div>
                     <h3 class="ar">أسعار تنافسية</h3>
+                    <h3 class="en">Great Prices</h3>
+                    <h3 class="ur">بہترین قیمتیں</h3>
                     <p class="ar">أفضل قيمة لاستثمارك من خلال مواد عالية الجودة وأسعار مدروسة تناسب الجميع.</p>
+                    <p class="en">Best value for your investment with high-quality materials and competitive pricing.</p>
+                    <p class="ur">اعلیٰ معیار کے مواد اور مسابقتی قیمتوں کے ساتھ آپ کی سرمایہ کاری کی بہترین قدر۔</p>
                 </div>
             </div>
         </section>
 
         <section id="services">
-            <h2 class="section-title"><span class="ar">خدماتنا الإنشائية</span><span class="en">Our Services</span><span class="ur">ہماری خدمات</span></h2>
+            <h2 class="section-title">
+                <span class="ar">خدماتنا الإنشائية</span>
+                <span class="en">Our Services</span>
+                <span class="ur">ہماری خدمات</span>
+            </h2>
             
             <div class="services-grid">
                 
@@ -420,17 +433,17 @@
                     </div>
                     <div class="service-content">
                         <h3 class="ar">البناء والإنشاءات</h3>
-                        <h3 class="en" style="display:none;">Construction</h3>
-                        <h3 class="ur" style="display:none;">تعمیر و ترقی</h3>
+                        <h3 class="en">Construction</h3>
+                        <h3 class="ur">تعمیر و ترقی</h3>
                         
                         <p class="ar">شركة تعاود للمقاولات العامة تقدم أفضل خدمات البناء والإنشاءات المتكاملة بالرياض بمعايير هندسية عالمية. نضمن تنفيذ مشاريعك السكنية والتجارية بدقة متناهية والتزام كامل بالكود السعودي للبناء.</p>
-                        <p class="en" style="display:none;">Tawod Contracting offers top-tier construction services in Riyadh with global engineering standards. We ensure precise execution of residential and commercial projects with full compliance to the Saudi Building Code.</p>
-                        <p class="ur" style="display:none;">تعاود کنٹریکٹنگ ریاض میں عالمی انجینئرنگ کے معیار کے ساتھ بہترین تعمیراتی خدمات پیش کرتی ہے۔ ہم سعودی بلڈنگ کوڈ کی مکمل تعمیل کے ساتھ رہائشی اور تجارتی منصوبوں کی درست تکمیل کو یقینی بناتے ہیں۔</p>
+                        <p class="en">Tawod Contracting offers top-tier construction services in Riyadh with global engineering standards. We ensure precise execution of residential and commercial projects with full compliance to the Saudi Building Code.</p>
+                        <p class="ur">تعاود کنٹریکٹنگ ریاض میں عالمی انجینئرنگ کے معیار کے ساتھ بہترین تعمیراتی خدمات پیش کرتی ہے۔ ہم سعودی بلڈنگ کوڈ کی مکمل تعمیل کے ساتھ رہائشی اور تجارتی منصوبوں کی درست تکمیل کو یقینی بناتے ہیں۔</p>
                         
                         <a href="service-construction.html" class="btn-order">
-                            <i class="fa-solid fa-angle-left icon-ar"></i>
-                            <i class="fa-solid fa-angle-right icon-ltr"></i>
-                            <span class="ar">معرفة المزيد</span><span class="en">Learn More</span><span class="ur">مزید جانیں</span>
+                            <span class="ar">معرفة المزيد <i class="fa-solid fa-arrow-left-long"></i></span>
+                            <span class="en">Learn More <i class="fa-solid fa-arrow-right-long"></i></span>
+                            <span class="ur">مزید جانیں <i class="fa-solid fa-arrow-left-long"></i></span>
                         </a>
                     </div>
                 </div>
@@ -441,17 +454,17 @@
                     </div>
                     <div class="service-content">
                         <h3 class="ar">تسليم مفتاح</h3>
-                        <h3 class="en" style="display:none;">Turnkey Projects</h3>
-                        <h3 class="ur" style="display:none;">ٹرن کی پروجیکٹس</h3>
+                        <h3 class="en">Turnkey Projects</h3>
+                        <h3 class="ur">ٹرن کی پروجیکٹس</h3>
                         
                         <p class="ar">تخلص من عناء المتابعة والإشراف مع خدمة تسليم المفتاح الفاخرة من شركة تعاود. نتولى إدارة مشروعك بالكامل من مرحلة المخططات واستلام الأرض الفضاء وحتى أحدث التشطيبات وتركيب الديكورات النهائية.</p>
-                        <p class="en" style="display:none;">Eliminate the hassle of supervision with Tawod's luxury turnkey service. We manage your project entirely from the planning stage and empty land to the latest finishes and final decor installations.</p>
-                        <p class="ur" style="display:none;">تعاود کی لگژری ٹرن کی سروس کے ساتھ نگرانی کی پریشانی کو ختم کریں۔ ہم آپ کے پروجیکٹ کا مکمل انتظام منصوبہ بندی اور خالی زمین سے لے کر جدید ترین تکمیلی کاموں اور حتمی سجاوٹ تک کرتے ہیں۔</p>
+                        <p class="en">Eliminate the hassle of supervision with Tawod's luxury turnkey service. We manage your project entirely from the planning stage and empty land to the latest finishes and final decor installations.</p>
+                        <p class="ur">تعاود کی لگژری ٹرن کی سروس کے ساتھ نگرانی کی پریشانی کو ختم کریں۔ ہم آپ کے پروجیکٹ کا مکمل انتظام منصوبہ بندی اور خالی زمین سے لے کر جدید ترین تکمیلی کاموں اور حتمی سجاوٹ تک کرتے ہیں۔</p>
                         
                         <a href="service-turnkey.html" class="btn-order">
-                            <i class="fa-solid fa-angle-left icon-ar"></i>
-                            <i class="fa-solid fa-angle-right icon-ltr"></i>
-                            <span class="ar">معرفة المزيد</span><span class="en">Learn More</span><span class="ur">مزید جانیں</span>
+                            <span class="ar">معرفة المزيد <i class="fa-solid fa-arrow-left-long"></i></span>
+                            <span class="en">Learn More <i class="fa-solid fa-arrow-right-long"></i></span>
+                            <span class="ur">مزید جانیں <i class="fa-solid fa-arrow-left-long"></i></span>
                         </a>
                     </div>
                 </div>
@@ -462,17 +475,17 @@
                     </div>
                     <div class="service-content">
                         <h3 class="ar">ترميم مباني</h3>
-                        <h3 class="en" style="display:none;">Restoration</h3>
-                        <h3 class="ur" style="display:none;">عمارت کی بحالی</h3>
+                        <h3 class="en">Restoration</h3>
+                        <h3 class="ur">عمارت کی بحالی</h3>
                         
                         <p class="ar">نعيد الحياة لمبناك القديم مع خدمات الترميم الشاملة والمبتكرة. نقوم بمعالجة كافة التصدعات والتشققات وتدعيم الهياكل الخرسانية بأحدث التقنيات الهندسية لزيادة العمر الافتراضي لمنشأتك.</p>
-                        <p class="en" style="display:none;">Bring your old building back to life with comprehensive restoration services. We treat cracks, reinforce concrete structures using modern engineering techniques, and update facades to match modern designs.</p>
-                        <p class="ur" style="display:none;">جامع بحالی کی خدمات کے ساتھ اپنی پرانی عمارت کو دوبارہ زندہ کریں۔ ہم دراڑوں کا علاج کرتے ہیں، جدید انجینئرنگ تکنیک کا استعمال کرتے ہوئے کنکریٹ کے ڈھانچے کو مضبوط کرتے ہیں۔</p>
+                        <p class="en">Bring your old building back to life with comprehensive restoration services. We treat cracks, reinforce concrete structures using modern engineering techniques, and update facades to match modern designs.</p>
+                        <p class="ur">جامع بحالی کی خدمات کے ساتھ اپنی پرانی عمارت کو دوبارہ زندہ کریں۔ ہم دراڑوں کا علاج کرتے ہیں، جدید انجینئرنگ تکنیک کا استعمال کرتے ہوئے کنکریٹ کے ڈھانچے کو مضبوط کرتے ہیں۔</p>
                         
                         <a href="service-restoration.html" class="btn-order">
-                            <i class="fa-solid fa-angle-left icon-ar"></i>
-                            <i class="fa-solid fa-angle-right icon-ltr"></i>
-                            <span class="ar">معرفة المزيد</span><span class="en">Learn More</span><span class="ur">مزید جانیں</span>
+                            <span class="ar">معرفة المزيد <i class="fa-solid fa-arrow-left-long"></i></span>
+                            <span class="en">Learn More <i class="fa-solid fa-arrow-right-long"></i></span>
+                            <span class="ur">مزید جانیں <i class="fa-solid fa-arrow-left-long"></i></span>
                         </a>
                     </div>
                 </div>
@@ -483,17 +496,17 @@
                     </div>
                     <div class="service-content">
                         <h3 class="ar">تشطيب مباني</h3>
-                        <h3 class="en" style="display:none;">Finishing</h3>
-                        <h3 class="ur" style="display:none;">تکمیلی کام</h3>
+                        <h3 class="en">Finishing</h3>
+                        <h3 class="ur">تکمیلی کام</h3>
                         
                         <p class="ar">تألق بمساحتك الخاصة مع خدمات التشطيب الداخلي والخارجي الفاخرة. نستخدم أجود أنواع الخامات العالمية في الدهانات والأسقف وتكسيات الأرضيات ليخلق فريقنا بيئة ساحرة تناسب ذوقك.</p>
-                        <p class="en" style="display:none;">Shine with luxurious interior and exterior finishing services (Deluxe & Super Deluxe). We use the finest global materials for paints, suspended ceilings, and flooring.</p>
-                        <p class="ur" style="display:none;">پرتعیش اندرونی اور بیرونی تکمیلی خدمات (ڈیلکس اور سپر ڈیلکس) کے ساتھ چمکیں۔ ہم پینٹ، چھتوں اور فرش کے لیے بہترین عالمی مواد استعمال کرتے ہیں۔</p>
+                        <p class="en">Shine with luxurious interior and exterior finishing services (Deluxe & Super Deluxe). We use the finest global materials for paints, suspended ceilings, and flooring.</p>
+                        <p class="ur">پرتعیش اندرونی اور بیرونی تکمیلی خدمات (ڈیلکس اور سپر ڈیلکس) کے ساتھ چمکیں۔ ہم پینٹ، چھتوں اور فرش کے لیے بہترین عالمی مواد استعمال کرتے ہیں۔</p>
                         
                         <a href="service-finishing.html" class="btn-order">
-                            <i class="fa-solid fa-angle-left icon-ar"></i>
-                            <i class="fa-solid fa-angle-right icon-ltr"></i>
-                            <span class="ar">معرفة المزيد</span><span class="en">Learn More</span><span class="ur">مزید جانیں</span>
+                            <span class="ar">معرفة المزيد <i class="fa-solid fa-arrow-left-long"></i></span>
+                            <span class="en">Learn More <i class="fa-solid fa-arrow-right-long"></i></span>
+                            <span class="ur">مزید جانیں <i class="fa-solid fa-arrow-left-long"></i></span>
                         </a>
                     </div>
                 </div>
@@ -504,17 +517,17 @@
                     </div>
                     <div class="service-content">
                         <h3 class="ar">ديكورات خارجية وداخلية</h3>
-                        <h3 class="en" style="display:none;">Decorations</h3>
-                        <h3 class="ur" style="display:none;">سجاوٹ</h3>
+                        <h3 class="en">Decorations</h3>
+                        <h3 class="ur">سجاوٹ</h3>
                         
                         <p class="ar">حوّل منزلك إلى تحفة فنية مع خدمات الديكور الاستثنائية. نتميز بتصميم وتنفيذ أرقى الديكورات الجبسية، التكسيات الخشبية، وحلول الإضاءة الذكية لتنسيق عصري وجذاب مريح للعين.</p>
-                        <p class="en" style="display:none;">Transform your space into a masterpiece with our exceptional decoration services. We excel in designing and executing the finest gypsum decors, wood cladding, and smart lighting solutions.</p>
-                        <p class="ur" style="display:none;">ہماری غیر معمولی سجاوٹ کی خدمات کے ساتھ اپنی جگہ کو ایک شاہکار میں تبدیل کریں۔ ہم بہترین جپسم ڈیکور، لکڑی کی کلیڈنگ، اور سمارٹ لائٹنگ کے حل کو ڈیزائن اور انجام دینے میں مہارت رکھتے ہیں۔</p>
+                        <p class="en">Transform your space into a masterpiece with our exceptional decoration services. We excel in designing and executing the finest gypsum decors, wood cladding, and smart lighting solutions.</p>
+                        <p class="ur">ہماری غیر معمولی سجاوٹ کی خدمات کے ساتھ اپنی جگہ کو ایک شاہکار میں تبدیل کریں۔ ہم بہترین جپسم ڈیکور، لکڑی کی کلیڈنگ، اور سمارٹ لائٹنگ کے حل کو ڈیزائن اور انجام دینے میں مہارت رکھتے ہیں۔</p>
                         
                         <a href="service-decor.html" class="btn-order">
-                            <i class="fa-solid fa-angle-left icon-ar"></i>
-                            <i class="fa-solid fa-angle-right icon-ltr"></i>
-                            <span class="ar">معرفة المزيد</span><span class="en">Learn More</span><span class="ur">مزید جانیں</span>
+                            <span class="ar">معرفة المزيد <i class="fa-solid fa-arrow-left-long"></i></span>
+                            <span class="en">Learn More <i class="fa-solid fa-arrow-right-long"></i></span>
+                            <span class="ur">مزید جانیں <i class="fa-solid fa-arrow-left-long"></i></span>
                         </a>
                     </div>
                 </div>
@@ -525,17 +538,17 @@
                     </div>
                     <div class="service-content">
                         <h3 class="ar">تأسيس سباكة وكهرباء</h3>
-                        <h3 class="en" style="display:none;">Plumbing & Electrical</h3>
-                        <h3 class="ur" style="display:none;">پلمبنگ و بجلی</h3>
+                        <h3 class="en">Plumbing & Electrical</h3>
+                        <h3 class="ur">پلمبنگ و بجلی</h3>
                         
                         <p class="ar">تأسيس السباكة والكهرباء هو العصب الحقيقي لأي مبنى. نقدم خدمات احترافية فائقة الدقة لضمان استدامة وأمان تام على المدى الطويل باستخدام أفضل العلامات التجارية لتجنب المخاطر.</p>
-                        <p class="en" style="display:none;">Plumbing and electrical foundations are the core of any successful building. We offer ultra-precise professional setup ensuring long-term safety and sustainability.</p>
-                        <p class="ur" style="display:none;">پلمبنگ اور برقی بنیادیں کسی بھی کامیاب عمارت کا مرکز ہیں۔ ہم انتہائی درست پیشہ ورانہ سیٹ اپ پیش کرتے ہیں جو طویل مدتی حفاظت اور پائیداری کو یقینی بناتا ہے۔</p>
+                        <p class="en">Plumbing and electrical foundations are the core of any successful building. We offer ultra-precise professional setup ensuring long-term safety and sustainability.</p>
+                        <p class="ur">پلمبنگ اور برقی بنیادیں کسی بھی کامیاب عمارت کا مرکز ہیں۔ ہم انتہائی درست پیشہ ورانہ سیٹ اپ پیش کرتے ہیں جو طویل مدتی حفاظت اور پائیداری کو یقینی بناتا ہے۔</p>
                         
                         <a href="service-mep.html" class="btn-order">
-                            <i class="fa-solid fa-angle-left icon-ar"></i>
-                            <i class="fa-solid fa-angle-right icon-ltr"></i>
-                            <span class="ar">معرفة المزيد</span><span class="en">Learn More</span><span class="ur">مزید جانیں</span>
+                            <span class="ar">معرفة المزيد <i class="fa-solid fa-arrow-left-long"></i></span>
+                            <span class="en">Learn More <i class="fa-solid fa-arrow-right-long"></i></span>
+                            <span class="ur">مزید جانیں <i class="fa-solid fa-arrow-left-long"></i></span>
                         </a>
                     </div>
                 </div>
@@ -551,22 +564,24 @@
         <a href="tel:0551128884" class="float-btn float-call" title="اتصال"><i class="fa-solid fa-phone"></i></a>
     </div>
 
+    <!-- الفوتر بدون المربعات الزائدة -->
     <footer>
         <div class="footer-social">
             <a href="https://www.tiktok.com/@Tawodco" target="_blank" class="social-tiktok" title="تيك توك"><i class="fa-brands fa-tiktok"></i></a>
             <a href="https://www.instagram.com/tawodco1/" target="_blank" class="social-insta" title="انستقرام"><i class="fa-brands fa-instagram"></i></a>
             <a href="https://www.snapchat.com/add/Tawodco" target="_blank" class="social-snap" title="سناب شات"><i class="fa-brands fa-snapchat"></i></a>
+            
+            <!-- أيقونة منصة إكس بالصور (لايت ودارك) -->
             <a href="https://x.com/Tawodco" target="_blank" class="social-x" title="منصة إكس">
-                <img src="https://imgg.io/images/2026/05/14/68161f1090e0f346238efe5aacfd1654.jpg" alt="X">
+                <img src="https://imgg.io/images/2026/05/14/9c3638be3edf5c905f80159bd811e811.png" class="x-light" alt="X">
+                <img src="https://imgg.io/images/2026/05/14/65bf8e06d2cca039d275b93c8e67bdda.png" class="x-dark" alt="X" style="display: none;">
             </a>
         </div>
         
-        <div class="footer-info">
-            <span class="ar"><i class="fa-solid fa-file-signature"></i> سجل تجاري: 7033495099</span>
-            <span dir="ltr"><i class="fa-solid fa-envelope"></i> info@tawodco.com</span>
-        </div>
         <p>
             <span class="ar">جميع الحقوق محفوظة © 2026 - شركة تعاود للمقاولات العامة</span>
+            <span class="en">All Rights Reserved © 2026 - Tawod General Contracting Co.</span>
+            <span class="ur">جملہ حقوق محفوظ ہیں © 2026 - تعاود کنٹریکٹنگ کمپنی</span>
         </p>
         <a href="https://wa.me/966547194788" class="designer-badge" style="text-decoration: none;"><span>👑 تطوير وتصميم م. إسلام 👑</span></a>
     </footer>
