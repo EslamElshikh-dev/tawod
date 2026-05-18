@@ -194,7 +194,7 @@
         .section-desc { text-align: center; max-width: 800px; margin: 0 auto 50px; font-size: 1.05rem; font-weight: 600; line-height: 1.7; opacity: 0.9; }
         section { padding: 80px 5%; position: relative; display: flex; flex-direction: column; align-items: center; }
 
-        /* معرض المشاريع (البديل للماذا تختارنا) */
+        /* معرض المشاريع */
         .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; width: 100%; max-width: 1200px; }
         .project-card {
             background: var(--card-bg); border-radius: 20px; padding: 15px;
@@ -254,11 +254,15 @@
         /* الأزرار العائمة */
         .floating-actions { position: fixed; bottom: 30px; left: 20px; right: auto; display: flex; flex-direction: column; gap: 15px; z-index: 999; transition: 0.3s; }
         html[dir="ltr"] .floating-actions { left: auto; right: 20px; }
-        .float-btn { width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.4rem; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: 0.3s; }
+        .float-btn { width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: 0.3s; }
+        
+        /* تعديل حجم أيقونة الواتساب لتملأ الإطار وتكون متناسقة */
         .float-wa { background: #25D366; animation: pulse-green 2s infinite; }
+        .float-wa i { font-size: 1.7rem; }
         
         /* أيقونة الاتصال في وضع الدارك مود */
         .float-call { background: var(--secondary-color); border: 2px solid var(--primary-color); animation: pulse-orange 2s infinite 1s; }
+        .float-call i { font-size: 1.2rem; }
         [data-theme="dark"] .float-call i { color: var(--bg-color); } 
         
         @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
@@ -266,9 +270,10 @@
         .float-btn:hover { transform: translateY(-5px) scale(1.1); animation: none; box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
 
         /* الفوتر وأيقونات السوشيال ميديا */
-        footer { background: var(--secondary-color); color: white; padding: 50px 5% 30px; text-align: center; border-top: 4px solid var(--primary-color); font-weight: 700; display: flex; flex-direction: column; align-items: center; }
+        footer { background: var(--secondary-color); color: white; text-align: center; border-top: 4px solid var(--primary-color); font-weight: 700; display: flex; flex-direction: column; align-items: center; padding-top: 40px; }
+        .footer-content { padding: 0 5% 30px; width: 100%; display: flex; flex-direction: column; align-items: center; }
         
-        .footer-social { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; }
+        .footer-social { display: flex; justify-content: center; gap: 15px; margin-bottom: 0; }
         .footer-social a { width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 1.4rem; transition: all 0.4s ease; text-decoration: none; overflow: hidden; }
         
         /* ألوان السوشيال ميديا الجذابة */
@@ -289,8 +294,26 @@
         [data-theme="dark"] .x-light { display: none !important; }
         [data-theme="dark"] .x-dark { display: block !important; }
         
-        footer > p { font-size: clamp(0.7rem, 2vw, 0.8rem); margin-bottom: 15px; opacity: 0.8; }
-        .designer-badge { display: inline-flex; justify-content: center; align-items: center; padding: 8px 20px; background: rgba(0,0,0,0.4); border: 1px solid var(--primary-color); border-radius: 25px; font-size: 0.85rem; color: white; transition: 0.3s; }
+        /* الشريط السفلي المستقل للفوتر (يحتوي الحقوق وزر التصميم) */
+        .footer-bottom { 
+            background: rgba(0, 0, 0, 0.3); width: 100%; 
+            padding: 15px 5% 85px; /* مساحة إضافية بالأسفل عشان الأزرار العائمة في الجوال */
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        @media (min-width: 769px) {
+            .footer-bottom { padding-bottom: 15px; flex-direction: row; justify-content: space-between; }
+        }
+        
+        .footer-bottom p { font-size: clamp(0.7rem, 2vw, 0.8rem); margin: 0; opacity: 0.8; }
+        
+        /* تصغير حجم زر المصمم بنسبة 40% وتغيير النص */
+        .designer-badge { 
+            display: inline-flex; justify-content: center; align-items: center; 
+            padding: 5px 12px; background: rgba(0,0,0,0.4); 
+            border: 1px solid var(--primary-color); border-radius: 25px; 
+            font-size: 0.7rem; color: white; transition: 0.3s; margin: 0;
+        }
         .designer-badge:hover { background: var(--primary-color); color: var(--secondary-color); transform: translateY(-2px); }
 
         @media (max-width: 768px) {
@@ -298,7 +321,7 @@
             .floating-actions { bottom: 30px; transform: scale(0.9); transform-origin: left bottom;}
             html[dir="ltr"] .floating-actions { transform-origin: right bottom; }
             header { padding: 12px 4%; width: 92%; left: 4%; }
-            .logo span { display: none; }
+            .logo span { display: none; } 
             .header-search { width: 45%; padding: 5px 10px; }
             .theme-btn, .action-btn { width: 35px; height: 35px; font-size: 1rem; }
         }
@@ -458,8 +481,7 @@
                         </div>
                     </div>
                 </div>
-                
-                </div>
+            </div>
         </section>
 
         <section id="services">
@@ -608,23 +630,31 @@
     </div>
 
     <footer>
-        <div class="footer-social">
-            <a href="https://www.tiktok.com/@Tawodco" target="_blank" class="social-tiktok" title="تيك توك"><i class="fa-brands fa-tiktok"></i></a>
-            <a href="https://www.instagram.com/tawodco1/" target="_blank" class="social-insta" title="انستقرام"><i class="fa-brands fa-instagram"></i></a>
-            <a href="https://www.snapchat.com/add/Tawodco" target="_blank" class="social-snap" title="سناب شات"><i class="fa-brands fa-snapchat"></i></a>
-            
-            <a href="https://x.com/Tawodco" target="_blank" class="social-x" title="منصة إكس">
-                <img src="https://imgg.io/images/2026/05/14/9c3638be3edf5c905f80159bd811e811.png" class="x-light" alt="X">
-                <img src="https://imgg.io/images/2026/05/14/65bf8e06d2cca039d275b93c8e67bdda.png" class="x-dark" alt="X" style="display: none;">
-            </a>
+        <div class="footer-content">
+            <div class="footer-social">
+                <a href="https://www.tiktok.com/@Tawodco" target="_blank" class="social-tiktok" title="تيك توك"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/tawodco1/" target="_blank" class="social-insta" title="انستقرام"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.snapchat.com/add/Tawodco" target="_blank" class="social-snap" title="سناب شات"><i class="fa-brands fa-snapchat"></i></a>
+                
+                <a href="https://x.com/Tawodco" target="_blank" class="social-x" title="منصة إكس">
+                    <img src="https://imgg.io/images/2026/05/14/9c3638be3edf5c905f80159bd811e811.png" class="x-light" alt="X">
+                    <img src="https://imgg.io/images/2026/05/14/65bf8e06d2cca039d275b93c8e67bdda.png" class="x-dark" alt="X" style="display: none;">
+                </a>
+            </div>
         </div>
         
-        <p>
-            <span class="ar">جميع الحقوق محفوظة © 2026 - شركة تعاود للمقاولات العامة</span>
-            <span class="en">All Rights Reserved © 2026 - Tawod General Contracting Co.</span>
-            <span class="ur">جملہ حقوق محفوظ ہیں © 2026 - تعاود کنٹریکٹنگ کمپنی</span>
-        </p>
-        <a href="https://wa.me/966547194788" class="designer-badge" style="text-decoration: none;"><span>👑 تطوير وتصميم م. إسلام 👑</span></a>
+        <div class="footer-bottom">
+            <p>
+                <span class="ar">جميع الحقوق محفوظة © 2026 - شركة تعاود للمقاولات العامة</span>
+                <span class="en">All Rights Reserved © 2026 - Tawod General Contracting Co.</span>
+                <span class="ur">جملہ حقوق محفوظ ہیں © 2026 - تعاود کنٹریکٹنگ کمپنی</span>
+            </p>
+            <a href="https://wa.me/966547194788" class="designer-badge" style="text-decoration: none;">
+                <span class="ar">👑 تصميم وتطوير م / إسلام الشيخ 👑</span>
+                <span class="en">👑 Designed & Developed by Eng. Eslam Elshikh 👑</span>
+                <span class="ur">👑 ڈیزائن اور تیار کردہ انجینئر اسلام الشیخ 👑</span>
+            </a>
+        </div>
     </footer>
 
     <script>
