@@ -44,29 +44,67 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
 
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "GeneralContractor",
-      "name": "شركة تعاود للمقاولات العامة",
-      "image": "https://i.ibb.co/B22R1g9r/IMG.jpg",
-      "@id": "https://tawodco.com",
-      "url": "https://tawodco.com",
-      "telephone": "+966551128884",
-      "email": "info@tawodco.com",
-      "priceRange": "$$$",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "4206 طريق عثمان بن عفان الفرعي",
-        "addressLocality": "حي الوادي، الرياض",
-        "addressRegion": "منطقة الرياض",
-        "postalCode": "13313",
-        "addressCountry": "SA"
-      },
-      "taxID": "7033495099"
-    }
-    </script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@graph":[
 
+    {
+      "@type":"Organization",
+      "@id":"https://tawodco.com/#organization",
+      "name":"شركة تعاود للمقاولات العامة",
+      "url":"https://tawodco.com",
+      "logo":"https://i.ibb.co/B22R1g9r/IMG.jpg",
+      "email":"info@tawodco.com",
+      "telephone":"+966551128884"
+    },
+
+    {
+      "@type":"LocalBusiness",
+      "@id":"https://tawodco.com/#localbusiness",
+      "name":"شركة تعاود للمقاولات العامة",
+      "image":"https://i.ibb.co/B22R1g9r/IMG.jpg",
+      "url":"https://tawodco.com",
+      "telephone":"+966551128884",
+      "email":"info@tawodco.com",
+      "address":{
+        "@type":"PostalAddress",
+        "streetAddress":"4206 طريق عثمان بن عفان الفرعي",
+        "addressLocality":"الرياض",
+        "addressRegion":"منطقة الرياض",
+        "postalCode":"13313",
+        "addressCountry":"SA"
+      },
+      "areaServed":"Riyadh",
+      "priceRange":"$$$",
+      "openingHours":"Mo-Su 00:00-23:59"
+    },
+
+    {
+      "@type":"GeneralContractor",
+      "@id":"https://tawodco.com/#contractor",
+      "name":"شركة تعاود للمقاولات العامة",
+      "url":"https://tawodco.com",
+      "telephone":"+966551128884",
+      "email":"info@tawodco.com",
+      "areaServed":"الرياض",
+      "serviceType":[
+        "مقاولات عامة",
+        "بناء عظم",
+        "بناء فلل",
+        "ترميم مباني",
+        "تشطيبات داخلية",
+        "تشطيبات خارجية",
+        "تسليم مفتاح",
+        "تأسيس كهرباء",
+        "تأسيس سباكة"
+      ]
+    }
+
+  ]
+}
+</script>
+    
     <style>
         /* المتغيرات الأساسية */
         :root {
