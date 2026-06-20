@@ -211,17 +211,14 @@
         ul { list-style: none; }
         p, h1, h2, h3, h4, h5, h6, span, div, input, textarea, select { text-align: center; }
 
-        /* الهيدر الاحترافي (Sticky Header) */
+        /* الهيدر الاحترافي */
         header {
             position: fixed; top: 0; left: 0; width: 100%; height: 90px;
             background: var(--header-bg); display: flex; justify-content: space-between; align-items: center;
             padding: 0 5%; z-index: 1000; box-shadow: var(--shadow); 
             transition: all 0.3s ease;
         }
-        header.scrolled {
-            height: 75px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
+        header.scrolled { height: 75px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
         [data-theme="dark"] header.scrolled { box-shadow: 0 8px 25px rgba(0,0,0,0.6); }
 
         .logo { display: flex; align-items: center; gap: 10px; color: var(--secondary-color); font-weight: 800; font-size: 1.2rem; }
@@ -248,9 +245,16 @@
             width: 40px; height: 40px; border-radius: 6px; 
             display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 1rem; transition: 0.3s;
         }
+        .lang-btn { width: auto; padding: 0 12px; font-weight: 800; gap: 6px; border-radius: 20px; letter-spacing: 0.5px; }
         [data-theme="dark"] .theme-btn, [data-theme="dark"] .action-btn { color: var(--primary-color); }
-        .theme-btn:hover, .action-btn:hover { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .theme-btn:hover, .action-btn:hover { background: var(--primary-color); color: white !important; border-color: var(--primary-color); }
         
+        /* Language Switcher Logic */
+        html[lang="ar"] .ar-ui { display: flex; align-items: center; gap: 5px; }
+        html[lang="ar"] .en-ui { display: none; }
+        html[lang="en"] .en-ui { display: flex; align-items: center; gap: 5px; }
+        html[lang="en"] .ar-ui { display: none; }
+
         .menu-toggle { display: none; }
 
         /* القائمة الجانبية للموبايل */
@@ -291,41 +295,21 @@
         .hero-video { position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; transform: translateX(-50%) translateY(-50%); z-index: 0; object-fit: cover; }
         .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); z-index: 1; }
         .hero-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; width: 100%; }
-        .hero h1, .hero p, .hero .cr-badge { color: #ffffff !important; text-shadow: 0 2px 15px rgba(0,0,0,0.8); }
-        .hero h1 { font-size: clamp(1.8rem, 5vw, 3.5rem); font-weight: 900; margin-bottom: 15px; }
-        .hero h1 span { color: var(--primary-color) !important; }
-        .hero p { font-size: 1.2rem; font-weight: 600; max-width: 800px; margin: 0 auto 30px; line-height: 1.8; }
         
-        .hero-cta {
-            display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px;
-        }
+        .hero h1 { font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 900; margin-bottom: 15px; color: #ffffff !important; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .hero h1 span { color: #ffffff !important; }
+        .hero p { font-size: 1.2rem; font-weight: 600; max-width: 800px; margin: 0 auto 30px; line-height: 1.8; color: #ffffff !important; text-shadow: 0 2px 10px rgba(0,0,0,0.6); }
+        
+        .hero-cta { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
         .btn-hero {
-            padding: 14px 30px; border-radius: 8px; font-size: 1.1rem; font-weight: 800;
-            display: flex; align-items: center; gap: 10px; transition: all 0.3s ease;
+            padding: 15px 35px; border-radius: 30px; font-size: 1.15rem; font-weight: 800;
+            display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;
+            box-shadow: var(--shadow); color: #fff !important; border: none !important;
         }
-        .btn-hero-call { background: var(--primary-color); color: #fff !important; border: 2px solid var(--primary-color); }
-        .btn-hero-call:hover { background: transparent; color: var(--primary-color) !important; }
-        .btn-hero-wa { background: #25D366; color: #fff !important; border: 2px solid #25D366; }
-        .btn-hero-wa:hover { background: transparent; color: #25D366 !important; }
-        .btn-hero-quote { background: transparent; color: #fff !important; border: 2px solid #fff; }
-        .btn-hero-quote:hover { background: #fff; color: var(--secondary-color) !important; }
-
-        /* قسم الإحصائيات (الجديد) */
-        .statistics-section {
-            padding: 60px 5%; background: var(--secondary-color); color: #fff;
-            position: relative; z-index: 5;
-        }
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 30px; max-width: 1200px; margin: 0 auto;
-        }
-        .stat-card {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 30px 20px; border-radius: 16px; text-align: center; transition: 0.3s;
-        }
-        .stat-card:hover { transform: translateY(-5px); background: rgba(242, 164, 97, 0.1); border-color: var(--primary-color); }
-        .stat-card h3 { font-size: 3rem; font-weight: 900; color: var(--primary-color); margin-bottom: 10px; }
-        .stat-card p { font-size: 1.1rem; font-weight: 700; color: #fff; }
+        .btn-hero-call { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); box-shadow: 0 6px 20px rgba(242, 164, 97, 0.4); }
+        .btn-hero-wa { background: linear-gradient(135deg, #25D366, #128C7E); box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4); }
+        .btn-hero-quote { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.4) !important; }
+        .btn-hero:hover { transform: scale(1.08); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
 
         /* الأقسام العامة */
         .section-title { text-align: center; font-size: 2.2rem; font-weight: 900; margin-bottom: 15px; color: var(--secondary-color); position: relative; display: inline-block; }
@@ -333,53 +317,86 @@
         .section-desc { text-align: center; max-width: 800px; margin: 0 auto 50px; font-size: 1.1rem; font-weight: 600; line-height: 1.7; opacity: 0.8; }
         section { padding: 90px 5%; position: relative; display: flex; flex-direction: column; align-items: center; }
 
-        /* Services Cards Redesign (Built Style) */
+        /* Services Section Center Aligned */
         .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; width: 100%; max-width: 1200px; }
         .service-card { 
-            background: var(--card-bg); border-radius: 16px; box-shadow: var(--shadow); 
+            background: var(--card-bg); border-radius: 16px; box-shadow: var(--shadow); text-align: center;
             border: 1px solid var(--border-color); transition: all 0.4s ease; 
-            display: flex; flex-direction: column; overflow: hidden; height: 100%; text-align: right;
+            display: flex; flex-direction: column; overflow: hidden; height: 100%;
         }
-        html[dir="ltr"] .service-card { text-align: left; }
+        html[dir="ltr"] .service-card { text-align: center; }
         .service-card:hover { transform: translateY(-8px); box-shadow: var(--hover-shadow); }
         .service-image { width: 100%; height: 240px; overflow: hidden; }
         .service-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
         .service-card:hover .service-image img { transform: scale(1.05); }
-        .service-content { padding: 30px; display: flex; flex-direction: column; flex-grow: 1; }
-        .service-content h3 { font-size: 1.4rem; font-weight: 900; color: var(--secondary-color); margin-bottom: 15px; text-align: right; }
-        html[dir="ltr"] .service-content h3 { text-align: left; }
+        .service-content { padding: 30px; display: flex; flex-direction: column; flex-grow: 1; align-items: center; }
+        .service-content h3 { font-size: 1.4rem; font-weight: 900; color: var(--secondary-color); margin-bottom: 15px; width: 100%; text-align: center; }
+        html[dir="ltr"] .service-content h3 { text-align: center; }
         [data-theme="dark"] .service-content h3 { color: #fff; }
-        .service-content p { font-size: 1rem; color: var(--text-color); opacity: 0.8; margin-bottom: 25px; line-height: 1.7; flex-grow: 1; text-align: right; }
-        html[dir="ltr"] .service-content p { text-align: left; }
+        .service-content p { font-size: 1rem; color: var(--text-color); opacity: 0.8; margin-bottom: 25px; line-height: 1.7; flex-grow: 1; text-align: center; width: 100%; }
+        html[dir="ltr"] .service-content p { text-align: center; }
         .btn-more { 
-            display: inline-flex; align-items: center; gap: 8px; font-weight: 800; 
-            color: var(--primary-color); font-size: 1.05rem; transition: 0.3s;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 800; 
+            color: var(--primary-color); font-size: 1.05rem; transition: 0.3s; width: 100%;
         }
         .btn-more:hover { gap: 12px; color: var(--primary-dark); }
 
-        /* Projects Section (Built Style) */
+        /* قسم الإحصائيات بعد التعديل */
+        .statistics-section { padding: 80px 5%; background: var(--bg-color); position: relative; z-index: 5; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 30px; max-width: 1200px; width: 100%; margin: 0 auto; }
+        .stat-card {
+            background: var(--card-bg); border: 1px solid var(--border-color); box-shadow: var(--shadow);
+            padding: 40px 20px; border-radius: 16px; text-align: center; transition: 0.3s;
+            opacity: 0; transform: translateY(30px);
+        }
+        .stat-card.visible { opacity: 1; transform: translateY(0); }
+        .stat-card:hover { transform: translateY(-5px); border-color: var(--primary-color); box-shadow: var(--hover-shadow); }
+        .stat-card h3 { font-size: 3rem; font-weight: 900; color: var(--primary-color); margin-bottom: 10px; display: flex; justify-content: center; align-items: center; }
+        .stat-card p { font-size: 1.1rem; font-weight: 700; color: var(--text-color); opacity: 0.9; }
+
+        /* Projects Section Center Aligned */
         .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; width: 100%; max-width: 1200px; }
         .project-card {
-            background: var(--card-bg); border-radius: 16px; overflow: hidden;
+            background: var(--card-bg); border-radius: 16px; overflow: hidden; text-align: center;
             box-shadow: var(--shadow); border: 1px solid var(--border-color); transition: all 0.4s ease;
-            text-align: right; display: flex; flex-direction: column; height: 100%;
+            display: flex; flex-direction: column; height: 100%;
         }
-        html[dir="ltr"] .project-card { text-align: left; }
+        html[dir="ltr"] .project-card { text-align: center; }
         .project-card:hover { transform: translateY(-8px); box-shadow: var(--hover-shadow); }
         .project-image { width: 100%; height: 260px; overflow: hidden; position: relative; }
         .project-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
         .project-card:hover .project-image img { transform: scale(1.05); }
         .project-type { 
-            position: absolute; top: 15px; right: 15px; background: var(--primary-color); 
-            color: #fff; padding: 6px 15px; border-radius: 30px; font-weight: 800; font-size: 0.85rem;
+            position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 2;
+            background: var(--primary-color); color: #fff; padding: 6px 15px; border-radius: 30px; font-weight: 800; font-size: 0.85rem;
         }
-        html[dir="ltr"] .project-type { right: auto; left: 15px; }
-        .project-content { padding: 25px; display: flex; flex-direction: column; flex-grow: 1; }
-        .project-content h3 { font-size: 1.3rem; font-weight: 900; color: var(--secondary-color); margin-bottom: 12px; text-align: right; }
-        html[dir="ltr"] .project-content h3 { text-align: left; }
+        html[dir="ltr"] .project-type { left: 50%; transform: translateX(-50%); }
+        .project-content { padding: 25px; display: flex; flex-direction: column; flex-grow: 1; align-items: center; }
+        .project-content h3 { font-size: 1.3rem; font-weight: 900; color: var(--secondary-color); margin-bottom: 12px; text-align: center; width: 100%; }
+        html[dir="ltr"] .project-content h3 { text-align: center; }
         [data-theme="dark"] .project-content h3 { color: #fff; }
-        .project-content p { font-size: 0.95rem; color: var(--text-color); opacity: 0.8; margin-bottom: 20px; line-height: 1.7; flex-grow: 1; text-align: right; }
-        html[dir="ltr"] .project-content p { text-align: left; }
+        .project-content p { font-size: 0.95rem; color: var(--text-color); opacity: 0.8; margin-bottom: 20px; line-height: 1.7; flex-grow: 1; text-align: center; width: 100%; }
+        html[dir="ltr"] .project-content p { text-align: center; }
+
+        /* Blog Snippet Layout Fix */
+        .blog-btn-container { margin-top: 40px; display: flex; justify-content: center; width: 100%; }
+
+        /* Map & Contact Form Section */
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%; max-width: 1200px; margin: 0 auto; align-items: stretch; }
+        .modern-form { background: var(--card-bg); padding: 40px; border-radius: 16px; box-shadow: var(--shadow); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 20px; }
+        .input-group { text-align: right; }
+        html[dir="ltr"] .input-group { text-align: left; }
+        .input-group label { display: block; font-weight: 700; margin-bottom: 8px; color: var(--secondary-color); font-size: 0.95rem; }
+        [data-theme="dark"] .input-group label { color: #fff; }
+        .input-group input, .input-group select, .input-group textarea {
+            width: 100%; padding: 15px; border: 1px solid var(--border-color); border-radius: 8px;
+            background: var(--form-bg); color: var(--text-color); font-family: inherit; font-size: 1rem; transition: 0.3s; outline: none;
+        }
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus { border-color: var(--primary-color); box-shadow: 0 0 10px rgba(242, 164, 97, 0.2); }
+        .btn-submit { padding: 16px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 10px; }
+        .btn-submit:hover { background: var(--primary-dark); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(242,164,97,0.4); }
+        .map-container { border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border-color); min-height: 400px; }
+        .map-container iframe { width: 100%; height: 100%; border: none; }
 
         /* قسم الأسئلة الشائعة FAQ */
         .faq-grid { max-width: 900px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 15px; }
@@ -394,45 +411,46 @@
         .faq-content { padding: 0 25px 20px; font-size: 0.95rem; font-weight: 600; color: var(--text-color); line-height: 1.8; opacity: 0.9; text-align: right; }
         html[dir="ltr"] .faq-content { text-align: left; }
 
-        /* Footer Redesign */
-        footer { 
-            background-color: #1D1E26; position: relative; color: #fff; 
-            padding: 80px 5% 0; overflow: hidden;
-        }
-        .footer-overlay {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: url('https://i.ibb.co/TD6BJB2t/pngtree-architect-engineer-check-work-construction-in-a-building-site-with-sunset-image-15730251.png') center/cover;
-            opacity: 0.05; z-index: 0;
-        }
+        /* الأزرار العائمة */
+        .floating-actions { position: fixed; bottom: 30px; left: 30px; right: auto; display: flex; flex-direction: column; gap: 15px; z-index: 999; }
+        html[dir="ltr"] .floating-actions { left: auto; right: 30px; }
+        .float-btn { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.8rem; color: #fff !important; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: all 0.3s ease; text-decoration: none; }
+        .float-wa { background: #25D366; animation: pulse-wa 2s infinite; }
+        .float-call { background: var(--primary-color); animation: pulse-call 2s infinite 1s; }
+        .float-btn:hover { transform: scale(1.15); box-shadow: 0 8px 25px rgba(0,0,0,0.4); animation: none; }
+        @keyframes pulse-wa { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
+        @keyframes pulse-call { 0% { box-shadow: 0 0 0 0 rgba(242, 164, 97, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(242, 164, 97, 0); } 100% { box-shadow: 0 0 0 0 rgba(242, 164, 97, 0); } }
+
+        /* Footer Enhancements */
+        footer { background-color: #1D1E26; position: relative; color: #fff; padding: 80px 5% 0; overflow: hidden; }
+        .footer-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('https://i.ibb.co/TD6BJB2t/pngtree-architect-engineer-check-work-construction-in-a-building-site-with-sunset-image-15730251.png') center/cover; opacity: 0.05; z-index: 0; }
         .footer-container { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
-        .footer-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px; margin-bottom: 60px; text-align: right;
-        }
-        html[dir="ltr"] .footer-grid { text-align: left; }
-        .footer-col h4 { font-size: 1.3rem; font-weight: 900; color: var(--primary-color); margin-bottom: 25px; text-align: right; }
-        html[dir="ltr"] .footer-col h4 { text-align: left; }
-        .footer-col p { color: #cbd5e1; font-size: 1rem; line-height: 1.8; margin-bottom: 20px; text-align: right; }
-        html[dir="ltr"] .footer-col p { text-align: left; }
-        .footer-social { display: flex; gap: 15px; }
-        .footer-social a { 
-            width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 8px;
-            display: flex; justify-content: center; align-items: center; color: #fff; font-size: 1.2rem; transition: 0.3s;
-        }
-        .footer-social a:hover { background: var(--primary-color); transform: translateY(-3px); }
-        .footer-links li { margin-bottom: 12px; }
-        .footer-links a { color: #cbd5e1; font-size: 1rem; transition: 0.3s; display: inline-block; }
-        .footer-links a:hover { color: var(--primary-color); transform: translateX(-5px); }
-        html[dir="ltr"] .footer-links a:hover { transform: translateX(5px); }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 60px; }
         
-        .footer-contact li { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; color: #cbd5e1; }
+        .footer-col h4 { font-family: 'Tajawal', sans-serif; font-size: 1.4rem; font-weight: 900; color: var(--primary-color); margin-bottom: 25px; text-align: center; }
+        html[dir="ltr"] .footer-col h4 { text-align: center; }
+        
+        .footer-logo-container { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .footer-logo-container img { border-radius: 8px; margin-bottom: 20px; }
+        .footer-logo-container p { color: #cbd5e1; font-size: 1rem; line-height: 1.9; margin-bottom: 20px; width: 100%; text-align: center; }
+        
+        .footer-links { display: flex; flex-direction: column; align-items: center; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a { color: #cbd5e1; font-size: 1.05rem; transition: 0.3s; display: inline-block; font-weight: 600;}
+        .footer-links a:hover { color: var(--primary-color); transform: translateY(-3px); }
+        
+        .footer-contact { display: flex; flex-direction: column; align-items: center; }
+        .footer-contact li { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 15px; color: #cbd5e1; font-size: 1rem; }
         .footer-contact li i { color: var(--primary-color); font-size: 1.2rem; }
 
-        .footer-bottom {
-            position: relative; z-index: 1; text-align: center; padding: 25px;
-            background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.05);
-            font-size: 1rem; color: #94a3b8;
+        .footer-social { display: flex; justify-content: center; gap: 15px; }
+        .footer-social a { 
+            width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 8px;
+            display: flex; justify-content: center; align-items: center; color: #fff !important; font-size: 1.2rem; transition: 0.3s;
         }
+        .footer-social a:hover { background: var(--primary-color); transform: translateY(-3px); }
+
+        .footer-bottom { position: relative; z-index: 1; text-align: center; padding: 25px; background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.05); font-size: 1rem; color: #94a3b8; }
 
         /* Responsive Optimization */
         @media (max-width: 991px) {
@@ -440,14 +458,15 @@
             .header-btn { display: none; }
             .menu-toggle { display: flex; }
             .hero { padding: 140px 5% 80px; }
-            .hero h1 { font-size: 2.2rem; }
+            .hero h1 { font-size: 2rem; }
             .section-title { font-size: 1.8rem; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .footer-grid { text-align: center; }
+            .contact-grid { grid-template-columns: 1fr; }
+            .map-container { order: -1; min-height: 300px; }
             .footer-col h4, .footer-col p { text-align: center; }
             html[dir="ltr"] .footer-col h4, html[dir="ltr"] .footer-col p { text-align: center; }
-            .footer-social { justify-content: center; }
-            .footer-contact li { justify-content: center; }
+            .floating-actions { transform: scale(0.9); transform-origin: bottom left; }
+            html[dir="ltr"] .floating-actions { transform-origin: bottom right; }
         }
         @media (max-width: 576px) {
             .stats-grid { grid-template-columns: 1fr; }
@@ -471,13 +490,18 @@
             <li><a href="#services"><span class="ar">خدماتنا</span><span class="en">Services</span></a></li>
             <li><a href="#projects"><span class="ar">مشاريعنا</span><span class="en">Our Projects</span></a></li>
             <li><a href="https://blog.tawodco.com/" target="_blank"><span class="ar">المدونة</span><span class="en">Blog</span></a></li>
-            <li><a href="contact.html"><span class="ar">تواصل معنا</span><span class="en">Contact</span></a></li>
+            <li><a href="#contact-map"><span class="ar">تواصل معنا</span><span class="en">Contact</span></a></li>
         </ul>
 
         <div class="header-left">
             <a href="tel:0551128884" class="header-btn btn-call-header"><i class="fa-solid fa-phone"></i></a>
             <a href="https://wa.me/966551128884" class="header-btn btn-wa-header"><i class="fa-brands fa-whatsapp"></i></a>
-            <div class="action-btn" id="lang-toggle" title="تغيير اللغة"><i class="fa-solid fa-earth-americas"></i></div>
+            
+            <div class="action-btn lang-btn" id="lang-toggle" title="تغيير اللغة">
+                <span class="ar-ui">🇸🇦 AR</span>
+                <span class="en-ui">🇬🇧 EN</span>
+            </div>
+
             <div class="action-btn menu-toggle" id="menu-toggle"><i class="fa-solid fa-bars"></i></div>
         </div>
     </header>
@@ -496,7 +520,7 @@
                 <li><a href="#services" class="close-on-click"><i class="fa-solid fa-helmet-safety"></i> <span class="ar">خدماتنا</span><span class="en">Services</span></a></li>
                 <li><a href="#projects" class="close-on-click"><i class="fa-solid fa-camera"></i> <span class="ar">مشاريعنا</span><span class="en">Projects</span></a></li>
                 <li><a href="https://blog.tawodco.com/" target="_blank" class="close-on-click"><i class="fa-solid fa-blog"></i> <span class="ar">المدونة</span><span class="en">Blog</span></a></li>
-                <li><a href="contact.html" class="close-on-click"><i class="fa-solid fa-envelope"></i> <span class="ar">تواصل معنا</span><span class="en">Contact Us</span></a></li>
+                <li><a href="#contact-map" class="close-on-click"><i class="fa-solid fa-envelope"></i> <span class="ar">تواصل معنا</span><span class="en">Contact Us</span></a></li>
             </ul>
         </div>
     </div>
@@ -519,38 +543,12 @@
                 <div class="hero-cta">
                     <a href="tel:0551128884" class="btn-hero btn-hero-call"><i class="fa-solid fa-phone"></i> <span class="ar">اتصل الآن</span><span class="en">Call Now</span></a>
                     <a href="https://wa.me/966551128884" class="btn-hero btn-hero-wa"><i class="fa-brands fa-whatsapp"></i> <span class="ar">واتساب</span><span class="en">WhatsApp</span></a>
-                    <a href="#contact" class="btn-hero btn-hero-quote"><i class="fa-solid fa-file-invoice-dollar"></i> <span class="ar">اطلب عرض سعر</span><span class="en">Request Quote</span></a>
+                    <a href="#contact-map" class="btn-hero btn-hero-quote"><i class="fa-solid fa-file-invoice-dollar"></i> <span class="ar">اطلب عرض سعر</span><span class="en">Request Quote</span></a>
                 </div>
             </div>
         </section>
 
-        <!-- قسم الإحصائيات الجديد -->
-        <section id="statistics" class="statistics-section">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>500+</h3>
-                    <p class="ar">مشروع منجز</p>
-                    <p class="en">Completed Projects</p>
-                </div>
-                <div class="stat-card">
-                    <h3>15+</h3>
-                    <p class="ar">سنة خبرة</p>
-                    <p class="en">Years of Experience</p>
-                </div>
-                <div class="stat-card">
-                    <h3>100%</h3>
-                    <p class="ar">التزام بالجودة</p>
-                    <p class="en">Quality Commitment</p>
-                </div>
-                <div class="stat-card">
-                    <h3>24/7</h3>
-                    <p class="ar">دعم واستشارات</p>
-                    <p class="en">Support & Consultation</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- قسم الخدمات - تصميم احترافي مشابه لـ Built -->
+        <!-- قسم الخدمات - تصميم احترافي وموسط -->
         <section id="services">
             <h2 class="section-title">
                 <span class="ar">خدمات المقاولات العامة والبناء والترميم في الرياض</span>
@@ -674,7 +672,33 @@
             </div>
         </section>
 
-        <!-- قسم المشاريع (6 مشاريع بتصميم Built) -->
+        <!-- قسم الإحصائيات (موقع جديد وتأثير العداد) -->
+        <section id="statistics" class="statistics-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3><span class="counter" data-target="500">0</span>+</h3>
+                    <p class="ar">مشروع منجز</p>
+                    <p class="en">Completed Projects</p>
+                </div>
+                <div class="stat-card">
+                    <h3><span class="counter" data-target="15">0</span>+</h3>
+                    <p class="ar">سنة خبرة</p>
+                    <p class="en">Years of Experience</p>
+                </div>
+                <div class="stat-card">
+                    <h3><span class="counter" data-target="100">0</span>%</h3>
+                    <p class="ar">التزام بالجودة</p>
+                    <p class="en">Quality Commitment</p>
+                </div>
+                <div class="stat-card">
+                    <h3>24/7</h3>
+                    <p class="ar">دعم واستشارات</p>
+                    <p class="en">Support & Consultation</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم المشاريع موسط بالكامل -->
         <section id="projects">
             <h2 class="section-title">
                 <span class="ar">أبرز مشاريع البناء والترميم والتشطيب التي نفذتها شركة تعاود بالرياض</span>
@@ -792,6 +816,17 @@
             </div>
         </section>
 
+        <!-- قسم المدونة المصغر -->
+        <section id="blog-preview" style="padding-top: 40px;">
+            <div class="blog-btn-container">
+                <a href="https://blog.tawodco.com/" target="_blank" class="btn-hero btn-hero-call" style="padding: 12px 40px; border-radius: 8px;">
+                    <i class="fa-solid fa-blog"></i>
+                    <span class="ar">زيارة المدونة الهندسية</span>
+                    <span class="en">Visit Our Blog</span>
+                </a>
+            </div>
+        </section>
+
         <section id="faq">
             <h2 class="section-title">
                 <span class="ar">الأسئلة الشائعة (FAQ)</span>
@@ -821,16 +856,86 @@
             </div>
         </section>
 
+        <!-- قسم الخريطة ونموذج التواصل الجديد -->
+        <section id="contact-map" style="background: var(--bg-color);">
+            <h2 class="section-title">
+                <span class="ar">تواصل معنا</span>
+                <span class="en">Contact Us</span>
+            </h2>
+            <div class="section-desc">
+                <span class="ar">نسعد بخدمتكم وتلبية كافة استفساراتكم الهندسية ومشاريع المقاولات</span>
+                <span class="en">We are happy to serve you and answer all your engineering and construction inquiries</span>
+            </div>
+            
+            <div class="contact-grid">
+                <div class="contact-form-container">
+                    <form action="mailto:info@tawodco.com" method="post" enctype="text/plain" class="modern-form">
+                        <div class="input-group">
+                            <label><span class="ar">الاسم الكريم</span><span class="en">Full Name</span></label>
+                            <input type="text" name="Name" required>
+                        </div>
+                        <div class="input-group">
+                            <label><span class="ar">البريد الإلكتروني</span><span class="en">Email Address</span></label>
+                            <input type="email" name="Email" required>
+                        </div>
+                        <div class="input-group">
+                            <label><span class="ar">رقم الجوال</span><span class="en">Phone Number</span></label>
+                            <input type="tel" name="Phone" required>
+                        </div>
+                        <div class="input-group">
+                            <label><span class="ar">الخدمة المطلوبة</span><span class="en">Required Service</span></label>
+                            <select name="Service" class="ar" required>
+                                <option value="">اختر الخدمة ...</option>
+                                <option value="البناء والإنشاءات">البناء والإنشاءات</option>
+                                <option value="تسليم مفتاح">تسليم مفتاح</option>
+                                <option value="الترميم">الترميم</option>
+                                <option value="التشطيبات">التشطيبات</option>
+                                <option value="الديكورات">الديكورات</option>
+                                <option value="أعمال الكهرباء والسباكة">أعمال الكهرباء والسباكة</option>
+                            </select>
+                            <select name="Service" class="en" required>
+                                <option value="">Select Service ...</option>
+                                <option value="Construction">Construction</option>
+                                <option value="Turnkey">Turnkey Projects</option>
+                                <option value="Restoration">Restoration</option>
+                                <option value="Finishing">Finishing</option>
+                                <option value="Decorations">Decorations</option>
+                                <option value="MEP">Plumbing & Electrical</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label><span class="ar">تفاصيل الطلب</span><span class="en">Request Details</span></label>
+                            <textarea name="Details" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit">
+                            <i class="fa-regular fa-paper-plane"></i>
+                            <span class="ar">إرسال الطلب</span><span class="en">Send Request</span>
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="map-container">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2825.0333607418256!2d46.69983649999999!3d24.792731099999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2efdb5a75296e1%3A0x8cb063463a755f11!2z2LTYsdmD2Kkg2KrYudin2YjYryDZhNmE2YXZgtin2YjZhNin2Ko!5e1!3m2!1sar!2ssa!4v1781964482588!5m2!1sar!2ssa" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <!-- الفوتر الجديد -->
+    <!-- الأزرار العائمة -->
+    <div class="floating-actions">
+        <a href="https://wa.me/966551128884" class="float-btn float-wa" target="_blank" title="تواصل عبر الواتساب"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="tel:0551128884" class="float-btn float-call" title="اتصل بنا الآن"><i class="fa-solid fa-phone"></i></a>
+    </div>
+
+    <!-- الفوتر المطور -->
     <footer>
         <div class="footer-overlay"></div>
         <div class="footer-container">
             <div class="footer-grid">
                 
-                <div class="footer-col">
-                    <img src="https://i.ibb.co/B22R1g9r/IMG.jpg" alt="تعاود" width="60" style="border-radius: 8px; margin-bottom: 20px;">
+                <div class="footer-col footer-logo-container">
+                    <img src="https://i.ibb.co/B22R1g9r/IMG.jpg" alt="تعاود" width="60">
                     <p class="ar">شركة تعاود للمقاولات العامة بالرياض متخصصة في البناء والإنشاءات وترميم المباني وتوفير أفضل الخدمات الهندسية والمقاولات بأعلى معايير الجودة لضمان رضا عملائنا الكرام</p>
                     <p class="en">Tawod Contracting in Riyadh specializes in construction, restoration, and top engineering services ensuring ultimate quality and client satisfaction.</p>
                     <div class="footer-social">
@@ -850,7 +955,7 @@
                         <li><a href="#services"><span class="ar">خدماتنا</span><span class="en">Services</span></a></li>
                         <li><a href="#projects"><span class="ar">مشاريعنا</span><span class="en">Projects</span></a></li>
                         <li><a href="https://blog.tawodco.com/"><span class="ar">المدونة</span><span class="en">Blog</span></a></li>
-                        <li><a href="contact.html"><span class="ar">تواصل معنا</span><span class="en">Contact</span></a></li>
+                        <li><a href="#contact-map"><span class="ar">تواصل معنا</span><span class="en">Contact</span></a></li>
                     </ul>
                 </div>
 
@@ -874,7 +979,11 @@
                         <li><i class="fa-solid fa-phone"></i> <span>0551128884</span></li>
                         <li><i class="fa-solid fa-envelope"></i> <span>info@tawodco.com</span></li>
                         <li><i class="fa-solid fa-location-dot"></i> <span class="ar">الرياض المملكة العربية السعودية</span><span class="en">Riyadh, Saudi Arabia</span></li>
-                        <li><i class="fa-regular fa-clock"></i> <span class="ar">متاحون على مدار الساعة للرد على استفساراتكم</span><span class="en">Available 24/7 for your inquiries</span></li>
+                        <li>
+                            <i class="fa-regular fa-clock"></i> 
+                            <span class="ar">متاحون على مدار الساعة للرد على استفساراتكم</span>
+                            <span class="en">Available 24/7 for your inquiries</span>
+                        </li>
                     </ul>
                 </div>
 
@@ -890,11 +999,10 @@
     <script>
         const htmlTag = document.documentElement;
         const langToggleBtn = document.getElementById('lang-toggle');
-        // تم حذف اللغة الأردية
         const langs = ['ar', 'en'];
         let userLang = navigator.language || navigator.userLanguage;
-        let currentLang = 'en';
-        if (userLang.startsWith('ar')) currentLang = 'ar';
+        let currentLang = 'ar';
+        if (userLang.startsWith('en')) currentLang = 'en';
         
         function setLanguage(lang) {
             htmlTag.setAttribute('lang', lang);
@@ -933,6 +1041,41 @@
             } else {
                 header.classList.remove('scrolled');
             }
+        });
+
+        // Statistics Counter Animation (Intersection Observer)
+        const statCards = document.querySelectorAll('.stat-card');
+        const counters = document.querySelectorAll('.counter');
+        const speed = 200;
+
+        const observerOptions = { root: null, threshold: 0.5 };
+        const statsObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    const counter = entry.target.querySelector('.counter');
+                    if (counter && !counter.classList.contains('counted')) {
+                        const target = +counter.getAttribute('data-target');
+                        const updateCount = () => {
+                            const count = +counter.innerText;
+                            const inc = target / speed;
+                            if (count < target) {
+                                counter.innerText = Math.ceil(count + inc);
+                                setTimeout(updateCount, 15);
+                            } else {
+                                counter.innerText = target;
+                                counter.classList.add('counted');
+                            }
+                        };
+                        updateCount();
+                    }
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        statCards.forEach(card => {
+            statsObserver.observe(card);
         });
     </script>
 </body>
