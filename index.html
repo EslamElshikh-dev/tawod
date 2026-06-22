@@ -51,10 +51,6 @@
     <!-- FontAwesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Google Analytics / Ads Tracking (Placeholder) -->
-    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=YOUR-ID"></script> -->
-    <!-- <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'YOUR-ID'); </script> -->
-
     <!-- ==========================================
          JSON-LD SCHEMA MARKUP
     =========================================== -->
@@ -279,6 +275,8 @@
 
         .btn-primary { background-color: var(--primary); color: var(--white); border-color: var(--primary); }
         .btn-primary:hover { background-color: transparent; color: var(--primary); }
+        .btn-dark { background-color: var(--secondary); color: var(--white); border-color: var(--secondary); }
+        .btn-dark:hover { background-color: transparent; color: var(--secondary); }
         .btn-outline-white { background-color: transparent; color: var(--white); border-color: rgba(255, 255, 255, 0.5); backdrop-filter: blur(4px); }
         .btn-outline-white:hover { background-color: var(--white); color: var(--secondary); border-color: var(--white); }
 
@@ -366,7 +364,7 @@
         }
         .mobile-sidebar.active { transform: translateX(-320px); visibility: visible; }
 
-        .close-sidebar { position: absolute; top: 25px; left: 25px; font-size: 24px; color: var(--white); cursor: pointer; transition: var(--transition); }
+        .close-sidebar { position: absolute; top: 25px; left: 25px; font-size: 24px; color: var(--white); cursor: pointer; transition: var(--transition); z-index: 1005; }
         .close-sidebar:hover { color: var(--primary); transform: rotate(90deg); }
 
         .mobile-sidebar .logo-container { text-align: center; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 30px; }
@@ -525,14 +523,21 @@
         .footer-about p { color: #A0AEC0; line-height: 1.8; font-size: 16px; max-width: 360px; margin: 0 0 30px 0; }
         .footer-socials { display: flex; gap: 15px; }
         .footer-socials a { width: 45px; height: 45px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--white); transition: var(--transition); }
-        .footer-socials a:hover { background: var(--primary); border-color: var(--primary); color: var(--white); box-shadow: 0 0 20px rgba(242, 164, 97, 0.4); transform: translateY(-5px); }
+        .footer-socials a:hover { background: var(--primary); border-color: var(--primary); color: var(--white); box-shadow: 0 0 20px rgba(242,164,97,.45); transform: translateY(-5px); }
         .footer-title { color: var(--primary); font-size: 22px; font-weight: 800; margin-bottom: 30px; }
+        
+        .footer-links { list-style: none; padding: 0; margin: 0; }
         .footer-links li { margin-bottom: 15px; }
         .footer-links a { color: #A0AEC0; font-size: 16px; font-weight: 500; transition: var(--transition); display: inline-flex; align-items: center; gap: 10px; }
         .footer-links a i { font-size: 12px; color: var(--primary); }
         .footer-links a:hover { color: var(--white); transform: translateX(-5px); }
-        .footer-contact li { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; color: #A0AEC0; font-size: 15px; line-height: 1.6; }
-        .footer-contact li i { color: var(--primary); font-size: 20px; width: 24px; text-align: center; flex-shrink: 0; }
+        
+        .footer-contact { list-style: none; padding: 0; margin: 0; }
+        .footer-contact li { margin-bottom: 20px; }
+        .footer-contact li a, .footer-contact li .info-only { display: flex; align-items: center; gap: 15px; color: #A0AEC0; font-size: 15px; line-height: 1.6; transition: var(--transition); }
+        .footer-contact li a:hover, .footer-contact li .info-only:hover { color: var(--white); transform: translateX(-5px); }
+        .footer-contact li i { color: var(--primary); font-size: 20px; width: 24px; text-align: center; flex-shrink: 0; transition: var(--transition); }
+        
         .footer-bottom { background: rgba(0,0,0,0.3); padding: 25px 0; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
         .footer-bottom p { color: #A0AEC0; font-size: 15px; }
 
@@ -540,13 +545,16 @@
            FLOATING BUTTONS
         ================================================== */
         .float-btns { position: fixed; left: calc(30px + env(safe-area-inset-left)); bottom: calc(30px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 15px; z-index: 99; }
-        .float-btn { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--white); box-shadow: var(--shadow-lg); animation: floating 3s ease-in-out infinite; transition: var(--transition); position: relative; }
-        .float-btn::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; z-index: -1; animation: pulse 2s infinite; }
-        .float-whatsapp { background-color: #25D366; }
+        .float-btn { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--white); animation: floating 3s ease-in-out infinite; transition: var(--transition); position: relative; }
+        .float-btn::after { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 50%; z-index: -1; animation: pulse 2s infinite; }
+        .float-whatsapp { background-color: #25D366; box-shadow: 0 0 15px rgba(37, 211, 102, 0.4); }
         .float-whatsapp::after { border: 2px solid #25D366; }
-        .float-call { background-color: var(--primary); animation-delay: 1.5s; }
-        .float-call::after { border: 2px solid var(--primary); animation-delay: 1.5s; }
+        .float-call { background-color: var(--primary); box-shadow: 0 0 15px rgba(242, 164, 97, 0.4); }
+        .float-call::after { border: 2px solid var(--primary); animation-delay: 1s; }
         .float-btn:hover { transform: scale(1.1); color: var(--white); }
+
+        @keyframes floating { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.5); opacity: 0; } }
 
         /* Helper Classes */
         .d-none { display: none !important; }
@@ -576,6 +584,8 @@
             .contact-map-area iframe { min-height: 350px; }
         }
 
+        @media (min-width: 992px) { .mobile-action-bar { display: none; } }
+
         @media (max-width: 767px) {
             .grid-3, .stats-grid, .footer-grid { grid-template-columns: 1fr; }
             .hero-content h1 { font-size: 32px; white-space: normal; }
@@ -592,7 +602,7 @@
             .footer-title { text-align: center; }
             .footer-links { text-align: center; }
             .footer-links a { justify-content: center; }
-            .footer-contact li { flex-direction: column; text-align: center; gap: 8px; margin-bottom: 24px; }
+            .footer-contact li a, .footer-contact li .info-only { flex-direction: column; text-align: center; gap: 8px; justify-content: center; }
             .footer-grid > div { margin-bottom: 24px; }
             
             .float-btns { left: calc(20px + env(safe-area-inset-left)); bottom: calc(20px + env(safe-area-inset-bottom)); }
@@ -627,7 +637,7 @@
         <div class="sidebar-nav">
             <h4>روابط سريعة</h4>
             <a href="index.html" class="active">الرئيسية <i class="fa-solid fa-chevron-left"></i></a>
-            <a href="about.html">من نحن <i class="fa-solid fa-chevron-left"></i></a>
+            <a href="#about">من نحن <i class="fa-solid fa-chevron-left"></i></a>
             <a href="#services">خدماتنا <i class="fa-solid fa-chevron-left"></i></a>
             <a href="#projects">مشاريعنا <i class="fa-solid fa-chevron-left"></i></a>
             <a href="#blog">المدونة <i class="fa-solid fa-chevron-left"></i></a>
@@ -636,10 +646,10 @@
 
         <div class="sidebar-contact">
             <h4>تواصل معنا</h4>
-            <ul class="sidebar-contact-info">
-                <li><i class="fa-solid fa-location-dot"></i> الرياض، السعودية</li>
-                <li><i class="fa-solid fa-phone"></i> 055 112 8884</li>
-                <li><i class="fa-solid fa-envelope"></i> info@tawodco.com</li>
+            <ul class="footer-contact">
+                <li><a href="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2825.0333607418256!2d46.69983649999999!3d24.792731099999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2efdb5a75296e1%3A0x8cb063463a755f11!2z2LTYsdmD2Kkg2KrYudin2YjYryDZhNmE2YXZgtin2YjZhNin2Ko!5e1!3m2!1sar!2ssa!4v1782108121223!5m2!1sar!2ssa" target="_blank"><i class="fa-solid fa-location-dot"></i> <span>الرياض، السعودية</span></a></li>
+                <li><a href="tel:0551128884"><i class="fa-solid fa-phone"></i> <span>0551128884</span></a></li>
+                <li><a href="mailto:info@tawodco.com"><i class="fa-solid fa-envelope"></i> <span>info@tawodco.com</span></a></li>
             </ul>
         </div>
     </aside>
@@ -671,7 +681,7 @@
                 
                 <a href="tel:0551128884" class="btn btn-primary btn-call-animate d-none d-md-flex">
                     <span class="text-default">اتصل بنا</span>
-                    <span class="text-hover" dir="ltr">055 112 8884</span>
+                    <span class="text-hover" dir="ltr">0551128884</span>
                 </a>
                 <a href="#contact" class="btn btn-outline-white d-none d-md-flex">طلب عرض سعر</a>
                 
@@ -679,6 +689,12 @@
             </div>
         </div>
     </header>
+
+    <!-- MOBILE ACTION BAR -->
+    <div class="mobile-action-bar">
+        <a href="tel:0551128884" class="btn btn-dark"><i class="fa-solid fa-phone"></i> اتصل</a>
+        <a href="#contact" class="btn btn-primary">طلب عرض سعر</a>
+    </div>
 
     <!-- HERO SECTION -->
     <section class="hero">
@@ -1051,7 +1067,7 @@
                     </form>
                 </div>
                 <div class="contact-map-area">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d463877.3124151744!2d46.93510078044738!3d24.72545537248559!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2ebb7156942c75%3A0x6b777de8890db7ea!2sRiyadh%20Saudi%20Arabia!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2825.0333607418256!2d46.69983649999999!3d24.792731099999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2efdb5a75296e1%3A0x8cb063463a755f11!2z2LTYsdmD2Kkg2KrYudin2YjYryDZhNmE2YXZgtin2YjZhNin2Ko!5e1!3m2!1sar!2ssa!4v1782108121223!5m2!1sar!2ssa" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
             </div>
         </div>
@@ -1081,7 +1097,7 @@
                         <li><a href="#services"><i class="fa-solid fa-angle-left"></i> خدماتنا</a></li>
                         <li><a href="#projects"><i class="fa-solid fa-angle-left"></i> مشاريعنا</a></li>
                         <li><a href="#blog"><i class="fa-solid fa-angle-left"></i> المدونة</a></li>
-                        <li><a href="contact.html"><i class="fa-solid fa-angle-left"></i> تواصل معنا</a></li>
+                        <li><a href="#contact"><i class="fa-solid fa-angle-left"></i> تواصل معنا</a></li>
                     </ul>
                 </div>
                 
@@ -1100,10 +1116,10 @@
                 <div>
                     <h4 class="footer-title">تواصل معنا</h4>
                     <ul class="footer-contact">
-                        <li><i class="fa-solid fa-location-dot"></i> <span>الرياض، المملكة العربية السعودية</span></li>
-                        <li><i class="fa-solid fa-phone"></i> <span>055 112 8884</span></li>
-                        <li><i class="fa-solid fa-envelope"></i> <span>info@tawodco.com</span></li>
-                        <li><i class="fa-regular fa-clock"></i> <span>متاحون على مدار الساعة للرد على استفساراتكم</span></li>
+                        <li><a href="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2825.0333607418256!2d46.69983649999999!3d24.792731099999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2efdb5a75296e1%3A0x8cb063463a755f11!2z2LTYsdmD2Kkg2KrYudin2YjYryDZhNmE2YXZgtin2YjZhNin2Ko!5e1!3m2!1sar!2ssa!4v1782108121223!5m2!1sar!2ssa" target="_blank"><i class="fa-solid fa-location-dot"></i> <span>الرياض، المملكة العربية السعودية</span></a></li>
+                        <li><a href="tel:0551128884"><i class="fa-solid fa-phone"></i> <span>0551128884</span></a></li>
+                        <li><a href="mailto:info@tawodco.com"><i class="fa-solid fa-envelope"></i> <span>info@tawodco.com</span></a></li>
+                        <li><div class="info-only"><i class="fa-regular fa-clock"></i> <span>متاحون على مدار الساعة للرد على استفساراتكم</span></div></li>
                     </ul>
                 </div>
             </div>
