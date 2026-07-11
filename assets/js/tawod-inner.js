@@ -116,6 +116,19 @@
     });
   }
 
+  function cleanVisibleSeoKeywordBlocks() {
+    document.querySelectorAll('.article-content h2, .article-content h3').forEach(function (heading) {
+      var text = (heading.textContent || '').replace(/\s+/g, ' ').trim();
+      if (text.indexOf('كلمات SEO') !== -1 || text.indexOf('الكلمات المفتاحية') !== -1 || text === 'كلمات السيو') {
+        var next = heading.nextElementSibling;
+        heading.remove();
+        if (next && next.tagName && next.tagName.toLowerCase() === 'p') {
+          next.remove();
+        }
+      }
+    });
+  }
+
   function trackClicks() {
     document.querySelectorAll('a[href^="tel:"], a[href*="wa.me"]').forEach(function (link) {
       link.addEventListener('click', function () {
@@ -131,8 +144,11 @@
     setupMobileMenu();
     fixBlogLinks();
     restoreBlogImages();
+    cleanVisibleSeoKeywordBlocks();
     trackClicks();
     setTimeout(showRevealElements, 250);
     setTimeout(showRevealElements, 1000);
+    setTimeout(cleanVisibleSeoKeywordBlocks, 250);
+    setTimeout(cleanVisibleSeoKeywordBlocks, 1000);
   });
 })();
