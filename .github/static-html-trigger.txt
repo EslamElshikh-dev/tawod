@@ -1,0 +1,1 @@
+Trigger the static HTML generation and validation workflow after updating the quality gate on main.
