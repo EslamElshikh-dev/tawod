@@ -3,9 +3,9 @@ name: Build Static HTML
 on:
   push:
     branches:
-      - agent/static-html-and-ci
+      - 'agent/static-html-*'
     paths:
-      - 'scripts/build-static-pages.mjs'
+      - 'scripts/**'
       - 'assets/js/tawod-inner.js'
       - 'assets/css/**'
       - '**/*.html'
