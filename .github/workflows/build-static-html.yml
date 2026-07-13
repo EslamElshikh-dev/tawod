@@ -5,7 +5,7 @@ on:
     branches:
       - agent/static-html-and-ci
     paths:
-      - 'scripts/build-static-pages.mjs'
+      - 'scripts/**'
       - 'assets/js/tawod-inner.js'
       - 'assets/css/**'
       - '**/*.html'
