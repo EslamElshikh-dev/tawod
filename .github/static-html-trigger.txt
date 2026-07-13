@@ -1,1 +1,2 @@
 Trigger the static HTML generation and validation workflow after updating the quality gate on main.
+Verify the committed static HTML output is stable and requires no further generated changes.
