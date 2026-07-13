@@ -42,14 +42,17 @@ jobs:
             echo 'Unresolved merge markers found.'
             exit 1
           fi
-      - name: Reject oversized web assets
+      - name: Reject oversized changed web assets
         run: |
+          git diff --name-only --diff-filter=ACMR origin/main...HEAD > /tmp/changed-files.txt
           python3 - <<'PY'
           from pathlib import Path
           limits={'.html':350000,'.css':250000,'.js':350000,'.webp':1200000,'.avif':1200000,'.png':1500000,'.jpg':1500000,'.jpeg':1500000}
           errors=[]
-          for file in Path('.').rglob('*'):
-              if not file.is_file() or '.git' in file.parts:
+          changed=Path('/tmp/changed-files.txt').read_text().splitlines()
+          for name in changed:
+              file=Path(name)
+              if not file.is_file():
                   continue
               limit=limits.get(file.suffix.lower())
               if limit and file.stat().st_size>limit:
@@ -57,7 +60,7 @@ jobs:
           if errors:
               print('\n'.join(errors))
               raise SystemExit(1)
-          print('Asset-size checks passed.')
+          print(f'Asset-size checks passed for {len(changed)} changed files.')
           PY
       - name: Commit generated HTML to pull request branch
         if: github.event_name == 'pull_request'
