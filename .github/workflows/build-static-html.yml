@@ -3,7 +3,7 @@ name: Build Static HTML
 on:
   push:
     branches:
-      - agent/static-html-and-ci
+      - 'agent/static-html-*'
     paths:
       - 'scripts/**'
       - 'assets/js/tawod-inner.js'
