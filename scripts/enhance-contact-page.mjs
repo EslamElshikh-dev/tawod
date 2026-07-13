@@ -12,7 +12,10 @@ if(!/contact-conversion\.js/.test(html)){
   html=html.replace('</body>','<script src="assets/js/contact-conversion.js" defer></script></body>');
 }
 
-html=html.replace(/<form id="form" class="clean-form([^\"]*)"/,'<form id="form" class="clean-form contact-lead-form$1"');
+if(!/<form id="form" class="[^"]*\bcontact-lead-form\b/.test(html)){
+  html=html.replace(/<form id="form" class="clean-form([^"]*)"/,'<form id="form" class="clean-form contact-lead-form$1"');
+}
+
 html=html.replace('value="https://tawodco.com/"','value="https://tawodco.com/thank-you.html"');
 html=html.replace('name="_captcha" type="hidden" value="false"','name="_captcha" type="hidden" value="true"');
 html=html.replace('placeholder="رقم الجوال" required type="tel"','placeholder="رقم الجوال" required type="tel" inputmode="tel" autocomplete="tel" maxlength="16"');
