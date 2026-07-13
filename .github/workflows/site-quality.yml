@@ -34,8 +34,6 @@ jobs:
           node --check scripts/validate-site.mjs
       - name: Generate static HTML
         run: node scripts/build-static-pages.mjs
-      - name: Ensure static HTML is current
-        run: node scripts/build-static-pages.mjs --check
       - name: Validate pages links metadata schema and sitemap
         run: node scripts/validate-site.mjs
       - name: Detect unresolved merge markers
@@ -66,6 +64,7 @@ jobs:
         run: |
           if git diff --quiet; then
             echo "Static HTML is already committed."
+            node scripts/build-static-pages.mjs --check
             exit 0
           fi
           git config user.name "github-actions[bot]"
