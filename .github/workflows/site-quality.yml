@@ -1,0 +1,58 @@
+name: Site Quality Gate
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Static HTML and SEO validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Check JavaScript syntax
+        run: |
+          node --check assets/js/tawod-inner.js
+          node --check assets/js/tawod-upgrades.js
+          node --check scripts/build-static-pages.mjs
+          node --check scripts/validate-site.mjs
+      - name: Ensure static HTML is current
+        run: node scripts/build-static-pages.mjs --check
+      - name: Validate pages links metadata schema and sitemap
+        run: node scripts/validate-site.mjs
+      - name: Detect unresolved merge markers
+        run: |
+          if grep -RInE '^(<<<<<<<|=======|>>>>>>>)' --exclude-dir=.git .; then
+            echo 'Unresolved merge markers found.'
+            exit 1
+          fi
+      - name: Reject oversized web assets
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          limits={'.html':350000,'.css':250000,'.js':350000,'.webp':1200000,'.avif':1200000,'.png':1500000,'.jpg':1500000,'.jpeg':1500000}
+          errors=[]
+          for file in Path('.').rglob('*'):
+              if not file.is_file() or '.git' in file.parts:
+                  continue
+              limit=limits.get(file.suffix.lower())
+              if limit and file.stat().st_size>limit:
+                  errors.append(f'{file}: {file.stat().st_size} bytes exceeds {limit}')
+          if errors:
+              print('\n'.join(errors))
+              raise SystemExit(1)
+          print('Asset-size checks passed.')
+          PY
