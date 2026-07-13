@@ -32,6 +32,11 @@ jobs:
           node --check assets/js/tawod-upgrades.js
           node --check scripts/build-static-pages.mjs
           node --check scripts/validate-site.mjs
+          if [ -f scripts/enhance-contact-page.mjs ]; then node --check scripts/enhance-contact-page.mjs; fi
+          if [ -f assets/js/contact-conversion.js ]; then node --check assets/js/contact-conversion.js; fi
+      - name: Enhance contact conversion flow
+        run: |
+          if [ -f scripts/enhance-contact-page.mjs ]; then node scripts/enhance-contact-page.mjs; fi
       - name: Generate static HTML
         run: node scripts/build-static-pages.mjs
       - name: Validate pages links metadata schema and sitemap
