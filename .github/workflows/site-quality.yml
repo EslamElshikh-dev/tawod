@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: site-quality-${{ github.ref }}
@@ -17,18 +17,23 @@ jobs:
     name: Static HTML and SEO validation
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout pull request branch
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
       - name: Check JavaScript syntax
         run: |
           node --check assets/js/tawod-inner.js
           node --check assets/js/tawod-upgrades.js
           node --check scripts/build-static-pages.mjs
           node --check scripts/validate-site.mjs
+      - name: Generate static HTML
+        run: node scripts/build-static-pages.mjs
       - name: Ensure static HTML is current
         run: node scripts/build-static-pages.mjs --check
       - name: Validate pages links metadata schema and sitemap
@@ -56,3 +61,15 @@ jobs:
               raise SystemExit(1)
           print('Asset-size checks passed.')
           PY
+      - name: Commit generated HTML to pull request branch
+        if: github.event_name == 'pull_request'
+        run: |
+          if git diff --quiet; then
+            echo "Static HTML is already committed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- '*.html' 'blog/**/*.html' 'lp/**/*.html'
+          git commit -m "Generate static content FAQ and schema"
+          git push origin HEAD:${{ github.head_ref }}
