@@ -3,7 +3,7 @@ name: Build Static HTML
 on:
   push:
     branches:
-      - 'agent/static-html-*'
+      - main
     paths:
       - 'scripts/**'
       - 'assets/js/tawod-inner.js'
@@ -16,7 +16,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: static-html-${{ github.ref }}
+  group: static-html-main
   cancel-in-progress: true
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout branch
+      - name: Checkout main
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -32,10 +32,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Check build scripts
+        run: |
+          node --check scripts/build-static-pages.mjs
+          node --check scripts/validate-site.mjs
       - name: Generate static page content
         run: node scripts/build-static-pages.mjs
       - name: Verify idempotent generation
         run: node scripts/build-static-pages.mjs --check
+      - name: Validate generated site
+        run: node scripts/validate-site.mjs
       - name: Commit generated HTML
         run: |
           if git diff --quiet; then
