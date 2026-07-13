@@ -1,0 +1,49 @@
+name: Build Static HTML
+
+on:
+  push:
+    branches:
+      - agent/static-html-and-ci
+    paths:
+      - 'scripts/build-static-pages.mjs'
+      - 'assets/js/tawod-inner.js'
+      - 'assets/css/**'
+      - '**/*.html'
+      - '.github/workflows/build-static-html.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: static-html-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Generate static page content
+        run: node scripts/build-static-pages.mjs
+      - name: Verify idempotent generation
+        run: node scripts/build-static-pages.mjs --check
+      - name: Commit generated HTML
+        run: |
+          if git diff --quiet; then
+            echo "Static HTML is already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- '*.html' 'blog/**/*.html' 'lp/**/*.html'
+          git commit -m "Generate static content FAQ and schema"
+          git push
