@@ -4,6 +4,7 @@ const file='contact.html';
 let html=fs.readFileSync(file,'utf8');
 const before=html;
 
+// Normalize generated contact markup so repeated workflow runs produce identical HTML.
 if(!/contact-conversion\.css/.test(html)){
   html=html.replace('</head>','<link href="assets/css/contact-conversion.css" rel="stylesheet"></head>');
 }
