@@ -12,15 +12,32 @@ if(!/contact-conversion\.js/.test(html)){
   html=html.replace('</body>','<script src="assets/js/contact-conversion.js" defer></script></body>');
 }
 
-if(!/<form id="form" class="[^"]*\bcontact-lead-form\b/.test(html)){
-  html=html.replace(/<form id="form" class="clean-form([^"]*)"/,'<form id="form" class="clean-form contact-lead-form$1"');
-}
+html=html.replace(/<form id="form" class="([^"]*)"/i,(match,classNames)=>{
+  const classes=classNames.split(/\s+/).filter(Boolean).filter((value,index,list)=>list.indexOf(value)===index);
+  if(!classes.includes('contact-lead-form')) classes.push('contact-lead-form');
+  return `<form id="form" class="${classes.join(' ')}"`;
+});
 
-html=html.replace('value="https://tawodco.com/"','value="https://tawodco.com/thank-you.html"');
-html=html.replace('name="_captcha" type="hidden" value="false"','name="_captcha" type="hidden" value="true"');
-html=html.replace('placeholder="رقم الجوال" required type="tel"','placeholder="رقم الجوال" required type="tel" inputmode="tel" autocomplete="tel" maxlength="16"');
-html=html.replace('placeholder="البريد الإلكتروني" type="email"','placeholder="البريد الإلكتروني" type="email" autocomplete="email"');
-html=html.replace('placeholder="تفاصيل المشروع أو الموقع أو الخدمة المطلوبة" required></textarea>','placeholder="تفاصيل المشروع أو الموقع أو الخدمة المطلوبة" required maxlength="1200"></textarea>');
+html=html.replace(/<input\b[^>]*name="_next"[^>]*>/i,'<input name="_next" type="hidden" value="https://tawodco.com/thank-you.html">');
+html=html.replace(/<input\b[^>]*name="_captcha"[^>]*>/i,'<input name="_captcha" type="hidden" value="true">');
+
+html=html.replace(/<input\b[^>]*name="رقم_الجوال"[^>]*>/i,(tag)=>{
+  let normalized=tag
+    .replace(/\sinputmode="[^"]*"/gi,'')
+    .replace(/\sautocomplete="[^"]*"/gi,'')
+    .replace(/\smaxlength="[^"]*"/gi,'');
+  return normalized.replace(/>$/,' inputmode="tel" autocomplete="tel" maxlength="16">');
+});
+
+html=html.replace(/<input\b[^>]*name="البريد_الإلكتروني"[^>]*>/i,(tag)=>{
+  let normalized=tag.replace(/\sautocomplete="[^"]*"/gi,'');
+  return normalized.replace(/>$/,' autocomplete="email">');
+});
+
+html=html.replace(/<textarea\b[^>]*name="التفاصيل"[^>]*>/i,(tag)=>{
+  let normalized=tag.replace(/\smaxlength="[^"]*"/gi,'');
+  return normalized.replace(/>$/,' maxlength="1200">');
+});
 
 if(html!==before){
   fs.writeFileSync(file,html);
