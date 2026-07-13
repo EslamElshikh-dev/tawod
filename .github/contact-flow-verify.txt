@@ -1,1 +1,0 @@
-Verify the committed contact conversion output is stable.
