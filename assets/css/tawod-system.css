@@ -1,5 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap');
+
 /* Tawod universal inner-page and article experience */
-:root{--tawod-ink:#1d1e26;--tawod-gold:#f2a461;--tawod-gold-dark:#c97a35;--tawod-soft:#fff8f1;--tawod-line:#e7e9ee;--tawod-muted:#687080;--tawod-shadow:0 18px 55px rgba(29,30,38,.09)}
+:root{
+  --tawod-ink:#1d1e26;
+  --tawod-gold:#f2a461;
+  --tawod-gold-dark:#c97a35;
+  --tawod-soft:#fff8f1;
+  --tawod-line:#e7e9ee;
+  --tawod-muted:#687080;
+  --tawod-shadow:0 18px 55px rgba(29,30,38,.09);
+  --tawod-font-display:'29LT Bukra','Alexandria','DIN Next LT Arabic','Noto Kufi Arabic',sans-serif;
+  --tawod-font-body:'DIN Next LT Arabic','IBM Plex Sans Arabic','Noto Sans Arabic','Tajawal',sans-serif;
+}
+
 .tawod-system-ready body{overflow-x:clip}.tawod-inner-trust{position:relative;z-index:5;margin-top:-30px;padding:0 0 24px}.tawod-inner-trust-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:14px;border:1px solid rgba(231,233,238,.9);border-radius:22px;background:rgba(255,255,255,.96);box-shadow:var(--tawod-shadow);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}.tawod-inner-trust-grid>div{display:flex;align-items:center;gap:12px;min-height:72px;padding:12px 14px;border-radius:16px;background:#f8f9fb}.tawod-inner-trust-grid i{display:grid;place-items:center;width:44px;height:44px;flex:0 0 44px;border-radius:13px;background:rgba(242,164,97,.16);color:var(--tawod-gold-dark);font-size:19px}.tawod-inner-trust-grid span{display:grid;gap:3px}.tawod-inner-trust-grid strong{color:var(--tawod-ink);font-size:16px;line-height:1.3}.tawod-inner-trust-grid small{color:var(--tawod-muted);font-size:13px;line-height:1.55}.tawod-service-page .page-hero p,.tawod-landing-page .blog-hero p{max-width:920px;margin-inline:auto;text-wrap:pretty}.tawod-service-page main .content>p{font-size:clamp(16.5px,1.2vw,19px);line-height:1.95}.tawod-service-page .check-list li{align-items:flex-start;line-height:1.75}.tawod-service-page .steps-grid .step-card,.tawod-landing-page .steps-grid .step-card{position:relative;overflow:hidden;padding-top:30px}.tawod-service-page .steps-grid .step-card::after,.tawod-landing-page .steps-grid .step-card::after{content:'';position:absolute;inset:0 auto 0 0;width:4px;background:linear-gradient(var(--tawod-gold),transparent)}
 .tawod-context-links{background:linear-gradient(180deg,#fff,var(--tawod-soft))}.tawod-context-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.tawod-context-grid a{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;min-height:78px;padding:16px 18px;border:1px solid var(--tawod-line);border-radius:17px;background:#fff;color:var(--tawod-ink);box-shadow:0 10px 28px rgba(29,30,38,.05);transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}.tawod-context-grid a>i:first-child{display:grid;place-items:center;width:44px;height:44px;border-radius:13px;background:rgba(242,164,97,.15);color:var(--tawod-gold-dark)}.tawod-context-grid a>i:last-child{color:var(--tawod-gold-dark);transition:transform .25s ease}.tawod-context-grid a span{font-weight:900}.tawod-context-grid a:hover{transform:translateY(-4px);border-color:rgba(242,164,97,.6);box-shadow:0 18px 38px rgba(29,30,38,.08)}.tawod-context-grid a:hover>i:last-child{transform:translateX(-4px)}
 .tawod-reading-progress{position:fixed;top:0;right:0;left:0;height:4px;z-index:3000;background:rgba(255,255,255,.12);pointer-events:none}.tawod-reading-progress span{display:block;width:100%;height:100%;transform:scaleX(0);transform-origin:right center;background:linear-gradient(90deg,var(--tawod-gold-dark),var(--tawod-gold));will-change:transform}.tawod-article-page .article-content{position:relative}.tawod-article-page .article-content>p:first-of-type{font-size:clamp(18px,1.22vw,20px);line-height:2;color:#3f4653}.tawod-article-page .article-content h2{scroll-margin-top:110px}.tawod-article-toc{margin:28px 0;padding:22px;border:1px solid rgba(242,164,97,.36);border-radius:20px;background:linear-gradient(145deg,#fffaf5,#fff);box-shadow:0 14px 38px rgba(29,30,38,.06)}.tawod-article-toc-head{display:flex;align-items:center;justify-content:space-between;gap:18px;padding-bottom:14px;border-bottom:1px solid rgba(201,122,53,.18)}.tawod-article-toc-head span{display:flex;align-items:center;gap:9px;color:var(--tawod-ink);font-size:19px;font-weight:900}.tawod-article-toc-head i{color:var(--tawod-gold-dark)}.tawod-article-toc-head small{color:var(--tawod-muted)}.tawod-article-toc ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 22px;margin:17px 0 0;padding:0 22px 0 0}.tawod-article-toc li{color:var(--tawod-gold-dark);padding-inline-start:4px}.tawod-article-toc a{color:#3d4350;font-weight:700;line-height:1.65}.tawod-article-toc a:hover{color:var(--tawod-gold-dark)}.tawod-key-takeaways{margin:22px 0 30px;padding:24px;border-radius:20px;background:var(--tawod-ink);color:#fff;box-shadow:var(--tawod-shadow)}.tawod-key-takeaways h2{display:flex;align-items:center;gap:10px;margin:0 0 14px!important;color:#fff!important;font-size:clamp(21px,1.7vw,27px)!important}.tawod-key-takeaways h2 i{color:var(--tawod-gold)}.tawod-key-takeaways ul{display:grid;gap:9px;margin:0;padding:0;list-style:none}.tawod-key-takeaways li{position:relative;padding-right:24px;color:#e7eaf0;line-height:1.75}.tawod-key-takeaways li::before{content:'✓';position:absolute;right:0;color:var(--tawod-gold);font-weight:900}.tawod-article-tools{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:36px;padding:18px 20px;border:1px solid var(--tawod-line);border-radius:17px;background:#f8f9fb}.tawod-article-tools strong{color:var(--tawod-ink)}.tawod-article-tools>div{display:flex;flex-wrap:wrap;gap:8px}.tawod-article-tools button,.tawod-article-tools a{display:inline-flex;align-items:center;gap:7px;min-height:42px;padding:9px 13px;border:1px solid #dfe2e8;border-radius:11px;background:#fff;color:var(--tawod-ink);font:inherit;font-weight:800;cursor:pointer}.tawod-article-tools button:hover,.tawod-article-tools a:hover{border-color:var(--tawod-gold);color:var(--tawod-gold-dark)}.tawod-related-reading{background:#fff}.tawod-related-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.tawod-related-card{display:flex;flex-direction:column;min-height:210px;padding:24px;border:1px solid var(--tawod-line);border-radius:20px;background:linear-gradient(150deg,#fff,#fff9f3);box-shadow:0 12px 34px rgba(29,30,38,.055);transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}.tawod-related-card>span{align-self:flex-start;padding:5px 9px;border-radius:999px;background:rgba(242,164,97,.16);color:var(--tawod-gold-dark);font-size:13px;font-weight:900}.tawod-related-card h3{margin:17px 0;color:var(--tawod-ink);font-size:clamp(19px,1.5vw,23px);line-height:1.55}.tawod-related-card strong{display:flex;align-items:center;gap:8px;margin-top:auto;color:var(--tawod-gold-dark)}.tawod-related-card:hover{transform:translateY(-6px);border-color:rgba(242,164,97,.62);box-shadow:0 20px 44px rgba(29,30,38,.09)}
@@ -9,3 +22,143 @@
 @media(max-width:420px){.tawod-article-tools>div{grid-template-columns:1fr}.tawod-inner-trust-grid strong{font-size:15.5px}.tawod-context-grid a{padding:14px}.tawod-article-toc{margin-inline:-2px}}
 @media(prefers-reduced-motion:reduce){.tawod-reading-progress{display:none}.tawod-context-grid a,.tawod-context-grid a>i,.tawod-related-card{transition:none!important}}
 @media print{.header,.footer,.float-btns,.tawod-reading-progress,.tawod-article-tools,.tawod-related-reading,.tawod-faq-section,.tawod-inner-trust{display:none!important}.article-layout{display:block!important}.article-content{max-width:none!important;box-shadow:none!important;border:0!important}.article-content a{color:#000;text-decoration:none}}
+
+/*
+ * Premium typography system inspired by the Burj Urubah visual language.
+ * Commercial font family names are kept first in the stack; Alexandria and
+ * IBM Plex Sans Arabic provide web-safe, licensed equivalents on every device.
+ */
+html{
+  font-synthesis:none;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+body,
+button,
+input,
+select,
+textarea{
+  font-family:var(--tawod-font-body);
+}
+body{
+  font-weight:400;
+  line-height:1.85;
+}
+p,
+li,
+small,
+label,
+input,
+select,
+textarea{
+  font-family:var(--tawod-font-body);
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.btn,
+.eyebrow,
+.hero-badge,
+.nav-links a,
+.sidebar-nav a,
+.lang-switch,
+.breadcrumbs,
+.article-link,
+.article-meta span,
+.area-tags span,
+.service-list a,
+.faq-question,
+.tawod-context-grid a span,
+.tawod-article-toc-head span,
+.tawod-related-card>span,
+.tawod-article-tools button,
+.tawod-article-tools a{
+  font-family:var(--tawod-font-display);
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6{
+  text-wrap:balance;
+}
+.hero h1,
+.page-hero h1,
+.blog-hero h1{
+  font-weight:700;
+  line-height:1.28;
+}
+.hero p,
+.page-hero p,
+.blog-hero p{
+  font-family:var(--tawod-font-body);
+  font-weight:500;
+  line-height:1.85;
+}
+.section-title h2,
+.content h2,
+.mini-cta h2,
+.tawod-key-takeaways h2,
+.article-content h2{
+  font-weight:700;
+  line-height:1.38;
+}
+.feature-card h3,
+.step-card h3,
+.simple-faq h3,
+.inner-contact-card h3,
+.article-body h2,
+.sidebar-box h3,
+.highlight-box h3,
+.lp-benefit h3,
+.tawod-related-card h3,
+.footer h3,
+.footer h4{
+  font-weight:600;
+  line-height:1.5;
+}
+.btn,
+.nav-links a,
+.sidebar-nav a,
+.lang-switch,
+.eyebrow,
+.hero-badge,
+.breadcrumbs,
+.article-link,
+.article-meta span,
+.area-tags span,
+.service-list a,
+.tawod-context-grid a span,
+.tawod-article-toc-head span,
+.tawod-related-card>span,
+.tawod-article-tools button,
+.tawod-article-tools a{
+  font-weight:600;
+}
+strong,
+b{
+  font-weight:600;
+}
+.tawod-inner-trust-grid strong,
+.check-list li,
+.sidebar-links a,
+.inner-contact-card a,
+.inner-contact-card p{
+  font-family:var(--tawod-font-body);
+  font-weight:600;
+}
+[dir='ltr'],
+.lang-switch,
+.text-hover{
+  font-variant-numeric:tabular-nums;
+}
+@media(max-width:767px){
+  body{line-height:1.8}
+  .hero h1,.page-hero h1,.blog-hero h1{line-height:1.34}
+  .hero p,.page-hero p,.blog-hero p{line-height:1.78}
+}
