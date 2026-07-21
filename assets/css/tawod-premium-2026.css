@@ -1,10 +1,333 @@
-@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700&display=swap');
 
-/* ========================================================================
-   TAWOD PREMIUM DESIGN SYSTEM 2026
-   Reference direction: Burj Urubah / premium international AEC websites
-   Display: Iwan Zaza when a licensed webfont package is available.
-   Current legal fallback: Alexandria. Body: IBM Plex Sans Arabic.
-   ======================================================================== */
+/* Tawod premium responsive typography and spacing system */
+:root{
+  --premium-display:'Iwan Zaza','29LT Bukra','Alexandria','DIN Next LT Arabic',sans-serif;
+  --premium-body:'Iwan Zaza','Alexandria','DIN Next LT Arabic',sans-serif;
+  --premium-container:1280px;
+  --premium-reading:760px;
+  --premium-section:clamp(64px,8vw,120px);
+  --premium-gap:clamp(18px,2.4vw,34px);
+  --premium-radius:clamp(14px,1.5vw,22px);
+}
 
-:root
+html{
+  font-size:16px;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  font-synthesis:none;
+}
+
+html body,
+html body button,
+html body input,
+html body select,
+html body textarea{
+  font-family:var(--premium-body)!important;
+}
+
+html body{
+  font-size:clamp(15.5px,.22vw + 14.7px,18px)!important;
+  font-weight:400!important;
+  line-height:1.82!important;
+  letter-spacing:0!important;
+}
+
+html body h1,
+html body h2,
+html body h3,
+html body h4,
+html body h5,
+html body h6,
+html body .btn,
+html body .eyebrow,
+html body .hero-badge,
+html body .nav-links a,
+html body .sidebar-nav a,
+html body .breadcrumbs,
+html body .article-link,
+html body .article-meta span,
+html body .area-tags span,
+html body .service-list a,
+html body .faq-question{
+  font-family:var(--premium-display)!important;
+  letter-spacing:-.015em;
+  text-wrap:balance;
+}
+
+html body p,
+html body li,
+html body small,
+html body label{
+  text-wrap:pretty;
+}
+
+html body .container{
+  width:min(var(--premium-container),calc(100% - clamp(32px,6vw,96px)))!important;
+}
+
+html body .section-padding{
+  padding-block:var(--premium-section)!important;
+}
+
+html body .section-title{
+  max-width:920px;
+  margin-inline:auto!important;
+  margin-bottom:clamp(32px,5vw,68px)!important;
+}
+
+html body .section-title.right{
+  max-width:none;
+  margin-inline:0!important;
+  margin-bottom:clamp(22px,3vw,38px)!important;
+}
+
+html body .eyebrow,
+html body .hero-badge{
+  font-size:clamp(12px,.15vw + 11.5px,14px)!important;
+  font-weight:600!important;
+  line-height:1.35!important;
+  padding:8px 14px!important;
+}
+
+html body .hero h1{
+  max-width:1000px;
+  font-size:clamp(38px,5.7vw,78px)!important;
+  font-weight:600!important;
+  line-height:1.22!important;
+  margin-bottom:clamp(18px,2.4vw,30px)!important;
+  letter-spacing:-.025em;
+}
+
+html body .page-hero h1,
+html body .blog-hero h1{
+  max-width:1000px;
+  margin-inline:auto;
+  font-size:clamp(34px,4.7vw,64px)!important;
+  font-weight:600!important;
+  line-height:1.26!important;
+  letter-spacing:-.022em;
+}
+
+html body .section-title h2,
+html body .content h2,
+html body .mini-cta h2{
+  font-size:clamp(28px,3.55vw,52px)!important;
+  font-weight:600!important;
+  line-height:1.32!important;
+  letter-spacing:-.02em;
+}
+
+html body .feature-card h3,
+html body .step-card h3,
+html body .simple-faq h3,
+html body .inner-contact-card h3,
+html body .article-body h2,
+html body .sidebar-box h3,
+html body .highlight-box h3,
+html body .lp-benefit h3,
+html body .service-card h3,
+html body .project-card h3{
+  font-size:clamp(18px,1.35vw,23px)!important;
+  font-weight:600!important;
+  line-height:1.48!important;
+  letter-spacing:-.012em;
+}
+
+html body .hero p{
+  max-width:760px!important;
+  font-size:clamp(17px,1.35vw,22px)!important;
+  font-weight:400!important;
+  line-height:1.8!important;
+}
+
+html body .page-hero p,
+html body .blog-hero p{
+  max-width:780px!important;
+  font-size:clamp(16px,1.15vw,20px)!important;
+  font-weight:400!important;
+  line-height:1.85!important;
+}
+
+html body .section-title p,
+html body .content p,
+html body .article-body p,
+html body .feature-card p,
+html body .step-card p,
+html body .lp-benefit p,
+html body .service-card p,
+html body .project-card p{
+  font-size:clamp(15.5px,.42vw + 14px,18px)!important;
+  font-weight:400!important;
+  line-height:1.88!important;
+}
+
+html body .article-content{
+  font-size:clamp(16px,.35vw + 14.8px,18.5px)!important;
+  line-height:1.95!important;
+}
+
+html body .article-content>p,
+html body .article-content li{
+  max-width:var(--premium-reading);
+}
+
+html body .article-content h2{
+  font-size:clamp(25px,2.5vw,38px)!important;
+  font-weight:600!important;
+  line-height:1.42!important;
+  margin-top:clamp(40px,5vw,68px)!important;
+  margin-bottom:18px!important;
+}
+
+html body .article-content h3{
+  font-size:clamp(20px,1.8vw,29px)!important;
+  font-weight:600!important;
+  line-height:1.5!important;
+  margin-top:34px!important;
+  margin-bottom:14px!important;
+}
+
+html body .nav-links{
+  gap:clamp(16px,1.7vw,30px)!important;
+}
+
+html body .nav-links a,
+html body .sidebar-nav a{
+  font-size:clamp(14px,.25vw + 13px,16px)!important;
+  font-weight:500!important;
+  line-height:1.4!important;
+}
+
+html body .btn{
+  min-height:48px!important;
+  padding:12px clamp(18px,1.7vw,26px)!important;
+  font-size:clamp(14px,.25vw + 13px,16px)!important;
+  font-weight:600!important;
+  line-height:1.25!important;
+  border-radius:8px!important;
+}
+
+html body .services-grid,
+html body .projects-grid,
+html body .articles-grid,
+html body .feature-grid,
+html body .lp-benefits{
+  gap:var(--premium-gap)!important;
+}
+
+html body .service-card,
+html body .project-card,
+html body .article-card,
+html body .feature-card,
+html body .step-card,
+html body .lp-benefit,
+html body .simple-faq,
+html body .inner-contact-card{
+  border-radius:var(--premium-radius)!important;
+}
+
+html body .service-card .content,
+html body .project-card .content,
+html body .article-body,
+html body .feature-card,
+html body .step-card,
+html body .lp-benefit{
+  padding:clamp(20px,2.2vw,30px)!important;
+}
+
+html body .split{
+  gap:clamp(34px,5.2vw,72px)!important;
+}
+
+html body .content{
+  max-width:680px;
+}
+
+html body .hero-buttons,
+html body .hero-actions,
+html body .mini-cta-actions{
+  gap:12px!important;
+}
+
+html body .header{
+  height:clamp(72px,6.5vw,88px)!important;
+}
+
+html body .header.scrolled{
+  height:72px!important;
+}
+
+html body .logo img,
+html body .logo-img{
+  height:clamp(44px,4vw,56px)!important;
+  max-width:clamp(145px,14vw,180px)!important;
+}
+
+@media (max-width:1199px){
+  html body .container{width:min(100% - 48px,1080px)!important}
+  html body .hero h1{font-size:clamp(38px,6.2vw,66px)!important}
+  html body .section-padding{padding-block:clamp(68px,8vw,92px)!important}
+}
+
+@media (max-width:991px){
+  html body .container{width:calc(100% - 40px)!important}
+  html body .section-title{max-width:760px}
+  html body .split{gap:38px!important}
+  html body .content{max-width:none}
+  html body .page-hero h1,
+  html body .blog-hero h1{font-size:clamp(32px,6.8vw,52px)!important}
+}
+
+@media (max-width:767px){
+  html body{font-size:16px!important;line-height:1.78!important}
+  html body .container{width:calc(100% - 32px)!important}
+  html body .section-padding{padding-block:clamp(52px,14vw,74px)!important}
+  html body .section-title{margin-bottom:34px!important}
+  html body .hero{padding-top:130px!important;padding-bottom:82px!important;min-height:auto!important}
+  html body .hero h1{font-size:clamp(34px,10.5vw,48px)!important;line-height:1.28!important}
+  html body .hero p{font-size:clamp(16px,4.5vw,19px)!important;line-height:1.78!important}
+  html body .page-hero h1,
+  html body .blog-hero h1{font-size:clamp(30px,9vw,42px)!important;line-height:1.3!important}
+  html body .page-hero p,
+  html body .blog-hero p{font-size:16px!important;line-height:1.8!important}
+  html body .section-title h2,
+  html body .content h2,
+  html body .mini-cta h2{font-size:clamp(27px,8vw,38px)!important;line-height:1.36!important}
+  html body .section-title p,
+  html body .content p{font-size:16px!important;line-height:1.84!important}
+  html body .btn{min-height:48px!important;padding:12px 18px!important}
+  html body .hero-buttons .btn,
+  html body .hero-actions .btn{width:100%;max-width:340px}
+  html body .service-card .content,
+  html body .project-card .content,
+  html body .article-body,
+  html body .feature-card,
+  html body .step-card,
+  html body .lp-benefit{padding:20px!important}
+}
+
+@media (max-width:420px){
+  html body .container{width:calc(100% - 24px)!important}
+  html body .hero h1{font-size:clamp(31px,10vw,40px)!important}
+  html body .page-hero h1,
+  html body .blog-hero h1{font-size:clamp(28px,9vw,36px)!important}
+  html body .section-title h2,
+  html body .content h2,
+  html body .mini-cta h2{font-size:clamp(25px,8vw,33px)!important}
+}
+
+@media (min-width:1600px){
+  html body .container{width:min(1320px,calc(100% - 120px))!important}
+  html body .hero-content{max-width:980px!important}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html body *,html body *::before,html body *::after{
+    scroll-behavior:auto!important;
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+  }
+}
