@@ -548,6 +548,13 @@ html body.home-page .faq-wrap {
   gap: 16px;
 }
 
+html body.home-page .faq-column {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  min-width: 0;
+}
+
 html body.home-page .faq-item {
   position: relative;
   border: 1px solid rgba(217, 220, 226, .92);
@@ -895,6 +902,10 @@ html body.home-page .contact-card {
   html body.home-page .faq-wrap {
     gap: 11px;
     grid-template-columns: 1fr !important;
+  }
+
+  html body.home-page .faq-column {
+    gap: 11px;
   }
 
   html body.home-page .footer {
