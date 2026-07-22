@@ -174,6 +174,19 @@ html body.home-page .hero-trust .trust-platform:first-child .trust-logo img {
   object-fit: cover;
 }
 
+html body.home-page .hero-trust .trust-platform-sbc .trust-logo {
+  position: relative;
+}
+
+html body.home-page .hero-trust .trust-platform-sbc .trust-logo img {
+  position: absolute;
+  right: 2px;
+  width: auto;
+  max-width: none;
+  height: calc(100% - 4px);
+  object-fit: initial;
+}
+
 html body.home-page .trust-strip {
   margin-top: -38px;
 }
@@ -475,6 +488,10 @@ html body.home-page .credential-logo img {
 
 html body.home-page .credential-logo-sca img {
   object-fit: cover;
+}
+
+html body.home-page .credential-logo-sbc img {
+  width: min(100%, 122px);
 }
 
 html body.home-page .credential-link-icon {
