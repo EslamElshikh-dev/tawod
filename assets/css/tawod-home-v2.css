@@ -52,7 +52,7 @@ html body.home-page .hero {
 
 html body.home-page .hero-content {
   max-width: 1180px !important;
-  margin-inline: 0 auto !important;
+  margin-inline: auto !important;
 }
 
 html body.home-page .hero h1 {
