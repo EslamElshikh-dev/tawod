@@ -107,10 +107,11 @@ html body.home-page .hero-buttons {
 }
 
 html body.home-page .hero-buttons .btn {
-  min-height: 48px;
-  padding: 12px 18px;
+  min-height: 48px !important;
+  padding: 12px 18px !important;
   gap: 8px;
-  font-size: 14.5px;
+  font-size: 14.5px !important;
+  font-weight: 700 !important;
   white-space: nowrap;
 }
 
@@ -631,14 +632,13 @@ html body.home-page .contact-card {
   }
 
   html body.home-page .hero .hero-title-main {
-    font-size: clamp(20px, 6.25vw, 25px);
+    font-size: clamp(23px, 6.25vw, 25px);
     line-height: 1.42;
-    white-space: nowrap;
   }
 
   html body.home-page .hero .hero-title-sub {
     margin-top: 5px;
-    font-size: clamp(15px, 4.5vw, 18px);
+    font-size: clamp(14px, 4.5vw, 18px);
     line-height: 1.55;
     white-space: nowrap;
   }
@@ -658,11 +658,11 @@ html body.home-page .contact-card {
   html body.home-page .hero-buttons .btn {
     width: 100%;
     max-width: none;
-    min-height: 45px;
+    min-height: 46px !important;
     margin-inline: auto;
-    padding: 10px 7px;
+    padding: 10px 7px !important;
     gap: 7px;
-    font-size: 13.25px;
+    font-size: 13.25px !important;
     line-height: 1.35;
   }
 
@@ -682,19 +682,19 @@ html body.home-page .contact-card {
   html body.home-page .hero-trust span {
     justify-content: center;
     min-width: 0;
-    padding: 6px 5px;
-    font-size: 11px;
+    padding: 6px 4px;
+    font-size: 10.5px;
     white-space: nowrap;
   }
 
   html body.home-page .hero-trust .trust-platform {
     width: 100%;
-    gap: 5px;
+    gap: 4px;
   }
 
   html body.home-page .hero-trust .trust-logo {
-    width: 25px;
-    height: 20px;
+    width: 23px;
+    height: 19px;
   }
 
   html body.home-page .trust-strip {
