@@ -84,65 +84,27 @@
       });
     }
 
-    var statsSection = document.getElementById('stats');
-    var counters = document.querySelectorAll('.stat-number');
-    var hasCounted = false;
-
-    function formatCounter(target) {
-      if (target === 24) return '24/7';
-      if (target === 100) return '100%';
-      if (target === 15 || target === 500) return target + '+';
-      return String(target);
-    }
-
-    function runCounters() {
-      if (hasCounted) return;
-      hasCounted = true;
-      counters.forEach(function (counter) {
-        var target = Number(counter.getAttribute('data-target')) || 0;
-        var current = 0;
-        var steps = 70;
-        var increment = Math.max(target / steps, 1);
-
-        function tick() {
-          current += increment;
-          if (current < target) {
-            counter.textContent = String(Math.ceil(current));
-            window.setTimeout(tick, 18);
-          } else {
-            counter.textContent = formatCounter(target);
-          }
-        }
-
-        tick();
-      });
-    }
-
-    if (statsSection && counters.length && 'IntersectionObserver' in window) {
-      var countObserver = new IntersectionObserver(function (entries) {
-        if (entries[0] && entries[0].isIntersecting) runCounters();
-      }, { threshold: 0.35 });
-      countObserver.observe(statsSection);
-    } else if (counters.length) {
-      runCounters();
-    }
-
     document.querySelectorAll('.faq-question').forEach(function (button) {
       button.addEventListener('click', function () {
         var faqItem = button.closest('.faq-item');
         var faqAnswer = faqItem ? faqItem.querySelector('.faq-answer') : null;
         if (!faqItem || !faqAnswer) return;
 
+        var isOpen = faqItem.classList.contains('active');
+
         document.querySelectorAll('.faq-item.active').forEach(function (item) {
-          if (item !== faqItem) {
-            item.classList.remove('active');
-            var answer = item.querySelector('.faq-answer');
-            if (answer) answer.style.maxHeight = null;
-          }
+          item.classList.remove('active');
+          var itemButton = item.querySelector('.faq-question');
+          var answer = item.querySelector('.faq-answer');
+          if (itemButton) itemButton.setAttribute('aria-expanded', 'false');
+          if (answer) answer.style.maxHeight = null;
         });
 
-        faqItem.classList.toggle('active');
-        faqAnswer.style.maxHeight = faqItem.classList.contains('active') ? faqAnswer.scrollHeight + 'px' : null;
+        if (!isOpen) {
+          faqItem.classList.add('active');
+          button.setAttribute('aria-expanded', 'true');
+          faqAnswer.style.maxHeight = faqAnswer.scrollHeight + 'px';
+        }
       });
     });
 
