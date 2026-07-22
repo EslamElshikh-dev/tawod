@@ -51,14 +51,14 @@ html body.home-page .hero {
 }
 
 html body.home-page .hero-content {
-  max-width: 1100px !important;
+  max-width: 1180px !important;
   margin-inline: 0 auto !important;
 }
 
 html body.home-page .hero h1 {
-  max-width: 1100px;
+  max-width: 1180px;
   margin-bottom: 20px !important;
-  font-size: clamp(40px, 3.3vw, 46px) !important;
+  font-size: clamp(38px, 3vw, 42px) !important;
   font-weight: 700 !important;
   line-height: 1.25 !important;
   letter-spacing: -.022em;
