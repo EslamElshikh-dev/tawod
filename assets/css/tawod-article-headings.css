@@ -1,0 +1,86 @@
+/* Adaptive article headings shared across every Tawod blog article. */
+body.tawod-article-page .tawod-fit-heading{
+  max-width:100%;
+  min-width:0;
+  font-size:var(--tawod-fit-font-size,inherit)!important;
+  line-height:1.34!important;
+  white-space:nowrap;
+  overflow:visible;
+  text-wrap:nowrap;
+  text-overflow:clip;
+  word-break:normal;
+  overflow-wrap:normal;
+}
+
+body.tawod-article-page .article-hero h1.tawod-fit-heading{
+  width:100%;
+  max-width:1100px;
+  letter-spacing:-.018em;
+}
+
+body.tawod-article-page .article-content h2.tawod-fit-heading,
+body.tawod-article-page .article-content h3.tawod-fit-heading{
+  width:100%;
+}
+
+body.tawod-article-page .article-content h2.tawod-fit-heading{
+  margin-top:40px;
+  margin-bottom:14px;
+}
+
+body.tawod-article-page .article-content h3.tawod-fit-heading{
+  margin-top:25px;
+  margin-bottom:9px;
+}
+
+body.tawod-article-page .tawod-faq-section .section-title h2.tawod-fit-heading,
+body.tawod-article-page .seo-inline-cta h2.tawod-fit-heading,
+body.tawod-article-page .tawod-key-takeaways h2.tawod-fit-heading{
+  width:100%;
+  max-width:100%;
+}
+
+/* A very long title is allowed to wrap only when shrinking it further would hurt readability. */
+body.tawod-article-page .tawod-fit-heading.tawod-heading-wrap-fallback{
+  white-space:normal;
+  text-wrap:balance;
+  overflow-wrap:anywhere;
+  line-height:1.42!important;
+}
+
+@media(max-width:900px){
+  body.tawod-article-page .article-content h2.tawod-fit-heading{
+    margin-top:34px;
+    padding-right:13px;
+  }
+  body.tawod-article-page .article-content h3.tawod-fit-heading{
+    margin-top:23px;
+  }
+}
+
+@media(max-width:767px){
+  body.tawod-article-page .article-hero h1.tawod-fit-heading{
+    margin-bottom:11px;
+    line-height:1.36!important;
+  }
+  body.tawod-article-page .article-content h2.tawod-fit-heading{
+    margin-top:31px;
+    margin-bottom:12px;
+    padding-right:12px;
+    line-height:1.38!important;
+  }
+  body.tawod-article-page .article-content h3.tawod-fit-heading{
+    margin-top:21px;
+    margin-bottom:8px;
+    line-height:1.42!important;
+  }
+  body.tawod-article-page .tawod-faq-section .section-title h2.tawod-fit-heading{
+    line-height:1.4!important;
+  }
+}
+
+@media(max-width:420px){
+  body.tawod-article-page .article-content h2.tawod-fit-heading{
+    padding-right:10px;
+  }
+}
