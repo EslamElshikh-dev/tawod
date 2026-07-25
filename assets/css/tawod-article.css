@@ -1,5 +1,6 @@
 /* Tawod article pages — premium shared design */
 @import url('./tawod-article-premium.css');
+@import url('./tawod-article-headings.css');
 
 /* Stable fallback before the deferred article enhancer adds the page class. */
 .article-content{visibility:visible}
