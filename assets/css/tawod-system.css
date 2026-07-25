@@ -1,3 +1,19 @@
-/* Tawod shared system: stable base followed by the premium 2026 overrides. */
-@import url('https://cdn.jsdelivr.net/gh/EslamElshikh-dev/tawod@e73f66b727c812d1d6420afbe753f2c0c8efa8a7/assets/css/tawod-system.css');
+/* Tawod shared system: local stable base followed by the premium 2026 overrides. */
+@import url('./tawod-system-base.css');
 @import url('./tawod-premium-2026.css');
+
+/* Prevent narrow-screen overflow from homepage headings and card titles. */
+@media (max-width: 767px) {
+  html body.home-page .section-title h2,
+  html body.home-page .cta-band h2,
+  html body.home-page .premium-card .card-body h3,
+  html body.home-page .project-card .card-body h3,
+  html body.home-page .blog-card-body h3,
+  html body.home-page .process-card h3,
+  html body.home-page .contact-card h3 {
+    max-width: 100% !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+  }
+}
