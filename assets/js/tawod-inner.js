@@ -1,27 +1,256 @@
-/* Tawod shared interactions. Article enhancements are generated progressively from static HTML. */
-(function(){
-'use strict';
-function ready(fn){if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fn);else fn();}
-function q(s,c){return(c||document).querySelector(s)}
-function qa(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))}
-function setupReveal(){var els=qa('.reveal-up,.reveal,[data-reveal]');if(!els.length)return;var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(reduce||!('IntersectionObserver'in window)){els.forEach(function(el){el.classList.add('active','visible','in-view','revealed','show')});return}els.forEach(function(el){el.classList.add('tawod-reveal-pending')});var obs=new IntersectionObserver(function(entries,o){entries.forEach(function(e){if(!e.isIntersecting)return;e.target.classList.remove('tawod-reveal-pending');e.target.classList.add('active','visible','in-view','revealed','show');o.unobserve(e.target)})},{threshold:.08,rootMargin:'0px 0px -28px 0px'});els.forEach(function(el){obs.observe(el)});setTimeout(function(){els.forEach(function(el){el.classList.remove('tawod-reveal-pending');el.classList.add('active','visible','in-view','revealed','show')})},1600)}
-function setupMenu(){var b=q('#menuBtn'),c=q('#closeSidebar'),s=q('#mobileSidebar'),o=q('#sidebarOverlay');function open(){if(s)s.classList.add('active','open','show');if(o)o.classList.add('active','open','show');document.body.classList.add('menu-open');if(b)b.setAttribute('aria-expanded','true')}function close(){if(s)s.classList.remove('active','open','show');if(o)o.classList.remove('active','open','show');document.body.classList.remove('menu-open');if(b)b.setAttribute('aria-expanded','false')}if(b){b.setAttribute('aria-expanded','false');b.setAttribute('aria-label',b.getAttribute('aria-label')||'فتح قائمة التنقل');b.addEventListener('click',open);b.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}})}if(c){c.setAttribute('aria-label',c.getAttribute('aria-label')||'إغلاق قائمة التنقل');c.addEventListener('click',close)}if(o)o.addEventListener('click',close);document.addEventListener('keydown',function(e){if(e.key==='Escape')close()});qa('.mobile-sidebar a').forEach(function(a){a.addEventListener('click',close)})}
-function setupFaq(){qa('.faq-question').forEach(function(b){if(b.dataset.faqReady)return;b.dataset.faqReady='true';b.addEventListener('click',function(){var item=b.closest('.faq-item'),ans=item&&q('.faq-answer',item);if(!item||!ans)return;var open=item.classList.contains('active');qa('.faq-item.active').forEach(function(x){x.classList.remove('active');var xb=q('.faq-question',x),xa=q('.faq-answer',x);if(xb)xb.setAttribute('aria-expanded','false');if(xa)xa.style.maxHeight='' });if(!open){item.classList.add('active');b.setAttribute('aria-expanded','true');ans.style.maxHeight=ans.scrollHeight+'px'}})})}
-function setupProgress(){var article=q('.article-content');if(!article)return;var bar=q('.tawod-reading-progress');if(!bar){bar=document.createElement('div');bar.className='tawod-reading-progress';bar.setAttribute('aria-hidden','true');bar.innerHTML='<span></span>';document.body.insertBefore(bar,document.body.firstChild)}var fill=q('span',bar);function update(){var r=article.getBoundingClientRect(),total=Math.max(1,article.offsetHeight-window.innerHeight*.55),read=Math.min(total,Math.max(0,-r.top+window.innerHeight*.35));fill.style.transform='scaleX('+(read/total)+')'}window.addEventListener('scroll',update,{passive:true});window.addEventListener('resize',update,{passive:true});update()}
-function setupTools(){var share=q('[data-share-article]'),print=q('[data-print-article]'),wa=q('[data-whatsapp-share]');if(wa)wa.href='https://wa.me/?text='+encodeURIComponent(document.title+' '+location.href);if(share)share.addEventListener('click',function(){if(navigator.share){navigator.share({title:document.title,url:location.href}).catch(function(){});return}if(navigator.clipboard)navigator.clipboard.writeText(location.href).then(function(){share.innerHTML='<i class="fa-solid fa-check"></i> تم نسخ الرابط'})});if(print)print.addEventListener('click',function(){window.print()})}
-function slugify(text,i){return'article-section-'+(i+1)}
-function detectArticle(){return!!q('.article-hero')&&!!q('.article-content')}
-function fitArticleHeadings(){var mobile=window.innerWidth<=767;qa('.article-hero h1,.article-content h2,.article-content h3,.tawod-faq-section .section-title h2').forEach(function(el){el.classList.add('tawod-fit-heading');el.classList.remove('tawod-heading-wrap-fallback');var isHero=el.matches('.article-hero h1'),isH2=el.tagName==='H2';var max=isHero?(mobile?34:54):(isH2?(mobile?25:32):(mobile?20:23));var min=isHero?(mobile?21:29):(isH2?(mobile?17:21):(mobile?16:18));var size=max;el.style.setProperty('--tawod-fit-font-size',size+'px');for(var i=0;i<44&&el.scrollWidth>el.clientWidth+1&&size>min;i++){size=Math.max(min,size-.5);el.style.setProperty('--tawod-fit-font-size',size+'px')}if(el.scrollWidth>el.clientWidth+2){el.classList.add('tawod-heading-wrap-fallback')}})}
-function scheduleHeadingFit(){window.requestAnimationFrame(fitArticleHeadings)}
-function enhanceArticle(){if(!detectArticle())return;document.body.classList.add('tawod-article-page');var hero=q('.article-hero'),content=q('.article-content'),title=q('h1',hero),cover=q(':scope > img',content);if(cover){var src=cover.getAttribute('src');if(src)hero.style.setProperty('--article-cover-image','url("'+src+'")');var fig=document.createElement('figure');fig.className='article-cover-figure';cover.parentNode.insertBefore(fig,cover);fig.appendChild(cover);var cap=document.createElement('figcaption');cap.textContent=cover.alt||'صورة توضيحية من أعمال ومجال شركة تعاود للمقاولات';fig.appendChild(cap)}
-if(!q('.article-breadcrumbs',hero)){var bc=document.createElement('nav');bc.className='article-breadcrumbs';bc.setAttribute('aria-label','مسار التنقل');bc.innerHTML='<a href="../../index.html">الرئيسية</a><i class="fa-solid fa-chevron-left"></i><a href="../">المدونة</a><i class="fa-solid fa-chevron-left"></i><span>'+((title&&title.textContent)||'المقال')+'</span>';hero.firstElementChild.insertBefore(bc,hero.firstElementChild.firstChild)}
-if(!q('.article-byline',content)){var by=document.createElement('div');by.className='article-byline';by.innerHTML='<div class="article-byline-author"><span class="article-byline-logo"><img src="../../images/logo/tawod-logo.png" alt="شركة تعاود للمقاولات"></span><span class="article-byline-copy"><strong>إعداد فريق تعاود للمقاولات</strong><span>محتوى هندسي وتوعوي للمشاريع السكنية والتجارية في الرياض</span></span></div><span class="article-byline-badge"><i class="fa-solid fa-circle-check"></i> محتوى مراجع</span>';content.insertBefore(by,content.firstChild)}
-var headings=qa('h2',content).filter(function(h){return!h.closest('.tawod-key-takeaways,.seo-inline-cta')});headings.forEach(function(h,i){if(!h.id)h.id=slugify(h.textContent,i)});var toc=q('.tawod-article-toc',content);if(!toc&&headings.length>2){toc=document.createElement('nav');toc.className='tawod-article-toc';toc.setAttribute('aria-label','فهرس المقال');toc.innerHTML='<div class="tawod-article-toc-head" role="button" tabindex="0" aria-expanded="true"><span><i class="fa-solid fa-list-ul"></i> محتويات المقال</span><small>انتقل مباشرة للقسم المطلوب</small></div><ol>'+headings.map(function(h){return'<li><a href="#'+h.id+'">'+h.textContent+'</a></li>'}).join('')+'</ol>';var target=q('.article-cover-figure',content)||q('.article-byline',content);target.insertAdjacentElement('afterend',toc)}
-if(toc){var head=q('.tawod-article-toc-head',toc);function toggle(){toc.classList.toggle('is-collapsed');head.setAttribute('aria-expanded',String(!toc.classList.contains('is-collapsed')))}if(head){head.addEventListener('click',toggle);head.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}})}var links=qa('a[href^="#"]',toc);if('IntersectionObserver'in window){var map={};links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a});var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(!e.isIntersecting)return;links.forEach(function(a){a.classList.remove('is-active')});if(map[e.target.id])map[e.target.id].classList.add('is-active')})},{rootMargin:'-25% 0px -65% 0px'});headings.forEach(function(h){io.observe(h)})}}
-var words=(content.innerText||'').trim().split(/\s+/).filter(Boolean).length,mins=Math.max(3,Math.ceil(words/180)),reading=q('[data-reading-time]');if(reading)reading.innerHTML='<i class="fa-regular fa-clock"></i> '+mins+' دقائق قراءة';else{var meta=q('.article-meta-line',hero);if(meta){var span=document.createElement('span');span.setAttribute('data-reading-time','');span.innerHTML='<i class="fa-regular fa-clock"></i> '+mins+' دقائق قراءة';meta.appendChild(span)}}scheduleHeadingFit();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(scheduleHeadingFit);var resizeTimer;window.addEventListener('resize',function(){clearTimeout(resizeTimer);resizeTimer=setTimeout(scheduleHeadingFit,120)},{passive:true})}
-function media(){qa('img').forEach(function(img,i){img.decoding='async';if(i>0&&!img.hasAttribute('loading'))img.loading='lazy'});qa('iframe').forEach(function(f){if(!f.hasAttribute('loading'))f.loading='lazy';if(!f.title)f.title='محتوى مضمّن من شركة تعاود للمقاولات'})}
-function secure(){qa('a[target="_blank"]').forEach(function(a){var rel=(a.rel||'').split(/\s+/).filter(Boolean);['noopener','noreferrer'].forEach(function(x){if(rel.indexOf(x)<0)rel.push(x)});a.rel=rel.join(' ')})}
-function removeBar(){qa('.mobile-action-bar').forEach(function(x){x.remove()});document.body.classList.add('no-mobile-action-bar')}
-function track(){qa('a[href^="tel:"],a[href*="wa.me"]').forEach(function(a){a.addEventListener('click',function(){if(typeof window.gtag==='function')window.gtag('event','contact_click',{link_url:a.href,page_path:location.pathname,transport_type:'beacon'})})})}
-ready(function(){removeBar();enhanceArticle();setupMenu();setupFaq();setupProgress();setupTools();setupReveal();media();secure();track();document.documentElement.classList.add('tawod-polished','tawod-system-ready')});
+/* Tawod shared interactions for inner pages and blog. */
+(function () {
+  'use strict';
+
+  function ready(fn) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+    else fn();
+  }
+
+  function q(selector, context) {
+    return (context || document).querySelector(selector);
+  }
+
+  function qa(selector, context) {
+    return Array.prototype.slice.call((context || document).querySelectorAll(selector));
+  }
+
+  function menuIcon() {
+    return '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
+  }
+
+  function closeIcon() {
+    return '<svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  }
+
+  function fixCustomerFacingCopy() {
+    if (!/^\/blog\/?$/.test(window.location.pathname)) return;
+    qa('.blog-section-title').forEach(function (section) {
+      var heading = q('h2', section);
+      var paragraph = q('p', section);
+      if (heading && /السيو|SEO/i.test(heading.textContent)) {
+        heading.textContent = 'أدلة عملية لاتخاذ قرارات أفضل في البناء والتشطيب';
+      }
+      if (paragraph && /كلمات البحث|تستهدف/i.test(paragraph.textContent)) {
+        paragraph.textContent = 'مجموعة من الأدلة المتخصصة التي تساعدك على فهم مراحل تسليم المفتاح، وتشطيب الفلل والشقق، وتقدير التكلفة، وتجنب أخطاء التنفيذ قبل بدء مشروعك في الرياض.';
+      }
+    });
+  }
+
+  function setupLanguageLinks() {
+    var englishUrl = '/en/';
+    qa('.lang-switch a, a[aria-label*="English"], a[data-language="en"]').forEach(function (link) {
+      var label = (link.textContent || '').trim().toUpperCase();
+      if (label === 'EN' || /English/i.test(link.getAttribute('aria-label') || '')) {
+        link.href = englishUrl;
+        link.setAttribute('aria-label', 'English version');
+      }
+    });
+
+    var actions = q('.header-actions');
+    if (actions && !q('[data-language="en"]', actions) && !q('.lang-switch', actions)) {
+      var language = document.createElement('a');
+      language.href = englishUrl;
+      language.dataset.language = 'en';
+      language.className = 'lang-switch-link';
+      language.textContent = 'EN';
+      language.setAttribute('aria-label', 'English version');
+      actions.insertBefore(language, actions.firstChild);
+    }
+
+    var sidebar = q('.sidebar-nav');
+    if (sidebar && !q('[data-language="en"]', sidebar)) {
+      var sidebarEnglish = document.createElement('a');
+      sidebarEnglish.href = englishUrl;
+      sidebarEnglish.dataset.language = 'en';
+      sidebarEnglish.textContent = 'English';
+      sidebar.appendChild(sidebarEnglish);
+    }
+  }
+
+  function setupMenu() {
+    var button = q('#menuBtn');
+    var closeButton = q('#closeSidebar');
+    var sidebar = q('#mobileSidebar');
+    var overlay = q('#sidebarOverlay');
+
+    if (button) {
+      button.innerHTML = menuIcon();
+      button.setAttribute('aria-expanded', 'false');
+      button.setAttribute('aria-label', button.getAttribute('aria-label') || 'فتح قائمة التنقل');
+    }
+    if (closeButton) closeButton.innerHTML = closeIcon();
+
+    function open() {
+      if (!sidebar || !overlay) return;
+      sidebar.classList.add('active', 'open', 'show');
+      overlay.classList.add('active', 'open', 'show');
+      document.body.classList.add('menu-open');
+      document.body.style.overflow = 'hidden';
+      if (button) button.setAttribute('aria-expanded', 'true');
+      if (closeButton) closeButton.focus();
+    }
+
+    function close(returnFocus) {
+      if (sidebar) sidebar.classList.remove('active', 'open', 'show');
+      if (overlay) overlay.classList.remove('active', 'open', 'show');
+      document.body.classList.remove('menu-open');
+      document.body.style.overflow = '';
+      if (button) button.setAttribute('aria-expanded', 'false');
+      if (returnFocus && button) button.focus();
+    }
+
+    if (button) button.addEventListener('click', open);
+    if (closeButton) closeButton.addEventListener('click', function () { close(true); });
+    if (overlay) overlay.addEventListener('click', function () { close(true); });
+    qa('.mobile-sidebar a').forEach(function (link) {
+      link.addEventListener('click', function () { close(false); });
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') close(true);
+    });
+  }
+
+  function setupFaq() {
+    qa('.faq-question').forEach(function (button) {
+      if (button.dataset.faqReady) return;
+      button.dataset.faqReady = 'true';
+      button.addEventListener('click', function () {
+        var item = button.closest('.faq-item');
+        var answer = item && q('.faq-answer', item);
+        if (!item || !answer) return;
+        var wasOpen = item.classList.contains('active');
+
+        qa('.faq-item.active').forEach(function (openItem) {
+          openItem.classList.remove('active');
+          var openButton = q('.faq-question', openItem);
+          var openAnswer = q('.faq-answer', openItem);
+          if (openButton) openButton.setAttribute('aria-expanded', 'false');
+          if (openAnswer) openAnswer.style.maxHeight = '';
+        });
+
+        if (!wasOpen) {
+          item.classList.add('active');
+          button.setAttribute('aria-expanded', 'true');
+          answer.style.maxHeight = answer.scrollHeight + 'px';
+        }
+      });
+    });
+  }
+
+  function setupReveal() {
+    var elements = qa('.reveal-up,.reveal,[data-reveal]');
+    if (!elements.length) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || !('IntersectionObserver' in window)) {
+      elements.forEach(function (element) { element.classList.add('active', 'visible', 'in-view', 'revealed', 'show'); });
+      return;
+    }
+    var observer = new IntersectionObserver(function (entries, instance) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('active', 'visible', 'in-view', 'revealed', 'show');
+        instance.unobserve(entry.target);
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -28px 0px' });
+    elements.forEach(function (element) { observer.observe(element); });
+  }
+
+  function enhanceArticle() {
+    var content = q('.article-content');
+    var hero = q('.article-hero');
+    if (!content || !hero) return;
+    document.body.classList.add('tawod-article-page');
+
+    var words = (content.innerText || '').trim().split(/\s+/).filter(Boolean).length;
+    var minutes = Math.max(3, Math.ceil(words / 180));
+    var reading = q('[data-reading-time]');
+    if (reading) reading.innerHTML = '<i class="fa-regular fa-clock"></i> ' + minutes + ' دقائق قراءة';
+
+    var cover = q(':scope > img', content);
+    if (cover && !cover.closest('figure')) {
+      var figure = document.createElement('figure');
+      figure.className = 'article-cover-figure';
+      cover.parentNode.insertBefore(figure, cover);
+      figure.appendChild(cover);
+      var caption = document.createElement('figcaption');
+      caption.textContent = cover.alt || 'صورة توضيحية من مجال أعمال شركة تعاود للمقاولات';
+      figure.appendChild(caption);
+    }
+
+    if (!q('.article-byline', content)) {
+      var byline = document.createElement('div');
+      byline.className = 'article-byline';
+      byline.innerHTML = '<div class="article-byline-author"><span class="article-byline-logo"><img src="../../images/logo/tawod-logo.png" alt="شركة تعاود للمقاولات"></span><span class="article-byline-copy"><strong>إعداد فريق تعاود للمقاولات</strong><span>محتوى هندسي وتوعوي للمشاريع السكنية والتجارية في الرياض</span></span></div><span class="article-byline-badge"><i class="fa-solid fa-circle-check"></i> محتوى مراجع</span>';
+      content.insertBefore(byline, content.firstChild);
+    }
+  }
+
+  function setupTools() {
+    var share = q('[data-share-article]');
+    var print = q('[data-print-article]');
+    var whatsapp = q('[data-whatsapp-share]');
+    if (whatsapp) whatsapp.href = 'https://wa.me/?text=' + encodeURIComponent(document.title + ' ' + location.href);
+    if (share) share.addEventListener('click', function () {
+      if (navigator.share) {
+        navigator.share({ title: document.title, url: location.href }).catch(function () {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(location.href).then(function () {
+          share.textContent = 'تم نسخ الرابط';
+        });
+      }
+    });
+    if (print) print.addEventListener('click', function () { window.print(); });
+  }
+
+  function improveMedia() {
+    qa('img').forEach(function (image, index) {
+      image.decoding = 'async';
+      if (index > 0 && !image.hasAttribute('loading')) image.loading = 'lazy';
+    });
+    qa('iframe').forEach(function (frame) {
+      if (!frame.hasAttribute('loading')) frame.loading = 'lazy';
+      if (!frame.title) frame.title = 'محتوى مضمّن من شركة تعاود للمقاولات';
+    });
+  }
+
+  function secureLinks() {
+    qa('a[target="_blank"]').forEach(function (link) {
+      var rel = (link.rel || '').split(/\s+/).filter(Boolean);
+      ['noopener', 'noreferrer'].forEach(function (value) {
+        if (rel.indexOf(value) < 0) rel.push(value);
+      });
+      link.rel = rel.join(' ');
+    });
+  }
+
+  function removeMobileBar() {
+    qa('.mobile-action-bar').forEach(function (bar) { bar.remove(); });
+    document.body.classList.add('no-mobile-action-bar');
+  }
+
+  function trackContacts() {
+    qa('a[href^="tel:"],a[href*="wa.me"]').forEach(function (link) {
+      link.addEventListener('click', function () {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'contact_click', { link_url: link.href, page_path: location.pathname, transport_type: 'beacon' });
+        }
+      });
+    });
+  }
+
+  ready(function () {
+    fixCustomerFacingCopy();
+    setupLanguageLinks();
+    setupMenu();
+    setupFaq();
+    setupReveal();
+    enhanceArticle();
+    setupTools();
+    improveMedia();
+    secureLinks();
+    removeMobileBar();
+    trackContacts();
+    document.documentElement.classList.add('tawod-polished', 'tawod-system-ready');
+  });
 })();
