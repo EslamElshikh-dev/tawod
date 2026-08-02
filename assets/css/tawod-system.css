@@ -2,6 +2,46 @@
 @import url('./tawod-system-base.css');
 @import url('./tawod-premium-2026.css');
 
+.mobile-menu-btn,
+.close-sidebar {
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+  min-height: 42px;
+  line-height: 1;
+}
+
+.mobile-menu-btn svg,
+.close-sidebar svg {
+  display: block;
+  pointer-events: none;
+}
+
+.lang-switch-link,
+.header-actions [data-language='en'] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255,255,255,.24);
+  border-radius: 10px;
+  color: #fff;
+  font-family: system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  transition: border-color .2s ease,color .2s ease,background .2s ease;
+}
+
+.lang-switch-link:hover,
+.header-actions [data-language='en']:hover {
+  border-color: var(--primary);
+  background: rgba(var(--primary-rgb),.12);
+  color: var(--primary);
+}
+
 /* Prevent narrow-screen overflow from homepage headings and card titles. */
 @media (max-width: 767px) {
   html body.home-page .section-title h2,
@@ -15,5 +55,13 @@
     white-space: normal !important;
     overflow-wrap: anywhere;
     text-wrap: balance;
+  }
+
+  .header-actions .lang-switch-link,
+  .header-actions [data-language='en'] {
+    min-width: 38px;
+    min-height: 38px;
+    padding: 7px 8px;
+    font-size: 13px;
   }
 }
