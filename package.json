@@ -1,0 +1,12 @@
+{
+  "name": "tawod-static-site",
+  "private": true,
+  "scripts": {
+    "build:home": "node scripts/build-home-performance.mjs",
+    "check:home": "node scripts/build-home-performance.mjs --check",
+    "validate:site": "node scripts/validate-site.mjs"
+  },
+  "devDependencies": {
+    "lightningcss": "1.33.0"
+  }
+}

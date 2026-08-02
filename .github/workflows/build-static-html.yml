@@ -6,14 +6,18 @@ on:
       - main
     paths:
       - 'scripts/**'
+      - 'assets/js/tawod-home.js'
       - 'assets/js/tawod-inner.js'
+      - 'assets/js/tawod-upgrades.js'
       - 'assets/css/**'
       - '**/*.html'
+      - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/build-static-html.yml'
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: static-html-main
@@ -32,24 +36,27 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: npm
+      - name: Install build dependencies
+        run: npm ci --ignore-scripts
       - name: Check build scripts
         run: |
+          node --check assets/js/tawod-home.js
+          node --check assets/js/tawod-upgrades.js
+          node --check scripts/build-home-performance.mjs
           node --check scripts/build-static-pages.mjs
           node --check scripts/validate-site.mjs
+      - name: Verify homepage performance bundle
+        run: npm run check:home
       - name: Generate static page content
         run: node scripts/build-static-pages.mjs
       - name: Verify idempotent generation
         run: node scripts/build-static-pages.mjs --check
       - name: Validate generated site
         run: node scripts/validate-site.mjs
-      - name: Commit generated HTML
+      - name: Verify generated HTML is committed
         run: |
-          if git diff --quiet; then
-            echo "Static HTML is already current."
-            exit 0
+          if ! git diff --exit-code -- '*.html' 'blog/**/*.html' 'lp/**/*.html'; then
+            echo "Generated HTML is out of date. Run node scripts/build-static-pages.mjs and commit the result."
+            exit 1
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- '*.html' 'blog/**/*.html' 'lp/**/*.html'
-          git commit -m "Generate static content FAQ and schema"
-          git push

@@ -1,14 +1,30 @@
 <!DOCTYPE html>
 <html dir='rtl' lang='ar'>
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src='https://www.googletagmanager.com/gtag/js?id=AW-18266173285'></script>
+  <!-- Google tag: queued immediately, network-loaded after the first interaction or idle window. -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'AW-18266173285', { anonymize_ip: true });
     gtag('config', 'G-YE1NT4R4YT', { anonymize_ip: true });
+    (function () {
+      var loaded = false;
+      function loadGoogleTag() {
+        if (loaded) return;
+        loaded = true;
+        var tag = document.createElement('script');
+        tag.async = true;
+        tag.src = 'https://www.googletagmanager.com/gtag/js?id=AW-18266173285';
+        document.head.appendChild(tag);
+      }
+      ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (eventName) {
+        window.addEventListener(eventName, loadGoogleTag, { once: true, passive: true });
+      });
+      window.addEventListener('load', function () {
+        window.setTimeout(loadGoogleTag, 10000);
+      }, { once: true });
+    })();
   </script>
 
   <meta charset='utf-8'>
@@ -35,14 +51,232 @@
 
   <link rel='icon' href='images/logo/tawod-logo.png' sizes='32x32' type='image/png'>
   <link rel='apple-touch-icon' href='images/logo/tawod-logo.png'>
-  <link rel='preload' as='image' href='images/hero-bg.webp'>
-  <link rel='preconnect' href='https://fonts.googleapis.com'>
-  <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
-  <link rel='preconnect' href='https://cdnjs.cloudflare.com' crossorigin>
-  <link href='https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap' rel='stylesheet'>
-  <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css' rel='stylesheet'>
-  <link href='assets/css/tawod-home.css' rel='stylesheet'>
-  <link href='assets/css/tawod-upgrades.css' rel='stylesheet'>
+  <link rel='preload' as='font' href='assets/fonts/alexandria-arabic-variable.woff2' type='font/woff2' crossorigin>
+  <link rel='preload' as='image' href='images/hero-bg-mobile-optimized.webp' type='image/webp' media='(max-width: 767px)' fetchpriority='high'>
+  <link rel='preload' as='image' href='images/hero-bg-desktop-optimized.webp' type='image/webp' media='(min-width: 768px)' fetchpriority='high'>
+  <!-- TAWOD_CRITICAL_CSS_START -->
+  <style id='tawod-critical-css'>
+/* Critical above-the-fold styles. Inlined into index.html by build-home-performance.mjs. */
+@font-face {
+  font-family: 'Alexandria';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('/assets/fonts/alexandria-arabic-variable.woff2') format('woff2-variations');
+  unicode-range: U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC,U+102E0-102FB,U+10E60-10E7E,U+10EC2-10EC4,U+10EFC-10EFF,U+1EE00-1EE03,U+1EE05-1EE1F,U+1EE21-1EE22,U+1EE24,U+1EE27,U+1EE29-1EE32,U+1EE34-1EE37,U+1EE39,U+1EE3B,U+1EE42,U+1EE47,U+1EE49,U+1EE4B,U+1EE4D-1EE4F,U+1EE51-1EE52,U+1EE54,U+1EE57,U+1EE59,U+1EE5B,U+1EE5D,U+1EE5F,U+1EE61-1EE62,U+1EE64,U+1EE67-1EE6A,U+1EE6C-1EE72,U+1EE74-1EE77,U+1EE79-1EE7C,U+1EE7E,U+1EE80-1EE89,U+1EE8B-1EE9B,U+1EEA1-1EEA3,U+1EEA5-1EEA9,U+1EEAB-1EEBB,U+1EEF0-1EEF1;
+}
+
+:root {
+  --primary: #F6B26D;
+  --primary-dark: #BD6B33;
+  --primary-rgb: 246, 178, 109;
+  --secondary: #1D1E26;
+  --white: #FFFFFF;
+  --success: #25D366;
+  --shadow-header: 0 10px 30px rgba(0, 0, 0, .12);
+  --transition: all .32s ease;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 96px; overflow-x: clip; }
+body,
+button,
+input,
+select,
+textarea {
+  font-family: 'Alexandria', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+body {
+  max-width: 100vw;
+  overflow-x: clip;
+  padding-bottom: 0;
+  background: var(--white);
+  color: #20242D;
+  font-size: clamp(16px, .18vw + 15.2px, 17px);
+  line-height: 1.78;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+img { display: block; max-width: 100%; height: auto; }
+button { border: 0; cursor: pointer; background: transparent; color: inherit; }
+.icon-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.icon-svg { display: block; width: 1em; height: 1em; overflow: visible; fill: currentColor; }
+i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: center; font-style: normal; line-height: 1; }
+.container { width: min(1280px, calc(100% - clamp(32px, 6vw, 96px))); margin-inline: auto; }
+
+.skip-link {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 3000;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--primary);
+  color: var(--secondary);
+  font-weight: 800;
+  transform: translateY(-150%);
+  transition: var(--transition);
+}
+.skip-link:focus { transform: translateY(0); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 14px 26px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  font-size: clamp(15px, .95vw, 17px);
+  font-weight: 700;
+  white-space: nowrap;
+  transition: var(--transition);
+}
+.btn-primary { border-color: var(--primary); background: var(--primary); color: var(--secondary); }
+.btn-outline-white { border-color: rgba(255,255,255,.55); background: rgba(255,255,255,.06); color: var(--white); backdrop-filter: blur(8px); }
+
+.header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 1000;
+  height: 88px;
+  background: rgba(29, 30, 38, .94);
+  box-shadow: var(--shadow-header);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: var(--transition);
+}
+.header.scrolled { height: 78px; background: rgba(29,30,38,.98); }
+.header .container { display: flex; align-items: center; justify-content: space-between; gap: 18px; height: 100%; }
+.logo { display: inline-flex; align-items: center; flex: 0 0 auto; }
+.logo img,
+.logo-img { width: auto; height: 56px; max-width: 176px; object-fit: contain; filter: brightness(0) invert(1); }
+.nav-links { display: flex; align-items: center; justify-content: center; gap: clamp(14px, 1.6vw, 28px); min-width: 0; }
+.nav-links a { position: relative; padding: 8px 0; color: var(--white); font-size: 16px; font-weight: 700; white-space: nowrap; }
+.nav-links a.active { color: var(--primary); }
+.nav-links a::after { content: ''; position: absolute; right: 0; bottom: 0; width: 0; height: 3px; border-radius: 3px; background: var(--primary); }
+.nav-links a.active::after { width: 100%; }
+.header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; flex: 0 0 auto; }
+.lang-switch { display: inline-flex; align-items: center; gap: 8px; color: var(--white); font-weight: 700; }
+.lang-switch a { opacity: .65; }
+.lang-switch a.active { color: var(--primary); opacity: 1; }
+.btn-call-animate { position: relative; min-width: 142px; overflow: hidden; }
+.btn-call-animate .text-hover { position: absolute; opacity: 0; transform: translateY(150%); }
+.mobile-menu-btn,
+.mobile-call-icon { display: none; color: var(--white); font-size: 24px; }
+.sidebar-overlay { position: fixed; inset: 0; z-index: 1001; visibility: hidden; opacity: 0; }
+.mobile-sidebar { position: fixed; top: 0; right: -330px; z-index: 1002; visibility: hidden; width: 330px; max-width: 86vw; height: 100vh; overflow-y: auto; background: var(--secondary); }
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: clamp(640px, 84vh, 760px);
+  padding: 138px 0 94px;
+  overflow: hidden;
+  background: var(--secondary);
+  color: var(--white);
+  text-align: right;
+}
+.hero-media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+.hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(circle at 20% 25%, rgba(var(--primary-rgb),.22), transparent 34%), linear-gradient(to top, rgba(29,30,38,.75), transparent 45%), linear-gradient(120deg, rgba(29,30,38,.90), rgba(29,30,38,.70));
+  pointer-events: none;
+}
+.hero::after { content: ''; position: absolute; inset: auto 0 0; z-index: 1; height: 120px; background: linear-gradient(to top, var(--white), transparent); }
+.hero .container { position: relative; z-index: 2; }
+.hero-content { max-width: 1180px; margin-inline: auto; }
+.hero .reveal-up { opacity: 1; transform: none; }
+.hero h1 { max-width: 1180px; margin-bottom: 18px; font-size: 1rem; font-weight: 700; line-height: 1; letter-spacing: 0; text-shadow: 0 12px 34px rgba(0,0,0,.32); }
+.hero h1 span { display: block; max-width: 100%; letter-spacing: -.018em; text-wrap: balance; }
+.hero .hero-title-main { color: var(--white); font-size: clamp(32px, 2.55vw, 36px); font-weight: 800; line-height: 1.28; }
+.hero .hero-title-sub { margin-top: 7px; color: var(--white); font-size: clamp(22px, 1.85vw, 26px); font-weight: 700; line-height: 1.45; }
+.hero p { max-width: 730px; margin-bottom: 26px; color: #E7E9EE; font-size: clamp(17px, .55vw + 14px, 19px); font-weight: 500; line-height: 1.82; text-wrap: pretty; }
+.hero-buttons { display: flex; flex-wrap: nowrap; align-items: center; justify-content: flex-start; gap: 10px; width: max-content; max-width: 100%; }
+.hero-buttons .btn { min-height: 48px; padding: 12px 18px; gap: 8px; font-size: 14.5px; }
+.hero-trust { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 9px; margin-top: 22px; }
+.hero-trust a,
+.hero-trust span { display: inline-flex; align-items: center; gap: 7px; padding: 7px 11px; border: 1px solid rgba(255,255,255,.16); border-radius: 999px; background: rgba(29,30,38,.28); color: #F7F8FA; font-size: 12.5px; font-weight: 700; line-height: 1.45; backdrop-filter: blur(7px); }
+.hero-trust .trust-logo { display: grid; place-items: center; width: 30px; height: 23px; padding: 2px; overflow: hidden; border-radius: 5px; background: #fff; }
+.hero-trust .trust-logo img { width: 100%; height: 100%; object-fit: contain; }
+.hero-trust .trust-platform:first-child .trust-logo img { object-fit: cover; }
+.hero-trust .trust-platform-sbc .trust-logo { position: relative; }
+.hero-trust .trust-platform-sbc .trust-logo img { position: absolute; right: 2px; width: auto; max-width: none; height: calc(100% - 4px); object-fit: initial; }
+
+.trust-strip { position: relative; z-index: 4; margin-top: -38px; }
+.trust-strip-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 14px; border: 1px solid rgba(229,231,235,.9); border-radius: 20px; background: rgba(255,255,255,.96); box-shadow: 0 18px 45px rgba(0,0,0,.12); backdrop-filter: blur(10px); }
+.trust-item { display: flex; align-items: flex-start; gap: 13px; min-height: 130px; padding: 17px 15px; border: 1px solid rgba(229,231,235,.72); border-radius: 14px; background: linear-gradient(145deg,#fff,#f7f8fa); text-align: right; }
+.trust-item > i { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg,var(--primary),var(--primary-dark)); color: var(--secondary); font-size: 18px; }
+.trust-item strong { display: block; color: var(--secondary); font-weight: 800; line-height: 1.35; }
+.trust-item span { color: #666B78; font-size: 14px; font-weight: 600; line-height: 1.7; }
+
+@media (max-width: 1199px) {
+  .header { height: 74px; }
+  .header.scrolled { height: 70px; }
+  .logo img,
+  .logo-img { height: 46px; max-width: 150px; }
+  .nav-links,
+  .header-actions > .btn,
+  .header-actions > .lang-switch { display: none; }
+  .mobile-menu-btn,
+  .mobile-call-icon { display: inline-flex; align-items: center; justify-content: center; }
+  .header-actions { gap: 18px; }
+  .hero { min-height: 650px; }
+}
+
+@media (max-width: 991px) {
+  .hero { min-height: auto; padding: 124px 0 82px; text-align: center; }
+  .hero h1,
+  .hero p { margin-inline: auto; }
+  .hero-buttons,
+  .hero-trust { justify-content: center; }
+  .hero-buttons { margin-inline: auto; }
+  .trust-strip-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 767px) {
+  html { scroll-padding-top: 82px; }
+  body { padding-bottom: 0; font-size: 16px; line-height: 1.76; }
+  .container { width: min(100% - 28px, 1240px); }
+  .hero { padding: 112px 0 68px; }
+  .hero h1 { margin-bottom: 16px; }
+  .hero .hero-title-main { font-size: clamp(15px, 4.82vw, 19px); line-height: 1.45; white-space: nowrap; text-wrap: nowrap; }
+  .hero .hero-title-sub { margin-top: 5px; font-size: clamp(13.5px, 4.1vw, 16px); line-height: 1.55; white-space: nowrap; }
+  .hero p { font-size: 16px; line-height: 1.78; }
+  .hero-buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: min(100%, 360px); }
+  .hero-buttons .btn { width: 100%; min-height: 46px; padding: 10px 7px; gap: 7px; font-size: 13.25px; line-height: 1.35; }
+  .hero-trust { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; width: min(100%, 382px); margin: 16px auto 0; }
+  .hero-trust a,
+  .hero-trust span { justify-content: center; min-width: 0; padding: 6px 4px; font-size: 10.5px; white-space: nowrap; }
+  .hero-trust .trust-platform { width: 100%; gap: 4px; }
+  .hero-trust .trust-logo { width: 23px; height: 19px; }
+  .trust-strip { margin-top: 0; padding-top: 16px; background: var(--white); }
+  .trust-strip-grid { grid-template-columns: 1fr; padding: 12px; }
+  .trust-item { align-items: center; min-height: auto; padding: 15px; }
+}
+
+@media (max-width: 420px) {
+  .container { width: min(100% - 22px, 1240px); }
+  .logo img,
+  .logo-img { height: 40px; max-width: 132px; }
+  .header-actions { gap: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
+  </style>
+  <!-- TAWOD_CRITICAL_CSS_END -->
+  <link rel='preload' as='style' href='assets/css/tawod-home-performance.css?v=d09b2366229f' onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href='assets/css/tawod-home-performance.css?v=d09b2366229f' rel='stylesheet'></noscript>
 
   <script type='application/ld+json'>
   {
@@ -124,39 +358,75 @@
     ]
   }
   </script>
-  <link href="assets/css/tawod-system.css" rel="stylesheet">
-  <link href="assets/css/tawod-home-v2.css" rel="stylesheet">
 </head>
 <body class='home-page no-mobile-action-bar'>
+  <!-- TAWOD_ICON_SPRITE_START -->
+  <svg class='icon-sprite' aria-hidden='true' focusable='false' xmlns='http://www.w3.org/2000/svg'>
+    <symbol id='icon-solid-xmark' viewBox='0 0 384 512'><path d='M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z'></path></symbol>
+    <symbol id='icon-brands-tiktok' viewBox='0 0 448 512'><path d='M448.5 209.9c-44 .1-87-13.6-122.8-39.2l0 178.7c0 33.1-10.1 65.4-29 92.6s-45.6 48-76.6 59.6-64.8 13.5-96.9 5.3-60.9-25.9-82.7-50.8-35.3-56-39-88.9 2.9-66.1 18.6-95.2 40-52.7 69.6-67.7 62.9-20.5 95.7-16l0 89.9c-15-4.7-31.1-4.6-46 .4s-27.9 14.6-37 27.3-14 28.1-13.9 43.9 5.2 31 14.5 43.7 22.4 22.1 37.4 26.9 31.1 4.8 46-.1 28-14.4 37.2-27.1 14.2-28.1 14.2-43.8l0-349.4 88 0c-.1 7.4 .6 14.9 1.9 22.2 3.1 16.3 9.4 31.9 18.7 45.7s21.3 25.6 35.2 34.6c19.9 13.1 43.2 20.1 67 20.1l0 87.4z'></path></symbol>
+    <symbol id='icon-brands-instagram' viewBox='0 0 448 512'><path d='M224.3 141a115 115 0 1 0 -.6 230 115 115 0 1 0 .6-230zm-.6 40.4a74.6 74.6 0 1 1 .6 149.2 74.6 74.6 0 1 1 -.6-149.2zm93.4-45.1a26.8 26.8 0 1 1 53.6 0 26.8 26.8 0 1 1 -53.6 0zm129.7 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM399 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z'></path></symbol>
+    <symbol id='icon-brands-x-twitter' viewBox='0 0 448 512'><path d='M357.2 48L427.8 48 273.6 224.2 455 464 313 464 201.7 318.6 74.5 464 3.8 464 168.7 275.5-5.2 48 140.4 48 240.9 180.9 357.2 48zM332.4 421.8l39.1 0-252.4-333.8-42 0 255.3 333.8z'></path></symbol>
+    <symbol id='icon-brands-snapchat' viewBox='0 0 512 512'><path d='M497.1 366.6c-3.4-9.2-9.8-14.1-17.1-18.2-1.4-.8-2.6-1.5-3.7-1.9-2.2-1.1-4.4-2.2-6.6-3.4-22.8-12.1-40.6-27.3-53-45.4-3.5-5.1-6.6-10.5-9.1-16.1-1.1-3-1-4.7-.2-6.3 .8-1.2 1.7-2.2 2.9-3 3.9-2.6 8-5.2 10.7-7 4.9-3.2 8.8-5.7 11.2-7.4 9.4-6.5 15.9-13.5 20-21.3 2.9-5.4 4.5-11.3 4.9-17.4s-.6-12.2-2.8-17.8c-6.2-16.3-21.6-26.4-40.3-26.4-3.9 0-7.9 .4-11.7 1.2-1 .2-2.1 .5-3.1 .7 .2-11.2-.1-22.9-1.1-34.5-3.5-40.8-17.8-62.1-32.7-79.2-9.5-10.7-20.7-19.7-33.2-26.7-22.6-12.9-48.2-19.4-76.1-19.4s-53.4 6.5-76 19.4c-12.5 7-23.7 16.1-33.3 26.8-14.9 17-29.2 38.4-32.7 79.2-1 11.6-1.2 23.4-1.1 34.5-1-.3-2-.5-3.1-.7-3.9-.8-7.8-1.2-11.7-1.2-18.7 0-34.1 10.1-40.3 26.4-2.2 5.7-3.2 11.8-2.8 17.8s2 12 4.9 17.4c4.1 7.8 10.7 14.7 20 21.3 2.5 1.7 6.4 4.2 11.2 7.4 2.6 1.7 6.5 4.2 10.3 6.7 1.3 .9 2.4 2 3.3 3.3 .8 1.6 .8 3.4-.4 6.6-2.5 5.5-5.5 10.8-8.9 15.8-12.1 17.7-29.4 32.6-51.4 44.6-11.7 6.2-23.9 10.3-29 24.3-3.9 10.5-1.3 22.5 8.5 32.6 3.6 3.8 7.8 6.9 12.4 9.4 9.6 5.3 19.8 9.3 30.3 12.1 2.2 .6 4.3 1.5 6.1 2.7 3.6 3.1 3.1 7.9 7.8 14.8 2.4 3.6 5.4 6.7 9 9.1 10 6.9 21.3 7.4 33.2 7.8 10.8 .4 23 .9 36.9 5.5 5.8 1.9 11.8 5.6 18.7 9.9 16.7 10.3 39.6 24.3 77.8 24.3s61.3-14.1 78.1-24.4c6.9-4.2 12.9-7.9 18.5-9.8 13.9-4.6 26.2-5.1 36.9-5.5 11.9-.5 23.2-.9 33.2-7.8 4.2-2.9 7.7-6.7 10.2-11.2 3.4-5.8 3.4-9.9 6.6-12.8 1.8-1.2 3.7-2.1 5.8-2.6 10.7-2.8 21-6.9 30.8-12.2 4.9-2.6 9.3-6.1 13-10.2l.1-.2c9.2-9.9 11.5-21.5 7.8-31.8zm-34 18.3c-20.7 11.5-34.5 10.2-45.3 17.1-9.1 5.9-3.7 18.5-10.3 23.1-8.1 5.6-32.2-.4-63.2 9.9-25.6 8.5-42 32.8-88 32.8s-62-24.3-88.1-32.9c-31-10.3-55.1-4.2-63.2-9.9-6.6-4.6-1.2-17.2-10.3-23.1-10.7-6.9-24.5-5.7-45.3-17.1-13.2-7.3-5.7-11.8-1.3-13.9 75.1-36.4 87.1-92.6 87.7-96.7 .6-5 1.4-9-4.2-14.1-5.4-5-29.2-19.7-35.8-24.3-10.9-7.6-15.7-15.3-12.2-24.6 2.5-6.5 8.5-8.9 14.9-8.9 2 0 4 .2 6 .7 12 2.6 23.7 8.6 30.4 10.2 .8 .2 1.6 .3 2.5 .3 3.6 0 4.9-1.8 4.6-5.9-.8-13.1-2.6-38.7-.6-62.6 2.8-32.9 13.4-49.2 26-63.6 6.1-6.9 34.5-37 88.9-37S339 74.2 345 81.1c12.6 14.4 23.2 30.7 26 63.6 2.1 23.9 .3 49.5-.6 62.6-.3 4.3 1 5.9 4.6 5.9 .8 0 1.7-.1 2.5-.3 6.7-1.6 18.4-7.6 30.4-10.2 2-.4 4-.7 6-.7 6.4 0 12.4 2.5 14.9 8.9 3.5 9.4-1.2 17-12.2 24.6-6.6 4.6-30.4 19.3-35.8 24.3-5.6 5.1-4.8 9.1-4.2 14.2 .5 4.2 12.5 60.4 87.7 96.7 4.4 2.2 11.9 6.7-1.3 14.1z'></path></symbol>
+    <symbol id='icon-solid-chevron-left' viewBox='0 0 320 512'><path d='M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z'></path></symbol>
+    <symbol id='icon-solid-phone' viewBox='0 0 512 512'><path d='M160.2 25C152.3 6.1 131.7-3.9 112.1 1.4l-5.5 1.5c-64.6 17.6-119.8 80.2-103.7 156.4 37.1 175 174.8 312.7 349.8 349.8 76.3 16.2 138.8-39.1 156.4-103.7l1.5-5.5c5.4-19.7-4.7-40.3-23.5-48.1l-97.3-40.5c-16.5-6.9-35.6-2.1-47 11.8l-38.6 47.2C233.9 335.4 177.3 277 144.8 205.3L189 169.3c13.9-11.3 18.6-30.4 11.8-47L160.2 25z'></path></symbol>
+    <symbol id='icon-solid-envelope' viewBox='0 0 512 512'><path d='M48 64c-26.5 0-48 21.5-48 48 0 15.1 7.1 29.3 19.2 38.4l208 156c17.1 12.8 40.5 12.8 57.6 0l208-156c12.1-9.1 19.2-23.3 19.2-38.4 0-26.5-21.5-48-48-48L48 64zM0 196L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-188-198.4 148.8c-34.1 25.6-81.1 25.6-115.2 0L0 196z'></path></symbol>
+    <symbol id='icon-solid-location-dot' viewBox='0 0 384 512'><path d='M0 188.6C0 84.4 86 0 192 0S384 84.4 384 188.6c0 119.3-120.2 262.3-170.4 316.8-11.8 12.8-31.5 12.8-43.3 0-50.2-54.5-170.4-197.5-170.4-316.8zM192 256a64 64 0 1 0 0-128 64 64 0 1 0 0 128z'></path></symbol>
+    <symbol id='icon-solid-bars' viewBox='0 0 448 512'><path d='M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z'></path></symbol>
+    <symbol id='icon-solid-calendar-check' viewBox='0 0 448 512'><path d='M320 0c17.7 0 32 14.3 32 32l0 32 32 0c35.3 0 64 28.7 64 64l0 288c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 128C0 92.7 28.7 64 64 64l32 0 0-32c0-17.7 14.3-32 32-32s32 14.3 32 32l0 32 128 0 0-32c0-17.7 14.3-32 32-32zm22 161.7c-10.7-7.8-25.7-5.4-33.5 5.3L189.1 331.2 137 279.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l72 72c5 5 11.9 7.5 18.8 7s13.4-4.1 17.5-9.8L347.3 195.2c7.8-10.7 5.4-25.7-5.3-33.5z'></path></symbol>
+    <symbol id='icon-regular-images' viewBox='0 0 576 512'><path d='M480 80c8.8 0 16 7.2 16 16l0 256c0 8.8-7.2 16-16 16l-320 0c-8.8 0-16-7.2-16-16l0-256c0-8.8 7.2-16 16-16l320 0zM160 32c-35.3 0-64 28.7-64 64l0 256c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-256c0-35.3-28.7-64-64-64L160 32zm80 112a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm140.7 3.8c-4.3-7.3-12.2-11.8-20.7-11.8s-16.4 4.5-20.7 11.8l-46.5 79-17.2-24.6c-4.5-6.4-11.8-10.2-19.7-10.2s-15.2 3.8-19.7 10.2l-56 80c-5.1 7.3-5.8 16.9-1.6 24.8S191.1 320 200 320l240 0c8.6 0 16.6-4.6 20.8-12.1s4.2-16.7-.1-24.1l-80-136zM48 152c0-13.3-10.7-24-24-24S0 138.7 0 152L0 448c0 35.3 28.7 64 64 64l360 0c13.3 0 24-10.7 24-24s-10.7-24-24-24L64 464c-8.8 0-16-7.2-16-16l0-296z'></path></symbol>
+    <symbol id='icon-solid-location-crosshairs' viewBox='0 0 576 512'><path d='M288-16c17.7 0 32 14.3 32 32l0 18.3c98.1 14 175.7 91.6 189.7 189.7l18.3 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-18.3 0c-14 98.1-91.6 175.7-189.7 189.7l0 18.3c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-18.3C157.9 463.7 80.3 386.1 66.3 288L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l18.3 0C80.3 125.9 157.9 48.3 256 34.3L256 16c0-17.7 14.3-32 32-32zM128 256a160 160 0 1 0 320 0 160 160 0 1 0 -320 0zm160-96a96 96 0 1 1 0 192 96 96 0 1 1 0-192z'></path></symbol>
+    <symbol id='icon-solid-shield-halved' viewBox='0 0 512 512'><path d='M256 0c4.6 0 9.2 1 13.4 2.9L457.8 82.8c22 9.3 38.4 31 38.3 57.2-.5 99.2-41.3 280.7-213.6 363.2-16.7 8-36.1 8-52.8 0-172.4-82.5-213.1-264-213.6-363.2-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.9 1 251.4 0 256 0zm0 66.8l0 378.1c138-66.8 175.1-214.8 176-303.4l-176-74.6 0 0z'></path></symbol>
+    <symbol id='icon-solid-headset' viewBox='0 0 448 512'><path d='M224 64c-79 0-144.7 57.3-157.7 132.7 9.3-3 19.3-4.7 29.7-4.7l16 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-16 0c-53 0-96-43-96-96l0-64C0 100.3 100.3 0 224 0S448 100.3 448 224l0 168.1c0 66.3-53.8 120-120.1 120l-87.9-.1-32 0c-26.5 0-48-21.5-48-48s21.5-48 48-48l32 0c26.5 0 48 21.5 48 48l0 0 40 0c39.8 0 72-32.2 72-72l0-20.9c-14.1 8.2-30.5 12.8-48 12.8l-16 0c-26.5 0-48-21.5-48-48l0-96c0-26.5 21.5-48 48-48l16 0c10.4 0 20.3 1.6 29.7 4.7-13-75.3-78.6-132.7-157.7-132.7z'></path></symbol>
+    <symbol id='icon-solid-people-group' viewBox='0 0 512 512'><path d='M256 0a64 64 0 1 1 0 128 64 64 0 1 1 0-128zm96 312c0 25-12.7 47-32 59.9l0 92.1c0 26.5-21.5 48-48 48l-32 0c-26.5 0-48-21.5-48-48l0-92.1C172.7 359 160 337 160 312l0-40c0-53 43-96 96-96s96 43 96 96l0 40zM96 32a56 56 0 1 1 0 112 56 56 0 1 1 0-112zm16 240l0 32c0 32.5 12.1 62.1 32 84.7l0 75.3c0 1.2 0 2.5 .1 3.7-8.5 7.6-19.7 12.3-32.1 12.3l-32 0c-26.5 0-48-21.5-48-48l0-56.6C12.9 364.4 0 343.7 0 320l0-32c0-53 43-96 96-96 12.7 0 24.8 2.5 35.9 6.9-12.6 21.4-19.9 46.4-19.9 73.1zM368 464l0-75.3c19.9-22.5 32-52.2 32-84.7l0-32c0-26.7-7.3-51.6-19.9-73.1 11.1-4.5 23.2-6.9 35.9-6.9 53 0 96 43 96 96l0 32c0 23.7-12.9 44.4-32 55.4l0 56.6c0 26.5-21.5 48-48 48l-32 0c-12.3 0-23.6-4.6-32.1-12.3 0-1.2 .1-2.5 .1-3.7zM416 32a56 56 0 1 1 0 112 56 56 0 1 1 0-112z'></path></symbol>
+    <symbol id='icon-solid-building' viewBox='0 0 384 512'><path d='M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-384c0-35.3-28.7-64-64-64L64 0zM176 352l32 0c17.7 0 32 14.3 32 32l0 80-96 0 0-80c0-17.7 14.3-32 32-32zM96 112c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zM240 96l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16zM96 240c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zm144-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16z'></path></symbol>
+    <symbol id='icon-solid-arrow-left-long' viewBox='0 0 576 512'><path d='M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 288 544 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-434.7 0 73.4-73.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-128 128z'></path></symbol>
+    <symbol id='icon-solid-key' viewBox='0 0 512 512'><path d='M336 352c97.2 0 176-78.8 176-176S433.2 0 336 0 160 78.8 160 176c0 18.7 2.9 36.8 8.3 53.7L7 391c-4.5 4.5-7 10.6-7 17l0 80c0 13.3 10.7 24 24 24l80 0c13.3 0 24-10.7 24-24l0-40 40 0c13.3 0 24-10.7 24-24l0-40 40 0c6.4 0 12.5-2.5 17-7l33.3-33.3c16.9 5.4 35 8.3 53.7 8.3zM376 96a40 40 0 1 1 0 80 40 40 0 1 1 0-80z'></path></symbol>
+    <symbol id='icon-solid-screwdriver-wrench' viewBox='0 0 576 512'><path d='M70.8-6.7c5.4-5.4 13.8-6.2 20.2-2L209.9 70.5c8.9 5.9 14.2 15.9 14.2 26.6l0 49.6 90.8 90.8c33.3-15 73.9-8.9 101.2 18.5L542.2 382.1c18.7 18.7 18.7 49.1 0 67.9l-60.1 60.1c-18.7 18.7-49.1 18.7-67.9 0L288.1 384c-27.4-27.4-33.5-67.9-18.5-101.2l-90.8-90.8-49.6 0c-10.7 0-20.7-5.3-26.6-14.2L23.4 58.9c-4.2-6.3-3.4-14.8 2-20.2L70.8-6.7zm145 303.5c-6.3 36.9 2.3 75.9 26.2 107.2l-94.9 95c-28.1 28.1-73.7 28.1-101.8 0s-28.1-73.7 0-101.8l135.4-135.5 35.2 35.1zM384.1 0c20.1 0 39.4 3.7 57.1 10.5 10 3.8 11.8 16.5 4.3 24.1L388.8 91.3c-3 3-4.7 7.1-4.7 11.3l0 41.4c0 8.8 7.2 16 16 16l41.4 0c4.2 0 8.3-1.7 11.3-4.7l56.7-56.7c7.6-7.5 20.3-5.7 24.1 4.3 6.8 17.7 10.5 37 10.5 57.1 0 43.2-17.2 82.3-45 111.1l-49.1-49.1c-33.1-33-78.5-45.7-121.1-38.4l-56.8-56.8 0-29.7-.2-5c-.8-12.4-4.4-24.3-10.5-34.9 29.4-35 73.4-57.2 122.7-57.3z'></path></symbol>
+    <symbol id='icon-solid-paint-roller' viewBox='0 0 512 512'><path d='M0 64C0 28.7 28.7 0 64 0L352 0c35.3 0 64 28.7 64 64l16 0c44.2 0 80 35.8 80 80l0 96c0 44.2-35.8 80-80 80l-160 0c-8.8 0-16 7.2-16 16l0 18.7c18.6 6.6 32 24.4 32 45.3l0 96c0 26.5-21.5 48-48 48l-32 0c-26.5 0-48-21.5-48-48l0-96c0-20.9 13.4-38.7 32-45.3l0-18.7c0-44.2 35.8-80 80-80l160 0c8.8 0 16-7.2 16-16l0-96c0-8.8-7.2-16-16-16l-16 0c0 35.3-28.7 64-64 64L64 192c-35.3 0-64-28.7-64-64L0 64z'></path></symbol>
+    <symbol id='icon-solid-compass-drafting' viewBox='0 0 512 512'><path d='M99.3 256.1l69.4-119.9c-5.6-12.2-8.8-25.8-8.8-40.2 0-53 43-96 96-96s96 43 96 96c0 14.3-3.1 27.9-8.8 40.2l44.4 76.7c-23.1 26-53.7 45.1-88.4 53.8L256 191.9 187.9 309.5c21.5 6.8 44.3 10.5 68.1 10.5 70.7 0 133.8-32.7 174.9-84 11.1-13.8 31.2-16 45-5s16 31.2 5 45c-52.7 65.8-133.9 108-224.8 108-35.4 0-69.4-6.4-100.7-18.1L98.7 463.7C94 471.8 87 478.4 78.6 482.6L23.2 510.3c-5 2.5-10.9 2.2-15.6-.7S0 501.5 0 496l0-55.4c0-8.4 2.2-16.7 6.5-24.1l60-103.7c-12.8-11.2-24.6-23.5-35.3-36.8-11.1-13.8-8.8-33.9 5-45s33.9-8.8 45 5c5.7 7.1 11.8 13.8 18.2 20.1zM381.1 407.9c32.5-13 62.4-31 88.9-52.9l35.6 61.5c4.2 7.3 6.5 15.6 6.5 24.1l0 55.4c0 5.5-2.9 10.7-7.6 13.6s-10.6 3.2-15.6 .7l-55.4-27.7c-8.4-4.2-15.4-10.8-20.1-18.9l-32.3-55.8zM256 128a32 32 0 1 0 0-64 32 32 0 1 0 0 64z'></path></symbol>
+    <symbol id='icon-solid-gears' viewBox='0 0 640 512'><path d='M415.9 210.5c12.2-3.3 25 2.5 30.5 13.8L465 261.9c10.3 1.4 20.4 4.2 29.9 8.1l35-23.3c10.5-7 24.4-5.6 33.3 3.3l19.2 19.2c8.9 8.9 10.3 22.9 3.3 33.3l-23.3 34.9c1.9 4.7 3.6 9.6 5 14.7 1.4 5.1 2.3 10.1 3 15.2l37.7 18.6c11.3 5.6 17.1 18.4 13.8 30.5l-7 26.2c-3.3 12.1-14.6 20.3-27.2 19.5l-42-2.7c-6.3 8.1-13.6 15.6-21.9 22l2.7 41.9c.8 12.6-7.4 24-19.5 27.2l-26.2 7c-12.2 3.3-24.9-2.5-30.5-13.8l-18.6-37.6c-10.3-1.4-20.4-4.2-29.9-8.1l-35 23.3c-10.5 7-24.4 5.6-33.3-3.3l-19.2-19.2c-8.9-8.9-10.3-22.8-3.3-33.3l23.3-35c-1.9-4.7-3.6-9.6-5-14.7s-2.3-10.2-3-15.2l-37.7-18.6c-11.3-5.6-17-18.4-13.8-30.5l7-26.2c3.3-12.1 14.6-20.3 27.2-19.5l41.9 2.7c6.3-8.1 13.6-15.6 21.9-22l-2.7-41.8c-.8-12.6 7.4-24 19.5-27.2l26.2-7zM448.4 340a44 44 0 1 0 .1 88 44 44 0 1 0 -.1-88zM224.9-45.5l26.2 7c12.1 3.3 20.3 14.7 19.5 27.2l-2.7 41.8c8.3 6.4 15.6 13.8 21.9 22l42-2.7c12.5-.8 23.9 7.4 27.2 19.5l7 26.2c3.2 12.1-2.5 24.9-13.8 30.5l-37.7 18.6c-.7 5.1-1.7 10.2-3 15.2s-3.1 10-5 14.7l23.3 35c7 10.5 5.6 24.4-3.3 33.3L307.3 262c-8.9 8.9-22.8 10.3-33.3 3.3L239 242c-9.5 3.9-19.6 6.7-29.9 8.1l-18.6 37.6c-5.6 11.3-18.4 17-30.5 13.8l-26.2-7c-12.2-3.3-20.3-14.7-19.5-27.2l2.7-41.9c-8.3-6.4-15.6-13.8-21.9-22l-42 2.7c-12.5 .8-23.9-7.4-27.2-19.5l-7-26.2c-3.2-12.1 2.5-24.9 13.8-30.5l37.7-18.6c.7-5.1 1.7-10.1 3-15.2 1.4-5.1 3-10 5-14.7L55.1 46.5c-7-10.5-5.6-24.4 3.3-33.3L77.6-6c8.9-8.9 22.8-10.3 33.3-3.3l35 23.3c9.5-3.9 19.6-6.7 29.9-8.1l18.6-37.6c5.6-11.3 18.3-17 30.5-13.8zM192.4 84a44 44 0 1 0 0 88 44 44 0 1 0 0-88z'></path></symbol>
+    <symbol id='icon-solid-circle-check' viewBox='0 0 512 512'><path d='M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l72 72c5 5 11.8 7.5 18.8 7s13.4-4.1 17.5-9.8L379.3 179.2c7.8-10.7 5.4-25.7-5.3-33.5z'></path></symbol>
+    <symbol id='icon-solid-comments' viewBox='0 0 576 512'><path d='M384 144c0 97.2-86 176-192 176-26.7 0-52.1-5-75.2-14L35.2 349.2c-9.3 4.9-20.7 3.2-28.2-4.2s-9.2-18.9-4.2-28.2l35.6-67.2C14.3 220.2 0 183.6 0 144 0 46.8 86-32 192-32S384 46.8 384 144zm0 368c-94.1 0-172.4-62.1-188.8-144 120-1.5 224.3-86.9 235.8-202.7 83.3 19.2 145 88.3 145 170.7 0 39.6-14.3 76.2-38.4 105.6l35.6 67.2c4.9 9.3 3.2 20.7-4.2 28.2s-18.9 9.2-28.2 4.2L459.2 498c-23.1 9-48.5 14-75.2 14z'></path></symbol>
+    <symbol id='icon-solid-file-signature' viewBox='0 0 640 512'><path d='M64.1 64c0-35.3 28.7-64 64-64L277.6 0c17 0 33.3 6.7 45.3 18.7L429.3 125.3c12 12 18.7 28.3 18.7 45.3l0 97.5-132 132-42.1 0-16.1-53.6c-4.7-15.7-19.1-26.4-35.5-26.4-11.3 0-21.9 5.1-28.9 13.9L133.3 409c-8.3 10.3-6.6 25.5 3.7 33.7s25.5 6.6 33.7-3.8l47.1-58.8 15.2 50.7c3 10.2 12.4 17.1 23 17.1l31.5 0c-.9 3.1-1.7 6.3-2.3 9.5l-10.9 54.5-146.2 0c-35.3 0-64-28.7-64-64l0-384zm208-5.5l0 93.5c0 13.3 10.7 24 24 24l93.5 0-117.5-117.5zm60.2 408.4c2.5-12.4 8.6-23.8 17.5-32.7l118.9-118.9 80 80-118.9 118.9c-8.9 8.9-20.3 15-32.7 17.5l-59.6 11.9c-.9 .2-1.9 .3-2.9 .3-8 0-14.6-6.5-14.6-14.6 0-1 .1-1.9 .3-2.9l11.9-59.6zm267.8-123l-28.8 28.8-80-80 28.8-28.8c22.1-22.1 57.9-22.1 80 0s22.1 57.9 0 80z'></path></symbol>
+    <symbol id='icon-solid-helmet-safety' viewBox='0 0 576 512'><path d='M352 264l0-200c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32 14.3-32 32l0 200c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-185.9C90 109.8 32 191.8 32 288l0 64 512 0 0-64c-1-95.2-58.4-177.7-144-209.8L400 264c0 13.3-10.7 24-24 24s-24-10.7-24-24zM40 400c-22.1 0-40 17.9-40 40s17.9 40 40 40l496 0c22.1 0 40-17.9 40-40s-17.9-40-40-40L40 400z'></path></symbol>
+    <symbol id='icon-solid-arrow-up-right-from-square' viewBox='0 0 512 512'><path d='M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l82.7 0-201.4 201.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3 448 192c0 17.7 14.3 32 32 32s32-14.3 32-32l0-160c0-17.7-14.3-32-32-32L320 0zM80 96C35.8 96 0 131.8 0 176L0 432c0 44.2 35.8 80 80 80l256 0c44.2 0 80-35.8 80-80l0-80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 80c0 8.8-7.2 16-16 16L80 448c-8.8 0-16-7.2-16-16l0-256c0-8.8 7.2-16 16-16l80 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L80 96z'></path></symbol>
+    <symbol id='icon-regular-clock' viewBox='0 0 512 512'><path d='M464 256a208 208 0 1 1 -416 0 208 208 0 1 1 416 0zM0 256a256 256 0 1 0 512 0 256 256 0 1 0 -512 0zM232 120l0 136c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2 280 120c0-13.3-10.7-24-24-24s-24 10.7-24 24z'></path></symbol>
+    <symbol id='icon-solid-chevron-down' viewBox='0 0 448 512'><path d='M201.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 338.7 54.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z'></path></symbol>
+    <symbol id='icon-brands-whatsapp' viewBox='0 0 448 512'><path d='M380.9 97.1c-41.9-42-97.7-65.1-157-65.1-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480 117.7 449.1c32.4 17.7 68.9 27 106.1 27l.1 0c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3 18.6-68.1-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1s56.2 81.2 56.1 130.5c0 101.8-84.9 184.6-186.6 184.6zM325.1 300.5c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8s-14.3 18-17.6 21.8c-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7s-12.5-30.1-17.1-41.2c-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2s-9.7 1.4-14.8 6.9c-5.1 5.6-19.4 19-19.4 46.3s19.9 53.7 22.6 57.4c2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4s4.6-24.1 3.2-26.4c-1.3-2.5-5-3.9-10.5-6.6z'></path></symbol>
+    <symbol id='icon-solid-paper-plane' viewBox='0 0 576 512'><path d='M536.4-26.3c9.8-3.5 20.6-1 28 6.3s9.8 18.2 6.3 28l-178 496.9c-5 13.9-18.1 23.1-32.8 23.1-14.2 0-27-8.6-32.3-21.7l-64.2-158c-4.5-11-2.5-23.6 5.2-32.6l94.5-112.4c5.1-6.1 4.7-15-.9-20.6s-14.6-6-20.6-.9L229.2 276.1c-9.1 7.6-21.6 9.6-32.6 5.2L38.1 216.8c-13.1-5.3-21.7-18.1-21.7-32.3 0-14.7 9.2-27.8 23.1-32.8l496.9-178z'></path></symbol>
+    <symbol id='icon-brands-linkedin-in' viewBox='0 0 448 512'><path d='M100.3 448l-92.9 0 0-299.1 92.9 0 0 299.1zM53.8 108.1C24.1 108.1 0 83.5 0 53.8 0 39.5 5.7 25.9 15.8 15.8s23.8-15.8 38-15.8 27.9 5.7 38 15.8 15.8 23.8 15.8 38c0 29.7-24.1 54.3-53.8 54.3zM447.9 448l-92.7 0 0-145.6c0-34.7-.7-79.2-48.3-79.2-48.3 0-55.7 37.7-55.7 76.7l0 148.1-92.8 0 0-299.1 89.1 0 0 40.8 1.3 0c12.4-23.5 42.7-48.3 87.9-48.3 94 0 111.3 61.9 111.3 142.3l0 164.3-.1 0z'></path></symbol>
+    <symbol id='icon-solid-angle-left' viewBox='0 0 256 512'><path d='M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z'></path></symbol>
+  </svg>
+  <!-- TAWOD_ICON_SPRITE_END -->
   <a class='skip-link' href='#main'>تخطي إلى المحتوى</a>
 
   <div class='sidebar-overlay' id='sidebarOverlay'></div>
-  <aside class='mobile-sidebar' id='mobileSidebar' aria-label='قائمة الجوال'>
-    <i class='fa-solid fa-xmark close-sidebar' id='closeSidebar' aria-label='إغلاق القائمة' role='button' tabindex='0'></i>
+  <aside class='mobile-sidebar' id='mobileSidebar' aria-label='قائمة الجوال' aria-hidden='true' inert>
+    <button class='fa-solid fa-xmark close-sidebar' id='closeSidebar' type='button' aria-label='إغلاق القائمة'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-xmark'></use></svg></button>
     <a class='logo sidebar-logo' href='index.html'>
-      <img class='logo-img' src='images/logo/tawod-logo.png' width='917' height='408' alt='شركة تعاود للمقاولات'>
+      <img class='logo-img' src='images/logo/tawod-logo-300.png' width='300' height='133' loading='lazy' decoding='async' alt='شركة تعاود للمقاولات'>
     </a>
     <div class='mobile-socials'>
-      <a aria-label='TikTok' href='https://tiktok.com/@tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-tiktok'></i></a>
-      <a aria-label='Instagram' href='https://instagram.com/tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-instagram'></i></a>
-      <a aria-label='X Twitter' href='https://twitter.com/tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-x-twitter'></i></a>
-      <a aria-label='Snapchat' href='https://snapchat.com/add/tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-snapchat'></i></a>
+      <a aria-label='TikTok' href='https://tiktok.com/@tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-tiktok'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-brands-tiktok'></use></svg></i></a>
+      <a aria-label='Instagram' href='https://instagram.com/tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-instagram'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-brands-instagram'></use></svg></i></a>
+      <a aria-label='X Twitter' href='https://twitter.com/tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-x-twitter'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-brands-x-twitter'></use></svg></i></a>
+      <a aria-label='Snapchat' href='https://snapchat.com/add/tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-snapchat'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-brands-snapchat'></use></svg></i></a>
     </div>
     <nav class='sidebar-nav'>
       <h4>روابط سريعة</h4>
-      <a class='active' href='index.html'>الرئيسية <i class='fa-solid fa-chevron-left'></i></a>
-      <a href='#services'>خدماتنا <i class='fa-solid fa-chevron-left'></i></a>
-      <a href='#projects'>مشاريعنا <i class='fa-solid fa-chevron-left'></i></a>
-      <a href='#about'>من نحن <i class='fa-solid fa-chevron-left'></i></a>
-      <a href='blog/'>المدونة <i class='fa-solid fa-chevron-left'></i></a>
-      <a href='#contact'>تواصل معنا <i class='fa-solid fa-chevron-left'></i></a>
+      <a class='active' href='index.html'>الرئيسية <i class='fa-solid fa-chevron-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-chevron-left'></use></svg></i></a>
+      <a href='#services'>خدماتنا <i class='fa-solid fa-chevron-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-chevron-left'></use></svg></i></a>
+      <a href='#projects'>مشاريعنا <i class='fa-solid fa-chevron-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-chevron-left'></use></svg></i></a>
+      <a href='#about'>من نحن <i class='fa-solid fa-chevron-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-chevron-left'></use></svg></i></a>
+      <a href='blog/'>المدونة <i class='fa-solid fa-chevron-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-chevron-left'></use></svg></i></a>
+      <a href='#contact'>تواصل معنا <i class='fa-solid fa-chevron-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-chevron-left'></use></svg></i></a>
     </nav>
     <div class='sidebar-contact'>
       <h4>تواصل معنا</h4>
       <ul class='footer-contact'>
-        <li><a href='tel:0551128884'><i class='fa-solid fa-phone'></i><span>0551128884</span></a></li>
-        <li><a href='mailto:info@tawodco.com'><i class='fa-solid fa-envelope'></i><span>info@tawodco.com</span></a></li>
-        <li><div class='info-only'><i class='fa-solid fa-location-dot'></i><span>الرياض، المملكة العربية السعودية</span></div></li>
+        <li><a href='tel:0551128884'><i class='fa-solid fa-phone'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-phone'></use></svg></i><span>0551128884</span></a></li>
+        <li><a href='mailto:info@tawodco.com'><i class='fa-solid fa-envelope'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-envelope'></use></svg></i><span>info@tawodco.com</span></a></li>
+        <li><div class='info-only'><i class='fa-solid fa-location-dot'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-location-dot'></use></svg></i><span>الرياض، المملكة العربية السعودية</span></div></li>
       </ul>
     </div>
   </aside>
@@ -164,7 +434,7 @@
   <header class='header' id='header'>
     <div class='container'>
       <a class='logo' href='index.html' aria-label='شركة تعاود للمقاولات'>
-        <img class='logo-img' src='images/logo/tawod-logo.png' width='917' height='408' alt='شركة تعاود للمقاولات'>
+        <img class='logo-img' src='images/logo/tawod-logo-300.png' width='300' height='133' decoding='async' alt='شركة تعاود للمقاولات'>
       </a>
       <nav aria-label='القائمة الرئيسية'>
         <ul class='nav-links'>
@@ -182,28 +452,32 @@
           <span class='separator'>|</span>
           <a href='index.html' aria-label='English version coming soon'>EN</a>
         </div>
-        <a class='mobile-call-icon' href='tel:0551128884' aria-label='اتصل بنا'><i class='fa-solid fa-phone'></i></a>
+        <a class='mobile-call-icon' href='tel:0551128884' aria-label='اتصل بنا'><i class='fa-solid fa-phone'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-phone'></use></svg></i></a>
         <a class='btn btn-primary btn-call-animate' href='tel:0551128884'>
           <span class='text-default'>اتصل بنا</span>
           <span class='text-hover' dir='ltr'>0551128884</span>
         </a>
         <a class='btn btn-outline-white' href='#contact'>طلب عرض سعر</a>
-        <i class='fa-solid fa-bars mobile-menu-btn' id='menuBtn' role='button' tabindex='0' aria-label='فتح القائمة'></i>
+        <button class='fa-solid fa-bars mobile-menu-btn' id='menuBtn' type='button' aria-label='فتح القائمة' aria-controls='mobileSidebar' aria-expanded='false'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-bars'></use></svg></button>
       </div>
     </div>
   </header>
 
   <main id='main'>
     <section class='hero' aria-labelledby='home-hero-title'>
+      <picture class='hero-media' aria-hidden='true'>
+        <source srcset='images/hero-bg-mobile-optimized.webp' media='(max-width: 767px)' width='720' height='920' type='image/webp'>
+        <img src='images/hero-bg-desktop-optimized.webp' width='1599' height='900' fetchpriority='high' loading='eager' decoding='async' alt=''>
+      </picture>
       <div class='container hero-content reveal-up'>
         <h1 id='home-hero-title'><span class='hero-title-main'>أفضل شركة مقاولات عامة في الرياض</span><span class='hero-title-sub'>نبني المستقبل بخطى ثابتة ورؤية مدروسة</span></h1>
         <p>تنفّذ تعاود المشاريع السكنية والتجارية بإدارة هندسية تشمل المعاينة وحصر الأعمال والبناء والتشطيب والفحص، حتى تسليم المشروع وفق نطاق ومدة متفق عليهما.</p>
         <div class='hero-buttons'>
-          <a class='btn btn-primary' href='#contact'><i class='fa-solid fa-calendar-check'></i> اطلب معاينة</a>
-          <a class='btn btn-outline-white' href='#projects'><i class='fa-regular fa-images'></i> شاهد مشاريعنا</a>
+          <a class='btn btn-primary' href='#contact'><i class='fa-solid fa-calendar-check'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-calendar-check'></use></svg></i> اطلب معاينة</a>
+          <a class='btn btn-outline-white' href='#projects'><i class='fa-regular fa-images'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-regular-images'></use></svg></i> شاهد مشاريعنا</a>
         </div>
         <div class='hero-trust' aria-label='بيانات الثقة'>
-          <a class='trust-platform' href='https://muqawil.org/ar/contractors/20177725/143' target='_blank' rel='noopener'><span class='trust-logo'><img src='images/credentials/saudi-contractors-authority.png' width='600' height='600' alt=''></span> عضو موثق من منصة مقاول</a>
+          <a class='trust-platform' href='https://muqawil.org/ar/contractors/20177725/143' target='_blank' rel='noopener'><span class='trust-logo'><img src='images/credentials/saudi-contractors-authority-96.png' width='96' height='96' decoding='async' alt=''></span> عضو موثق من منصة مقاول</a>
           <a class='trust-platform trust-platform-sbc' href='https://qr.saudibusiness.gov.sa/viewqr/TjdiRWJzVHozZThIZWIrdjkrZU1GZkl6Y1EyK3ZudUxNT2lKbG1talBmVUU5ME5Gc1pIZXM2eFdiQVEvMXNuMw==' target='_blank' rel='noopener' aria-label='فتح رابط التحقق الرسمي لدى المركز السعودي للأعمال'><span class='trust-logo'><img src='images/credentials/saudi-business-center.svg' width='201' height='50' alt=''></span> موثق لدى مركز الأعمال السعودي</a>
         </div>
       </div>
@@ -212,10 +486,10 @@
     <section class='trust-strip' aria-label='أسلوب تنفيذ شركة تعاود'>
       <div class='container'>
         <div class='trust-strip-grid'>
-          <div class='trust-item'><i class='fa-solid fa-location-crosshairs'></i><div><strong>معاينة ودراسة ميدانية شاملة</strong><span>نراجع الموقع ونطاق الأعمال والمتطلبات قبل التسعير وبدء التنفيذ.</span></div></div>
-          <div class='trust-item'><i class='fa-solid fa-shield-halved'></i><div><strong>بناء وفق الكود السعودي</strong><span>تنفيذ منظم يراعي متطلبات السلامة والجودة والمخططات المعتمدة.</span></div></div>
-          <div class='trust-item'><i class='fa-solid fa-headset'></i><div><strong>دعم فني ومتابعة على مدار الساعة</strong><span>قنوات تواصل واضحة لمتابعة المستجدات والرد على الاستفسارات.</span></div></div>
-          <div class='trust-item'><i class='fa-solid fa-people-group'></i><div><strong>فريق عمل متميز بخبرة طويلة</strong><span>كوادر فنية تنسق المراحل وتشرف على تفاصيل التنفيذ باحترافية.</span></div></div>
+          <div class='trust-item'><i class='fa-solid fa-location-crosshairs'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-location-crosshairs'></use></svg></i><div><strong>معاينة ودراسة ميدانية شاملة</strong><span>نراجع الموقع ونطاق الأعمال والمتطلبات قبل التسعير وبدء التنفيذ.</span></div></div>
+          <div class='trust-item'><i class='fa-solid fa-shield-halved'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-shield-halved'></use></svg></i><div><strong>بناء وفق الكود السعودي</strong><span>تنفيذ منظم يراعي متطلبات السلامة والجودة والمخططات المعتمدة.</span></div></div>
+          <div class='trust-item'><i class='fa-solid fa-headset'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-headset'></use></svg></i><div><strong>دعم فني ومتابعة على مدار الساعة</strong><span>قنوات تواصل واضحة لمتابعة المستجدات والرد على الاستفسارات.</span></div></div>
+          <div class='trust-item'><i class='fa-solid fa-people-group'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-people-group'></use></svg></i><div><strong>فريق عمل متميز بخبرة طويلة</strong><span>كوادر فنية تنسق المراحل وتشرف على تفاصيل التنفيذ باحترافية.</span></div></div>
         </div>
       </div>
     </section>
@@ -229,28 +503,28 @@
         </div>
         <div class='grid-3'>
           <article class='premium-card reveal-up'>
-            <div class='card-img-wrap'><img class='card-img' src='images/services/service-construction-riyadh.webp' width='1536' height='1024' loading='lazy' decoding='async' alt='خدمة البناء والإنشاءات في الرياض'><div class='card-icon-wrap'><i class='fa-solid fa-building'></i></div></div>
-            <div class='card-body'><h3>البناء والإنشاءات</h3><div class='service-meta'><span>فلل</span><span>ملاحق</span><span>مبانٍ تجارية</span></div><p>ننفذ أعمال البناء والإنشاءات للفلل والملاحق والمباني السكنية والتجارية في الرياض، بدءًا من تجهيز الموقع وأعمال الهيكل الإنشائي وحتى استكمال البنود الأساسية، بما يراعي المخططات المعتمدة ومتطلبات الكود السعودي ونطاق العمل المتفق عليه.</p><a class='card-link' href='service-construction.html'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'></i></a></div>
+            <div class='card-img-wrap'><img class='card-img' src='images/services/service-construction-riyadh.webp' width='1536' height='1024' loading='lazy' decoding='async' alt='خدمة البناء والإنشاءات في الرياض'><div class='card-icon-wrap'><i class='fa-solid fa-building'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-building'></use></svg></i></div></div>
+            <div class='card-body'><h3>البناء والإنشاءات</h3><div class='service-meta'><span>فلل</span><span>ملاحق</span><span>مبانٍ تجارية</span></div><p>ننفذ أعمال البناء والإنشاءات للفلل والملاحق والمباني السكنية والتجارية في الرياض، بدءًا من تجهيز الموقع وأعمال الهيكل الإنشائي وحتى استكمال البنود الأساسية، بما يراعي المخططات المعتمدة ومتطلبات الكود السعودي ونطاق العمل المتفق عليه.</p><a class='card-link' href='service-construction.html'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
           </article>
           <article class='premium-card reveal-up delay-100'>
-            <div class='card-img-wrap'><img class='card-img' src='images/services/service-turnkey-riyadh.webp' width='1536' height='1024' loading='lazy' decoding='async' alt='خدمة تسليم مفتاح في الرياض'><div class='card-icon-wrap'><i class='fa-solid fa-key'></i></div></div>
-            <div class='card-body'><h3>تسليم مفتاح</h3><div class='service-meta'><span>حصر</span><span>تنفيذ</span><span>تسليم</span></div><p>نتولى إدارة مشاريع تسليم المفتاح في الرياض من حصر البنود وتنسيق فرق الإنشاء والأعمال الكهروميكانيكية، حتى التشطيبات والفحص النهائي والتسليم الجاهز للاستخدام، ضمن مراحل ومواصفات واضحة تسهّل متابعة المشروع واتخاذ القرار.</p><a class='card-link' href='service-turnkey.html'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'></i></a></div>
+            <div class='card-img-wrap'><img class='card-img' src='images/services/service-turnkey-riyadh.webp' width='1536' height='1024' loading='lazy' decoding='async' alt='خدمة تسليم مفتاح في الرياض'><div class='card-icon-wrap'><i class='fa-solid fa-key'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-key'></use></svg></i></div></div>
+            <div class='card-body'><h3>تسليم مفتاح</h3><div class='service-meta'><span>حصر</span><span>تنفيذ</span><span>تسليم</span></div><p>نتولى إدارة مشاريع تسليم المفتاح في الرياض من حصر البنود وتنسيق فرق الإنشاء والأعمال الكهروميكانيكية، حتى التشطيبات والفحص النهائي والتسليم الجاهز للاستخدام، ضمن مراحل ومواصفات واضحة تسهّل متابعة المشروع واتخاذ القرار.</p><a class='card-link' href='service-turnkey.html'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
           </article>
           <article class='premium-card reveal-up delay-200'>
-            <div class='card-img-wrap'><img class='card-img' src='images/services/service-restoration-riyadh.webp' width='1535' height='1024' loading='lazy' decoding='async' alt='ترميم مبانٍ في الرياض'><div class='card-icon-wrap'><i class='fa-solid fa-screwdriver-wrench'></i></div></div>
-            <div class='card-body'><h3>ترميم المباني</h3><div class='service-meta'><span>معالجة</span><span>تجديد</span><span>واجهات</span></div><p>ننفذ ترميم وتجديد المباني والفلل في الرياض بعد تقييم الحالة القائمة وتحديد الأعمال المطلوبة، بما يشمل معالجة التشققات والرطوبة وتجديد الواجهات والمساحات الداخلية، مع تنسيق البنود للحفاظ على جودة العناصر القائمة وتحسين كفاءة الاستخدام.</p><a class='card-link' href='service-restoration.html'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'></i></a></div>
+            <div class='card-img-wrap'><img class='card-img' src='images/services/service-restoration-riyadh.webp' width='1535' height='1024' loading='lazy' decoding='async' alt='ترميم مبانٍ في الرياض'><div class='card-icon-wrap'><i class='fa-solid fa-screwdriver-wrench'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-screwdriver-wrench'></use></svg></i></div></div>
+            <div class='card-body'><h3>ترميم المباني</h3><div class='service-meta'><span>معالجة</span><span>تجديد</span><span>واجهات</span></div><p>ننفذ ترميم وتجديد المباني والفلل في الرياض بعد تقييم الحالة القائمة وتحديد الأعمال المطلوبة، بما يشمل معالجة التشققات والرطوبة وتجديد الواجهات والمساحات الداخلية، مع تنسيق البنود للحفاظ على جودة العناصر القائمة وتحسين كفاءة الاستخدام.</p><a class='card-link' href='service-restoration.html'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
           </article>
           <article class='premium-card reveal-up'>
-            <div class='card-img-wrap'><img class='card-img' src='images/services/service-finishing-riyadh.webp' width='1536' height='1024' loading='lazy' decoding='async' alt='تشطيبات داخلية وخارجية في الرياض'><div class='card-icon-wrap'><i class='fa-solid fa-paint-roller'></i></div></div>
-            <div class='card-body'><h3>التشطيبات العامة</h3><div class='service-meta'><span>داخلي</span><span>خارجي</span><span>واجهات</span></div><p>نقدم تشطيبات داخلية وخارجية للفلل والمباني السكنية والتجارية في الرياض، تشمل الأرضيات والدهانات والأسقف والواجهات، مع تنسيق الخامات والألوان والتفاصيل التنفيذية للوصول إلى مظهر متجانس وجودة عملية تدوم.</p><a class='card-link' href='service-finishing.html'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'></i></a></div>
+            <div class='card-img-wrap'><img class='card-img' src='images/services/service-finishing-riyadh.webp' width='1536' height='1024' loading='lazy' decoding='async' alt='تشطيبات داخلية وخارجية في الرياض'><div class='card-icon-wrap'><i class='fa-solid fa-paint-roller'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-paint-roller'></use></svg></i></div></div>
+            <div class='card-body'><h3>التشطيبات العامة</h3><div class='service-meta'><span>داخلي</span><span>خارجي</span><span>واجهات</span></div><p>نقدم تشطيبات داخلية وخارجية للفلل والمباني السكنية والتجارية في الرياض، تشمل الأرضيات والدهانات والأسقف والواجهات، مع تنسيق الخامات والألوان والتفاصيل التنفيذية للوصول إلى مظهر متجانس وجودة عملية تدوم.</p><a class='card-link' href='service-finishing.html'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
           </article>
           <article class='premium-card reveal-up delay-100'>
-            <div class='card-img-wrap'><img class='card-img' src='images/services/service-decor-riyadh.webp' width='1536' height='1024' loading='lazy' decoding='async' alt='ديكور وتصميم داخلي في الرياض'><div class='card-icon-wrap'><i class='fa-solid fa-compass-drafting'></i></div></div>
-            <div class='card-body'><h3>الديكور والتصميم الداخلي</h3><div class='service-meta'><span>منازل</span><span>مكاتب</span><span>محلات</span></div><p>نصمم وننفذ الديكور الداخلي للمنازل والمكاتب والمحلات في الرياض بأسلوب يجمع بين الهوية الجمالية وكفاءة الاستخدام، مع تنسيق الألوان والإضاءة والخامات وتوزيع العناصر بما يلائم طبيعة المساحة واحتياجات المشروع.</p><a class='card-link' href='service-decor.html'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'></i></a></div>
+            <div class='card-img-wrap'><img class='card-img' src='images/services/service-decor-riyadh.webp' width='1536' height='1024' loading='lazy' decoding='async' alt='ديكور وتصميم داخلي في الرياض'><div class='card-icon-wrap'><i class='fa-solid fa-compass-drafting'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-compass-drafting'></use></svg></i></div></div>
+            <div class='card-body'><h3>الديكور والتصميم الداخلي</h3><div class='service-meta'><span>منازل</span><span>مكاتب</span><span>محلات</span></div><p>نصمم وننفذ الديكور الداخلي للمنازل والمكاتب والمحلات في الرياض بأسلوب يجمع بين الهوية الجمالية وكفاءة الاستخدام، مع تنسيق الألوان والإضاءة والخامات وتوزيع العناصر بما يلائم طبيعة المساحة واحتياجات المشروع.</p><a class='card-link' href='service-decor.html'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
           </article>
           <article class='premium-card reveal-up delay-200'>
-            <div class='card-img-wrap'><img class='card-img' src='images/services/service-mep-riyadh.webp' width='1536' height='1024' loading='lazy' decoding='async' alt='أعمال الكهرباء والسباكة والميكانيكا في الرياض'><div class='card-icon-wrap'><i class='fa-solid fa-gears'></i></div></div>
-            <div class='card-body'><h3>أعمال الكهرباء والسباكة</h3><div class='service-meta'><span>كهرباء</span><span>سباكة</span><span>MEP</span></div><p>ننفذ وننسق أعمال الكهرباء والسباكة والميكانيكا (MEP) للمشاريع السكنية والتجارية في الرياض، مع مراجعة مسارات الخدمات ونقاط التشغيل قبل إغلاق التشطيبات، للحد من التعارضات وإعادة العمل وتحسين كفاءة الاستخدام بعد التسليم.</p><a class='card-link' href='service-mep.html'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'></i></a></div>
+            <div class='card-img-wrap'><img class='card-img' src='images/services/service-mep-riyadh.webp' width='1536' height='1024' loading='lazy' decoding='async' alt='أعمال الكهرباء والسباكة والميكانيكا في الرياض'><div class='card-icon-wrap'><i class='fa-solid fa-gears'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-gears'></use></svg></i></div></div>
+            <div class='card-body'><h3>أعمال الكهرباء والسباكة</h3><div class='service-meta'><span>كهرباء</span><span>سباكة</span><span>MEP</span></div><p>ننفذ وننسق أعمال الكهرباء والسباكة والميكانيكا (MEP) للمشاريع السكنية والتجارية في الرياض، مع مراجعة مسارات الخدمات ونقاط التشغيل قبل إغلاق التشطيبات، للحد من التعارضات وإعادة العمل وتحسين كفاءة الاستخدام بعد التسليم.</p><a class='card-link' href='service-mep.html'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
           </article>
         </div>
       </div>
@@ -277,7 +551,7 @@
             <div class='card-body'><div class='project-meta'><span>تشطيب داخلي</span><span>سكاي لايت</span></div><h3>سكاي لايت فيلا المنار</h3><p>تنفيذ سقف زجاجي يرفع الإضاءة الطبيعية مع دمجه بتفاصيل التشطيب الداخلي.</p></div>
           </article>
         </div>
-        <div class='projects-section-footer reveal-up'><a class='btn btn-dark' href='projects.html'>عرض صفحة المشاريع <i class='fa-solid fa-arrow-left-long'></i></a></div>
+        <div class='projects-section-footer reveal-up'><a class='btn btn-dark' href='projects.html'>عرض صفحة المشاريع <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
       </div>
     </section>
 
@@ -291,11 +565,11 @@
               <p>نربط البناء والتشطيب والأعمال الكهروميكانيكية بخطة تنفيذ واحدة، حتى تكون المسؤوليات والقرارات والمراحل أوضح لصاحب المشروع.</p>
             </div>
             <ul class='about-features'>
-              <li><i class='fa-solid fa-circle-check'></i> نطاق وبنود واضحة قبل بدء التنفيذ</li>
-              <li><i class='fa-solid fa-circle-check'></i> تنسيق البناء والتشطيب والكهرباء والسباكة</li>
-              <li><i class='fa-solid fa-circle-check'></i> مراجعات مرحلية وإغلاق الملاحظات قبل التسليم</li>
+              <li><i class='fa-solid fa-circle-check'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-circle-check'></use></svg></i> نطاق وبنود واضحة قبل بدء التنفيذ</li>
+              <li><i class='fa-solid fa-circle-check'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-circle-check'></use></svg></i> تنسيق البناء والتشطيب والكهرباء والسباكة</li>
+              <li><i class='fa-solid fa-circle-check'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-circle-check'></use></svg></i> مراجعات مرحلية وإغلاق الملاحظات قبل التسليم</li>
             </ul>
-            <a class='btn btn-primary' href='about.html'>تعرف على شركة تعاود <i class='fa-solid fa-arrow-left-long'></i></a>
+            <a class='btn btn-primary' href='about.html'>تعرف على شركة تعاود <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a>
           </div>
           <div class='about-img-wrap reveal-up delay-100'>
             <img class='about-img' src='images/projects/project-commercial-residential-building-dammam.webp' width='1536' height='1024' loading='lazy' decoding='async' alt='مبنى سكني تجاري ضمن أعمال شركة تعاود للمقاولات'>
@@ -312,10 +586,10 @@
           <p>مسار واضح يساعدك على معرفة ما يحدث في كل مرحلة قبل بدء التنفيذ.</p>
         </div>
         <div class='process-grid'>
-          <div class='process-card reveal-up'><i class='fa-solid fa-comments'></i><h3>فهم المشروع والمعاينة</h3><p>نراجع النوع والموقع والمساحة والحالة الحالية، ونحدد المعلومات أو المخططات المطلوبة.</p></div>
-          <div class='process-card reveal-up delay-100'><i class='fa-solid fa-file-signature'></i><h3>نطاق وعرض واضح</h3><p>نوضح البنود والمواصفات والمراحل والعوامل المؤثرة في التكلفة والمدة.</p></div>
-          <div class='process-card reveal-up delay-200'><i class='fa-solid fa-helmet-safety'></i><h3>تنفيذ ومتابعة</h3><p>ننسق الفرق حسب تسلسل الأعمال، مع مراجعات مرحلية قبل الانتقال إلى الخطوة التالية.</p></div>
-          <div class='process-card reveal-up delay-300'><i class='fa-solid fa-key'></i><h3>فحص وتسليم</h3><p>نراجع التفاصيل النهائية، ونعالج الملاحظات المتفق عليها قبل تسليم الأعمال.</p></div>
+          <div class='process-card reveal-up'><i class='fa-solid fa-comments'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-comments'></use></svg></i><h3>فهم المشروع والمعاينة</h3><p>نراجع النوع والموقع والمساحة والحالة الحالية، ونحدد المعلومات أو المخططات المطلوبة.</p></div>
+          <div class='process-card reveal-up delay-100'><i class='fa-solid fa-file-signature'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-file-signature'></use></svg></i><h3>نطاق وعرض واضح</h3><p>نوضح البنود والمواصفات والمراحل والعوامل المؤثرة في التكلفة والمدة.</p></div>
+          <div class='process-card reveal-up delay-200'><i class='fa-solid fa-helmet-safety'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-helmet-safety'></use></svg></i><h3>تنفيذ ومتابعة</h3><p>ننسق الفرق حسب تسلسل الأعمال، مع مراجعات مرحلية قبل الانتقال إلى الخطوة التالية.</p></div>
+          <div class='process-card reveal-up delay-300'><i class='fa-solid fa-key'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-key'></use></svg></i><h3>فحص وتسليم</h3><p>نراجع التفاصيل النهائية، ونعالج الملاحظات المتفق عليها قبل تسليم الأعمال.</p></div>
         </div>
       </div>
     </section>
@@ -329,14 +603,14 @@
         </div>
         <div class='credentials-grid'>
           <a class='credential-card reveal-up' href='https://muqawil.org/ar/contractors/20177725/143' target='_blank' rel='noopener' aria-label='فتح ملف شركة تعاود على منصة مقاول'>
-            <span class='credential-logo credential-logo-sca'><img src='images/credentials/saudi-contractors-authority.png' width='600' height='600' loading='lazy' alt='شعار الهيئة السعودية للمقاولين'></span>
+            <span class='credential-logo credential-logo-sca'><img src='images/credentials/saudi-contractors-authority-192.png' srcset='images/credentials/saudi-contractors-authority-96.png 96w, images/credentials/saudi-contractors-authority-192.png 192w' sizes='142px' width='192' height='192' loading='lazy' decoding='async' alt='شعار الهيئة السعودية للمقاولين'></span>
             <span class='credential-copy'><strong>عضوية الهيئة عبر منصة مقاول</strong><span>افتح ملف المنشأة في منصة التحقق الرسمية.</span></span>
-            <span class='credential-link-icon' aria-hidden='true'><i class='fa-solid fa-arrow-up-right-from-square'></i></span>
+            <span class='credential-link-icon' aria-hidden='true'><i class='fa-solid fa-arrow-up-right-from-square'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-up-right-from-square'></use></svg></i></span>
           </a>
           <a class='credential-card reveal-up delay-100' href='https://qr.saudibusiness.gov.sa/viewqr/TjdiRWJzVHozZThIZWIrdjkrZU1GZkl6Y1EyK3ZudUxNT2lKbG1talBmVUU5ME5Gc1pIZXM2eFdiQVEvMXNuMw==' target='_blank' rel='noopener' aria-label='فتح رابط التحقق الرسمي لشركة تعاود لدى المركز السعودي للأعمال'>
             <span class='credential-logo credential-logo-sbc'><img src='images/credentials/saudi-business-center.svg' width='201' height='50' loading='lazy' alt='شعار المركز السعودي للأعمال'></span>
             <span class='credential-copy'><strong>تحقق عبر المركز السعودي للأعمال</strong><span>افتح رابط التحقق الرسمي وراجع بيانات المنشأة.</span></span>
-            <span class='credential-link-icon' aria-hidden='true'><i class='fa-solid fa-arrow-up-right-from-square'></i></span>
+            <span class='credential-link-icon' aria-hidden='true'><i class='fa-solid fa-arrow-up-right-from-square'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-up-right-from-square'></use></svg></i></span>
           </a>
         </div>
       </div>
@@ -350,9 +624,9 @@
           <p>أدلة مختصرة تساعدك على مقارنة العروض وفهم المراحل وتفادي أخطاء التنفيذ الشائعة.</p>
         </div>
         <div class='grid-3'>
-          <article class='blog-card reveal-up'><div class='card-img-wrap'><img class='card-img' src='images/blog/best-contracting-company-riyadh.webp' width='1600' height='1200' loading='lazy' decoding='async' alt='اختيار شركة مقاولات في الرياض'></div><div class='blog-card-body'><span class='blog-meta'><i class='fa-regular fa-clock'></i> دليل عملي</span><h3>اختيار شركة مقاولات</h3><p>معايير لمقارنة نطاق العرض وخبرة التنفيذ وآلية المتابعة قبل التعاقد.</p><a class='card-link' href='blog/best-contracting-company-riyadh/'>اقرأ الدليل <i class='fa-solid fa-arrow-left-long'></i></a></div></article>
-          <article class='blog-card reveal-up delay-100'><div class='card-img-wrap'><img class='card-img' src='images/blog/finishing-interior-design-riyadh.webp' width='1200' height='1600' loading='lazy' decoding='async' alt='التشطيب والتصميم الداخلي في الرياض'></div><div class='blog-card-body'><span class='blog-meta'><i class='fa-regular fa-clock'></i> دليل تشطيب</span><h3>دليل التشطيب الداخلي</h3><p>خطوات تنسيق الخامات والإضاءة والكهرباء والسباكة قبل إغلاق التشطيبات.</p><a class='card-link' href='blog/finishing-interior-design-riyadh/'>اقرأ الدليل <i class='fa-solid fa-arrow-left-long'></i></a></div></article>
-          <article class='blog-card reveal-up delay-200'><div class='card-img-wrap'><img class='card-img' src='images/blog/mechanical-mep-works-riyadh.webp' width='1200' height='1600' loading='lazy' decoding='async' alt='أعمال الكهرباء والسباكة والميكانيكا في الرياض'></div><div class='blog-card-body'><span class='blog-meta'><i class='fa-regular fa-clock'></i> دليل MEP</span><h3>تخطيط الكهرباء والسباكة</h3><p>كيف يقلل التنسيق المبكر التعارضات ويحمي الخامات من إعادة العمل المكلفة.</p><a class='card-link' href='blog/mechanical-mep-works-riyadh/'>اقرأ الدليل <i class='fa-solid fa-arrow-left-long'></i></a></div></article>
+          <article class='blog-card reveal-up'><div class='card-img-wrap'><img class='card-img' src='images/blog/best-contracting-company-riyadh.webp' width='1600' height='1200' loading='lazy' decoding='async' alt='اختيار شركة مقاولات في الرياض'></div><div class='blog-card-body'><span class='blog-meta'><i class='fa-regular fa-clock'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-regular-clock'></use></svg></i> دليل عملي</span><h3>اختيار شركة مقاولات</h3><p>معايير لمقارنة نطاق العرض وخبرة التنفيذ وآلية المتابعة قبل التعاقد.</p><a class='card-link' href='blog/best-contracting-company-riyadh/'>اقرأ الدليل <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div></article>
+          <article class='blog-card reveal-up delay-100'><div class='card-img-wrap'><img class='card-img' src='images/blog/finishing-interior-design-riyadh.webp' width='1200' height='1600' loading='lazy' decoding='async' alt='التشطيب والتصميم الداخلي في الرياض'></div><div class='blog-card-body'><span class='blog-meta'><i class='fa-regular fa-clock'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-regular-clock'></use></svg></i> دليل تشطيب</span><h3>دليل التشطيب الداخلي</h3><p>خطوات تنسيق الخامات والإضاءة والكهرباء والسباكة قبل إغلاق التشطيبات.</p><a class='card-link' href='blog/finishing-interior-design-riyadh/'>اقرأ الدليل <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div></article>
+          <article class='blog-card reveal-up delay-200'><div class='card-img-wrap'><img class='card-img' src='images/blog/mechanical-mep-works-riyadh.webp' width='1200' height='1600' loading='lazy' decoding='async' alt='أعمال الكهرباء والسباكة والميكانيكا في الرياض'></div><div class='blog-card-body'><span class='blog-meta'><i class='fa-regular fa-clock'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-regular-clock'></use></svg></i> دليل MEP</span><h3>تخطيط الكهرباء والسباكة</h3><p>كيف يقلل التنسيق المبكر التعارضات ويحمي الخامات من إعادة العمل المكلفة.</p><a class='card-link' href='blog/mechanical-mep-works-riyadh/'>اقرأ الدليل <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div></article>
         </div>
         <div class='blog-section-footer'><a class='btn btn-dark blog-all-link' href='blog/'>كل المقالات</a></div>
       </div>
@@ -367,18 +641,18 @@
         </div>
         <div class='faq-wrap reveal-up'>
           <div class='faq-column'>
-          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-1'><span>ما خدمات شركة تعاود؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'></i></button><div class='faq-answer' id='home-faq-1'><p>تقدم شركة تعاود للمقاولات العامة في الرياض خدمات البناء والإنشاءات، وتنفيذ المشاريع بنظام تسليم المفتاح، وترميم وتجديد المباني، والتشطيبات الداخلية والخارجية، والديكور والتصميم الداخلي، وأعمال الكهرباء والسباكة والميكانيكا. ويمكن تنفيذ خدمة مستقلة أو تنسيق عدة تخصصات ضمن نطاق عمل واحد للمشاريع السكنية والتجارية.</p></div></div>
-          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-2'><span>هل تنفذون البناء حتى التسليم؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'></i></button><div class='faq-answer' id='home-faq-2'><p>نعم. تنفذ تعاود مشاريع البناء في الرياض بدءًا من مراجعة المتطلبات والمخططات وتجهيز الموقع، مرورًا بأعمال الهيكل الإنشائي وتنسيق التخصصات، وحتى التشطيبات والفحص والتسليم بحسب نطاق المشروع. وتُحدد البنود والمواصفات والمسؤوليات بوضوح قبل بدء التنفيذ لتسهيل المتابعة وضبط الجودة والمدة.</p></div></div>
-          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-3'><span>ماذا يشمل تسليم المفتاح؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'></i></button><div class='faq-answer' id='home-faq-3'><p>تشمل خدمة تسليم المفتاح إدارة المشروع من حصر الأعمال وإعداد النطاق وتنسيق فرق الإنشاء والكهرباء والسباكة والميكانيكا، ثم تنفيذ التشطيبات ومراجعة الملاحظات وإجراء الفحص النهائي. والهدف هو تسليم مشروع جاهز للاستخدام وفق البنود والمواصفات والبرنامج الزمني المتفق عليها مع العميل.</p></div></div>
-          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-4'><span>ما خدمات ترميم المباني؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'></i></button><div class='faq-answer' id='home-faq-4'><p>تشمل أعمال الترميم تقييم الحالة القائمة، ومعالجة التشققات والرطوبة والتلف، وتجديد الواجهات والمساحات الداخلية، واستبدال أو تحسين البنود المتضررة عند الحاجة. ويُحدد نطاق الترميم بعد المعاينة حتى تكون الأولويات واضحة، وتُنسق الأعمال الجديدة مع العناصر القائمة دون تنفيذ تغييرات غير مدروسة.</p></div></div>
-          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-5'><span>ما خدمات التشطيب والديكور؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'></i></button><div class='faq-answer' id='home-faq-5'><p>تشمل خدمات التشطيبات والديكور تنفيذ الأرضيات والدهانات والأسقف والواجهات، وتنسيق الإضاءة والخامات والألوان والعناصر الجمالية. نعمل على ربط التصميم بالتفاصيل التنفيذية وطبيعة استخدام المساحة، سواء كانت فيلا أو شقة أو مكتبًا أو محلًا تجاريًا، للوصول إلى نتيجة متناسقة وعملية.</p></div></div>
+          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-1'><span>ما خدمات شركة تعاود؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-chevron-down'></use></svg></i></button><div class='faq-answer' id='home-faq-1'><p>تقدم شركة تعاود للمقاولات العامة في الرياض خدمات البناء والإنشاءات، وتنفيذ المشاريع بنظام تسليم المفتاح، وترميم وتجديد المباني، والتشطيبات الداخلية والخارجية، والديكور والتصميم الداخلي، وأعمال الكهرباء والسباكة والميكانيكا. ويمكن تنفيذ خدمة مستقلة أو تنسيق عدة تخصصات ضمن نطاق عمل واحد للمشاريع السكنية والتجارية.</p></div></div>
+          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-2'><span>هل تنفذون البناء حتى التسليم؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-chevron-down'></use></svg></i></button><div class='faq-answer' id='home-faq-2'><p>نعم. تنفذ تعاود مشاريع البناء في الرياض بدءًا من مراجعة المتطلبات والمخططات وتجهيز الموقع، مرورًا بأعمال الهيكل الإنشائي وتنسيق التخصصات، وحتى التشطيبات والفحص والتسليم بحسب نطاق المشروع. وتُحدد البنود والمواصفات والمسؤوليات بوضوح قبل بدء التنفيذ لتسهيل المتابعة وضبط الجودة والمدة.</p></div></div>
+          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-3'><span>ماذا يشمل تسليم المفتاح؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-chevron-down'></use></svg></i></button><div class='faq-answer' id='home-faq-3'><p>تشمل خدمة تسليم المفتاح إدارة المشروع من حصر الأعمال وإعداد النطاق وتنسيق فرق الإنشاء والكهرباء والسباكة والميكانيكا، ثم تنفيذ التشطيبات ومراجعة الملاحظات وإجراء الفحص النهائي. والهدف هو تسليم مشروع جاهز للاستخدام وفق البنود والمواصفات والبرنامج الزمني المتفق عليها مع العميل.</p></div></div>
+          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-4'><span>ما خدمات ترميم المباني؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-chevron-down'></use></svg></i></button><div class='faq-answer' id='home-faq-4'><p>تشمل أعمال الترميم تقييم الحالة القائمة، ومعالجة التشققات والرطوبة والتلف، وتجديد الواجهات والمساحات الداخلية، واستبدال أو تحسين البنود المتضررة عند الحاجة. ويُحدد نطاق الترميم بعد المعاينة حتى تكون الأولويات واضحة، وتُنسق الأعمال الجديدة مع العناصر القائمة دون تنفيذ تغييرات غير مدروسة.</p></div></div>
+          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-5'><span>ما خدمات التشطيب والديكور؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-chevron-down'></use></svg></i></button><div class='faq-answer' id='home-faq-5'><p>تشمل خدمات التشطيبات والديكور تنفيذ الأرضيات والدهانات والأسقف والواجهات، وتنسيق الإضاءة والخامات والألوان والعناصر الجمالية. نعمل على ربط التصميم بالتفاصيل التنفيذية وطبيعة استخدام المساحة، سواء كانت فيلا أو شقة أو مكتبًا أو محلًا تجاريًا، للوصول إلى نتيجة متناسقة وعملية.</p></div></div>
           </div>
           <div class='faq-column'>
-          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-6'><span>هل تنفذون الكهرباء والسباكة؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'></i></button><div class='faq-answer' id='home-faq-6'><p>نعم. تنفذ تعاود وتنسق أعمال الكهرباء والسباكة والميكانيكا للمشاريع السكنية والتجارية، بما يشمل مراجعة النقاط ومسارات الخدمات وربطها بمراحل البناء والتشطيب. كما تُراجع التعارضات وتُفحص الأعمال قبل إغلاق الجدران والأسقف للحد من إعادة العمل وتحسين كفاءة التشغيل بعد التسليم.</p></div></div>
-          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-7'><span>كيف تتم المعاينة والتسعير؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'></i></button><div class='faq-answer' id='home-faq-7'><p>تبدأ العملية بفهم نوع المشروع وموقعه ومساحته ومرحلته الحالية، ثم مراجعة المخططات أو إجراء معاينة ميدانية عند الحاجة. بعد ذلك تُحصر البنود والكميات والمواصفات والخامات المؤثرة في التكلفة، ويُعد عرض السعر وفق نطاق واضح بدل الاعتماد على تقدير عام لا يعكس متطلبات التنفيذ الفعلية.</p></div></div>
-          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-8'><span>كيف تحدد مدة التنفيذ؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'></i></button><div class='faq-answer' id='home-faq-8'><p>تُحدد مدة التنفيذ بعد دراسة حجم المشروع وتسلسل البنود وعدد التخصصات وتوفر المواد وحالة الموقع. ويُناقش برنامج زمني مبدئي يوضح المراحل الرئيسية ونقاط المتابعة، ثم تُنسق فرق العمل وتُتابع المستجدات أثناء التنفيذ، وتُوثق أي تعديلات قد تؤثر في النطاق أو التكلفة أو موعد التسليم.</p></div></div>
-          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-9'><span>هل تطبقون الكود السعودي؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'></i></button><div class='faq-answer' id='home-faq-9'><p>تُنفذ أعمال البناء وفق متطلبات المشروع والمخططات المعتمدة وما ينطبق عليها من اشتراطات الكود السعودي للبناء ومتطلبات السلامة والجودة. كما تُراجع المراحل والتخصصات قبل الانتقال إلى البنود التالية، بما يساعد على اكتشاف الملاحظات مبكرًا والحفاظ على انتظام التنفيذ وجودة التفاصيل.</p></div></div>
-          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-10'><span>ما المشاريع التي تنفذونها؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'></i></button><div class='faq-answer' id='home-faq-10'><p>تستقبل تعاود مشاريع الفلل والملاحق والمباني السكنية والتجارية والمكاتب والمحلات داخل مدينة الرياض، إلى جانب مشاريع الترميم والتشطيب والديكور والأعمال الكهروميكانيكية الجزئية أو المتكاملة. ويُراجع موقع المشروع وطبيعة الخدمة عند التواصل لتحديد إمكانية المعاينة وخطة العمل المناسبة.</p></div></div>
+          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-6'><span>هل تنفذون الكهرباء والسباكة؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-chevron-down'></use></svg></i></button><div class='faq-answer' id='home-faq-6'><p>نعم. تنفذ تعاود وتنسق أعمال الكهرباء والسباكة والميكانيكا للمشاريع السكنية والتجارية، بما يشمل مراجعة النقاط ومسارات الخدمات وربطها بمراحل البناء والتشطيب. كما تُراجع التعارضات وتُفحص الأعمال قبل إغلاق الجدران والأسقف للحد من إعادة العمل وتحسين كفاءة التشغيل بعد التسليم.</p></div></div>
+          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-7'><span>كيف تتم المعاينة والتسعير؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-chevron-down'></use></svg></i></button><div class='faq-answer' id='home-faq-7'><p>تبدأ العملية بفهم نوع المشروع وموقعه ومساحته ومرحلته الحالية، ثم مراجعة المخططات أو إجراء معاينة ميدانية عند الحاجة. بعد ذلك تُحصر البنود والكميات والمواصفات والخامات المؤثرة في التكلفة، ويُعد عرض السعر وفق نطاق واضح بدل الاعتماد على تقدير عام لا يعكس متطلبات التنفيذ الفعلية.</p></div></div>
+          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-8'><span>كيف تحدد مدة التنفيذ؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-chevron-down'></use></svg></i></button><div class='faq-answer' id='home-faq-8'><p>تُحدد مدة التنفيذ بعد دراسة حجم المشروع وتسلسل البنود وعدد التخصصات وتوفر المواد وحالة الموقع. ويُناقش برنامج زمني مبدئي يوضح المراحل الرئيسية ونقاط المتابعة، ثم تُنسق فرق العمل وتُتابع المستجدات أثناء التنفيذ، وتُوثق أي تعديلات قد تؤثر في النطاق أو التكلفة أو موعد التسليم.</p></div></div>
+          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-9'><span>هل تطبقون الكود السعودي؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-chevron-down'></use></svg></i></button><div class='faq-answer' id='home-faq-9'><p>تُنفذ أعمال البناء وفق متطلبات المشروع والمخططات المعتمدة وما ينطبق عليها من اشتراطات الكود السعودي للبناء ومتطلبات السلامة والجودة. كما تُراجع المراحل والتخصصات قبل الانتقال إلى البنود التالية، بما يساعد على اكتشاف الملاحظات مبكرًا والحفاظ على انتظام التنفيذ وجودة التفاصيل.</p></div></div>
+          <div class='faq-item'><button class='faq-question' type='button' aria-expanded='false' aria-controls='home-faq-10'><span>ما المشاريع التي تنفذونها؟</span><i class='fa-solid fa-chevron-down' aria-hidden='true'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-chevron-down'></use></svg></i></button><div class='faq-answer' id='home-faq-10'><p>تستقبل تعاود مشاريع الفلل والملاحق والمباني السكنية والتجارية والمكاتب والمحلات داخل مدينة الرياض، إلى جانب مشاريع الترميم والتشطيب والديكور والأعمال الكهروميكانيكية الجزئية أو المتكاملة. ويُراجع موقع المشروع وطبيعة الخدمة عند التواصل لتحديد إمكانية المعاينة وخطة العمل المناسبة.</p></div></div>
           </div>
         </div>
       </div>
@@ -393,10 +667,10 @@
         </div>
         <div class='contact-layout'>
           <div class='contact-cards reveal-up'>
-            <div class='contact-card'><i class='fa-solid fa-phone'></i><div><h3>اتصال مباشر</h3><a href='tel:0551128884'>0551128884</a></div></div>
-            <div class='contact-card'><i class='fa-brands fa-whatsapp'></i><div><h3>واتساب</h3><a href='https://wa.me/966551128884'>تواصل عبر واتساب</a></div></div>
-            <div class='contact-card'><i class='fa-solid fa-envelope'></i><div><h3>البريد الإلكتروني</h3><a href='mailto:info@tawodco.com'>info@tawodco.com</a></div></div>
-            <div class='contact-card'><i class='fa-solid fa-location-dot'></i><div><h3>الموقع</h3><p>4206 طريق عثمان بن عفان الفرعي، الرياض، السعودية</p></div></div>
+            <div class='contact-card'><i class='fa-solid fa-phone'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-phone'></use></svg></i><div><h3>اتصال مباشر</h3><a href='tel:0551128884'>0551128884</a></div></div>
+            <div class='contact-card'><i class='fa-brands fa-whatsapp'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-brands-whatsapp'></use></svg></i><div><h3>واتساب</h3><a href='https://wa.me/966551128884'>تواصل عبر واتساب</a></div></div>
+            <div class='contact-card'><i class='fa-solid fa-envelope'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-envelope'></use></svg></i><div><h3>البريد الإلكتروني</h3><a href='mailto:info@tawodco.com'>info@tawodco.com</a></div></div>
+            <div class='contact-card'><i class='fa-solid fa-location-dot'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-location-dot'></use></svg></i><div><h3>الموقع</h3><p>4206 طريق عثمان بن عفان الفرعي، الرياض، السعودية</p></div></div>
           </div>
           <div class='contact-wrap reveal-up delay-100'>
             <div class='contact-form-area'>
@@ -410,7 +684,8 @@
                 <div class='form-group'><input class='form-control' name='البريد_الإلكتروني' placeholder='البريد الإلكتروني' required type='email'></div>
                 <div class='form-group'><input class='form-control' name='رقم_الجوال' placeholder='رقم الجوال' required type='tel'></div>
                 <div class='form-group'>
-                  <select class='form-control' name='الخدمة_المطلوبة' required>
+                  <label class='sr-only' for='requested-service'>الخدمة المطلوبة</label>
+                  <select class='form-control' id='requested-service' name='الخدمة_المطلوبة' required>
                     <option disabled selected value=''>الخدمة المطلوبة</option>
                     <option value='البناء والإنشاءات'>البناء والإنشاءات</option>
                     <option value='تسليم مفتاح'>تسليم مفتاح</option>
@@ -421,12 +696,12 @@
                   </select>
                 </div>
                 <div class='form-group'><textarea class='form-control' name='التفاصيل' placeholder='تفاصيل الطلب أو المشروع...' required></textarea></div>
-                <button class='btn btn-primary' type='submit'>إرسال الطلب <i class='fa-solid fa-paper-plane'></i></button>
+                <button class='btn btn-primary' type='submit'>إرسال الطلب <i class='fa-solid fa-paper-plane'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-paper-plane'></use></svg></i></button>
               </form>
             </div>
             <div class='contact-map-area' data-map-holder>
               <div class='map-placeholder'>
-                <div><i class='fa-solid fa-location-dot'></i><h3>موقع شركة تعاود في الرياض</h3><p>تم تأجيل تحميل الخريطة لتحسين سرعة الصفحة، ويمكنك إظهارها عند الحاجة.</p><button class='btn btn-primary' type='button' data-load-map data-map-src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2825.0333607418256!2d46.69983649999999!3d24.792731099999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2efdb5a75296e1%3A0x8cb063463a755f11!2z2LTYsdmD2Kkg2KrYudin2YjYryDZhNmE2YXZgtin2YjZhNin2Ko!5e1!3m2!1sar!2ssa!4v1782108121223!5m2!1sar!2ssa'>عرض الخريطة</button></div>
+                <div><i class='fa-solid fa-location-dot'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-location-dot'></use></svg></i><h3>موقع شركة تعاود في الرياض</h3><p>تم تأجيل تحميل الخريطة لتحسين سرعة الصفحة، ويمكنك إظهارها عند الحاجة.</p><button class='btn btn-primary' type='button' data-load-map data-map-src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2825.0333607418256!2d46.69983649999999!3d24.792731099999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2efdb5a75296e1%3A0x8cb063463a755f11!2z2LTYsdmD2Kkg2KrYudin2YjYryDZhNmE2YXZgtin2YjZhNin2Ko!5e1!3m2!1sar!2ssa!4v1782108121223!5m2!1sar!2ssa'>عرض الخريطة</button></div>
               </div>
             </div>
           </div>
@@ -439,45 +714,45 @@
     <div class='container'>
       <div class='footer-grid'>
         <div class='footer-about'>
-          <img class='logo-img' src='images/logo/tawod-logo.png' width='917' height='408' loading='lazy' alt='شركة تعاود'>
+          <img class='logo-img' src='images/logo/tawod-logo-300.png' width='300' height='133' loading='lazy' decoding='async' alt='شركة تعاود'>
           <p>شركة تعاود للمقاولات العامة بالرياض متخصصة في البناء والإنشاءات والترميم والتشطيب وتقديم حلول هندسية متكاملة بأعلى معايير الجودة.</p>
           <div class='footer-socials'>
-            <a aria-label='Instagram' href='https://instagram.com/tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-instagram'></i></a>
-            <a aria-label='TikTok' href='https://tiktok.com/@tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-tiktok'></i></a>
-            <a aria-label='Snapchat' href='https://snapchat.com/add/tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-snapchat'></i></a>
-            <a aria-label='X Twitter' href='https://twitter.com/tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-x-twitter'></i></a>
-            <a aria-label='LinkedIn' href='https://linkedin.com/company/tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-linkedin-in'></i></a>
+            <a aria-label='Instagram' href='https://instagram.com/tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-instagram'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-brands-instagram'></use></svg></i></a>
+            <a aria-label='TikTok' href='https://tiktok.com/@tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-tiktok'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-brands-tiktok'></use></svg></i></a>
+            <a aria-label='Snapchat' href='https://snapchat.com/add/tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-snapchat'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-brands-snapchat'></use></svg></i></a>
+            <a aria-label='X Twitter' href='https://twitter.com/tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-x-twitter'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-brands-x-twitter'></use></svg></i></a>
+            <a aria-label='LinkedIn' href='https://linkedin.com/company/tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-linkedin-in'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-brands-linkedin-in'></use></svg></i></a>
           </div>
         </div>
         <div class='footer-nav-column footer-quick-links'>
           <h4 class='footer-title'>روابط سريعة</h4>
           <ul class='footer-links'>
-            <li><a href='index.html'><i class='fa-solid fa-angle-left'></i> الرئيسية</a></li>
-            <li><a href='about.html'><i class='fa-solid fa-angle-left'></i> من نحن</a></li>
-            <li><a href='#services'><i class='fa-solid fa-angle-left'></i> خدماتنا</a></li>
-            <li><a href='#projects'><i class='fa-solid fa-angle-left'></i> مشاريعنا</a></li>
-            <li><a href='blog/'><i class='fa-solid fa-angle-left'></i> المدونة</a></li>
-            <li><a href='#contact'><i class='fa-solid fa-angle-left'></i> تواصل معنا</a></li>
+            <li><a href='index.html'><i class='fa-solid fa-angle-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-angle-left'></use></svg></i> الرئيسية</a></li>
+            <li><a href='about.html'><i class='fa-solid fa-angle-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-angle-left'></use></svg></i> عن شركة تعاود</a></li>
+            <li><a href='#services'><i class='fa-solid fa-angle-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-angle-left'></use></svg></i> خدماتنا</a></li>
+            <li><a href='#projects'><i class='fa-solid fa-angle-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-angle-left'></use></svg></i> مشاريعنا</a></li>
+            <li><a href='blog/'><i class='fa-solid fa-angle-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-angle-left'></use></svg></i> المدونة</a></li>
+            <li><a href='#contact'><i class='fa-solid fa-angle-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-angle-left'></use></svg></i> تواصل معنا</a></li>
           </ul>
         </div>
         <div class='footer-nav-column footer-service-links'>
           <h4 class='footer-title'>خدماتنا</h4>
           <ul class='footer-links'>
-            <li><a href='service-construction.html'><i class='fa-solid fa-angle-left'></i> البناء والإنشاءات</a></li>
-            <li><a href='service-turnkey.html'><i class='fa-solid fa-angle-left'></i> تسليم مفتاح</a></li>
-            <li><a href='service-restoration.html'><i class='fa-solid fa-angle-left'></i> ترميم مباني</a></li>
-            <li><a href='service-finishing.html'><i class='fa-solid fa-angle-left'></i> تشطيبات عامة</a></li>
-            <li><a href='service-decor.html'><i class='fa-solid fa-angle-left'></i> ديكورات</a></li>
-            <li><a href='service-mep.html'><i class='fa-solid fa-angle-left'></i> أعمال الكهرباء والسباكة</a></li>
+            <li><a href='service-construction.html'><i class='fa-solid fa-angle-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-angle-left'></use></svg></i> البناء والإنشاءات</a></li>
+            <li><a href='service-turnkey.html'><i class='fa-solid fa-angle-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-angle-left'></use></svg></i> تسليم مفتاح</a></li>
+            <li><a href='service-restoration.html'><i class='fa-solid fa-angle-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-angle-left'></use></svg></i> ترميم مباني</a></li>
+            <li><a href='service-finishing.html'><i class='fa-solid fa-angle-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-angle-left'></use></svg></i> تشطيبات عامة</a></li>
+            <li><a href='service-decor.html'><i class='fa-solid fa-angle-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-angle-left'></use></svg></i> ديكورات</a></li>
+            <li><a href='service-mep.html'><i class='fa-solid fa-angle-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-angle-left'></use></svg></i> أعمال الكهرباء والسباكة</a></li>
           </ul>
         </div>
         <div class='footer-contact-column'>
           <h4 class='footer-title'>تواصل معنا</h4>
           <ul class='footer-contact'>
-            <li><div class='info-only'><i class='fa-solid fa-location-dot'></i><span>الرياض، المملكة العربية السعودية</span></div></li>
-            <li><a href='tel:0551128884'><i class='fa-solid fa-phone'></i><span>0551128884</span></a></li>
-            <li><a href='mailto:info@tawodco.com'><i class='fa-solid fa-envelope'></i><span>info@tawodco.com</span></a></li>
-            <li><div class='info-only'><i class='fa-regular fa-clock'></i><span>متاحون للرد على استفساراتكم ومناقشة المشاريع</span></div></li>
+            <li><div class='info-only'><i class='fa-solid fa-location-dot'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-location-dot'></use></svg></i><span>الرياض، المملكة العربية السعودية</span></div></li>
+            <li><a href='tel:0551128884'><i class='fa-solid fa-phone'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-phone'></use></svg></i><span>0551128884</span></a></li>
+            <li><a href='mailto:info@tawodco.com'><i class='fa-solid fa-envelope'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-envelope'></use></svg></i><span>info@tawodco.com</span></a></li>
+            <li><div class='info-only'><i class='fa-regular fa-clock'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-regular-clock'></use></svg></i><span>متاحون للرد على استفساراتكم ومناقشة المشاريع</span></div></li>
           </ul>
         </div>
       </div>
@@ -488,11 +763,11 @@
   </footer>
 
   <div class='float-btns'>
-    <a aria-label='واتساب' class='float-btn float-whatsapp' href='https://wa.me/966551128884?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D9%88%D8%B5%D9%84%D8%AA%20%D9%85%D9%86%20%D9%85%D9%88%D9%82%D8%B9%20%D8%B4%D8%B1%D9%83%D8%A9%20%D8%AA%D8%B9%D8%A7%D9%88%D8%AF%20%D9%84%D9%84%D9%85%D9%82%D8%A7%D9%88%D9%84%D8%A7%D8%AA.'><i class='fa-brands fa-whatsapp'></i></a>
-    <a aria-label='اتصال' class='float-btn float-call' href='tel:0551128884'><i class='fa-solid fa-phone'></i></a>
+    <a aria-label='واتساب' class='float-btn float-whatsapp' href='https://wa.me/966551128884?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D9%88%D8%B5%D9%84%D8%AA%20%D9%85%D9%86%20%D9%85%D9%88%D9%82%D8%B9%20%D8%B4%D8%B1%D9%83%D8%A9%20%D8%AA%D8%B9%D8%A7%D9%88%D8%AF%20%D9%84%D9%84%D9%85%D9%82%D8%A7%D9%88%D9%84%D8%A7%D8%AA.'><i class='fa-brands fa-whatsapp'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-brands-whatsapp'></use></svg></i></a>
+    <a aria-label='اتصال' class='float-btn float-call' href='tel:0551128884'><i class='fa-solid fa-phone'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-phone'></use></svg></i></a>
   </div>
 
-  <script src='assets/js/tawod-home.js' defer></script>
-  <script src='assets/js/tawod-upgrades.js' defer></script>
+  <script src='assets/js/tawod-home.js?v=febd0cbfc66e' defer></script>
+  <script src='assets/js/tawod-upgrades.js?v=bb1e3d7f440e' defer></script>
 </body>
 </html>

@@ -27,7 +27,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 96px; }
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  font-family: 'Tajawal', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Alexandria', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: var(--white);
   color: var(--text-dark);
   line-height: 1.75;
@@ -38,7 +38,18 @@ a { text-decoration: none; color: inherit; }
 ul { list-style: none; }
 img { max-width: 100%; height: auto; display: block; }
 button, input, select, textarea { font: inherit; }
-button { border: 0; cursor: pointer; }
+button { border: 0; cursor: pointer; background: transparent; color: inherit; }
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
 
 .container { width: min(1240px, calc(100% - 48px)); margin-inline: auto; }
 .section-padding { padding: 100px 0; }
@@ -246,14 +257,27 @@ button { border: 0; cursor: pointer; }
   align-items: center;
   color: var(--white);
   overflow: hidden;
-  background: linear-gradient(120deg, rgba(29,30,38,.90), rgba(29,30,38,.70)), url('../../images/hero-bg.webp') center/cover no-repeat;
+  background: var(--secondary);
   padding: 160px 0 110px;
+}
+.hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 .hero::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 20% 25%, rgba(var(--primary-rgb),.22), transparent 34%), linear-gradient(to top, rgba(29,30,38,.75), transparent 45%);
+  z-index: 1;
+  background: radial-gradient(circle at 20% 25%, rgba(var(--primary-rgb),.22), transparent 34%), linear-gradient(to top, rgba(29,30,38,.75), transparent 45%), linear-gradient(120deg, rgba(29,30,38,.90), rgba(29,30,38,.70));
   pointer-events: none;
 }
 .hero::after {
@@ -261,6 +285,7 @@ button { border: 0; cursor: pointer; }
   position: absolute;
   inset: auto 0 0;
   height: 120px;
+  z-index: 1;
   background: linear-gradient(to top, var(--white), transparent);
 }
 .hero .container { position: relative; z-index: 2; }
@@ -437,6 +462,7 @@ textarea.form-control { min-height: 132px; resize: vertical; }
 
 .reveal-up { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
 .reveal-up.active { opacity: 1; transform: translateY(0); }
+.hero .reveal-up { opacity: 1; transform: none; }
 .delay-100 { transition-delay: .1s; }
 .delay-200 { transition-delay: .2s; }
 .delay-300 { transition-delay: .3s; }

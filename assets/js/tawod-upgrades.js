@@ -10,15 +10,7 @@
     }
   }
 
-  function improveMediaLoading() {
-    document.querySelectorAll('img').forEach(function (img, index) {
-      img.decoding = 'async';
-      if (index > 1 && !img.hasAttribute('loading')) img.loading = 'lazy';
-    });
-  }
-
   ready(function () {
-    improveMediaLoading();
     document.documentElement.classList.add('tawod-polished');
 
     var mapButton = document.querySelector('[data-load-map]');
