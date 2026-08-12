@@ -50,7 +50,7 @@ jobs:
         run: node scripts/validate-site.mjs
       - name: Detect unresolved merge markers
         run: |
-          if grep -RInE '^(<<<<<<<|=======|>>>>>>>)' --exclude-dir=.git .; then
+          if grep -RInE '^(<<<<<<<|=======|>>>>>>>)' --exclude-dir=.git --exclude-dir=node_modules .; then
             echo 'Unresolved merge markers found.'
             exit 1
           fi
