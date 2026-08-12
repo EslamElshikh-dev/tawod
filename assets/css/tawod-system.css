@@ -106,6 +106,80 @@ html body .faq-question {
   line-height: 1.9;
 }
 
+.service-article {
+  max-width: 1100px;
+  margin-inline: auto;
+}
+
+.service-article + .service-article {
+  margin-top: 46px;
+}
+
+.service-article h2 {
+  margin: 0 0 18px;
+  color: var(--secondary);
+  font-size: clamp(27px, 2.35vw, 37px);
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.service-article h3 {
+  margin: 28px 0 10px;
+  color: var(--secondary);
+  font-size: clamp(20px, 1.55vw, 24px);
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+.service-article p {
+  margin: 0 0 17px;
+  color: #4f5764;
+  font-size: clamp(16.5px, .34vw + 15px, 18.5px);
+  line-height: 2;
+  text-wrap: pretty;
+}
+
+.service-article ul {
+  display: grid;
+  gap: 10px;
+  margin: 20px 0 26px;
+  padding: 0;
+  list-style: none;
+}
+
+.service-article li {
+  position: relative;
+  padding-right: 26px;
+  color: #3f4652;
+  font-size: clamp(16px, .3vw + 15px, 18px);
+  line-height: 1.9;
+}
+
+.service-article li::before {
+  content: '✓';
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: var(--primary-dark);
+  font-weight: 900;
+}
+
+.service-note {
+  margin: 28px 0;
+  padding: 24px 26px;
+  border: 1px solid rgba(var(--primary-rgb), .32);
+  border-radius: 18px;
+  background: linear-gradient(145deg, #fff9f3, #fff);
+  box-shadow: 0 14px 34px rgba(29,30,38,.055);
+}
+
+.service-note strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--secondary);
+  font-size: 18px;
+}
+
 /* Prevent narrow-screen overflow from homepage headings and card titles. */
 @media (max-width: 767px) {
   html body.home-page .section-title h2,
@@ -132,5 +206,13 @@ html body .faq-question {
   .page-hero p {
     font-size: 16.5px;
     line-height: 1.8;
+  }
+
+  .service-article h2 {
+    font-size: 27px;
+  }
+
+  .service-note {
+    padding: 20px;
   }
 }
