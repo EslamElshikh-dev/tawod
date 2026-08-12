@@ -21,6 +21,16 @@
     });
   }
 
+  function correctDammamHeroCopy() {
+    if (!/^\/dammam\/?$/.test(window.location.pathname)) return;
+    var main = document.querySelector('#dammam-hero-title .hero-title-main');
+    var sub = document.querySelector('#dammam-hero-title .hero-title-sub');
+    var paragraph = document.querySelector('.hero .hero-content > p');
+    if (main) main.textContent = 'شركة تعاود للمقاولات العامة في الدمام';
+    if (sub) sub.textContent = 'تنفيذ متكامل لأعمال البناء والتشطيب والترميم وتسليم المفتاح';
+    if (paragraph) paragraph.textContent = 'نخدم المشاريع السكنية والتجارية في الدمام بداية من دراسة الموقع وحصر نطاق الأعمال مرورًا بالتنفيذ والتنسيق بين التخصصات وحتى الفحص والتسليم وفق البنود المتفق عليها.';
+  }
+
   ready(function () {
     var header = document.getElementById('header');
     var menuBtn = document.getElementById('menuBtn');
@@ -30,6 +40,7 @@
     var sidebarLinks = document.querySelectorAll('.sidebar-nav a');
 
     removeLanguageControls();
+    correctDammamHeroCopy();
 
     if (menuBtn && !menuBtn.dataset.menuIconReady) {
       menuBtn.innerHTML = menuIcon();
