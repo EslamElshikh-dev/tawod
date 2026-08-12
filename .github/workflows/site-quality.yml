@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: site-quality-${{ github.ref }}
@@ -40,26 +40,13 @@ jobs:
           node --check scripts/validate-site.mjs
           if [ -f scripts/enhance-contact-page.mjs ]; then node --check scripts/enhance-contact-page.mjs; fi
           if [ -f assets/js/contact-conversion.js ]; then node --check assets/js/contact-conversion.js; fi
-      - name: Regenerate homepage performance bundle
-        run: npm run build:home
+      - name: Verify homepage performance bundle
+        run: npm run check:home
       - name: Enhance contact conversion flow
         run: |
           if [ -f scripts/enhance-contact-page.mjs ]; then node scripts/enhance-contact-page.mjs; fi
       - name: Generate static HTML
         run: node scripts/run-static-pages.mjs
-      - name: Commit regenerated homepage assets
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html assets/css/tawod-home-performance.css
-          if ! git diff --cached --quiet; then
-            git commit -m "Regenerate homepage performance assets"
-            git push origin HEAD:${{ github.head_ref }}
-          else
-            echo "Homepage performance assets already current."
-          fi
-      - name: Verify homepage performance bundle
-        run: npm run check:home
       - name: Validate pages links metadata schema and sitemap
         run: node scripts/validate-site.mjs
       - name: Detect unresolved merge markers
@@ -88,3 +75,10 @@ jobs:
               raise SystemExit(1)
           print(f'Asset-size checks passed for {len(changed)} changed files.')
           PY
+      - name: Verify generated HTML is committed
+        run: |
+          if ! git diff --exit-code -- '*.html' 'blog/**/*.html' 'lp/**/*.html'; then
+            echo "Generated HTML is out of date. Run node scripts/run-static-pages.mjs and commit the result."
+            exit 1
+          fi
+          node scripts/run-static-pages.mjs --check
