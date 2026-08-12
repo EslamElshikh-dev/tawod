@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: site-quality-${{ github.ref }}
@@ -47,15 +47,17 @@ jobs:
           if [ -f scripts/enhance-contact-page.mjs ]; then node scripts/enhance-contact-page.mjs; fi
       - name: Generate static HTML
         run: node scripts/run-static-pages.mjs
-      - name: Export regenerated homepage assets
-        uses: actions/upload-artifact@v4
-        with:
-          name: regenerated-homepage-assets
-          path: |
-            index.html
-            assets/css/tawod-home-performance.css
-          if-no-files-found: error
-          retention-days: 1
+      - name: Commit regenerated homepage assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html assets/css/tawod-home-performance.css
+          if ! git diff --cached --quiet; then
+            git commit -m "Regenerate homepage performance assets"
+            git push origin HEAD:${{ github.head_ref }}
+          else
+            echo "Homepage performance assets already current."
+          fi
       - name: Verify homepage performance bundle
         run: npm run check:home
       - name: Validate pages links metadata schema and sitemap
