@@ -36,6 +36,7 @@ jobs:
           node --check assets/js/tawod-upgrades.js
           node --check scripts/build-home-performance.mjs
           node --check scripts/build-static-pages.mjs
+          node --check scripts/run-static-pages.mjs
           node --check scripts/validate-site.mjs
           if [ -f scripts/enhance-contact-page.mjs ]; then node --check scripts/enhance-contact-page.mjs; fi
           if [ -f assets/js/contact-conversion.js ]; then node --check assets/js/contact-conversion.js; fi
@@ -45,12 +46,12 @@ jobs:
         run: |
           if [ -f scripts/enhance-contact-page.mjs ]; then node scripts/enhance-contact-page.mjs; fi
       - name: Generate static HTML
-        run: node scripts/build-static-pages.mjs
+        run: node scripts/run-static-pages.mjs
       - name: Validate pages links metadata schema and sitemap
         run: node scripts/validate-site.mjs
       - name: Detect unresolved merge markers
         run: |
-          if grep -RInE '^(<<<<<<<|=======|>>>>>>>)' --exclude-dir=.git .; then
+          if grep -RInE '^(<<<<<<<|=======|>>>>>>>)' --exclude-dir=.git --exclude-dir=node_modules .; then
             echo 'Unresolved merge markers found.'
             exit 1
           fi
@@ -77,7 +78,7 @@ jobs:
       - name: Verify generated HTML is committed
         run: |
           if ! git diff --exit-code -- '*.html' 'blog/**/*.html' 'lp/**/*.html'; then
-            echo "Generated HTML is out of date. Run node scripts/build-static-pages.mjs and commit the result."
+            echo "Generated HTML is out of date. Run node scripts/run-static-pages.mjs and commit the result."
             exit 1
           fi
-          node scripts/build-static-pages.mjs --check
+          node scripts/run-static-pages.mjs --check
