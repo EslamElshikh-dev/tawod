@@ -23,6 +23,12 @@
     return '<svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   }
 
+  function removeLanguageControls() {
+    qa('.lang-switch, .lang-switch-link, [data-language="en"], a[aria-label*="English"]').forEach(function (element) {
+      element.remove();
+    });
+  }
+
   function fixCustomerFacingCopy() {
     if (!/^\/blog\/?$/.test(window.location.pathname)) return;
     qa('.blog-section-title').forEach(function (section) {
@@ -32,40 +38,9 @@
         heading.textContent = 'أدلة عملية لاتخاذ قرارات أفضل في البناء والتشطيب';
       }
       if (paragraph && /كلمات البحث|تستهدف/i.test(paragraph.textContent)) {
-        paragraph.textContent = 'مجموعة من الأدلة المتخصصة التي تساعدك على فهم مراحل تسليم المفتاح، وتشطيب الفلل والشقق، وتقدير التكلفة، وتجنب أخطاء التنفيذ قبل بدء مشروعك في الرياض.';
+        paragraph.textContent = 'مجموعة من الأدلة المتخصصة التي تساعدك على فهم مراحل تسليم المفتاح وتشطيب الفلل والشقق وتقدير التكلفة وتجنب أخطاء التنفيذ قبل بدء مشروعك.';
       }
     });
-  }
-
-  function setupLanguageLinks() {
-    var englishUrl = '/en/';
-    qa('.lang-switch a, a[aria-label*="English"], a[data-language="en"]').forEach(function (link) {
-      var label = (link.textContent || '').trim().toUpperCase();
-      if (label === 'EN' || /English/i.test(link.getAttribute('aria-label') || '')) {
-        link.href = englishUrl;
-        link.setAttribute('aria-label', 'English version');
-      }
-    });
-
-    var actions = q('.header-actions');
-    if (actions && !q('[data-language="en"]', actions) && !q('.lang-switch', actions)) {
-      var language = document.createElement('a');
-      language.href = englishUrl;
-      language.dataset.language = 'en';
-      language.className = 'lang-switch-link';
-      language.textContent = 'EN';
-      language.setAttribute('aria-label', 'English version');
-      actions.insertBefore(language, actions.firstChild);
-    }
-
-    var sidebar = q('.sidebar-nav');
-    if (sidebar && !q('[data-language="en"]', sidebar)) {
-      var sidebarEnglish = document.createElement('a');
-      sidebarEnglish.href = englishUrl;
-      sidebarEnglish.dataset.language = 'en';
-      sidebarEnglish.textContent = 'English';
-      sidebar.appendChild(sidebarEnglish);
-    }
   }
 
   function setupMenu() {
@@ -74,25 +49,35 @@
     var sidebar = q('#mobileSidebar');
     var overlay = q('#sidebarOverlay');
 
-    if (button) {
+    if (button && !button.dataset.menuIconReady) {
       button.innerHTML = menuIcon();
+      button.dataset.menuIconReady = 'true';
       button.setAttribute('aria-expanded', 'false');
       button.setAttribute('aria-label', button.getAttribute('aria-label') || 'فتح قائمة التنقل');
     }
-    if (closeButton) closeButton.innerHTML = closeIcon();
+    if (closeButton && !closeButton.dataset.menuIconReady) {
+      closeButton.innerHTML = closeIcon();
+      closeButton.dataset.menuIconReady = 'true';
+    }
 
     function open() {
       if (!sidebar || !overlay) return;
+      sidebar.inert = false;
+      sidebar.setAttribute('aria-hidden', 'false');
       sidebar.classList.add('active', 'open', 'show');
       overlay.classList.add('active', 'open', 'show');
       document.body.classList.add('menu-open');
       document.body.style.overflow = 'hidden';
       if (button) button.setAttribute('aria-expanded', 'true');
-      if (closeButton) closeButton.focus();
+      if (closeButton && typeof closeButton.focus === 'function') closeButton.focus();
     }
 
     function close(returnFocus) {
-      if (sidebar) sidebar.classList.remove('active', 'open', 'show');
+      if (sidebar) {
+        sidebar.classList.remove('active', 'open', 'show');
+        sidebar.setAttribute('aria-hidden', 'true');
+        sidebar.inert = true;
+      }
       if (overlay) overlay.classList.remove('active', 'open', 'show');
       document.body.classList.remove('menu-open');
       document.body.style.overflow = '';
@@ -100,15 +85,29 @@
       if (returnFocus && button) button.focus();
     }
 
-    if (button) button.addEventListener('click', open);
-    if (closeButton) closeButton.addEventListener('click', function () { close(true); });
-    if (overlay) overlay.addEventListener('click', function () { close(true); });
+    if (button && !button.dataset.menuReady) {
+      button.dataset.menuReady = 'true';
+      button.addEventListener('click', open);
+    }
+    if (closeButton && !closeButton.dataset.menuReady) {
+      closeButton.dataset.menuReady = 'true';
+      closeButton.addEventListener('click', function () { close(true); });
+    }
+    if (overlay && !overlay.dataset.menuReady) {
+      overlay.dataset.menuReady = 'true';
+      overlay.addEventListener('click', function () { close(true); });
+    }
     qa('.mobile-sidebar a').forEach(function (link) {
+      if (link.dataset.menuReady) return;
+      link.dataset.menuReady = 'true';
       link.addEventListener('click', function () { close(false); });
     });
-    document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape') close(true);
-    });
+    if (!document.documentElement.dataset.menuEscapeReady) {
+      document.documentElement.dataset.menuEscapeReady = 'true';
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') close(true);
+      });
+    }
   }
 
   function setupFaq() {
@@ -181,7 +180,7 @@
     if (!q('.article-byline', content)) {
       var byline = document.createElement('div');
       byline.className = 'article-byline';
-      byline.innerHTML = '<div class="article-byline-author"><span class="article-byline-logo"><img src="../../images/logo/tawod-logo.png" alt="شركة تعاود للمقاولات"></span><span class="article-byline-copy"><strong>إعداد فريق تعاود للمقاولات</strong><span>محتوى هندسي وتوعوي للمشاريع السكنية والتجارية في الرياض</span></span></div><span class="article-byline-badge"><i class="fa-solid fa-circle-check"></i> محتوى مراجع</span>';
+      byline.innerHTML = '<div class="article-byline-author"><span class="article-byline-logo"><img src="../../images/logo/tawod-logo.png" alt="شركة تعاود للمقاولات"></span><span class="article-byline-copy"><strong>إعداد فريق تعاود للمقاولات</strong><span>محتوى هندسي وتوعوي للمشاريع السكنية والتجارية</span></span></div><span class="article-byline-badge"><i class="fa-solid fa-circle-check"></i> محتوى مراجع</span>';
       content.insertBefore(byline, content.firstChild);
     }
   }
@@ -241,7 +240,7 @@
 
   ready(function () {
     fixCustomerFacingCopy();
-    setupLanguageLinks();
+    removeLanguageControls();
     setupMenu();
     setupFaq();
     setupReveal();

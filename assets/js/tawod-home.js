@@ -15,24 +15,20 @@
     return '<svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   }
 
-  function setupLanguageLinks() {
-    var englishUrl = '/en/';
-    document.querySelectorAll('.lang-switch a, a[aria-label*="English"], a[data-language="en"]').forEach(function (link) {
-      var label = (link.textContent || '').trim().toUpperCase();
-      if (label === 'EN' || /English/i.test(link.getAttribute('aria-label') || '')) {
-        link.href = englishUrl;
-        link.setAttribute('aria-label', 'English version');
-      }
+  function removeLanguageControls() {
+    document.querySelectorAll('.lang-switch, .lang-switch-link, [data-language="en"], a[aria-label*="English"]').forEach(function (element) {
+      element.remove();
     });
+  }
 
-    var sidebar = document.querySelector('.sidebar-nav');
-    if (sidebar && !sidebar.querySelector('[data-language="en"]')) {
-      var englishLink = document.createElement('a');
-      englishLink.href = englishUrl;
-      englishLink.dataset.language = 'en';
-      englishLink.textContent = 'English';
-      sidebar.appendChild(englishLink);
-    }
+  function correctDammamHeroCopy() {
+    if (!/^\/dammam\/?$/.test(window.location.pathname)) return;
+    var main = document.querySelector('#dammam-hero-title .hero-title-main');
+    var sub = document.querySelector('#dammam-hero-title .hero-title-sub');
+    var paragraph = document.querySelector('.hero .hero-content > p');
+    if (main) main.textContent = 'شركة تعاود للمقاولات العامة في الدمام';
+    if (sub) sub.textContent = 'تنفيذ متكامل لأعمال البناء والتشطيب والترميم وتسليم المفتاح';
+    if (paragraph) paragraph.textContent = 'نخدم المشاريع السكنية والتجارية في الدمام بداية من دراسة الموقع وحصر نطاق الأعمال مرورًا بالتنفيذ والتنسيق بين التخصصات وحتى الفحص والتسليم وفق البنود المتفق عليها.';
   }
 
   ready(function () {
@@ -43,12 +39,18 @@
     var sidebarOverlay = document.getElementById('sidebarOverlay');
     var sidebarLinks = document.querySelectorAll('.sidebar-nav a');
 
-    if (menuBtn) {
+    removeLanguageControls();
+    correctDammamHeroCopy();
+
+    if (menuBtn && !menuBtn.dataset.menuIconReady) {
       menuBtn.innerHTML = menuIcon();
+      menuBtn.dataset.menuIconReady = 'true';
       menuBtn.setAttribute('aria-expanded', 'false');
     }
-    if (closeSidebar) closeSidebar.innerHTML = closeIcon();
-    setupLanguageLinks();
+    if (closeSidebar && !closeSidebar.dataset.menuIconReady) {
+      closeSidebar.innerHTML = closeIcon();
+      closeSidebar.dataset.menuIconReady = 'true';
+    }
 
     var headerTicking = false;
     var headerIsScrolled = null;
@@ -76,17 +78,19 @@
       if (!mobileSidebar || !sidebarOverlay) return;
       mobileSidebar.inert = false;
       mobileSidebar.setAttribute('aria-hidden', 'false');
-      mobileSidebar.classList.add('active');
-      sidebarOverlay.classList.add('active');
+      mobileSidebar.classList.add('active', 'open', 'show');
+      sidebarOverlay.classList.add('active', 'open', 'show');
+      document.body.classList.add('menu-open');
       document.body.style.overflow = 'hidden';
       if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true');
-      if (closeSidebar) closeSidebar.focus();
+      if (closeSidebar && typeof closeSidebar.focus === 'function') closeSidebar.focus();
     }
 
     function closeMenu(returnFocus) {
       if (!mobileSidebar || !sidebarOverlay) return;
-      mobileSidebar.classList.remove('active');
-      sidebarOverlay.classList.remove('active');
+      mobileSidebar.classList.remove('active', 'open', 'show');
+      sidebarOverlay.classList.remove('active', 'open', 'show');
+      document.body.classList.remove('menu-open');
       document.body.style.overflow = '';
       if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
       mobileSidebar.setAttribute('aria-hidden', 'true');
@@ -94,17 +98,31 @@
       if (returnFocus && menuBtn) menuBtn.focus();
     }
 
-    if (menuBtn) menuBtn.addEventListener('click', openMenu);
-    if (closeSidebar) closeSidebar.addEventListener('click', function () { closeMenu(true); });
-    if (sidebarOverlay) sidebarOverlay.addEventListener('click', function () { closeMenu(true); });
+    if (menuBtn && !menuBtn.dataset.menuReady) {
+      menuBtn.dataset.menuReady = 'true';
+      menuBtn.addEventListener('click', openMenu);
+    }
+    if (closeSidebar && !closeSidebar.dataset.menuReady) {
+      closeSidebar.dataset.menuReady = 'true';
+      closeSidebar.addEventListener('click', function () { closeMenu(true); });
+    }
+    if (sidebarOverlay && !sidebarOverlay.dataset.menuReady) {
+      sidebarOverlay.dataset.menuReady = 'true';
+      sidebarOverlay.addEventListener('click', function () { closeMenu(true); });
+    }
 
     sidebarLinks.forEach(function (link) {
+      if (link.dataset.menuReady) return;
+      link.dataset.menuReady = 'true';
       link.addEventListener('click', function () { closeMenu(false); });
     });
 
-    document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && mobileSidebar && mobileSidebar.classList.contains('active')) closeMenu(true);
-    });
+    if (!document.documentElement.dataset.menuEscapeReady) {
+      document.documentElement.dataset.menuEscapeReady = 'true';
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && mobileSidebar && mobileSidebar.classList.contains('active')) closeMenu(true);
+      });
+    }
 
     var revealElements = document.querySelectorAll('.reveal-up');
     if ('IntersectionObserver' in window) {
@@ -122,6 +140,8 @@
     }
 
     document.querySelectorAll('.faq-question').forEach(function (button) {
+      if (button.dataset.faqReady) return;
+      button.dataset.faqReady = 'true';
       button.addEventListener('click', function () {
         var faqItem = button.closest('.faq-item');
         var faqAnswer = faqItem ? faqItem.querySelector('.faq-answer') : null;

@@ -68,6 +68,17 @@ if (!pattern.test(index)) {
 
 let nextIndex = index.replace(pattern, `${start}\n  <style id='tawod-critical-css'>\n${critical}\n  </style>\n  ${end}`);
 
+// The site is Arabic-only. Keep language controls out of the generated homepage
+// so a future performance rebuild cannot accidentally reintroduce AR/EN switching.
+nextIndex = nextIndex.replace(/\s*<div\s+class=['"]lang-switch['"]>[\s\S]*?<\/div>/gi, '');
+
+// Keep a single menu control. The shared JS injects the SVG icon and owns all
+// open/close behavior; Font Awesome classes or a second inline icon are not needed.
+nextIndex = nextIndex.replace(
+  /<button\s+class=['"][^'"]*mobile-menu-btn[^'"]*['"]\s+id=['"]menuBtn['"][\s\S]*?<\/button>/i,
+  "<button class='mobile-menu-btn' id='menuBtn' type='button' aria-label='فتح القائمة' aria-controls='mobileSidebar' aria-expanded='false'></button>"
+);
+
 function revision(file) {
   const content = file === 'assets/css/tawod-home-performance.css'
     ? bundle
@@ -100,5 +111,5 @@ if (check) {
 } else {
   fs.writeFileSync(bundlePath, bundle);
   fs.writeFileSync(indexPath, nextIndex);
-  console.log(`Built minified homepage CSS from ${cssSources.length} sources, refreshed critical CSS, and revisioned assets.`);
+  console.log(`Built minified homepage CSS from ${cssSources.length} sources, refreshed critical CSS, removed language controls, normalized the mobile menu, and revisioned assets.`);
 }
