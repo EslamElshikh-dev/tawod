@@ -230,7 +230,7 @@
     if (!q('.article-byline', content)) {
       var byline = document.createElement('div');
       byline.className = 'article-byline';
-      byline.innerHTML = '<div class="article-byline-author"><span class="article-byline-logo"><img src="../../images/logo/tawod-logo.png" alt="شركة تعاود للمقاولات"></span><span class="article-byline-copy"><strong>إعداد فريق تعاود للمقاولات</strong><span>محتوى هندسي وتوعوي للمشاريع السكنية والتجارية</span></span></div><span class="article-byline-badge"><i class="fa-solid fa-circle-check"></i> محتوى مراجع</span>';
+      byline.innerHTML = '<div class="article-byline-author"><span class="article-byline-logo"><img src="/images/logo/tawod-logo.png" alt="شركة تعاود للمقاولات"></span><span class="article-byline-copy"><strong>إعداد فريق تعاود للمقاولات</strong><span>محتوى هندسي وتوعوي للمشاريع السكنية والتجارية</span></span></div><span class="article-byline-badge"><i class="fa-solid fa-circle-check"></i> محتوى مراجع</span>';
       content.insertBefore(byline, content.firstChild);
     }
   }
