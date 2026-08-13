@@ -22,11 +22,36 @@ for(const [r,h] of pages){
   const h1=all(h,/<h1\b[^>]*>/gi).length;if(h1!==1)errors.push(`${r}: expected one H1, found ${h1}`);
   const ids=all(h,/\bid=["']([^"']+)["']/gi).map(m=>m[1]);[...new Set(ids.filter((x,i,a)=>a.indexOf(x)!==i))].forEach(id=>errors.push(`${r}: duplicate id ${id}`));
   const schemas=[];all(h,/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi).forEach((m,i)=>{try{schemas.push(JSON.parse(m[1].trim()))}catch(e){errors.push(`${r}: invalid JSON-LD block ${i+1}: ${e.message}`)}});
-  const excluded=r==='index.html'||r==='privacy-policy.html'||r==='404.html'||r.startsWith('en/')||/noindex/i.test(h);const localSilo=/^(?:dammam|khobar|dhahran)\//.test(r);if(!excluded){indexable.add(pagePath(r));if(!h.includes('tawod-system.css'))errors.push(`${r}: missing tawod-system.css`);if(!localSilo){if(!/<section[^>]*(?:id=["']faq["']|class=["'][^"']*(?:seo-faq|tawod-faq-section)[^"']*["'])/i.test(h))errors.push(`${r}: missing visible FAQ section`);if(!schemas.some(x=>schemaHas(x,'FAQPage')))errors.push(`${r}: missing FAQPage schema`)}if(!schemas.some(x=>schemaHas(x,'BreadcrumbList')))errors.push(`${r}: missing BreadcrumbList schema`);if(r.startsWith('blog/')&&r!=='blog/index.html'){if(!schemas.some(x=>schemaHas(x,'Article')))errors.push(`${r}: missing Article schema`)}else if(localSilo){const accepted=['WebPage','AboutPage','ContactPage','CollectionPage','Service'];if(!accepted.some(type=>schemas.some(x=>schemaHas(x,type))))errors.push(`${r}: missing local page schema`)}else if(!schemas.some(x=>schemaHas(x,'WebPage')))errors.push(`${r}: missing WebPage schema`)}
+  const excluded=r==='index.html'||r==='privacy-policy.html'||r==='404.html'||r.startsWith('en/')||/noindex/i.test(h);
+  const localSilo=/^(?:dammam|khobar|dhahran)\//.test(r),dammam=r.startsWith('dammam/'),dammamArticle=/^dammam\/blog\/[^/]+\/index\.html$/.test(r);
+  if(!excluded){
+    indexable.add(pagePath(r));
+    if(!h.includes('tawod-system.css'))errors.push(`${r}: missing tawod-system.css`);
+    if(!localSilo){
+      if(!/<section[^>]*(?:id=["']faq["']|class=["'][^"']*(?:seo-faq|tawod-faq-section)[^"']*["'])/i.test(h))errors.push(`${r}: missing visible FAQ section`);
+      if(!schemas.some(x=>schemaHas(x,'FAQPage')))errors.push(`${r}: missing FAQPage schema`);
+    }
+    if(dammam){
+      if(!h.includes('tawod-dammam.css'))errors.push(`${r}: missing tawod-dammam.css`);
+      if(/نطاق(?:\s+ال)?خدمة|عنوان فرع|فرعًا مستقلًا/.test(h))errors.push(`${r}: contains customer-facing service-area wording`);
+      if(!/<section[^>]*(?:id=["']faq["']|class=["'][^"']*tawod-faq-section[^"']*["'])/i.test(h))errors.push(`${r}: missing visible Dammam FAQ section`);
+      if(!schemas.some(x=>schemaHas(x,'FAQPage')))errors.push(`${r}: missing Dammam FAQPage schema`);
+      if(dammamArticle&&!schemas.some(x=>schemaHas(x,'Article')))errors.push(`${r}: missing Dammam Article schema`);
+      all(h,/<a\b[^>]*href=["']([^"']+)["'][^>]*>/gi).map(m=>m[1]).filter(v=>v.startsWith('/')&&!v.startsWith('/dammam/')).forEach(v=>errors.push(`${r}: Dammam silo link escapes to ${v}`));
+    }
+    if(!schemas.some(x=>schemaHas(x,'BreadcrumbList')))errors.push(`${r}: missing BreadcrumbList schema`);
+    if(r.startsWith('blog/')&&r!=='blog/index.html'){
+      if(!schemas.some(x=>schemaHas(x,'Article')))errors.push(`${r}: missing Article schema`);
+    }else if(localSilo){
+      const accepted=['WebPage','AboutPage','ContactPage','CollectionPage','Service'];
+      if(!accepted.some(type=>schemas.some(x=>schemaHas(x,type))))errors.push(`${r}: missing local page schema`);
+    }else if(!schemas.some(x=>schemaHas(x,'WebPage')))errors.push(`${r}: missing WebPage schema`);
+  }
   all(h,/<(?:a|link|script|img|source|iframe)\b[^>]*(?:href|src|srcset)=["']([^"']+)["'][^>]*>/gi).forEach(m=>m[1].split(',').map(x=>x.trim().split(/\s+/)[0]).filter(Boolean).forEach(v=>{const t=localTarget(r,v);if(!t)return;const full=path.join(root,t.file);if(!fs.existsSync(full)){errors.push(`${r}: broken reference ${v} -> ${t.file}`);return}if(t.anchor&&t.file.endsWith('.html')){const target=pages.get(t.file)||fs.readFileSync(full,'utf8');const safe=t.anchor.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');if(!new RegExp(`\\bid=["']${safe}["']`).test(target))errors.push(`${r}: missing anchor #${t.anchor} in ${t.file}`)}}));
 }
 
 if(!fs.existsSync('sitemap.xml'))errors.push('sitemap.xml missing');else{const s=fs.readFileSync('sitemap.xml','utf8'),urls=new Set(all(s,/<loc>([^<]+)<\/loc>/gi).map(m=>new URL(m[1]).pathname));for(const p of indexable)if(!urls.has(p))errors.push(`sitemap.xml missing ${p}`);for(const p of urls){let r=p==='/'?'index.html':p.slice(1);if(r.endsWith('/'))r+='index.html';if(!pages.has(r))errors.push(`sitemap URL does not resolve: ${p}`)}}
+if(!fs.existsSync('sitemap-dammam.xml'))errors.push('sitemap-dammam.xml missing');else{const s=fs.readFileSync('sitemap-dammam.xml','utf8'),urls=new Set(all(s,/<loc>([^<]+)<\/loc>/gi).map(m=>new URL(m[1]).pathname)),dammamPages=new Set([...indexable].filter(p=>p.startsWith('/dammam/')));for(const p of dammamPages)if(!urls.has(p))errors.push(`sitemap-dammam.xml missing ${p}`);for(const p of urls){if(!p.startsWith('/dammam/'))errors.push(`sitemap-dammam.xml contains non-Dammam URL ${p}`);if(!dammamPages.has(p))errors.push(`sitemap-dammam.xml has unexpected URL ${p}`)}}
 if(!fs.existsSync('robots.txt'))errors.push('robots.txt missing');else if(!fs.readFileSync('robots.txt','utf8').includes('Sitemap: https://tawodco.com/sitemap.xml'))errors.push('robots.txt sitemap line missing');
 if(!fs.existsSync('assets/js/tawod-inner.js'))errors.push('tawod-inner.js missing');else{const js=fs.readFileSync('assets/js/tawod-inner.js','utf8');['injectComprehensiveFaq','addFaqSchema','applyServiceProfile','injectTrustStrip','addPageSchema'].forEach(x=>{if(js.includes(x))errors.push(`tawod-inner.js still contains runtime generator ${x}`)})}
 warnings.forEach(x=>console.warn('WARNING: '+x));if(errors.length){console.error(`Site validation failed with ${errors.length} error(s):`);errors.forEach(x=>console.error(' - '+x));process.exit(1)}console.log(`Validated ${htmlFiles.length} HTML files, ${indexable.size} indexable URLs, links, sitemap, metadata and JSON-LD.`);
