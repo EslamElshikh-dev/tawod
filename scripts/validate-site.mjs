@@ -39,6 +39,7 @@ for(const [r,h] of pages){
       if(localArticle&&!schemas.some(x=>schemaHas(x,'Article')))errors.push(`${r}: missing ${localCity} Article schema`);
       all(h,/<a\b[^>]*href=["']([^"']+)["'][^>]*>/gi).map(m=>m[1]).filter(v=>v.startsWith('/')&&!v.startsWith(`/${localCity}/`)).forEach(v=>errors.push(`${r}: ${localCity} silo link escapes to ${v}`));
       if(r==='khobar/index.html'&&title!=='شركة مقاولات بالخبر | تعاود للمقاولات العامة')errors.push(`${r}: homepage title must match the approved Khobar title`);
+      if(r==='dhahran/index.html'&&title!=='شركة مقاولات بالظهران | تعاود للمقاولات العامة')errors.push(`${r}: homepage title must match the approved Dhahran title`);
     }
     if(!schemas.some(x=>schemaHas(x,'BreadcrumbList')))errors.push(`${r}: missing BreadcrumbList schema`);
     if(r.startsWith('blog/')&&r!=='blog/index.html'){
