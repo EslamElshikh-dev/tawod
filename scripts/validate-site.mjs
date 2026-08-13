@@ -23,7 +23,7 @@ for(const [r,h] of pages){
   const ids=all(h,/\bid=["']([^"']+)["']/gi).map(m=>m[1]);[...new Set(ids.filter((x,i,a)=>a.indexOf(x)!==i))].forEach(id=>errors.push(`${r}: duplicate id ${id}`));
   const schemas=[];all(h,/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi).forEach((m,i)=>{try{schemas.push(JSON.parse(m[1].trim()))}catch(e){errors.push(`${r}: invalid JSON-LD block ${i+1}: ${e.message}`)}});
   const excluded=r==='index.html'||r==='privacy-policy.html'||r==='404.html'||r.startsWith('en/')||/noindex/i.test(h);
-  const localSilo=/^(?:dammam|khobar|dhahran)\//.test(r),dammam=r.startsWith('dammam/'),dammamArticle=/^dammam\/blog\/[^/]+\/index\.html$/.test(r);
+  const localMatch=r.match(/^(dammam|khobar|dhahran)\//),localCity=localMatch?.[1]||'',localSilo=Boolean(localCity),localArticle=localCity&&new RegExp(`^${localCity}/blog/[^/]+/index\\.html$`).test(r);
   if(!excluded){
     indexable.add(pagePath(r));
     if(!h.includes('tawod-system.css'))errors.push(`${r}: missing tawod-system.css`);
@@ -31,13 +31,14 @@ for(const [r,h] of pages){
       if(!/<section[^>]*(?:id=["']faq["']|class=["'][^"']*(?:seo-faq|tawod-faq-section)[^"']*["'])/i.test(h))errors.push(`${r}: missing visible FAQ section`);
       if(!schemas.some(x=>schemaHas(x,'FAQPage')))errors.push(`${r}: missing FAQPage schema`);
     }
-    if(dammam){
-      if(!h.includes('tawod-dammam.css'))errors.push(`${r}: missing tawod-dammam.css`);
+    if(localCity){
+      if(!h.includes(`tawod-${localCity}.css`))errors.push(`${r}: missing tawod-${localCity}.css`);
       if(/نطاق(?:\s+ال)?خدمة|عنوان فرع|فرعًا مستقلًا/.test(h))errors.push(`${r}: contains customer-facing service-area wording`);
-      if(!/<section[^>]*(?:id=["']faq["']|class=["'][^"']*tawod-faq-section[^"']*["'])/i.test(h))errors.push(`${r}: missing visible Dammam FAQ section`);
-      if(!schemas.some(x=>schemaHas(x,'FAQPage')))errors.push(`${r}: missing Dammam FAQPage schema`);
-      if(dammamArticle&&!schemas.some(x=>schemaHas(x,'Article')))errors.push(`${r}: missing Dammam Article schema`);
-      all(h,/<a\b[^>]*href=["']([^"']+)["'][^>]*>/gi).map(m=>m[1]).filter(v=>v.startsWith('/')&&!v.startsWith('/dammam/')).forEach(v=>errors.push(`${r}: Dammam silo link escapes to ${v}`));
+      if(!/<section[^>]*(?:id=["']faq["']|class=["'][^"']*tawod-faq-section[^"']*["'])/i.test(h))errors.push(`${r}: missing visible ${localCity} FAQ section`);
+      if(!schemas.some(x=>schemaHas(x,'FAQPage')))errors.push(`${r}: missing ${localCity} FAQPage schema`);
+      if(localArticle&&!schemas.some(x=>schemaHas(x,'Article')))errors.push(`${r}: missing ${localCity} Article schema`);
+      all(h,/<a\b[^>]*href=["']([^"']+)["'][^>]*>/gi).map(m=>m[1]).filter(v=>v.startsWith('/')&&!v.startsWith(`/${localCity}/`)).forEach(v=>errors.push(`${r}: ${localCity} silo link escapes to ${v}`));
+      if(r==='khobar/index.html'&&title!=='شركة مقاولات بالخبر | تعاود للمقاولات العامة')errors.push(`${r}: homepage title must match the approved Khobar title`);
     }
     if(!schemas.some(x=>schemaHas(x,'BreadcrumbList')))errors.push(`${r}: missing BreadcrumbList schema`);
     if(r.startsWith('blog/')&&r!=='blog/index.html'){
@@ -51,7 +52,8 @@ for(const [r,h] of pages){
 }
 
 if(!fs.existsSync('sitemap.xml'))errors.push('sitemap.xml missing');else{const s=fs.readFileSync('sitemap.xml','utf8'),urls=new Set(all(s,/<loc>([^<]+)<\/loc>/gi).map(m=>new URL(m[1]).pathname));for(const p of indexable)if(!urls.has(p))errors.push(`sitemap.xml missing ${p}`);for(const p of urls){let r=p==='/'?'index.html':p.slice(1);if(r.endsWith('/'))r+='index.html';if(!pages.has(r))errors.push(`sitemap URL does not resolve: ${p}`)}}
-if(!fs.existsSync('sitemap-dammam.xml'))errors.push('sitemap-dammam.xml missing');else{const s=fs.readFileSync('sitemap-dammam.xml','utf8'),urls=new Set(all(s,/<loc>([^<]+)<\/loc>/gi).map(m=>new URL(m[1]).pathname)),dammamPages=new Set([...indexable].filter(p=>p.startsWith('/dammam/')));for(const p of dammamPages)if(!urls.has(p))errors.push(`sitemap-dammam.xml missing ${p}`);for(const p of urls){if(!p.startsWith('/dammam/'))errors.push(`sitemap-dammam.xml contains non-Dammam URL ${p}`);if(!dammamPages.has(p))errors.push(`sitemap-dammam.xml has unexpected URL ${p}`)}}
-if(!fs.existsSync('robots.txt'))errors.push('robots.txt missing');else if(!fs.readFileSync('robots.txt','utf8').includes('Sitemap: https://tawodco.com/sitemap.xml'))errors.push('robots.txt sitemap line missing');
+const localCities=[...new Set([...indexable].map(p=>p.match(/^\/(dammam|khobar|dhahran)\//)?.[1]).filter(Boolean))];
+for(const city of localCities){const file=`sitemap-${city}.xml`;if(!fs.existsSync(file)){errors.push(`${file} missing`);continue}const s=fs.readFileSync(file,'utf8'),urls=new Set(all(s,/<loc>([^<]+)<\/loc>/gi).map(m=>new URL(m[1]).pathname)),cityPages=new Set([...indexable].filter(p=>p.startsWith(`/${city}/`)));for(const p of cityPages)if(!urls.has(p))errors.push(`${file} missing ${p}`);for(const p of urls){if(!p.startsWith(`/${city}/`))errors.push(`${file} contains non-${city} URL ${p}`);if(!cityPages.has(p))errors.push(`${file} has unexpected URL ${p}`)}}
+if(!fs.existsSync('robots.txt'))errors.push('robots.txt missing');else{const robots=fs.readFileSync('robots.txt','utf8');if(!robots.includes('Sitemap: https://tawodco.com/sitemap.xml'))errors.push('robots.txt sitemap line missing');for(const city of localCities)if(!robots.includes(`Sitemap: https://tawodco.com/sitemap-${city}.xml`))errors.push(`robots.txt ${city} sitemap line missing`)}
 if(!fs.existsSync('assets/js/tawod-inner.js'))errors.push('tawod-inner.js missing');else{const js=fs.readFileSync('assets/js/tawod-inner.js','utf8');['injectComprehensiveFaq','addFaqSchema','applyServiceProfile','injectTrustStrip','addPageSchema'].forEach(x=>{if(js.includes(x))errors.push(`tawod-inner.js still contains runtime generator ${x}`)});if(/\.\.\/\.\.\/images\/logo\//.test(js))errors.push('tawod-inner.js contains a depth-dependent logo path')}
 warnings.forEach(x=>console.warn('WARNING: '+x));if(errors.length){console.error(`Site validation failed with ${errors.length} error(s):`);errors.forEach(x=>console.error(' - '+x));process.exit(1)}console.log(`Validated ${htmlFiles.length} HTML files, ${indexable.size} indexable URLs, links, sitemap, metadata and JSON-LD.`);

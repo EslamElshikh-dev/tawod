@@ -1,0 +1,461 @@
+/* Khobar silo design system. Loaded after the shared Tawod styles. */
+
+@font-face {
+  font-family: 'Alexandria';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('/assets/fonts/alexandria-arabic-variable.woff2') format('woff2-variations');
+}
+
+html body.khobar-page {
+  --khobar-section-y: clamp(62px, 6.2vw, 88px);
+  --khobar-reading-width: 780px;
+  font-family: var(--premium-body, 'Iwan Zaza', 'Alexandria', 'DIN Next LT Arabic', sans-serif) !important;
+  font-size: clamp(16px, .18vw + 15.2px, 17px) !important;
+  line-height: 1.78 !important;
+}
+
+html body.khobar-page .section-padding {
+  padding-block: var(--khobar-section-y) !important;
+}
+
+html body.khobar-page .nav-links {
+  gap: clamp(10px, 1.25vw, 22px) !important;
+}
+
+html body.khobar-page .nav-links a {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+
+html body.khobar-page .page-hero,
+html body.khobar-page .blog-hero,
+html body.khobar-page .article-hero {
+  min-height: 530px;
+  padding: 144px 0 88px;
+  text-align: right;
+}
+
+html body.khobar-page .page-hero .container,
+html body.khobar-page .blog-hero .container,
+html body.khobar-page .article-hero .container {
+  width: min(1180px, calc(100% - 48px)) !important;
+  max-width: 1180px !important;
+  margin-inline: auto;
+}
+
+html body.khobar-page .page-hero h1,
+html body.khobar-page .blog-hero h1,
+html body.khobar-page .article-hero h1 {
+  max-width: 1050px;
+  margin-inline: 0;
+  margin-bottom: 18px;
+  font-size: clamp(32px, 2.55vw, 38px) !important;
+  font-weight: 800 !important;
+  line-height: 1.34 !important;
+  letter-spacing: -.018em;
+  text-wrap: balance;
+}
+
+html body.khobar-page .page-hero p,
+html body.khobar-page .blog-hero p,
+html body.khobar-page .article-hero p {
+  max-width: 820px !important;
+  margin-inline: 0;
+  font-size: clamp(17px, .55vw + 14px, 19px) !important;
+  font-weight: 500 !important;
+  line-height: 1.85 !important;
+  text-wrap: pretty;
+}
+
+html body.khobar-page .page-hero .breadcrumbs,
+html body.khobar-page .page-hero .hero-actions,
+html body.khobar-page .blog-hero .hero-actions,
+html body.khobar-page .article-hero .article-meta-line,
+html body.khobar-page .article-hero .hero-actions {
+  justify-content: flex-start;
+}
+
+html body.khobar-page .section-title {
+  max-width: 840px;
+  margin-bottom: clamp(30px, 3.6vw, 48px) !important;
+}
+
+html body.khobar-page .section-title h2,
+html body.khobar-page .content h2,
+html body.khobar-page .mini-cta h2 {
+  font-size: clamp(27px, 2.25vw, 32px) !important;
+  font-weight: 800 !important;
+  line-height: 1.42 !important;
+  letter-spacing: -.015em;
+  text-wrap: balance;
+}
+
+html body.khobar-page .section-title p,
+html body.khobar-page .content p {
+  max-width: var(--khobar-reading-width);
+  font-size: clamp(16px, .36vw + 14.8px, 17.5px) !important;
+  line-height: 1.88 !important;
+}
+
+html body.khobar-page .eyebrow {
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+}
+
+html body.khobar-page .tawod-inner-trust-grid {
+  gap: 12px;
+  padding: 14px;
+}
+
+html body.khobar-page .tawod-inner-trust-grid > div {
+  min-height: 122px;
+  padding: 18px 16px;
+  border: 1px solid rgba(229, 231, 235, .72);
+  background: linear-gradient(145deg, #fff, #f7f8fa);
+}
+
+html body.khobar-page .tawod-inner-trust-grid > div > i {
+  background: var(--primary-gradient);
+  color: var(--secondary);
+  box-shadow: 0 10px 22px rgba(var(--primary-dark-rgb), .2);
+}
+
+html body.khobar-page .feature-card,
+html body.khobar-page .step-card,
+html body.khobar-page .article-card,
+html body.khobar-page .premium-card,
+html body.khobar-page .faq-item {
+  border-radius: 20px;
+}
+
+html body.khobar-page .feature-card h3,
+html body.khobar-page .step-card h3,
+html body.khobar-page .article-body h2,
+html body.khobar-page .premium-card h3 {
+  font-size: clamp(18px, 1.25vw, 21px) !important;
+  font-weight: 800 !important;
+  line-height: 1.5 !important;
+}
+
+html body.khobar-page .feature-card p,
+html body.khobar-page .step-card p,
+html body.khobar-page .article-body p,
+html body.khobar-page .premium-card p {
+  font-size: clamp(15.5px, .25vw + 14.7px, 16.5px) !important;
+  line-height: 1.88 !important;
+}
+
+html body.khobar-page .mini-cta {
+  padding: clamp(30px, 4vw, 46px);
+  border: 1px solid rgba(255, 255, 255, .1);
+  background:
+    radial-gradient(circle at 12% 18%, rgba(var(--primary-rgb), .2), transparent 33%),
+    linear-gradient(135deg, var(--secondary), #303342);
+}
+
+html body.khobar-page .khobar-articles-grid,
+html body.khobar-page .articles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+html body.khobar-page .article-card {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #fff;
+  box-shadow: var(--shadow-soft);
+}
+
+html body.khobar-page .article-thumb {
+  height: auto;
+  padding: 14px 14px 0;
+  background: #fff;
+}
+
+html body.khobar-page .article-thumb img {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+  border-radius: 14px;
+  clip-path: var(--clip-frame);
+}
+
+html body.khobar-page .article-body {
+  padding: 22px;
+}
+
+html body.khobar-page .article-meta span {
+  font-size: 12.5px !important;
+  font-weight: 800 !important;
+}
+
+html body.khobar-page .article-link {
+  color: var(--primary-dark);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+html body.khobar-page .khobar-articles-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 34px;
+}
+
+html body.khobar-page .khobar-related-guides {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #fff, #f7f8fa);
+}
+
+html body.khobar-page .khobar-related-guides::after {
+  position: absolute;
+  left: -120px;
+  bottom: -180px;
+  width: 340px;
+  height: 340px;
+  border: 1px solid rgba(var(--primary-rgb), .13);
+  border-radius: 50%;
+  content: '';
+  pointer-events: none;
+}
+
+html body.khobar-page .khobar-related-guides .container {
+  position: relative;
+  z-index: 1;
+}
+
+html body.khobar-page .khobar-guides-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+html body.khobar-page .khobar-guide-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 112px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #fff;
+  color: var(--secondary);
+  box-shadow: var(--shadow-soft);
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+html body.khobar-page .khobar-guide-link:hover {
+  transform: translateY(-5px);
+  border-color: rgba(var(--primary-rgb), .55);
+  box-shadow: var(--shadow-hover);
+}
+
+html body.khobar-page .khobar-guide-link span {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.7;
+}
+
+html body.khobar-page .khobar-guide-link i {
+  flex: 0 0 auto;
+  color: var(--primary-dark);
+}
+
+html body.khobar-article .article-layout {
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 30px;
+}
+
+html body.khobar-article .article-content {
+  font-size: clamp(17px, .3vw + 16px, 18px) !important;
+  line-height: 2 !important;
+}
+
+html body.khobar-article .article-content > img:first-child {
+  width: 100%;
+  max-height: 540px;
+  object-fit: cover;
+}
+
+html body.khobar-article .article-content h2 {
+  margin-top: 44px !important;
+  font-size: clamp(25px, 2vw, 31px) !important;
+  font-weight: 800 !important;
+  line-height: 1.5 !important;
+  scroll-margin-top: 110px;
+}
+
+html body.khobar-article .article-content h3 {
+  font-size: clamp(20px, 1.5vw, 23px) !important;
+  line-height: 1.55 !important;
+}
+
+html body.khobar-article .article-content p,
+html body.khobar-article .article-content li {
+  line-height: 2 !important;
+}
+
+html body.khobar-article .article-sidebar {
+  top: 104px;
+}
+
+html body.khobar-article .article-cta {
+  background:
+    radial-gradient(circle at 16% 12%, rgba(var(--primary-rgb), .2), transparent 36%),
+    linear-gradient(135deg, var(--secondary), #303342);
+}
+
+html body.khobar-page .footer-about p {
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+@media (max-width: 1199px) {
+  html body.khobar-page .nav-links {
+    display: none;
+  }
+
+  html body.khobar-page .khobar-articles-grid,
+  html body.khobar-page .articles-grid,
+  html body.khobar-page .khobar-guides-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  html body.khobar-article .article-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  html body.khobar-page {
+    --khobar-section-y: clamp(50px, 13vw, 66px);
+    font-size: 16px !important;
+  }
+
+  html body.khobar-page .page-hero,
+  html body.khobar-page .blog-hero,
+  html body.khobar-page .article-hero {
+    min-height: auto;
+    padding: 116px 0 70px;
+    text-align: right;
+  }
+
+  html body.khobar-page .page-hero .container,
+  html body.khobar-page .blog-hero .container,
+  html body.khobar-page .article-hero .container {
+    width: min(1240px, calc(100% - 28px)) !important;
+  }
+
+  html body.khobar-page .page-hero h1,
+  html body.khobar-page .blog-hero h1,
+  html body.khobar-page .article-hero h1 {
+    font-size: clamp(27px, 7.7vw, 33px) !important;
+    line-height: 1.42 !important;
+  }
+
+  html body.khobar-page .page-hero p,
+  html body.khobar-page .blog-hero p,
+  html body.khobar-page .article-hero p {
+    font-size: 16px !important;
+    line-height: 1.84 !important;
+  }
+
+  html body.khobar-page .page-hero .hero-actions,
+  html body.khobar-page .blog-hero .hero-actions,
+  html body.khobar-page .article-hero .hero-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  html body.khobar-page .page-hero .hero-actions .btn,
+  html body.khobar-page .blog-hero .hero-actions .btn,
+  html body.khobar-page .article-hero .hero-actions .btn {
+    width: 100%;
+    min-height: 46px;
+    padding: 10px 8px;
+    font-size: 13px !important;
+  }
+
+  html body.khobar-page .section-title h2,
+  html body.khobar-page .content h2,
+  html body.khobar-page .mini-cta h2 {
+    font-size: clamp(22px, 6.3vw, 26px) !important;
+  }
+
+  html body.khobar-page .tawod-inner-trust-grid,
+  html body.khobar-page .khobar-articles-grid,
+  html body.khobar-page .articles-grid,
+  html body.khobar-page .khobar-guides-grid {
+    grid-template-columns: 1fr;
+  }
+
+  html body.khobar-page .tawod-inner-trust-grid > div {
+    min-height: auto;
+  }
+
+  html body.khobar-page .article-thumb img {
+    height: 220px;
+  }
+
+  html body.khobar-article .article-content h2 {
+    margin-top: 34px !important;
+    font-size: 24px !important;
+  }
+
+  html body.khobar-page .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 34px 16px;
+    text-align: center;
+  }
+
+  html body.khobar-page .footer-about,
+  html body.khobar-page .footer-contact-column {
+    grid-column: 1 / -1;
+  }
+
+  html body.khobar-page .footer-about {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  html body.khobar-page .footer-title {
+    width: max-content;
+    margin-inline: auto;
+  }
+
+  html body.khobar-page .footer-title::after {
+    right: 50%;
+    transform: translateX(50%);
+  }
+
+  html body.khobar-page .footer-links,
+  html body.khobar-page .footer-contact {
+    justify-items: center;
+  }
+
+  html body.khobar-page .footer-links a,
+  html body.khobar-page .footer-contact a,
+  html body.khobar-page .footer-contact .info-only {
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 420px) {
+  html body.khobar-page .page-hero .hero-actions,
+  html body.khobar-page .blog-hero .hero-actions,
+  html body.khobar-page .article-hero .hero-actions {
+    grid-template-columns: 1fr;
+  }
+
+  html body.khobar-page .article-thumb img {
+    height: 205px;
+  }
+}
