@@ -214,6 +214,19 @@ const articleContent = {
   }
 };
 
+const articleImageAlts = {
+  'best-general-contracting-company-dammam': 'فريق هندسي يراجع مستندات مشروع مقاولات',
+  'villa-construction-stages-dammam': 'موقع إنشاء يوضح إحدى مراحل بناء الفلل',
+  'bone-construction-quality-checklist-dammam': 'مهندس يراجع تسليح أحد العناصر الإنشائية',
+  'turnkey-villa-construction-dammam': 'فيلا سكنية مكتملة من أعمال تعاود بنظام تسليم المفتاح',
+  'villa-renovation-guide-dammam': 'واجهة فيلا أثناء مراجعة أعمال الترميم',
+  'interior-exterior-finishing-dammam': 'تشطيبات داخلية حديثة ضمن مشروع سكني',
+  'building-facade-moisture-insulation-dammam': 'واجهة مبنى أثناء مراجعة تفاصيل العزل والترميم',
+  'mep-coordination-electrical-plumbing-dammam': 'فريق فني يراجع تمديدات الكهرباء والسباكة والتكييف',
+  'saudi-building-code-owner-guide-dammam': 'مهندس يراجع مخططات ومستندات مشروع بناء',
+  'commercial-fitout-dammam': 'تشطيبات داخلية لمساحة تجارية حديثة'
+};
+
 const localizedBaseArticles = new Map(baseArticles.map((article) => [article.slug, localizeObject(article)]));
 const articles = baseArticles.map((base) => {
   const localized = localizeObject(base);
@@ -225,6 +238,7 @@ const articles = baseArticles.map((base) => {
     ...localized,
     ...custom,
     slug: localized.slug,
+    imageAlt: articleImageAlts[base.slug],
     sections: localized.sections.map((section, index) => ({...section, localParagraph: custom.sections[index]}))
   };
 });
@@ -400,7 +414,9 @@ function updatePageMetadata(html, sourceHtml, config) {
   html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${config.title}</title>`);
   html = html.replace(/<meta name="description" content="[^"]*">/i, `<meta name="description" content="${config.description}">`);
   html = html.replace(/<meta property="og:title" content="[^"]*">/i, `<meta property="og:title" content="${config.title}">`);
+  html = html.replace(/<meta property="og:description" content="[^"]*">/i, `<meta property="og:description" content="${config.description}">`);
   html = html.replace(/<meta name="twitter:title" content="[^"]*">/i, `<meta name="twitter:title" content="${config.title}">`);
+  html = html.replace(/<meta name="twitter:description" content="[^"]*">/i, `<meta name="twitter:description" content="${config.description}">`);
   return html;
 }
 
@@ -432,7 +448,7 @@ function renderArticle(article) {
     .replace(/2026-08-13/g, date)
     .replace(/13 أغسطس 2026/g, '14 أغسطس 2026')
     .replace(/project-commercial-residential-building-(?:dammam|khobar)\.webp/g, 'project-luxury-villa-turnkey-alqusur.webp');
-  const fields = ['title', 'seoTitle', 'description', 'ogDescription', 'heroIntro', 'conclusion'];
+  const fields = ['title', 'seoTitle', 'description', 'ogDescription', 'heroIntro', 'conclusion', 'imageAlt'];
   for (const field of fields) html = replaceEverywhere(html, article.localized[field], article[field]);
   html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${article.seoTitle}</title>`);
   html = html.replace(/<meta name="description" content="[^"]*">/i, `<meta name="description" content="${article.description}">`);
@@ -448,6 +464,7 @@ function applyArticleTitles(html) {
   for (const article of articles) {
     html = replaceEverywhere(html, article.localized.title, article.title);
     html = replaceEverywhere(html, article.localized.ogDescription, article.ogDescription);
+    html = replaceEverywhere(html, article.localized.imageAlt, article.imageAlt);
   }
   return html;
 }
@@ -489,8 +506,29 @@ function renderExistingPage(page) {
   if (page === 'home') {
     html = html.replace(/<h1 id="khobar-hero-title">[\s\S]*?<\/h1>/i, `<h1 id="khobar-hero-title"><span class="hero-title-main">${config.h1}</span><span class="hero-title-sub">${config.sub}</span></h1>`);
     html = html.replace(/(<section class="hero"[\s\S]*?<\/h1>)<p>[\s\S]*?<\/p>/i, `$1<p>${config.lead}</p>`);
+    html = html
+      .replace(/مشروع مبنى سكني تجاري نفذته شركة تعاود في الخبر/g, 'فيلا سكنية من أعمال تعاود بنظام تسليم المفتاح')
+      .replace(/من أعمالنا في الخبر/g, 'نموذج من أعمال تعاود')
+      .replace(/مبنى سكني تجاري بالخبر/g, 'فيلا سكنية بنظام تسليم المفتاح')
+      .replace(/نموذج مصور من مشاريع تعاود في الخبر يجمع الاستخدام السكني والتجاري، ويبرز أهمية تنسيق الأعمال الإنشائية والخدمات والتشطيبات ضمن مسار تنفيذ واحد\./g, 'نموذج مصور من أعمال تعاود يوضح تكامل البناء والأعمال الفنية والتشطيبات ضمن مسار واحد، من اعتماد التفاصيل حتى الفحص والتسليم.')
+      .replace(/مشروع متعدد الاستخدامات السكنية والتجارية/g, 'فيلا سكنية متكاملة من البناء حتى التشطيب');
   } else {
     html = html.replace(/(<section class="page-hero"[\s\S]*?)<h1>[\s\S]*?<\/h1><p>[\s\S]*?<\/p>/i, `$1<h1>${config.h1}</h1><p>${config.lead}</p>`);
+  }
+  if (page === 'about') {
+    html = html.replace(/alt="مشروع تعاود للمقاولات في الخبر"/g, 'alt="فيلا سكنية من أعمال تعاود للمقاولات"');
+  }
+  if (page === 'projects') {
+    html = html
+      .replace(/مشروع موثق من أعمال تعاود المرتبطة بمدينة الخبر\./g, 'نماذج موثقة من أعمال تعاود توضح جودة التنفيذ والتنسيق بين مراحل المشروع.')
+      .replace(/هل المشروع المعروض في الخبر حقيقي؟/g, 'هل الصور المعروضة لمشاريع حقيقية من أعمال تعاود؟')
+      .replace(/الصفحة تستخدم صورة مشروع موجودة بالفعل ضمن ملفات مشاريع تعاود المرتبطة بمدينة الخبر ولا تضيف مشاريع افتراضية\./g, 'نعم، تعرض الصفحة نموذجًا موثقًا من ملفات مشاريع تعاود، ولا تنسب موقعه إلى مدينة محددة دون توثيق واضح.')
+      .replace(/صور موجودة بملفات تعاود/g, 'صور أصلية من ملفات مشاريع تعاود')
+      .replace(/<strong>موقع معروف<\/strong><small>ربط المشروع بالخبر فقط عند التوثيق<\/small>/g, '<strong>نسبة دقيقة</strong><small>لا ننسب المشروع إلى مدينة دون توثيق</small>')
+      .replace(/<span class="eyebrow">مشروع موثق<\/span><h2>مبنى تجاري سكني بالخبر<\/h2><p>هذا المشروع موجود ضمن ملفات تعاود المرتبطة بالخبر ونستخدمه كأساس حقيقي للصفحة\.<\/p>/g, '<span class="eyebrow">نموذج من أعمال تعاود</span><h2>فيلا سكنية بنظام تسليم المفتاح</h2><p>نعرض نموذجًا موثقًا من أعمال تعاود يوضح تكامل البناء والتشطيب، دون نسبة موقعه إلى الخبر ما لم يتوفر توثيق واضح يسمح بذلك.</p>')
+      .replace(/alt="مشروع مبنى تجاري سكني في الخبر"/g, 'alt="فيلا سكنية من أعمال تعاود بنظام تسليم المفتاح"')
+      .replace(/<span>الخبر<\/span><span>سكني وتجاري<\/span>/g, '<span>نموذج أعمال</span><span>فيلا سكنية</span>')
+      .replace(/<h3>مبنى تجاري سكني<\/h3><p>نموذج من أعمال المشاريع المرتبطة بمدينة الخبر\. يتم توسيع الصفحة عند توفر مواد موثقة إضافية يمكن نسبها للمدينة بدقة\.<\/p>/g, '<h3>فيلا سكنية متكاملة</h3><p>نموذج من ملفات مشاريع تعاود يبرز تنسيق مراحل البناء والأعمال الفنية والتشطيبات، مع الالتزام بعدم نسبة المشروع إلى مدينة محددة دون توثيق.</p>');
   }
   const section = focusSection(config, page);
   const marker = page === 'home' ? '<!-- KHOBAR_ARTICLES_START -->' : '<!-- KHOBAR_RELATED_GUIDES_START -->';
