@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Sitemap: https://tawodco.com/sitemap.xml
+Sitemap: https://tawodco.com/sitemap-turnkey.xml
 Sitemap: https://tawodco.com/sitemap-dammam.xml
 Sitemap: https://tawodco.com/sitemap-khobar.xml
 Sitemap: https://tawodco.com/sitemap-dhahran.xml
