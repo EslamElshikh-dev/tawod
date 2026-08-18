@@ -24,9 +24,14 @@ for(const [r,h] of pages){
   const schemas=[];all(h,/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi).forEach((m,i)=>{try{schemas.push(JSON.parse(m[1].trim()))}catch(e){errors.push(`${r}: invalid JSON-LD block ${i+1}: ${e.message}`)}});
   const excluded=r==='index.html'||r==='privacy-policy.html'||r==='404.html'||r.startsWith('en/')||/noindex/i.test(h);
   const localMatch=r.match(/^(dammam|khobar|dhahran)\//),localCity=localMatch?.[1]||'',localSilo=Boolean(localCity),localArticle=localCity&&new RegExp(`^${localCity}/blog/[^/]+/index\\.html$`).test(r);
+  const maintenanceSilo=r.startsWith('maintenance/'),maintenanceHub=r==='maintenance/index.html';
   if(!excluded){
     indexable.add(pagePath(r));
-    if(!h.includes('tawod-system.css'))errors.push(`${r}: missing tawod-system.css`);
+    if(maintenanceSilo){
+      if(!h.includes('assets/css/maintenance.css'))errors.push(`${r}: missing maintenance.css`);
+      if(!h.includes('assets/js/maintenance.js'))errors.push(`${r}: missing maintenance.js`);
+      all(h,/<a\b[^>]*href=["']([^"']+)["'][^>]*>/gi).map(m=>m[1]).forEach(v=>{const t=localTarget(r,v);if(t&&!t.file.startsWith('maintenance/'))errors.push(`${r}: maintenance silo link escapes to ${v}`)});
+    }else if(!h.includes('tawod-system.css'))errors.push(`${r}: missing tawod-system.css`);
     if(!localSilo){
       if(!/<section[^>]*(?:id=["']faq["']|class=["'][^"']*(?:seo-faq|tawod-faq-section)[^"']*["'])/i.test(h))errors.push(`${r}: missing visible FAQ section`);
       if(!schemas.some(x=>schemaHas(x,'FAQPage')))errors.push(`${r}: missing FAQPage schema`);
@@ -41,12 +46,15 @@ for(const [r,h] of pages){
       if(r==='khobar/index.html'&&title!=='شركة مقاولات بالخبر | تعاود للمقاولات العامة')errors.push(`${r}: homepage title must match the approved Khobar title`);
       if(r==='dhahran/index.html'&&title!=='شركة مقاولات بالظهران | تعاود للمقاولات العامة')errors.push(`${r}: homepage title must match the approved Dhahran title`);
     }
-    if(!schemas.some(x=>schemaHas(x,'BreadcrumbList')))errors.push(`${r}: missing BreadcrumbList schema`);
+    if(!maintenanceHub&&!schemas.some(x=>schemaHas(x,'BreadcrumbList')))errors.push(`${r}: missing BreadcrumbList schema`);
     if(r.startsWith('blog/')&&r!=='blog/index.html'){
       if(!schemas.some(x=>schemaHas(x,'Article')))errors.push(`${r}: missing Article schema`);
     }else if(localSilo){
       const accepted=['WebPage','AboutPage','ContactPage','CollectionPage','Service'];
       if(!accepted.some(type=>schemas.some(x=>schemaHas(x,type))))errors.push(`${r}: missing local page schema`);
+    }else if(maintenanceSilo){
+      const expected=maintenanceHub?'WebPage':'Service';
+      if(!schemas.some(x=>schemaHas(x,expected)))errors.push(`${r}: missing maintenance ${expected} schema`);
     }else if(!schemas.some(x=>schemaHas(x,'WebPage')))errors.push(`${r}: missing WebPage schema`);
   }
   all(h,/<(?:a|link|script|img|source|iframe)\b[^>]*(?:href|src|srcset)=["']([^"']+)["'][^>]*>/gi).forEach(m=>m[1].split(',').map(x=>x.trim().split(/\s+/)[0]).filter(Boolean).forEach(v=>{const t=localTarget(r,v);if(!t)return;const full=path.join(root,t.file);if(!fs.existsSync(full)){errors.push(`${r}: broken reference ${v} -> ${t.file}`);return}if(t.anchor&&t.file.endsWith('.html')){const target=pages.get(t.file)||fs.readFileSync(full,'utf8');const safe=t.anchor.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');if(!new RegExp(`\\bid=["']${safe}["']`).test(target))errors.push(`${r}: missing anchor #${t.anchor} in ${t.file}`)}}));
