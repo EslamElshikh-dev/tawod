@@ -58,6 +58,10 @@ function schema(r,h,s,c,q,stats,pageDate=date){const title=first(h,/<h1[^>]*>([\
 const changes=[];
 for(const f of walk(root).filter(x=>x.endsWith('.html'))){
   const r=rel(f);
+  // The maintenance hub is an intentionally isolated, self-contained SEO silo.
+  // Its pages own their layout, assets, content and schema, so the generic
+  // contracting-site enhancer must never inject navigation or shared markup.
+  if(r.startsWith('maintenance/'))continue;
   let h=fs.readFileSync(f,'utf8'),old=h,s=state(r,h);
   const existingDate=h.match(/<script[^>]*id=["']tawod-static-page-schema["'][^>]*>[\s\S]*?"dateModified"\s*:\s*"([^"]+)"/i)?.[1]||date;
   for(const n of marks)h=strip(h,n);
