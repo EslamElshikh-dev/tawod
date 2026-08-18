@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+  <title id="title">شركة تعاود للصيانة والتشغيل</title>
+  <desc id="description">الشعار الرسمي لشركة تعاود وبجواره عبارة للصيانة والتشغيل على خلفية داكنة</desc>
+
+  <defs>
+    <linearGradient id="background" x1="1100" y1="20" x2="100" y2="610" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#292b36"/>
+      <stop offset="0.52" stop-color="#1d1e26"/>
+      <stop offset="1" stop-color="#15161c"/>
+    </linearGradient>
+    <radialGradient id="goldGlow" cx="0" cy="0" r="1" gradientTransform="translate(1085 90) rotate(138) scale(470 390)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f6b26d" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#f6b26d" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="coolGlow" cx="0" cy="0" r="1" gradientTransform="translate(95 585) rotate(-38) scale(420 310)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#53618d" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#53618d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="goldLine" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#f8c58f" stop-opacity="0"/>
+      <stop offset="0.22" stop-color="#f6b26d"/>
+      <stop offset="0.78" stop-color="#cc7839"/>
+      <stop offset="1" stop-color="#cc7839" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse">
+      <path d="M42 0H0V42" fill="none" stroke="#ffffff" stroke-opacity="0.025"/>
+    </pattern>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#000000" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#background)"/>
+  <rect width="1200" height="630" fill="url(#goldGlow)"/>
+  <rect width="1200" height="630" fill="url(#coolGlow)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <path d="M1082 70h48v48" fill="none" stroke="#f6b26d" stroke-width="3" stroke-linecap="round" opacity="0.78"/>
+  <path d="M118 560H70v-48" fill="none" stroke="#f6b26d" stroke-width="3" stroke-linecap="round" opacity="0.42"/>
+  <rect x="36" y="36" width="1128" height="558" rx="34" fill="none" stroke="#ffffff" stroke-opacity="0.09"/>
+  <rect x="48" y="48" width="1104" height="534" rx="27" fill="#ffffff" fill-opacity="0.018"/>
+
+  <g filter="url(#shadow)">
+    <rect x="636" y="179" width="500" height="272" rx="30" fill="#ffffff" fill-opacity="0.035" stroke="#ffffff" stroke-opacity="0.08"/>
+    <image href="tawod-logo.png" x="662" y="204" width="448" height="199" preserveAspectRatio="xMidYMid meet"/>
+  </g>
+
+  <rect x="598" y="190" width="3" height="250" rx="2" fill="url(#goldLine)"/>
+
+  <g font-family="DejaVu Sans, Arial, sans-serif" text-anchor="middle" direction="rtl">
+    <text x="310" y="291" fill="#ffffff" font-size="49" font-weight="700">للصيانة والتشغيل</text>
+    <text x="310" y="346" fill="#f6b26d" font-size="25" font-weight="500">حلول المباني والمرافق</text>
+  </g>
+
+  <rect x="204" y="382" width="212" height="2" rx="1" fill="#f6b26d" opacity="0.7"/>
+  <circle cx="428" cy="383" r="4" fill="#f6b26d"/>
+</svg>
