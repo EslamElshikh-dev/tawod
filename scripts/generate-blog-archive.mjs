@@ -6,6 +6,7 @@ const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const blogDir = join(rootDir, "blog");
 const pageSize = 10;
 const buildDate = "2026-08-20";
+const archiveAssetVersion = "20260820-2";
 
 const featuredSlugs = [
   "best-contracting-company-riyadh",
@@ -188,6 +189,8 @@ function archiveContent(page, totalPages, articles, featuredArticles) {
 }
 
 function normalizeShell(html) {
+  const cssHref = `/assets/css/blog-archive.css?v=${archiveAssetVersion}`;
+  const jsSrc = `/assets/js/blog-archive.js?v=${archiveAssetVersion}`;
   let output = html
     .replace(/<style>\.blog-lead[\s\S]*?<\/style>/i, "")
     .replace(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/gi, "")
@@ -195,13 +198,15 @@ function normalizeShell(html) {
     .replace(/((?:href|src)=["'])\.\.\//g, "$1/")
     .replace(/href=(["'])\.\/\1/g, 'href="/blog/"')
     .replace(/<script\s+src=["']\/assets\/js\/tawod-inner\.js["']\s+defer><\/script>/i, "")
+    .replace(/\/assets\/css\/blog-archive\.css(?:\?v=[^"']*)?/g, cssHref)
+    .replace(/\/assets\/js\/blog-archive\.js(?:\?v=[^"']*)?/g, jsSrc)
     .replace(/<body>/i, '<body class="blog-archive-page">');
 
-  if (!output.includes("/assets/css/blog-archive.css")) {
-    output = output.replace("</head>", '<link href="/assets/css/blog-archive.css" rel="stylesheet"></head>');
+  if (!output.includes(cssHref)) {
+    output = output.replace("</head>", `<link href="${cssHref}" rel="stylesheet"></head>`);
   }
-  if (!output.includes("/assets/js/blog-archive.js")) {
-    output = output.replace("</body>", '<script defer src="/assets/js/blog-archive.js"></script></body>');
+  if (!output.includes(jsSrc)) {
+    output = output.replace("</body>", `<script defer src="${jsSrc}"></script></body>`);
   }
   return output;
 }
