@@ -4,15 +4,13 @@
   "scripts": {
     "build:home": "node scripts/build-home-performance.mjs",
     "check:home": "node scripts/build-home-performance.mjs --check",
-    "generate:blog": "node scripts/generate-blog-archive.mjs",
-    "check:blog": "node scripts/validate-blog-archive.mjs",
     "generate:dammam": "node scripts/generate-dammam-silo.mjs",
     "check:dammam": "node scripts/generate-dammam-silo.mjs --check",
     "generate:khobar": "node scripts/generate-khobar-silo.mjs",
     "check:khobar": "node scripts/generate-khobar-silo.mjs --check",
     "generate:dhahran": "node scripts/generate-dhahran-silo.mjs",
     "check:dhahran": "node scripts/generate-dhahran-silo.mjs --check",
-    "generate:seo-batch": "node scripts/generate-seo-batch-2026-08-09.mjs && node scripts/build-static-pages.mjs && node scripts/build-home-performance.mjs && node scripts/generate-blog-archive.mjs",
+    "generate:seo-batch": "node scripts/generate-seo-batch-2026-08-09.mjs && node scripts/build-static-pages.mjs && node scripts/build-home-performance.mjs",
     "validate:site": "node scripts/validate-site.mjs"
   },
   "devDependencies": {
