@@ -105,6 +105,50 @@
       link.addEventListener('click', function () { closeMenu(false); });
     });
 
+    var sectionLinks = Array.from(document.querySelectorAll('.nav-links a[href^="#"], .sidebar-nav a[href^="#"]'));
+    var homeLinks = Array.from(document.querySelectorAll('.nav-links a[href="index.html"], .sidebar-nav a[href="index.html"]'));
+    var sectionTargets = Array.from(new Set(sectionLinks.map(function (link) {
+      return link.getAttribute('href').slice(1);
+    }))).map(function (id) {
+      return document.getElementById(id);
+    }).filter(Boolean);
+    var navigationTicking = false;
+
+    function setActiveNavigation(activeId) {
+      sectionLinks.concat(homeLinks).forEach(function (link) {
+        link.classList.remove('active');
+        link.removeAttribute('aria-current');
+      });
+      var activeLinks = activeId
+        ? sectionLinks.filter(function (link) { return link.getAttribute('href') === '#' + activeId; })
+        : homeLinks;
+      activeLinks.forEach(function (link) {
+        link.classList.add('active');
+        link.setAttribute('aria-current', activeId ? 'location' : 'page');
+      });
+    }
+
+    function updateNavigationState() {
+      var marker = window.scrollY + (header ? header.offsetHeight : 88) + 120;
+      var activeId = '';
+      sectionTargets.forEach(function (target) {
+        if (target.offsetTop <= marker) activeId = target.id;
+      });
+      if (window.scrollY < 260) activeId = '';
+      setActiveNavigation(activeId);
+      navigationTicking = false;
+    }
+
+    function requestNavigationState() {
+      if (navigationTicking) return;
+      navigationTicking = true;
+      window.requestAnimationFrame(updateNavigationState);
+    }
+
+    requestNavigationState();
+    window.addEventListener('scroll', requestNavigationState, { passive: true });
+    window.addEventListener('hashchange', requestNavigationState);
+
     if (!document.documentElement.dataset.menuEscapeReady) {
       document.documentElement.dataset.menuEscapeReady = 'true';
       document.addEventListener('keydown', function (event) {
