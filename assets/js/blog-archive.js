@@ -73,8 +73,9 @@
     const viewport = carousel.querySelector(".featured-viewport");
     const track = carousel.querySelector(".featured-track");
     const slides = Array.from(carousel.querySelectorAll(".featured-slide"));
-    const previousButton = carousel.querySelector("[data-carousel-prev]");
-    const nextButton = carousel.querySelector("[data-carousel-next]");
+    const controlsScope = carousel.closest("section") || document;
+    const previousButton = controlsScope.querySelector("[data-carousel-prev]");
+    const nextButton = controlsScope.querySelector("[data-carousel-next]");
     const dotsContainer = carousel.querySelector("[data-carousel-dots]");
     const status = carousel.querySelector("[data-carousel-status]");
     if (!viewport || !track || !slides.length || !previousButton || !nextButton || !dotsContainer) return;
