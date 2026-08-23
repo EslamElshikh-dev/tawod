@@ -6,7 +6,7 @@ import { legacyArchiveCopy, legacyArticleTitles, legacyCardOverrides } from "./b
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const blogDir = join(rootDir, "blog");
 const pageSize = 10;
-const buildDate = "2026-08-20";
+const buildDate = "2026-08-23";
 const archiveAssetVersion = "20260823-1";
 
 const featuredSlugs = [

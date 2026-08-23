@@ -88,8 +88,8 @@ for(const f of walk(root).filter(x=>x.endsWith('.html'))){
     if(!s.article){if(rootServices.has(r))h=insertBeforeMainEnd(h,decisionProof(r,prefix(f)));h=insertBeforeMainEnd(h,contextLinks(c,prefix(f)))}
     const hasFaq=/<section[^>]*(?:id=["']faq["']|class=["'][^"']*(?:seo-faq|tawod-faq-section)[^"']*["'])/i.test(h);
     if(!hasFaq)h=insertBeforeMainEnd(h,fq.html);
-    const pageType=s.article?'Article':'WebPage';
-    const hasSchemas=new RegExp(`"@type"\\s*:\\s*"${pageType}"`).test(h)&&/"@type"\s*:\s*"FAQPage"/.test(h)&&/"@type"\s*:\s*"BreadcrumbList"/.test(h);
+    const hasPageSchema=s.article?/@type"\s*:\s*"(?:Article|BlogPosting)"/.test(h):/"@type"\s*:\s*"WebPage"/.test(h);
+    const hasSchemas=hasPageSchema&&/"@type"\s*:\s*"FAQPage"/.test(h)&&/"@type"\s*:\s*"BreadcrumbList"/.test(h);
     if(s.indexable&&!hasSchemas)h=insertBeforeHeadEnd(h,schema(r,h,s,c,fq.q,stats,rootServices.has(r)?'2026-08-23':existingDate));
   }
   h=h.replace(/[ \t]+$/gm,'').replace(/\n{3,}/g,'\n\n');

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://tawodco.com/</loc><lastmod>2026-08-09</lastmod></url>
+  <url><loc>https://tawodco.com/</loc><lastmod>2026-08-23</lastmod></url>
   <url><loc>https://tawodco.com/about.html</loc><lastmod>2026-07-25</lastmod></url>
   <url><loc>https://tawodco.com/contact.html</loc><lastmod>2026-07-25</lastmod></url>
   <url><loc>https://tawodco.com/projects.html</loc><lastmod>2026-07-25</lastmod></url>
@@ -12,7 +12,7 @@
   <url><loc>https://tawodco.com/service-finishing.html</loc><lastmod>2026-08-23</lastmod></url>
   <url><loc>https://tawodco.com/service-decor.html</loc><lastmod>2026-08-23</lastmod></url>
   <url><loc>https://tawodco.com/service-mep.html</loc><lastmod>2026-08-23</lastmod></url>
-  <url><loc>https://tawodco.com/blog/</loc><lastmod>2026-08-20</lastmod></url>
+  <url><loc>https://tawodco.com/blog/</loc><lastmod>2026-08-23</lastmod></url>
   <url><loc>https://tawodco.com/blog/best-contracting-company-riyadh/</loc><lastmod>2026-07-25</lastmod></url>
   <url><loc>https://tawodco.com/blog/construction-building-riyadh/</loc><lastmod>2026-07-25</lastmod></url>
   <url><loc>https://tawodco.com/blog/bone-construction-riyadh-guide/</loc><lastmod>2026-07-25</lastmod></url>
@@ -167,12 +167,23 @@
   <url><loc>https://tawodco.com/maintenance/cleaning-services.html</loc><lastmod>2026-08-18</lastmod></url>
   <url><loc>https://tawodco.com/maintenance/pest-control.html</loc><lastmod>2026-08-18</lastmod></url>
   <url><loc>https://tawodco.com/maintenance/furniture-moving.html</loc><lastmod>2026-08-18</lastmod></url>
+  <url><loc>https://tawodco.com/blog/best-bone-contractor-riyadh/</loc><lastmod>2026-08-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://tawodco.com/blog/compare-bone-contractor-quotes-riyadh/</loc><lastmod>2026-08-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://tawodco.com/blog/turnkey-company-selection-test-riyadh/</loc><lastmod>2026-08-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://tawodco.com/blog/renovation-vs-new-build-riyadh/</loc><lastmod>2026-08-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://tawodco.com/blog/best-renovation-company-riyadh/</loc><lastmod>2026-08-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://tawodco.com/blog/renovation-company-site-assessment-riyadh/</loc><lastmod>2026-08-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://tawodco.com/blog/building-renovation-company-riyadh/</loc><lastmod>2026-08-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://tawodco.com/blog/best-facade-renovation-company-riyadh/</loc><lastmod>2026-08-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://tawodco.com/blog/best-construction-firm-riyadh/</loc><lastmod>2026-08-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://tawodco.com/blog/turnkey-contracts-riyadh/</loc><lastmod>2026-08-23</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
 
-  <url><loc>https://tawodco.com/blog/page/2/</loc><lastmod>2026-08-20</lastmod><changefreq>weekly</changefreq><priority>0.65</priority></url>
-  <url><loc>https://tawodco.com/blog/page/3/</loc><lastmod>2026-08-20</lastmod><changefreq>weekly</changefreq><priority>0.65</priority></url>
-  <url><loc>https://tawodco.com/blog/page/4/</loc><lastmod>2026-08-20</lastmod><changefreq>weekly</changefreq><priority>0.65</priority></url>
-  <url><loc>https://tawodco.com/blog/page/5/</loc><lastmod>2026-08-20</lastmod><changefreq>weekly</changefreq><priority>0.65</priority></url>
-  <url><loc>https://tawodco.com/blog/page/6/</loc><lastmod>2026-08-20</lastmod><changefreq>weekly</changefreq><priority>0.65</priority></url>
-  <url><loc>https://tawodco.com/blog/page/7/</loc><lastmod>2026-08-20</lastmod><changefreq>weekly</changefreq><priority>0.65</priority></url>
-  <url><loc>https://tawodco.com/blog/page/8/</loc><lastmod>2026-08-20</lastmod><changefreq>weekly</changefreq><priority>0.65</priority></url>
+  <url><loc>https://tawodco.com/blog/page/2/</loc><lastmod>2026-08-23</lastmod><changefreq>weekly</changefreq><priority>0.65</priority></url>
+  <url><loc>https://tawodco.com/blog/page/3/</loc><lastmod>2026-08-23</lastmod><changefreq>weekly</changefreq><priority>0.65</priority></url>
+  <url><loc>https://tawodco.com/blog/page/4/</loc><lastmod>2026-08-23</lastmod><changefreq>weekly</changefreq><priority>0.65</priority></url>
+  <url><loc>https://tawodco.com/blog/page/5/</loc><lastmod>2026-08-23</lastmod><changefreq>weekly</changefreq><priority>0.65</priority></url>
+  <url><loc>https://tawodco.com/blog/page/6/</loc><lastmod>2026-08-23</lastmod><changefreq>weekly</changefreq><priority>0.65</priority></url>
+  <url><loc>https://tawodco.com/blog/page/7/</loc><lastmod>2026-08-23</lastmod><changefreq>weekly</changefreq><priority>0.65</priority></url>
+  <url><loc>https://tawodco.com/blog/page/8/</loc><lastmod>2026-08-23</lastmod><changefreq>weekly</changefreq><priority>0.65</priority></url>
+  <url><loc>https://tawodco.com/blog/page/9/</loc><lastmod>2026-08-23</lastmod><changefreq>weekly</changefreq><priority>0.65</priority></url>
 </urlset>

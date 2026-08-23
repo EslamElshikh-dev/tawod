@@ -25,6 +25,7 @@
     "generate:dhahran": "node scripts/generate-dhahran-silo.mjs && node scripts/install-site-analytics.mjs",
     "check:dhahran": "node scripts/generate-dhahran-silo.mjs --check",
     "generate:seo-batch": "node scripts/generate-seo-batch-2026-08-09.mjs && node scripts/build-static-pages.mjs && node scripts/build-home-performance.mjs && node scripts/generate-blog-archive.mjs && node scripts/install-site-analytics.mjs",
+    "generate:seo-cluster-2026-08-23": "node scripts/generate-seo-cluster-2026-08-23.mjs && node scripts/build-static-pages.mjs && node scripts/generate-blog-archive.mjs && node scripts/install-site-analytics.mjs",
     "validate:site": "node scripts/validate-site.mjs",
     "check": "npm run typecheck && npm run check:analytics && npm run test:analytics && npm run check:static && npm run check:home && npm run check:blog && npm run check:dammam && npm run check:khobar && npm run check:dhahran && npm run validate:site && npm run build"
   },
