@@ -9,9 +9,10 @@ const version = '20260823-1';
 const start = '<!-- TAWOD_ANALYTICS_START -->';
 const end = '<!-- TAWOD_ANALYTICS_END -->';
 const install = `${start}<script src="/assets/js/tawod-analytics.js?v=${version}" defer></script>${end}`;
+const ignoredDirectories = new Set(['.git', '.next', 'node_modules', 'out', 'public']);
 
 const walk = (directory) => fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
-  if (['.git', 'node_modules'].includes(entry.name)) return [];
+  if (ignoredDirectories.has(entry.name)) return [];
   const file = path.join(directory, entry.name);
   return entry.isDirectory() ? walk(file) : [file];
 });

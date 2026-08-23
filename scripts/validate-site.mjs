@@ -4,7 +4,8 @@ import process from 'node:process';
 import { createHash } from 'node:crypto';
 
 const root=process.cwd(),domain='https://tawodco.com',analyticsSrc='/assets/js/tawod-analytics.js?v=20260823-1',errors=[],warnings=[];
-const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>['.git','node_modules'].includes(e.name)?[]:e.isDirectory()?walk(path.join(d,e.name)):[path.join(d,e.name)]);
+const ignoredDirectories=new Set(['.git','.next','node_modules','out','public']);
+const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>ignoredDirectories.has(e.name)?[]:e.isDirectory()?walk(path.join(d,e.name)):[path.join(d,e.name)]);
 const rel=f=>path.relative(root,f).split(path.sep).join('/');
 const text=s=>s.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
 const all=(h,re)=>[...h.matchAll(re)];
