@@ -552,11 +552,6 @@ function updateSitemaps() {
   const local = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${paths.map((pathname) => `  <url><loc>${domain}${pathname}</loc><lastmod>${date}</lastmod></url>`).join('\n')}\n</urlset>`;
   writeIfChanged(path.join(root, 'sitemap-khobar.xml'), local);
 
-  const robotsFile = path.join(root, 'robots.txt');
-  let robots = fs.readFileSync(robotsFile, 'utf8').trim();
-  const line = 'Sitemap: https://tawodco.com/sitemap-khobar.xml';
-  if (!robots.includes(line)) robots += `\n${line}`;
-  writeIfChanged(robotsFile, robots);
 }
 
 const css = localizeString(fs.readFileSync(path.join(root, 'assets', 'css', 'tawod-dammam.css'), 'utf8'));

@@ -278,16 +278,6 @@
     document.body.classList.add('no-mobile-action-bar');
   }
 
-  function trackContacts() {
-    qa('a[href^="tel:"],a[href*="wa.me"]').forEach(function (link) {
-      link.addEventListener('click', function () {
-        if (typeof window.gtag === 'function') {
-          window.gtag('event', 'contact_click', { link_url: link.href, page_path: location.pathname, transport_type: 'beacon' });
-        }
-      });
-    });
-  }
-
   ready(function () {
     fixCustomerFacingCopy();
     cleanDammamCustomerCopy();
@@ -300,7 +290,6 @@
     improveMedia();
     secureLinks();
     removeMobileBar();
-    trackContacts();
     document.documentElement.classList.add('tawod-polished', 'tawod-system-ready');
   });
 })();
