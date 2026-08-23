@@ -194,18 +194,5 @@
       });
     });
 
-    document.addEventListener('click', function (event) {
-      var link = event.target.closest('a[href]');
-      if (!link || typeof window.gtag !== 'function') return;
-      var href = link.getAttribute('href') || '';
-      if (href.indexOf('tel:') === 0) {
-        window.gtag('event', 'conversion', { send_to: 'AW-18266173285/qi4gCLu5lsUcEOXe_oVE' });
-        window.gtag('event', 'tawod_call_click', { event_category: 'qualified_ads_lead', event_label: document.title, page_path: window.location.pathname, transport_type: 'beacon' });
-      }
-      if (href.indexOf('wa.me/') !== -1) {
-        window.gtag('event', 'conversion', { send_to: 'AW-18266173285/qi4gCLu5lsUcEOXe_oVE' });
-        window.gtag('event', 'tawod_whatsapp_click', { event_category: 'qualified_ads_lead', event_label: document.title, page_path: window.location.pathname, transport_type: 'beacon' });
-      }
-    });
   });
 })();

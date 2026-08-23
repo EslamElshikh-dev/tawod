@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   quality:
-    name: Static HTML and SEO validation
+    name: Next.js export and SEO validation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout pull request branch
@@ -49,6 +49,8 @@ jobs:
         run: node scripts/run-static-pages.mjs
       - name: Validate pages links metadata schema and sitemap
         run: node scripts/validate-site.mjs
+      - name: Build and verify Next.js static export
+        run: npm run build
       - name: Detect unresolved merge markers
         run: |
           if grep -RInE '^(<<<<<<<|=======|>>>>>>>)' --exclude-dir=.git --exclude-dir=node_modules .; then

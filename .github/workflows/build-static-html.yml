@@ -10,7 +10,11 @@ on:
       - 'assets/js/tawod-inner.js'
       - 'assets/js/tawod-upgrades.js'
       - 'assets/css/**'
+      - 'app/**'
+      - 'lib/**'
       - '**/*.html'
+      - 'next.config.mjs'
+      - 'tsconfig.json'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/build-static-html.yml'
@@ -55,6 +59,8 @@ jobs:
         run: node scripts/run-static-pages.mjs --check
       - name: Validate generated site
         run: node scripts/validate-site.mjs
+      - name: Build and verify Next.js static export
+        run: npm run build
       - name: Verify generated HTML is committed
         run: |
           if ! git diff --exit-code -- '*.html' 'blog/**/*.html' 'lp/**/*.html'; then

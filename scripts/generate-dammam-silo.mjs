@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
+import { createHash } from 'node:crypto';
 import articles from './dammam-articles-2026-08-13.mjs';
 
 const root = process.cwd();
@@ -9,6 +10,9 @@ const domain = 'https://tawodco.com';
 const date = '2026-08-13';
 const arabicDate = '13 أغسطس 2026';
 const changes = [];
+const assetRevision = (file) => createHash('sha256').update(fs.readFileSync(path.join(root, 'assets', 'js', file))).digest('hex').slice(0, 12);
+const homeJsRevision = assetRevision('tawod-home.js');
+const innerJsRevision = assetRevision('tawod-inner.js');
 
 const escapeHtml = (value) => String(value)
   .replace(/&/g, '&amp;')
@@ -20,9 +24,17 @@ const jsonScript = (value) => JSON.stringify(value).replace(/</g, '\\u003c');
 const articleBySlug = new Map(articles.map((article) => [article.slug, article]));
 
 function writeIfChanged(file, content) {
-  const normalized = content.replace(/[ \t]+$/gm, '').replace(/\n{3,}/g, '\n\n').trim() + '\n';
   const old = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
-  if (old === normalized) return;
+  const analytics = old.match(/<!-- TAWOD_ANALYTICS_START -->[\s\S]*?<!-- TAWOD_ANALYTICS_END -->/)?.[0] || '';
+  let normalized = content.replace(/[ \t]+$/gm, '').replace(/\n{3,}/g, '\n\n').trim() + '\n';
+  if (analytics && !normalized.includes('<!-- TAWOD_ANALYTICS_START -->') && /<\/head>/i.test(normalized)) {
+    normalized = normalized.replace(/<\/head>/i, `${analytics}</head>`);
+  }
+  const comparable = (value) => {
+    if (path.basename(file) !== 'sitemap.xml') return value;
+    return [...value.matchAll(/<url>[\s\S]*?<\/url>/g)].map((match) => match[0]).sort().join('\n');
+  };
+  if (comparable(old) === comparable(normalized)) return;
   changes.push(path.relative(root, file).split(path.sep).join('/'));
   if (!check) {
     fs.mkdirSync(path.dirname(file), {recursive: true});
@@ -74,7 +86,7 @@ ${socialLinks('mobile-socials')}
 function footer(homePage = false) {
   return `<footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-about"><img class="logo-img" src="/images/logo/tawod-logo.png" width="917" height="408" loading="lazy" decoding="async" alt="شركة تعاود"><p>شركة تعاود للمقاولات العامة تقدم خدمات البناء والترميم والتشطيب وتسليم المفتاح للمشاريع السكنية والتجارية في الدمام.</p>${socialLinks('footer-socials')}</div><div class="footer-nav-column footer-quick-links"><h4 class="footer-title">روابط سريعة</h4><ul class="footer-links"><li><a href="/dammam/"><i class="fa-solid fa-angle-left"></i> الرئيسية</a></li><li><a href="/dammam/about/"><i class="fa-solid fa-angle-left"></i> من نحن</a></li><li><a href="/dammam/services/"><i class="fa-solid fa-angle-left"></i> خدماتنا</a></li><li><a href="/dammam/projects/"><i class="fa-solid fa-angle-left"></i> مشاريعنا</a></li><li><a href="/dammam/blog/"><i class="fa-solid fa-angle-left"></i> المقالات</a></li><li><a href="/dammam/contact/"><i class="fa-solid fa-angle-left"></i> تواصل معنا</a></li></ul></div><div class="footer-nav-column footer-service-links"><h4 class="footer-title">خدماتنا في الدمام</h4><ul class="footer-links"><li><a href="/dammam/construction/"><i class="fa-solid fa-angle-left"></i> البناء والإنشاءات</a></li><li><a href="/dammam/turnkey/"><i class="fa-solid fa-angle-left"></i> تسليم مفتاح</a></li><li><a href="/dammam/renovation/"><i class="fa-solid fa-angle-left"></i> الترميم والتجديد</a></li><li><a href="/dammam/finishing/"><i class="fa-solid fa-angle-left"></i> التشطيبات</a></li><li><a href="/dammam/decor/"><i class="fa-solid fa-angle-left"></i> الديكور</a></li><li><a href="/dammam/mep/"><i class="fa-solid fa-angle-left"></i> الكهرباء والسباكة</a></li></ul></div><div class="footer-contact-column"><h4 class="footer-title">تواصل معنا</h4><ul class="footer-contact"><li><div class="info-only"><i class="fa-solid fa-location-dot"></i><span>مشاريعنا وخدماتنا في الدمام</span></div></li><li><a href="tel:0551128884"><i class="fa-solid fa-phone"></i><span>0551128884</span></a></li><li><a href="mailto:info@tawodco.com"><i class="fa-solid fa-envelope"></i><span>info@tawodco.com</span></a></li><li><div class="info-only"><i class="fa-regular fa-clock"></i><span>متاحون لمناقشة المشاريع وتحديد المعاينة</span></div></li></ul></div></div><div class="footer-bottom"><p>جميع الحقوق محفوظة &copy; 2026 شركة تعاود للمقاولات العامة</p></div></div></footer>
 <div class="float-btns"><a aria-label="واتساب" class="float-btn float-whatsapp" href="https://wa.me/966551128884"><i class="fa-brands fa-whatsapp"></i></a><a aria-label="اتصال" class="float-btn float-call" href="tel:0551128884"><i class="fa-solid fa-phone"></i></a></div>
-${homePage ? '<script src="/assets/js/tawod-home.js" defer></script>' : '<script src="/assets/js/tawod-inner.js" defer></script>'}<script src="/assets/js/tawod-upgrades.js" defer></script>`;
+${homePage ? `<script src="/assets/js/tawod-home.js?v=${homeJsRevision}" defer></script>` : `<script src="/assets/js/tawod-inner.js?v=${innerJsRevision}" defer></script>`}<script src="/assets/js/tawod-upgrades.js" defer></script>`;
 }
 
 function trustStrip() {

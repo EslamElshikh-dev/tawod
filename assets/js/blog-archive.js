@@ -288,29 +288,8 @@
     });
   }
 
-  function initLeadTracking() {
-    if (window.__tawodLeadTracking) return;
-    window.__tawodLeadTracking = true;
-    document.addEventListener("click", function (event) {
-      const link = event.target.closest && event.target.closest("a[href]");
-      if (!link || typeof window.gtag !== "function") return;
-      const href = link.getAttribute("href") || "";
-      const isCall = href.indexOf("tel:") === 0;
-      const isWhatsApp = href.indexOf("wa.me/") !== -1;
-      if (!isCall && !isWhatsApp) return;
-      window.gtag("event", "conversion", { send_to: "AW-18266173285/qi4gCLu5lsUcEOXe_oVE" });
-      window.gtag("event", isCall ? "tawod_call_click" : "tawod_whatsapp_click", {
-        event_category: "lead",
-        event_label: href,
-        page_path: window.location.pathname,
-        transport_type: "beacon"
-      });
-    }, true);
-  }
-
   initMobileMenu();
   initCarousel();
   initReveal();
   initFaq();
-  initLeadTracking();
 })();

@@ -1,33 +1,7 @@
 <!DOCTYPE html>
 <html dir='rtl' lang='ar'>
 <head>
-  <!-- Google tag: queued immediately, network-loaded after the first interaction or idle window. -->
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'AW-18266173285', { anonymize_ip: true });
-    gtag('config', 'G-YE1NT4R4YT', { anonymize_ip: true });
-    (function () {
-      var loaded = false;
-      function loadGoogleTag() {
-        if (loaded) return;
-        loaded = true;
-        var tag = document.createElement('script');
-        tag.async = true;
-        tag.src = 'https://www.googletagmanager.com/gtag/js?id=AW-18266173285';
-        document.head.appendChild(tag);
-      }
-      ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (eventName) {
-        window.addEventListener(eventName, loadGoogleTag, { once: true, passive: true });
-      });
-      window.addEventListener('load', function () {
-        window.setTimeout(loadGoogleTag, 10000);
-      }, { once: true });
-    })();
-  </script>
-
-  <meta charset='utf-8'>
+<meta charset='utf-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1.0, viewport-fit=cover'>
   <meta name='theme-color' content='#1D1E26'>
   <title>شركة تعاود للمقاولات العامة بالرياض | بناء وتشطيب وترميم وتسليم مفتاح</title>
@@ -283,11 +257,21 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "Organization",
+        "@type": "GeneralContractor",
         "@id": "https://tawodco.com/#organization",
         "name": "شركة تعاود للمقاولات العامة",
-        "url": "https://tawodco.com/",
+        "alternateName": "تعاود للمقاولات",
+        "description": "شركة مقاولات عامة تقدم خدمات البناء والإنشاءات وتسليم المفتاح والترميم والتشطيبات والديكور والأعمال الكهربائية والصحية للمشاريع السكنية والتجارية.",
+        "image": "https://tawodco.com/images/logo/tawod-logo.png",
         "logo": "https://tawodco.com/images/logo/tawod-logo.png",
+        "telephone": "+966551128884",
+        "email": "info@tawodco.com",
+        "url": "https://tawodco.com/",
+        "identifier": {
+          "@type": "PropertyValue",
+          "propertyID": "Commercial Registration",
+          "value": "7033495099"
+        },
         "contactPoint": {
           "@type": "ContactPoint",
           "telephone": "+966551128884",
@@ -296,23 +280,6 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
           "areaServed": "SA",
           "availableLanguage": ["Arabic"]
         },
-        "sameAs": [
-          "https://twitter.com/tawodco",
-          "https://instagram.com/tawodco",
-          "https://tiktok.com/@tawodco",
-          "https://snapchat.com/add/tawodco",
-          "https://linkedin.com/company/tawodco"
-        ]
-      },
-      {
-        "@type": "GeneralContractor",
-        "@id": "https://tawodco.com/#localbusiness",
-        "name": "شركة تعاود للمقاولات العامة",
-        "image": "https://tawodco.com/images/logo/tawod-logo.png",
-        "telephone": "+966551128884",
-        "email": "info@tawodco.com",
-        "url": "https://tawodco.com/",
-        "priceRange": "$$$",
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "4206 طريق عثمان بن عفان الفرعي",
@@ -325,11 +292,32 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
           "latitude": 24.7927311,
           "longitude": 46.6998365
         },
-        "areaServed": {
-          "@type": "City",
-          "name": "Riyadh"
+        "areaServed": [
+          { "@type": "City", "name": "Riyadh" },
+          { "@type": "City", "name": "Dammam" },
+          { "@type": "City", "name": "Khobar" },
+          { "@type": "City", "name": "Dhahran" }
+        ],
+        "serviceType": ["البناء والإنشاءات", "تسليم مفتاح", "ترميم مباني", "تشطيبات", "ديكور", "كهرباء وسباكة"],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "خدمات تعاود للمقاولات",
+          "itemListElement": [
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "البناء والإنشاءات", "url": "https://tawodco.com/service-construction.html" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "تسليم المفتاح", "url": "https://tawodco.com/service-turnkey.html" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "ترميم وتجديد المباني", "url": "https://tawodco.com/service-restoration.html" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "التشطيبات", "url": "https://tawodco.com/service-finishing.html" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "الديكور والتصميم الداخلي", "url": "https://tawodco.com/service-decor.html" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "الكهرباء والسباكة والميكانيكا", "url": "https://tawodco.com/service-mep.html" } }
+          ]
         },
-        "serviceType": ["البناء والإنشاءات", "تسليم مفتاح", "ترميم مباني", "تشطيبات", "ديكور", "كهرباء وسباكة"]
+        "sameAs": [
+          "https://twitter.com/tawodco",
+          "https://instagram.com/tawodco",
+          "https://tiktok.com/@tawodco",
+          "https://snapchat.com/add/tawodco",
+          "https://linkedin.com/company/tawodco"
+        ]
       },
       {
         "@type": "WebSite",
@@ -358,7 +346,7 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
     ]
   }
   </script>
-</head>
+<!-- TAWOD_ANALYTICS_START --><script src="/assets/js/tawod-analytics.js?v=20260823-1" defer></script><!-- TAWOD_ANALYTICS_END --></head>
 <body class='home-page no-mobile-action-bar'>
   <!-- TAWOD_ICON_SPRITE_START -->
   <svg class='icon-sprite' aria-hidden='true' focusable='false' xmlns='http://www.w3.org/2000/svg'>
@@ -758,7 +746,7 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
     <a aria-label='اتصال' class='float-btn float-call' href='tel:0551128884'><i class='fa-solid fa-phone'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-phone'></use></svg></i></a>
   </div>
 
-  <script src='assets/js/tawod-home.js?v=f86da2a9a704' defer></script>
+  <script src='assets/js/tawod-home.js?v=568334cb10f1' defer></script>
   <script src='assets/js/tawod-upgrades.js?v=bb1e3d7f440e' defer></script>
 </body>
 </html>
