@@ -3,6 +3,9 @@ import { join, relative, sep } from "node:path";
 
 const root = process.cwd();
 const outputDirectory = join(root, "out");
+const vercelConfig = JSON.parse(
+  readFileSync(join(root, "vercel.json"), "utf8"),
+);
 const excludedDirectories = new Set([
   ".git",
   ".next",
@@ -35,6 +38,13 @@ if (!existsSync(outputDirectory)) {
 
 const sourceFiles = collectHtmlFiles(root);
 const mismatches = [];
+
+if (vercelConfig.buildCommand !== "npm run build") {
+  mismatches.push("vercel.json: buildCommand must run the verified Next.js build");
+}
+if (vercelConfig.outputDirectory !== "out") {
+  mismatches.push("vercel.json: outputDirectory must publish the verified out directory");
+}
 
 for (const sourceFile of sourceFiles) {
   const relativePath = relative(root, sourceFile).split(sep).join("/");
