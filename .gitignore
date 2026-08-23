@@ -1,7 +1,2 @@
 node_modules/
 npm-debug.log*
-.next/
-out/
-public/
-.vercel/
-*.tsbuildinfo

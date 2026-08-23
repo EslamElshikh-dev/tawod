@@ -7,7 +7,7 @@ const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const blogDir = join(rootDir, "blog");
 const pageSize = 10;
 const buildDate = "2026-08-20";
-const archiveAssetVersion = "20260823-1";
+const archiveAssetVersion = "20260820-2";
 
 const featuredSlugs = [
   "best-contracting-company-riyadh",
