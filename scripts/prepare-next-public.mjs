@@ -39,17 +39,28 @@ for (const image of encodedProjectImages) {
     throw new Error(`Missing encoded project image: ${image.source}`);
   }
 
-  const bytes = Buffer.from(readFileSync(source, "utf8").trim(), "base64");
-  const hasValidContainer =
-    bytes.length >= 12 &&
-    bytes.subarray(0, 4).toString("ascii") === "RIFF" &&
-    bytes.subarray(8, 12).toString("ascii") === "WEBP" &&
-    bytes.readUInt32LE(4) + 8 === bytes.length;
+  const encoded = readFileSync(source, "utf8")
+    .trim()
+    .replace(/\.\.\. \(truncated\)\s*$/u, "");
+  const decoded = Buffer.from(encoded, "base64");
+  const hasWebpHeader =
+    decoded.length >= 12 &&
+    decoded.subarray(0, 4).toString("ascii") === "RIFF" &&
+    decoded.subarray(8, 12).toString("ascii") === "WEBP";
 
-  if (!hasValidContainer) {
+  if (!hasWebpHeader) {
     throw new Error(`Invalid generated WebP payload: ${image.source}`);
   }
 
+  const declaredLength = decoded.readUInt32LE(4) + 8;
+  if (declaredLength > decoded.length) {
+    throw new Error(
+      `Truncated generated WebP payload: ${image.source}; declared=${declaredLength}, decoded=${decoded.length}`,
+    );
+  }
+
+  // Ignore accidental trailing text/bytes after the complete RIFF container.
+  const bytes = decoded.subarray(0, declaredLength);
   const output = join(root, image.output);
   mkdirSync(dirname(output), { recursive: true });
   writeFileSync(output, bytes);
