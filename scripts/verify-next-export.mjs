@@ -104,6 +104,7 @@ for (const sourceFile of sourceFiles) {
 for (const relativePath of [
   "assets/css/tawod-system.css",
   "assets/css/tawod-project-case.css",
+  "assets/css/tawod-projects-showcase.css",
   "assets/js/tawod-analytics.js",
   "images/logo/tawod-logo.png",
   "images/projects/faisaliah-villa-facades-finishing-01.webp",
