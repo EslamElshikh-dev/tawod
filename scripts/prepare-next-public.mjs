@@ -36,6 +36,15 @@ const encodedProjectImages = [
     ],
     output: "images/projects/modon-eight-warehouses-02-v3.webp",
   },
+  {
+    sources: [
+      "assets/project-media/alrajhi-tanks-v1.part00.b64",
+      "assets/project-media/alrajhi-tanks-v1.part01.b64",
+      "assets/project-media/alrajhi-tanks-v1.part02.b64",
+      "assets/project-media/alrajhi-tanks-v1.part03.b64",
+    ],
+    output: "images/projects/alrajhi-tanks-king-salman-park-01.webp",
+  },
 ];
 
 for (const image of encodedProjectImages) {

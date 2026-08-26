@@ -23,8 +23,17 @@ const projectImageReplacements = [
 ] as const;
 
 const featuredProjectsMarkup = `
+<article class="project-card reveal-up active visible in-view revealed show" data-project="alrajhi-tanks-king-salman-park">
+  <div class="card-img-wrap"><img class="card-img" src="images/projects/alrajhi-tanks-king-salman-park-01.webp" width="480" height="640" loading="eager" decoding="async" alt="أعمال حدادة وعزل خزانات في حديقة الملك سلمان بالرياض - شركة تعاود للمقاولات"></div>
+  <div class="card-body">
+    <div class="project-meta"><span>خزانات</span><span>حدادة وعزل</span></div>
+    <h3>خزانات حديقة الملك سلمان – الرياض</h3>
+    <p>أعمال حدادة وعزل لخزانات بمساحة 119 م² ضمن مشروع شركة الراجحي للبناء والتعمير خلال أسبوعين.</p>
+    <a class="card-link" href="project-alrajhi-tanks-king-salman-park.html">تفاصيل المشروع <i class="fa-solid fa-arrow-left-long"></i></a>
+  </div>
+</article>
 <article class="project-card reveal-up active visible in-view revealed show" data-project="modon-eight-warehouses">
-  <div class="card-img-wrap"><img class="card-img" src="images/projects/modon-eight-warehouses-02-v3.webp" width="360" height="480" loading="eager" decoding="async" alt="مشروع تنفيذ 8 مستودعات في المدينة الصناعية الثانية بالرياض - شركة تعاود للمقاولات"></div>
+  <div class="card-img-wrap"><img class="card-img" src="images/projects/modon-eight-warehouses-02-v3.webp" width="360" height="480" loading="lazy" decoding="async" alt="مشروع تنفيذ 8 مستودعات في المدينة الصناعية الثانية بالرياض - شركة تعاود للمقاولات"></div>
   <div class="card-body">
     <div class="project-meta"><span>مشروع صناعي</span><span>8 مستودعات</span></div>
     <h3>تنفيذ 8 مستودعات – الصناعية الثانية</h3>
@@ -95,7 +104,7 @@ function enhanceLegacyHtml(relativePath: string, html: string) {
 
   if (
     relativePath === "projects.html" &&
-    !enhancedHtml.includes('data-project="modon-eight-warehouses"')
+    !enhancedHtml.includes('data-project="alrajhi-tanks-king-salman-park"')
   ) {
     const marker = '<div class="projects-grid">';
     if (enhancedHtml.includes(marker)) {
