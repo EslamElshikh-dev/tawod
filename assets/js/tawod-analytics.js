@@ -108,6 +108,20 @@
     } catch (error) {}
   }
 
+  function injectFeaturedProject() {
+    if (!/(?:^|\/)projects\.html$/.test(window.location.pathname)) return;
+    if (document.querySelector('[data-project="arouba-mosque-villas"]')) return;
+
+    var grid = document.querySelector('.projects-grid');
+    if (!grid) return;
+
+    var article = document.createElement('article');
+    article.className = 'project-card reveal-up active visible in-view revealed show';
+    article.setAttribute('data-project', 'arouba-mosque-villas');
+    article.innerHTML = '<div class="card-img-wrap"><img class="card-img" src="images/projects/arouba-mosque-villas-01.webp" width="420" height="560" loading="eager" decoding="async" alt="مشروع مسجد وفللتين سكنيتين في حي العروبة - شركة تعاود للمقاولات"></div><div class="card-body"><div class="project-meta"><span>مسجد + فلل</span><span>تسليم مفتاح</span></div><h3>مسجد وفللتان سكنيتان – حي العروبة</h3><p>تنفيذ متكامل بنظام تسليم مفتاح كامل بمساحة 1800 م² خلال مدة زمنية قدرها 12 شهرًا.</p><a class="card-link" href="project-arouba-mosque-villas.html">تفاصيل المشروع <i class="fa-solid fa-arrow-left-long"></i></a></div>';
+    grid.insertBefore(article, grid.firstChild);
+  }
+
   window.TawodAnalytics = Object.freeze({
     ga4Id: GA4_ID,
     googleAdsId: GOOGLE_ADS_ID,
@@ -124,5 +138,7 @@
   if (/(?:^|\/)thank-you\.html$/.test(window.location.pathname)) loadGoogleTag();
   else idleTimer = window.setTimeout(loadGoogleTag, 1500);
 
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', injectFeaturedProject);
+  else injectFeaturedProject();
   trackConfirmedLead();
 })();
