@@ -22,6 +22,18 @@ const files = [
   "sitemap-khobar.xml",
   "sitemap-turnkey.xml",
 ];
+const generatedProjectPages = [
+  {
+    sources: [
+      "assets/project-pages/faisaliah-villa.part00.html",
+      "assets/project-pages/faisaliah-villa.part01.html",
+      "assets/project-pages/faisaliah-villa.part02.html",
+      "assets/project-pages/faisaliah-villa.part03.html",
+      "assets/project-pages/faisaliah-villa.part04.html",
+    ],
+    output: "project-faisaliah-villa-facades-finishing.html",
+  },
+];
 const encodedProjectImages = [
   {
     sources: ["assets/project-media/modon-01-v3.b64"],
@@ -48,18 +60,37 @@ const encodedProjectImages = [
   },
   {
     sources: [
-      "assets/project-media/villa-uhud-finishing-v1.part00.b64",
-      "assets/project-media/villa-uhud-finishing-v1.part01.b64",
-      "assets/project-media/villa-uhud-finishing-v1.part02.b64",
-      "assets/project-media/villa-uhud-finishing-v1.part03.b64",
-      "assets/project-media/villa-uhud-finishing-v1.part04.b64",
-      "assets/project-media/villa-uhud-finishing-v1.part05.b64",
-      "assets/project-media/villa-uhud-finishing-v1.part06.b64",
+      "assets/project-media/faisaliah-villa-v2.part00.hex",
+      "assets/project-media/faisaliah-villa-v2.part01.hex",
+      "assets/project-media/faisaliah-villa-v2.part02.hex",
+      "assets/project-media/faisaliah-villa-v2.part03.hex",
+      "assets/project-media/faisaliah-villa-v2.part04.hex",
+      "assets/project-media/faisaliah-villa-v2.part05.hex",
+      "assets/project-media/faisaliah-villa-v2.part06.hex",
+      "assets/project-media/faisaliah-villa-v2.part07.hex",
+      "assets/project-media/faisaliah-villa-v2.part08.hex",
     ],
-    partLengths: [16800, 16800, 16800, 16800, 16800, 16800, 2880],
-    output: "images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp",
+    partLengths: [2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 1244],
+    encoding: "hex",
+    output: "images/projects/faisaliah-villa-facades-finishing-01.webp",
   },
 ];
+
+for (const page of generatedProjectPages) {
+  for (const relativePath of page.sources) {
+    if (!existsSync(join(root, relativePath))) {
+      throw new Error(`Missing generated project page part: ${relativePath}`);
+    }
+  }
+
+  const html = page.sources
+    .map((relativePath) => readFileSync(join(root, relativePath), "utf8"))
+    .join("");
+  if (!html.startsWith("<!DOCTYPE html>") || !html.endsWith("</html>")) {
+    throw new Error(`Invalid generated project page: ${page.output}`);
+  }
+  writeFileSync(join(root, page.output), html);
+}
 
 for (const image of encodedProjectImages) {
   for (const relativePath of image.sources) {
@@ -81,7 +112,7 @@ for (const image of encodedProjectImages) {
       return part.slice(0, expectedLength);
     })
     .join("");
-  const bytes = Buffer.from(encoded, "base64");
+  const bytes = Buffer.from(encoded, image.encoding || "base64");
   const hasValidContainer =
     bytes.length >= 12 &&
     bytes.subarray(0, 4).toString("ascii") === "RIFF" &&
@@ -110,10 +141,15 @@ for (const relativePath of directories) {
   cpSync(source, join(publicDirectory, relativePath), { recursive: true });
 }
 
-rmSync(join(publicDirectory, "assets/project-media"), {
-  recursive: true,
-  force: true,
-});
+for (const privateAssetDirectory of [
+  "assets/project-media",
+  "assets/project-pages",
+]) {
+  rmSync(join(publicDirectory, privateAssetDirectory), {
+    recursive: true,
+    force: true,
+  });
+}
 
 for (const relativePath of files) {
   const source = join(root, relativePath);
@@ -124,5 +160,5 @@ for (const relativePath of files) {
 }
 
 console.log(
-  `Prepared ${directories.length} directories, ${files.length} root files, and ${encodedProjectImages.length} validated project images for Next.js.`,
+  `Prepared ${directories.length} directories, ${files.length} root files, ${generatedProjectPages.length} generated project page, and ${encodedProjectImages.length} validated project images for Next.js.`,
 );

@@ -23,13 +23,13 @@ const projectImageReplacements = [
 ] as const;
 
 const featuredProjectsMarkup = `
-<article class="project-card reveal-up active visible in-view revealed show" data-project="villa-plaster-ceramic-marble-uhud-riyadh">
-  <div class="card-img-wrap"><img class="card-img" src="images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp" width="480" height="640" loading="eager" decoding="async" alt="تنفيذ اللياسة والقروفات والسيراميك والرخام لفيلا سكنية في حي أحد بالرياض - شركة تعاود للمقاولات"></div>
+<article class="project-card reveal-up active visible in-view revealed show" data-project="faisaliah-villa-facades-finishing">
+  <div class="card-img-wrap"><img class="card-img" src="images/projects/faisaliah-villa-facades-finishing-01.webp" width="360" height="480" loading="eager" decoding="async" alt="تنفيذ واجهات وتشطيبات فيلا سكنية في حي الفيصلية بالرياض - شركة تعاود للمقاولات"></div>
   <div class="card-body">
-    <div class="project-meta"><span>فيلا سكنية</span><span>تشطيبات</span></div>
-    <h3>فيلا سكنية – حي أحد بالرياض</h3>
-    <p>تنفيذ اللياسة الداخلية والخارجية والقروفات والسيراميك والرخام لمساحة 700 م² خلال 3 أشهر.</p>
-    <a class="card-link" href="project-villa-plaster-ceramic-marble-uhud-riyadh.html">تفاصيل المشروع <i class="fa-solid fa-arrow-left-long"></i></a>
+    <div class="project-meta"><span>فيلا سكنية</span><span>واجهات وتشطيبات</span></div>
+    <h3>فيلا سكنية – حي الفيصلية</h3>
+    <p>تنفيذ الواجهات واللياسة والرخام والسيراميك الداخلي والخارجي على مساحة 900 م² خلال شهرين.</p>
+    <a class="card-link" href="project-faisaliah-villa-facades-finishing.html">تفاصيل المشروع <i class="fa-solid fa-arrow-left-long"></i></a>
   </div>
 </article>
 <article class="project-card reveal-up active visible in-view revealed show" data-project="alrajhi-tanks-king-salman-park">
@@ -113,7 +113,7 @@ function enhanceLegacyHtml(relativePath: string, html: string) {
 
   if (
     relativePath === "projects.html" &&
-    !enhancedHtml.includes('data-project="villa-plaster-ceramic-marble-uhud-riyadh"')
+    !enhancedHtml.includes('data-project="faisaliah-villa-facades-finishing"')
   ) {
     const marker = '<div class="projects-grid">';
     if (enhancedHtml.includes(marker)) {
