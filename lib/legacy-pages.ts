@@ -11,10 +11,20 @@ const excludedDirectories = new Set([
   "out",
   "public",
 ]);
+const projectImageReplacements = [
+  [
+    "images/projects/modon-eight-warehouses-01.webp",
+    "images/projects/modon-eight-warehouses-01-v3.webp",
+  ],
+  [
+    "images/projects/modon-eight-warehouses-02.webp",
+    "images/projects/modon-eight-warehouses-02-v3.webp",
+  ],
+] as const;
 
 const featuredProjectsMarkup = `
 <article class="project-card reveal-up active visible in-view revealed show" data-project="modon-eight-warehouses">
-  <div class="card-img-wrap"><img class="card-img" src="images/projects/modon-eight-warehouses-02.webp" width="480" height="640" loading="eager" decoding="async" alt="مشروع تنفيذ 8 مستودعات في المدينة الصناعية الثانية بالرياض - شركة تعاود للمقاولات"></div>
+  <div class="card-img-wrap"><img class="card-img" src="images/projects/modon-eight-warehouses-02-v3.webp" width="360" height="480" loading="eager" decoding="async" alt="مشروع تنفيذ 8 مستودعات في المدينة الصناعية الثانية بالرياض - شركة تعاود للمقاولات"></div>
   <div class="card-body">
     <div class="project-meta"><span>مشروع صناعي</span><span>8 مستودعات</span></div>
     <h3>تنفيذ 8 مستودعات – الصناعية الثانية</h3>
@@ -73,13 +83,30 @@ export function getRoutedLegacyHtmlFiles() {
   );
 }
 
-function enhanceLegacyHtml(relativePath: string, html: string) {
-  if (relativePath !== "projects.html") return html;
-  if (html.includes('data-project="modon-eight-warehouses"')) return html;
+function replaceProjectImageUrls(html: string) {
+  return projectImageReplacements.reduce(
+    (result, [source, target]) => result.replaceAll(source, target),
+    html,
+  );
+}
 
-  const marker = '<div class="projects-grid">';
-  if (!html.includes(marker)) return html;
-  return html.replace(marker, `${marker}${featuredProjectsMarkup}`);
+function enhanceLegacyHtml(relativePath: string, html: string) {
+  let enhancedHtml = html;
+
+  if (
+    relativePath === "projects.html" &&
+    !enhancedHtml.includes('data-project="modon-eight-warehouses"')
+  ) {
+    const marker = '<div class="projects-grid">';
+    if (enhancedHtml.includes(marker)) {
+      enhancedHtml = enhancedHtml.replace(
+        marker,
+        `${marker}${featuredProjectsMarkup}`,
+      );
+    }
+  }
+
+  return replaceProjectImageUrls(enhancedHtml);
 }
 
 export function readLegacyHtml(relativePath: string) {
