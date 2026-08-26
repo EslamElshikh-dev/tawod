@@ -98,10 +98,22 @@ for (const page of generatedProjectPages) {
 
   const html = page.sources
     .map((relativePath) => readFileSync(join(root, relativePath), "utf8"))
-    .join("");
+    .join("")
+    .replace(
+      '{"@type":"Question",name":',
+      '{"@type":"Question","name":',
+    );
   if (!html.startsWith("<!DOCTYPE html>") || !html.endsWith("</html>")) {
     throw new Error(`Invalid generated project page: ${page.output}`);
   }
+
+  const structuredDataBlocks = html.matchAll(
+    /<script type="application\/ld\+json">([\s\S]*?)<\/script>/g,
+  );
+  for (const match of structuredDataBlocks) {
+    JSON.parse(match[1]);
+  }
+
   writeFileSync(join(root, page.output), html);
 }
 
