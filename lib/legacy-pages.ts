@@ -32,6 +32,15 @@ const featuredProjectsMarkup = `
     <a class="card-link" href="project-faisaliah-villa-facades-finishing.html">تفاصيل المشروع <i class="fa-solid fa-arrow-left-long"></i></a>
   </div>
 </article>
+<article class="project-card reveal-up active visible in-view revealed show" data-project="villa-plaster-ceramic-marble-uhud-riyadh">
+  <div class="card-img-wrap"><img class="card-img" src="images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp" width="480" height="640" loading="lazy" decoding="async" alt="تنفيذ اللياسة والقروفات والسيراميك والرخام لفيلا سكنية في حي أحد بالرياض - شركة تعاود للمقاولات"></div>
+  <div class="card-body">
+    <div class="project-meta"><span>فيلا سكنية</span><span>تشطيبات</span></div>
+    <h3>فيلا سكنية – حي أحد بالرياض</h3>
+    <p>تنفيذ اللياسة الداخلية والخارجية والقروفات والسيراميك والرخام لمساحة 700 م² خلال 3 أشهر.</p>
+    <a class="card-link" href="project-villa-plaster-ceramic-marble-uhud-riyadh.html">تفاصيل المشروع <i class="fa-solid fa-arrow-left-long"></i></a>
+  </div>
+</article>
 <article class="project-card reveal-up active visible in-view revealed show" data-project="alrajhi-tanks-king-salman-park">
   <div class="card-img-wrap"><img class="card-img" src="images/projects/alrajhi-tanks-king-salman-park-01.webp" width="480" height="640" loading="lazy" decoding="async" alt="أعمال حدادة وعزل خزانات في حديقة الملك سلمان بالرياض - شركة تعاود للمقاولات"></div>
   <div class="card-body">
