@@ -9,6 +9,7 @@ const files = [
   "google-ads-page-feed.csv",
   "robots.txt",
   "sitemap.xml",
+  "sitemap-projects.xml",
   "sitemap-dammam.xml",
   "sitemap-dhahran.xml",
   "sitemap-khobar.xml",

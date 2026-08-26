@@ -12,6 +12,26 @@ const excludedDirectories = new Set([
   "public",
 ]);
 
+const featuredProjectsMarkup = `
+<article class="project-card reveal-up active visible in-view revealed show" data-project="modon-eight-warehouses">
+  <div class="card-img-wrap"><img class="card-img" src="images/projects/modon-eight-warehouses-02.webp" width="480" height="640" loading="eager" decoding="async" alt="مشروع تنفيذ 8 مستودعات في المدينة الصناعية الثانية بالرياض - شركة تعاود للمقاولات"></div>
+  <div class="card-body">
+    <div class="project-meta"><span>مشروع صناعي</span><span>8 مستودعات</span></div>
+    <h3>تنفيذ 8 مستودعات – الصناعية الثانية</h3>
+    <p>تنفيذ ثمانية مستودعات على مساحة 29,122.40 م² خلال مدة زمنية قدرها 6 أشهر.</p>
+    <a class="card-link" href="project-modon-eight-warehouses-riyadh.html">تفاصيل المشروع <i class="fa-solid fa-arrow-left-long"></i></a>
+  </div>
+</article>
+<article class="project-card reveal-up active visible in-view revealed show" data-project="arouba-mosque-villas">
+  <div class="card-img-wrap"><img class="card-img" src="images/projects/arouba-mosque-villas-01.webp" width="420" height="560" loading="lazy" decoding="async" alt="مشروع مسجد وفللتين سكنيتين في حي العروبة - شركة تعاود للمقاولات"></div>
+  <div class="card-body">
+    <div class="project-meta"><span>مسجد + فلل</span><span>تسليم مفتاح</span></div>
+    <h3>مسجد وفللتان سكنيتان – حي العروبة</h3>
+    <p>تنفيذ متكامل بنظام تسليم مفتاح كامل بمساحة 1800 م² خلال مدة زمنية قدرها 12 شهرًا.</p>
+    <a class="card-link" href="project-arouba-mosque-villas.html">تفاصيل المشروع <i class="fa-solid fa-arrow-left-long"></i></a>
+  </div>
+</article>`;
+
 function toPosixPath(value: string) {
   return value.split(sep).join(posix.sep);
 }
@@ -53,6 +73,15 @@ export function getRoutedLegacyHtmlFiles() {
   );
 }
 
+function enhanceLegacyHtml(relativePath: string, html: string) {
+  if (relativePath !== "projects.html") return html;
+  if (html.includes('data-project="modon-eight-warehouses"')) return html;
+
+  const marker = '<div class="projects-grid">';
+  if (!html.includes(marker)) return html;
+  return html.replace(marker, `${marker}${featuredProjectsMarkup}`);
+}
+
 export function readLegacyHtml(relativePath: string) {
   if (!getLegacyHtmlFiles().includes(relativePath)) {
     throw new Error(`Unknown legacy HTML route: ${relativePath}`);
@@ -63,7 +92,7 @@ export function readLegacyHtml(relativePath: string) {
     throw new Error(`Missing legacy HTML source: ${relativePath}`);
   }
 
-  return readFileSync(absolutePath, "utf8");
+  return enhanceLegacyHtml(relativePath, readFileSync(absolutePath, "utf8"));
 }
 
 export function htmlResponse(relativePath: string) {

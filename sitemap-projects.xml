@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://tawodco.com/projects.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://tawodco.com/project-modon-eight-warehouses-riyadh.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://tawodco.com/images/projects/modon-eight-warehouses-02.webp</image:loc>
+      <image:title>مشروع تنفيذ 8 مستودعات في المدينة الصناعية الثانية بالرياض</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://tawodco.com/images/projects/modon-eight-warehouses-01.webp</image:loc>
+      <image:title>تسليح القواعد الخرسانية لمشروع المستودعات</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://tawodco.com/project-arouba-mosque-villas.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+    <image:image>
+      <image:loc>https://tawodco.com/images/projects/arouba-mosque-villas-01.webp</image:loc>
+      <image:title>مشروع مسجد وفللتين سكنيتين في حي العروبة</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://tawodco.com/images/projects/arouba-mosque-villas-02.webp</image:loc>
+      <image:title>تقدم أعمال مشروع حي العروبة</image:title>
+    </image:image>
+  </url>
+</urlset>
