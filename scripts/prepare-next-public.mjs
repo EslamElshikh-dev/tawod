@@ -24,43 +24,43 @@ const files = [
 ];
 const encodedProjectImages = [
   {
-    source: "assets/project-media/modon-01-v3.b64",
+    sources: ["assets/project-media/modon-01-v3.b64"],
     output: "images/projects/modon-eight-warehouses-01-v3.webp",
   },
   {
-    source: "assets/project-media/modon-02-v3.b64",
+    sources: [
+      "assets/project-media/modon-02-v4.part00.b64",
+      "assets/project-media/modon-02-v4.part01.b64",
+      "assets/project-media/modon-02-v4.part02.b64",
+      "assets/project-media/modon-02-v4.part03.b64",
+    ],
     output: "images/projects/modon-eight-warehouses-02-v3.webp",
   },
 ];
 
 for (const image of encodedProjectImages) {
-  const source = join(root, image.source);
-  if (!existsSync(source)) {
-    throw new Error(`Missing encoded project image: ${image.source}`);
+  for (const relativePath of image.sources) {
+    if (!existsSync(join(root, relativePath))) {
+      throw new Error(`Missing encoded project image part: ${relativePath}`);
+    }
   }
 
-  const encoded = readFileSync(source, "utf8")
-    .trim()
-    .replace(/\.\.\. \(truncated\)\s*$/u, "");
-  const decoded = Buffer.from(encoded, "base64");
-  const hasWebpHeader =
-    decoded.length >= 12 &&
-    decoded.subarray(0, 4).toString("ascii") === "RIFF" &&
-    decoded.subarray(8, 12).toString("ascii") === "WEBP";
+  const encoded = image.sources
+    .map((relativePath) => readFileSync(join(root, relativePath), "utf8").trim())
+    .join("");
+  const bytes = Buffer.from(encoded, "base64");
+  const hasValidContainer =
+    bytes.length >= 12 &&
+    bytes.subarray(0, 4).toString("ascii") === "RIFF" &&
+    bytes.subarray(8, 12).toString("ascii") === "WEBP" &&
+    bytes.readUInt32LE(4) + 8 === bytes.length;
 
-  if (!hasWebpHeader) {
-    throw new Error(`Invalid generated WebP payload: ${image.source}`);
-  }
-
-  const declaredLength = decoded.readUInt32LE(4) + 8;
-  if (declaredLength > decoded.length) {
+  if (!hasValidContainer) {
     throw new Error(
-      `Truncated generated WebP payload: ${image.source}; declared=${declaredLength}, decoded=${decoded.length}`,
+      `Invalid generated WebP payload: ${image.sources.join(", ")}`,
     );
   }
 
-  // Ignore accidental trailing text/bytes after the complete RIFF container.
-  const bytes = decoded.subarray(0, declaredLength);
   const output = join(root, image.output);
   mkdirSync(dirname(output), { recursive: true });
   writeFileSync(output, bytes);
