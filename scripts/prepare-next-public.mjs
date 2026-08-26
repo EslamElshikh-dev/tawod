@@ -74,6 +74,19 @@ const encodedProjectImages = [
     encoding: "hex",
     output: "images/projects/faisaliah-villa-facades-finishing-01.webp",
   },
+  {
+    sources: [
+      "assets/project-media/villa-uhud-finishing-v1.part00.b64",
+      "assets/project-media/villa-uhud-finishing-v1.part01.b64",
+      "assets/project-media/villa-uhud-finishing-v1.part02.b64",
+      "assets/project-media/villa-uhud-finishing-v1.part03.b64",
+      "assets/project-media/villa-uhud-finishing-v1.part04.b64",
+      "assets/project-media/villa-uhud-finishing-v1.part05.b64",
+      "assets/project-media/villa-uhud-finishing-v1.part06.b64",
+    ],
+    partLengths: [16800, 16800, 16800, 16800, 16800, 16800, 2880],
+    output: "images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp",
+  },
 ];
 
 for (const page of generatedProjectPages) {
