@@ -23,8 +23,17 @@ const projectImageReplacements = [
 ] as const;
 
 const featuredProjectsMarkup = `
+<article class="project-card reveal-up active visible in-view revealed show" data-project="villa-plaster-ceramic-marble-uhud-riyadh">
+  <div class="card-img-wrap"><img class="card-img" src="images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp" width="480" height="640" loading="eager" decoding="async" alt="تنفيذ اللياسة والقروفات والسيراميك والرخام لفيلا سكنية في حي أحد بالرياض - شركة تعاود للمقاولات"></div>
+  <div class="card-body">
+    <div class="project-meta"><span>فيلا سكنية</span><span>تشطيبات</span></div>
+    <h3>فيلا سكنية – حي أحد بالرياض</h3>
+    <p>تنفيذ اللياسة الداخلية والخارجية والقروفات والسيراميك والرخام لمساحة 700 م² خلال 3 أشهر.</p>
+    <a class="card-link" href="project-villa-plaster-ceramic-marble-uhud-riyadh.html">تفاصيل المشروع <i class="fa-solid fa-arrow-left-long"></i></a>
+  </div>
+</article>
 <article class="project-card reveal-up active visible in-view revealed show" data-project="alrajhi-tanks-king-salman-park">
-  <div class="card-img-wrap"><img class="card-img" src="images/projects/alrajhi-tanks-king-salman-park-01.webp" width="480" height="640" loading="eager" decoding="async" alt="أعمال حدادة وعزل خزانات في حديقة الملك سلمان بالرياض - شركة تعاود للمقاولات"></div>
+  <div class="card-img-wrap"><img class="card-img" src="images/projects/alrajhi-tanks-king-salman-park-01.webp" width="480" height="640" loading="lazy" decoding="async" alt="أعمال حدادة وعزل خزانات في حديقة الملك سلمان بالرياض - شركة تعاود للمقاولات"></div>
   <div class="card-body">
     <div class="project-meta"><span>خزانات</span><span>حدادة وعزل</span></div>
     <h3>خزانات حديقة الملك سلمان – الرياض</h3>
@@ -104,7 +113,7 @@ function enhanceLegacyHtml(relativePath: string, html: string) {
 
   if (
     relativePath === "projects.html" &&
-    !enhancedHtml.includes('data-project="alrajhi-tanks-king-salman-park"')
+    !enhancedHtml.includes('data-project="villa-plaster-ceramic-marble-uhud-riyadh"')
   ) {
     const marker = '<div class="projects-grid">';
     if (enhancedHtml.includes(marker)) {
