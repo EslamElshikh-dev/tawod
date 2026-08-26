@@ -293,3 +293,20 @@
     document.documentElement.classList.add('tawod-polished', 'tawod-system-ready');
   });
 })();
+
+/* Featured real project: Al Orouba mosque + two villas. */
+(function () {
+  'use strict';
+  function addProject() {
+    if (!/^\/projects(?:\.html)?\/?$/.test(window.location.pathname)) return;
+    var grid = document.querySelector('.projects-grid');
+    if (!grid || grid.querySelector('[data-project="arouba-mosque-villas"]')) return;
+    var card = document.createElement('article');
+    card.className = 'project-card reveal-up active visible in-view revealed show';
+    card.setAttribute('data-project', 'arouba-mosque-villas');
+    card.innerHTML = '<div class="card-img-wrap"><img class="card-img" src="images/projects/arouba-mosque-villas-01.webp" width="420" height="560" loading="eager" decoding="async" alt="مشروع مسجد وفللتين سكنيتين تسليم مفتاح في حي العروبة - شركة تعاود للمقاولات"></div><div class="card-body"><div class="project-meta"><span>حي العروبة</span><span>تسليم مفتاح</span></div><h3>مسجد وفللتان سكنيتان</h3><p>تنفيذ تسليم مفتاح كامل بمساحة 1800 م² خلال مدة تنفيذ 12 شهرًا.</p><a class="card-link" href="project-arouba-mosque-villas.html">تفاصيل المشروع <i class="fa-solid fa-arrow-left-long"></i></a></div>';
+    grid.insertBefore(card, grid.firstChild);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addProject);
+  else addProject();
+})();
