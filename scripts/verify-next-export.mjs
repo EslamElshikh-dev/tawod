@@ -23,6 +23,14 @@ const intentionalHtmlTransforms = new Map([
       'data-project="arouba-mosque-villas"',
       'href="project-modon-eight-warehouses-riyadh.html"',
       'href="project-arouba-mosque-villas.html"',
+      'src="images/projects/modon-eight-warehouses-02-v3.webp"',
+    ],
+  ],
+  [
+    "project-modon-eight-warehouses-riyadh.html",
+    [
+      "images/projects/modon-eight-warehouses-01-v3.webp",
+      "images/projects/modon-eight-warehouses-02-v3.webp",
     ],
   ],
 ]);
@@ -89,8 +97,8 @@ for (const relativePath of [
   "assets/css/tawod-project-case.css",
   "assets/js/tawod-analytics.js",
   "images/logo/tawod-logo.png",
-  "images/projects/modon-eight-warehouses-01.webp",
-  "images/projects/modon-eight-warehouses-02.webp",
+  "images/projects/modon-eight-warehouses-01-v3.webp",
+  "images/projects/modon-eight-warehouses-02-v3.webp",
   "maintenance/assets/css/maintenance.css",
   "robots.txt",
   "sitemap.xml",
@@ -111,4 +119,4 @@ if (mismatches.length) {
   throw new Error(`Next.js export parity failed:\n${mismatches.join("\n")}`);
 }
 
-console.log(`Verified ${sourceFiles.length} HTML pages, intentional project-list transforms, and critical static assets.`);
+console.log(`Verified ${sourceFiles.length} HTML pages, intentional project-image transforms, and critical static assets.`);
