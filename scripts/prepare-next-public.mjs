@@ -43,6 +43,7 @@ const encodedProjectImages = [
       "assets/project-media/alrajhi-tanks-v1.part02.b64",
       "assets/project-media/alrajhi-tanks-v1.part03.b64",
     ],
+    partLengths: [16800, 16800, 16800, 16760],
     output: "images/projects/alrajhi-tanks-king-salman-park-01.webp",
   },
 ];
@@ -55,7 +56,17 @@ for (const image of encodedProjectImages) {
   }
 
   const encoded = image.sources
-    .map((relativePath) => readFileSync(join(root, relativePath), "utf8").trim())
+    .map((relativePath, index) => {
+      const part = readFileSync(join(root, relativePath), "utf8").trim();
+      const expectedLength = image.partLengths?.[index];
+      if (expectedLength === undefined) return part;
+      if (part.length < expectedLength) {
+        throw new Error(
+          `Truncated encoded project image part: ${relativePath}; expected=${expectedLength}, actual=${part.length}`,
+        );
+      }
+      return part.slice(0, expectedLength);
+    })
     .join("");
   const bytes = Buffer.from(encoded, "base64");
   const hasValidContainer =
