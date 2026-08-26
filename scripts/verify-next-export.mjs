@@ -19,12 +19,15 @@ const intentionalHtmlTransforms = new Map([
   [
     "projects.html",
     [
+      'data-project="villa-plaster-ceramic-marble-uhud-riyadh"',
       'data-project="alrajhi-tanks-king-salman-park"',
       'data-project="modon-eight-warehouses"',
       'data-project="arouba-mosque-villas"',
+      'href="project-villa-plaster-ceramic-marble-uhud-riyadh.html"',
       'href="project-alrajhi-tanks-king-salman-park.html"',
       'href="project-modon-eight-warehouses-riyadh.html"',
       'href="project-arouba-mosque-villas.html"',
+      'src="images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp"',
       'src="images/projects/alrajhi-tanks-king-salman-park-01.webp"',
       'src="images/projects/modon-eight-warehouses-02-v3.webp"',
     ],
@@ -100,6 +103,7 @@ for (const relativePath of [
   "assets/css/tawod-project-case.css",
   "assets/js/tawod-analytics.js",
   "images/logo/tawod-logo.png",
+  "images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp",
   "images/projects/alrajhi-tanks-king-salman-park-01.webp",
   "images/projects/modon-eight-warehouses-01-v3.webp",
   "images/projects/modon-eight-warehouses-02-v3.webp",
