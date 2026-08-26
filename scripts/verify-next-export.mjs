@@ -15,6 +15,17 @@ const excludedDirectories = new Set([
   "out",
   "public",
 ]);
+const intentionalHtmlTransforms = new Map([
+  [
+    "projects.html",
+    [
+      'data-project="modon-eight-warehouses"',
+      'data-project="arouba-mosque-villas"',
+      'href="project-modon-eight-warehouses-riyadh.html"',
+      'href="project-arouba-mosque-villas.html"',
+    ],
+  ],
+]);
 
 function collectHtmlFiles(directory) {
   const files = [];
@@ -57,18 +68,33 @@ for (const sourceFile of sourceFiles) {
 
   const source = readFileSync(sourceFile);
   const output = readFileSync(outputFile);
-  if (!source.equals(output)) {
-    mismatches.push(`${relativePath}: exported bytes differ from source`);
+  if (source.equals(output)) continue;
+
+  const expectedMarkers = intentionalHtmlTransforms.get(relativePath);
+  if (expectedMarkers) {
+    const outputHtml = output.toString("utf8");
+    for (const marker of expectedMarkers) {
+      if (!outputHtml.includes(marker)) {
+        mismatches.push(`${relativePath}: expected generated marker missing: ${marker}`);
+      }
+    }
+    continue;
   }
+
+  mismatches.push(`${relativePath}: exported bytes differ from source`);
 }
 
 for (const relativePath of [
   "assets/css/tawod-system.css",
+  "assets/css/tawod-project-case.css",
   "assets/js/tawod-analytics.js",
   "images/logo/tawod-logo.png",
+  "images/projects/modon-eight-warehouses-01.webp",
+  "images/projects/modon-eight-warehouses-02.webp",
   "maintenance/assets/css/maintenance.css",
   "robots.txt",
   "sitemap.xml",
+  "sitemap-projects.xml",
 ]) {
   const sourceFile = join(root, relativePath);
   const outputFile = join(outputDirectory, relativePath);
@@ -85,4 +111,4 @@ if (mismatches.length) {
   throw new Error(`Next.js export parity failed:\n${mismatches.join("\n")}`);
 }
 
-console.log(`Verified byte-for-byte parity for ${sourceFiles.length} HTML pages and critical static assets.`);
+console.log(`Verified ${sourceFiles.length} HTML pages, intentional project-list transforms, and critical static assets.`);
