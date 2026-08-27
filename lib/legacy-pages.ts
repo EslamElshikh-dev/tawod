@@ -35,7 +35,7 @@ const projectsShowcaseMarkup = `
     <div class="tawod-projects-grid">
       <article class="tawod-project-card tawod-project-card-featured reveal-up" data-project="faisaliah-villa-facades-finishing">
         <a class="tawod-project-media" href="project-faisaliah-villa-facades-finishing.html" aria-label="عرض مشروع فيلا حي الفيصلية">
-          <img src="images/projects/faisaliah-villa-facades-finishing-01.webp" width="360" height="480" loading="eager" fetchpriority="high" decoding="async" alt="تنفيذ واجهات وتشطيبات فيلا سكنية في حي الفيصلية بالرياض">
+          <img src="images/projects/faisaliah-villa-facades-finishing-01-v3.webp" width="1152" height="1536" loading="eager" fetchpriority="high" decoding="async" alt="تنفيذ واجهات وتشطيبات فيلا سكنية في حي الفيصلية بالرياض">
           <span class="tawod-project-number">01</span><span class="tawod-project-status"><i class="fa-solid fa-circle-check"></i> أحدث المشاريع</span>
         </a>
         <div class="tawod-project-copy">
@@ -60,7 +60,7 @@ const projectsShowcaseMarkup = `
       </article>
       <article class="tawod-project-card reveal-up delay-100" data-project="arouba-mosque-villas">
         <a class="tawod-project-media" href="project-arouba-mosque-villas.html"><img src="images/projects/arouba-mosque-villas-01.webp" width="420" height="560" loading="lazy" decoding="async" alt="مشروع مسجد و٢ فيلا في حي العربية"><span class="tawod-project-number">05</span></a>
-        <div class="tawod-project-copy"><div class="tawod-project-tags"><span>مسجد وفلل</span><span>تسليم مفتاح</span></div><h3><a href="project-arouba-mosque-villas.html">مسجد و ٢ فيلا | حي العربية</a></h3><p>تنفيذ متكامل بنظام تسليم مفتاح لمسجد وفللتين ضمن نطاق موحد.</p><dl class="tawod-project-facts"><div><dt>المساحة</dt><dd>1,800 م²</dd></div><div><dt>المدة</dt><dd>12 شهرًا</dd></div></dl><a class="tawod-project-link" href="project-arouba-mosque-villas.html">استكشف المشروع <i class="fa-solid fa-arrow-left-long"></i></a></div>
+        <div class="tawod-project-copy"><div class="tawod-project-tags"><span>مسجد وفلل</span><span>تسليم مفتاح</span></div><h3><a href="project-arouba-mosque-villas.html">مسجد و ٢ فيلا | حي العربية</a></h3><p>تنفيذ متكامل بنظام تسليم مفتاح لمسجد و٢ فيلا ضمن نطاق موحد.</p><dl class="tawod-project-facts"><div><dt>المساحة</dt><dd>1,800 م²</dd></div><div><dt>المدة</dt><dd>12 شهرًا</dd></div></dl><a class="tawod-project-link" href="project-arouba-mosque-villas.html">استكشف المشروع <i class="fa-solid fa-arrow-left-long"></i></a></div>
       </article>
     </div>
   </div>

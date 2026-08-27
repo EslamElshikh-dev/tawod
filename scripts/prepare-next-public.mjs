@@ -71,22 +71,6 @@ const encodedProjectImages = [
     partLengths: [16800, 16800, 16800, 16800, 16800, 16800, 2880],
     output: "images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp",
   },
-  {
-    sources: [
-      "assets/project-media/faisaliah-villa-v2.part00.hex",
-      "assets/project-media/faisaliah-villa-v2.part01.hex",
-      "assets/project-media/faisaliah-villa-v2.part02.hex",
-      "assets/project-media/faisaliah-villa-v2.part03.hex",
-      "assets/project-media/faisaliah-villa-v2.part04.hex",
-      "assets/project-media/faisaliah-villa-v2.part05.hex",
-      "assets/project-media/faisaliah-villa-v2.part06.hex",
-      "assets/project-media/faisaliah-villa-v2.part07.hex",
-      "assets/project-media/faisaliah-villa-v2.part08.hex",
-    ],
-    partLengths: [2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 1244],
-    encoding: "hex",
-    output: "images/projects/faisaliah-villa-facades-finishing-01.webp",
-  },
 ];
 
 for (const page of generatedProjectPages) {
