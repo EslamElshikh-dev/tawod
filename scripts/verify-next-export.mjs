@@ -16,6 +16,7 @@ const excludedDirectories = new Set([
   "public",
 ]);
 const intentionalHtmlTransforms = new Map([
+  ["index.html", [">فيلا سكنية | حي الفيصلية<"]],
   [
     "projects.html",
     [
@@ -34,8 +35,15 @@ const intentionalHtmlTransforms = new Map([
       'src="images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp"',
       'src="images/projects/alrajhi-tanks-king-salman-park-01.webp"',
       'src="images/projects/modon-eight-warehouses-02-v3.webp"',
+      "فيلا سكنية | حي الفيصلية",
+      "فيلا سكنية | حي أحد",
+      "مسجد و ٢ فيلا | حي العربية",
     ],
   ],
+  ["assets/project-pages/faisaliah-villa.part00.html", ["فيلا سكنية | حي الفيصلية"]],
+  ["project-faisaliah-villa-facades-finishing.html", ["فيلا سكنية | حي الفيصلية"]],
+  ["project-villa-plaster-ceramic-marble-uhud-riyadh.html", ["فيلا سكنية | حي أحد"]],
+  ["project-arouba-mosque-villas.html", ["حي العربية", "مسجد و ٢ فيلا"]],
   [
     "project-modon-eight-warehouses-riyadh.html",
     [
@@ -133,4 +141,4 @@ if (mismatches.length) {
   throw new Error(`Next.js export parity failed:\n${mismatches.join("\n")}`);
 }
 
-console.log(`Verified ${sourceFiles.length} HTML pages, intentional project-image transforms, and critical static assets.`);
+console.log(`Verified ${sourceFiles.length} HTML pages, intentional project-image/title transforms, and critical static assets.`);
