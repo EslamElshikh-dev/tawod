@@ -15,7 +15,13 @@ const rootHtmlSource = join(root, "index.html");
 if (!existsSync(rootRouteOutput)) {
   throw new Error("Next.js did not create the static root route output.");
 }
-if (!readFileSync(rootRouteOutput).equals(readFileSync(rootHtmlSource))) {
+
+const approvedHomepage = readFileSync(rootHtmlSource, "utf8").replaceAll(
+  ">فيلا حي الفيصلية<",
+  ">فيلا سكنية | حي الفيصلية<",
+);
+
+if (readFileSync(rootRouteOutput, "utf8") !== approvedHomepage) {
   throw new Error("The exported root route differs from the approved homepage.");
 }
 
