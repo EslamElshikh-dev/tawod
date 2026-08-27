@@ -67,12 +67,12 @@ function article(h,r){
 function schema(r,h,s,c,q,stats,pageDate=date){const title=first(h,/<h1[^>]*>([\s\S]*?)<\/h1>/i,c.name),desc=first(h,/<meta[^>]*name="description"[^>]*content="([^"]*)"/i,c.scope),url=domain+pagePath(r);const page={'@context':'https://schema.org','@type':s.article?'Article':'WebPage',name:title,headline:title,description:desc,url,inLanguage:'ar-SA',dateModified:pageDate,isPartOf:{'@id':domain+'/#website'},publisher:{'@id':domain+'/#organization'}};if(s.article){page.author={'@id':domain+'/#organization'};page.mainEntityOfPage=url;if(stats){page.wordCount=stats.words;page.timeRequired=`PT${stats.minutes}M`}}const faq={'@context':'https://schema.org','@type':'FAQPage',mainEntity:q.map(x=>({'@type':'Question',name:x[0],acceptedAnswer:{'@type':'Answer',text:x[1]}}))};const crumbs={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'الرئيسية',item:domain+'/'},{'@type':'ListItem',position:2,name:title,item:url}]};const [a,b]=marker('SCHEMA');return`${a}<script id="tawod-static-page-schema" type="application/ld+json">${JSON.stringify(page)}</script><script id="tawod-static-faq-schema" type="application/ld+json">${JSON.stringify(faq)}</script><script id="tawod-static-breadcrumb-schema" type="application/ld+json">${JSON.stringify(crumbs)}</script>${b}`}
 
 const changes=[];
-for(const f of walk(root).filter(x=>x.endsWith('.html'))){
+for(const f of walk(root).filter(x=>x.endsWith('.html')&&!rel(x).startsWith('assets/project-pages/'))){
   const r=rel(f);
   // These self-contained silos and archives own their layout, links, content
   // and schema through dedicated generators. The generic enhancer must never
   // inject cross-silo navigation or duplicate their structured data.
-  if(r.startsWith('maintenance/')||/^(?:dammam|khobar|dhahran)\//.test(r)||r==='blog/index.html'||/^blog\/page\/\d+\/index\.html$/.test(r))continue;
+  if(r.startsWith('maintenance/')||/^(?:dammam|khobar|dhahran)\//.test(r)||/^project-[^/]+\.html$/.test(r)||r==='blog/index.html'||/^blog\/page\/\d+\/index\.html$/.test(r))continue;
   let h=fs.readFileSync(f,'utf8'),old=h,s=state(r,h);
   const existingDate=h.match(/<script[^>]*id=["']tawod-static-page-schema["'][^>]*>[\s\S]*?"dateModified"\s*:\s*"([^"]+)"/i)?.[1]||date;
   for(const n of marks)h=strip(h,n);

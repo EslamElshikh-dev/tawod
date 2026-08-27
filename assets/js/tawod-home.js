@@ -261,6 +261,26 @@
       return document.getElementById(id);
     }).filter(Boolean);
     var navigationTicking = false;
+    var geometryTicking = false;
+    var navigationHeaderHeight = 88;
+    var sectionPositions = [];
+
+    function refreshNavigationGeometry() {
+      navigationHeaderHeight = header ? header.offsetHeight : 88;
+      sectionPositions = sectionTargets.map(function (target) {
+        return { id: target.id, top: target.offsetTop };
+      });
+      geometryTicking = false;
+    }
+
+    function requestNavigationGeometry() {
+      if (geometryTicking) return;
+      geometryTicking = true;
+      window.requestAnimationFrame(function () {
+        refreshNavigationGeometry();
+        requestNavigationState();
+      });
+    }
 
     function setActiveNavigation(activeId) {
       sectionLinks.concat(homeLinks).forEach(function (link) {
@@ -277,10 +297,10 @@
     }
 
     function updateNavigationState() {
-      var marker = window.scrollY + (header ? header.offsetHeight : 88) + 120;
+      var marker = window.scrollY + navigationHeaderHeight + 120;
       var activeId = '';
-      sectionTargets.forEach(function (target) {
-        if (target.offsetTop <= marker) activeId = target.id;
+      sectionPositions.forEach(function (section) {
+        if (section.top <= marker) activeId = section.id;
       });
       if (window.scrollY < 260) activeId = '';
       setActiveNavigation(activeId);
@@ -293,9 +313,14 @@
       window.requestAnimationFrame(updateNavigationState);
     }
 
-    requestNavigationState();
+    requestNavigationGeometry();
     window.addEventListener('scroll', requestNavigationState, { passive: true });
     window.addEventListener('hashchange', requestNavigationState);
+    window.addEventListener('resize', requestNavigationGeometry, { passive: true });
+    window.addEventListener('load', requestNavigationGeometry, { once: true });
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(requestNavigationGeometry).catch(function () {});
+    }
 
     if (!document.documentElement.dataset.menuEscapeReady) {
       document.documentElement.dataset.menuEscapeReady = 'true';

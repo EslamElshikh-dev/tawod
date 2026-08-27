@@ -6,6 +6,8 @@
   var GOOGLE_ADS_ID = 'AW-18266173285';
   var CONTACT_CONVERSION = 'AW-18266173285/qi4gCLu5lsUcEOXe_oVE';
   var LEAD_SESSION_KEY = 'tawodLeadSubmitted';
+  var INTERACTION_LOAD_DELAY = 2000;
+  var FALLBACK_LOAD_DELAY = 8000;
 
   if (window.__tawodAnalyticsInitialized) return;
   window.__tawodAnalyticsInitialized = true;
@@ -21,17 +23,39 @@
 
   var tagRequested = false;
   var idleTimer = 0;
+  var scheduledFor = 0;
 
   function loadGoogleTag() {
     if (tagRequested) return;
     tagRequested = true;
     if (idleTimer) window.clearTimeout(idleTimer);
+    idleTimer = 0;
+    scheduledFor = 0;
 
     var tag = document.createElement('script');
     tag.async = true;
     tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA4_ID);
     tag.setAttribute('data-tawod-google-tag', 'true');
     document.head.appendChild(tag);
+  }
+
+  function scheduleGoogleTag(delay) {
+    if (tagRequested) return;
+    var nextRun = Date.now() + delay;
+    if (idleTimer && scheduledFor <= nextRun) return;
+    if (idleTimer) window.clearTimeout(idleTimer);
+    scheduledFor = nextRun;
+    idleTimer = window.setTimeout(function () {
+      idleTimer = 0;
+      scheduledFor = 0;
+      loadGoogleTag();
+    }, delay);
+  }
+
+  function scheduleFallbackLoad() {
+    var schedule = function () { scheduleGoogleTag(FALLBACK_LOAD_DELAY); };
+    if (document.readyState === 'complete') schedule();
+    else window.addEventListener('load', schedule, { once: true });
   }
 
   function track(name, parameters) {
@@ -118,7 +142,7 @@
     var article = document.createElement('article');
     article.className = 'project-card reveal-up active visible in-view revealed show';
     article.setAttribute('data-project', 'arouba-mosque-villas');
-    article.innerHTML = '<div class="card-img-wrap"><img class="card-img" src="images/projects/arouba-mosque-villas-01.webp" width="420" height="560" loading="eager" decoding="async" alt="مشروع مسجد وفللتين سكنيتين في حي العروبة - شركة تعاود للمقاولات"></div><div class="card-body"><div class="project-meta"><span>مسجد + فلل</span><span>تسليم مفتاح</span></div><h3>مسجد وفللتان سكنيتان – حي العروبة</h3><p>تنفيذ متكامل بنظام تسليم مفتاح كامل بمساحة 1800 م² خلال مدة زمنية قدرها 12 شهرًا.</p><a class="card-link" href="project-arouba-mosque-villas.html">تفاصيل المشروع <i class="fa-solid fa-arrow-left-long"></i></a></div>';
+    article.innerHTML = '<div class="card-img-wrap"><img class="card-img" src="images/projects/arouba-mosque-villas-01.webp" width="420" height="560" loading="eager" decoding="async" alt="مشروع مسجد و٢ فيلا في حي العربية - شركة تعاود للمقاولات"></div><div class="card-body"><div class="project-meta"><span>مسجد + فلل</span><span>تسليم مفتاح</span></div><h3>مسجد و ٢ فيلا | حي العربية</h3><p>تنفيذ متكامل بنظام تسليم مفتاح كامل بمساحة 1800 م² خلال مدة زمنية قدرها 12 شهرًا.</p><a class="card-link" href="project-arouba-mosque-villas.html" aria-label="تفاصيل مشروع مسجد و ٢ فيلا | حي العربية">تفاصيل المشروع <i class="fa-solid fa-arrow-left-long"></i></a></div>';
     grid.insertBefore(article, grid.firstChild);
   }
 
@@ -131,12 +155,13 @@
 
   document.addEventListener('click', trackContactClick, true);
   ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (eventName) {
-    window.addEventListener(eventName, loadGoogleTag, { once: true, passive: true });
+    window.addEventListener(eventName, function () {
+      scheduleGoogleTag(INTERACTION_LOAD_DELAY);
+    }, { once: true, passive: true });
   });
-  window.addEventListener('pagehide', loadGoogleTag, { once: true });
 
   if (/(?:^|\/)thank-you\.html$/.test(window.location.pathname)) loadGoogleTag();
-  else idleTimer = window.setTimeout(loadGoogleTag, 1500);
+  else scheduleFallbackLoad();
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', injectFeaturedProject);
   else injectFeaturedProject();

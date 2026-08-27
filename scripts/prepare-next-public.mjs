@@ -6,10 +6,18 @@ import {
   rmSync,
   writeFileSync,
 } from "node:fs";
+import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
 
 const root = process.cwd();
 const publicDirectory = join(root, "public");
+const analyticsVersion = createHash("sha256")
+  .update(readFileSync(join(root, "assets/js/tawod-analytics.js")))
+  .digest("hex")
+  .slice(0, 12);
+const analyticsInstall = `<!-- TAWOD_ANALYTICS_START --><script src="/assets/js/tawod-analytics.js?v=${analyticsVersion}" defer></script><!-- TAWOD_ANALYTICS_END -->`;
+const analyticsMarkerPattern = /<!-- TAWOD_ANALYTICS_START -->[\s\S]*?<!-- TAWOD_ANALYTICS_END -->\s*/g;
+const analyticsScriptPattern = /\s*<script\b[^>]*\bsrc=["']\/assets\/js\/tawod-analytics\.js(?:\?v=[^"']*)?["'][^>]*><\/script>\s*/gi;
 const directories = ["assets", "images", "maintenance/assets"];
 const files = [
   "CNAME",
@@ -86,7 +94,10 @@ for (const page of generatedProjectPages) {
     .replace(
       '{"@type":"Question",name":',
       '{"@type":"Question","name":',
-    );
+    )
+    .replace(analyticsMarkerPattern, "")
+    .replace(analyticsScriptPattern, "")
+    .replace(/<\/head>/i, `${analyticsInstall}</head>`);
   if (!html.startsWith("<!DOCTYPE html>") || !html.endsWith("</html>")) {
     throw new Error(`Invalid generated project page: ${page.output}`);
   }

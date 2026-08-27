@@ -5,7 +5,10 @@ import { createHash } from 'node:crypto';
 
 const root = process.cwd();
 const check = process.argv.includes('--check');
-const version = '20260823-1';
+const version = createHash('sha256')
+  .update(fs.readFileSync(path.join(root, 'assets/js/tawod-analytics.js')))
+  .digest('hex')
+  .slice(0, 12);
 const start = '<!-- TAWOD_ANALYTICS_START -->';
 const end = '<!-- TAWOD_ANALYTICS_END -->';
 const install = `${start}<script src="/assets/js/tawod-analytics.js?v=${version}" defer></script>${end}`;
@@ -18,6 +21,7 @@ const walk = (directory) => fs.readdirSync(directory, { withFileTypes: true }).f
 });
 const relative = (file) => path.relative(root, file).split(path.sep).join('/');
 const markerPattern = new RegExp(`${start}[\\s\\S]*?${end}\\s*`, 'g');
+const analyticsScriptPattern = /\s*<script\b[^>]*\bsrc=["']\/assets\/js\/tawod-analytics\.js(?:\?v=[^"']*)?["'][^>]*><\/script>\s*/gi;
 const legacyHomeTag = /\s*<!-- Google tag: queued immediately,[\s\S]*?-->\s*<script>[\s\S]*?<\/script>\s*/i;
 const inlineScript = /<script\b(?![^>]*\bsrc=)[^>]*>[\s\S]*?<\/script>\s*/gi;
 const revision = (file) => createHash('sha256').update(fs.readFileSync(path.join(root, 'assets', 'js', file))).digest('hex').slice(0, 12);
@@ -37,9 +41,9 @@ function versionSharedScripts(html) {
 }
 
 const changes = [];
-for (const file of walk(root).filter((candidate) => candidate.endsWith('.html'))) {
+for (const file of walk(root).filter((candidate) => candidate.endsWith('.html') && !relative(candidate).startsWith('assets/project-pages/'))) {
   const oldHtml = fs.readFileSync(file, 'utf8');
-  let html = oldHtml.replace(markerPattern, '').replace(legacyHomeTag, '\n');
+  let html = oldHtml.replace(markerPattern, '').replace(analyticsScriptPattern, '').replace(legacyHomeTag, '\n');
   html = html.replace(inlineScript, (block) => (
     block.includes('tawodLeadSubmitted') && block.includes('lead_confirmation') ? '' : block
   ));

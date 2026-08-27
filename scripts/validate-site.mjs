@@ -3,7 +3,9 @@ import path from 'node:path';
 import process from 'node:process';
 import { createHash } from 'node:crypto';
 
-const root=process.cwd(),domain='https://tawodco.com',analyticsSrc='/assets/js/tawod-analytics.js?v=20260823-1',errors=[],warnings=[];
+const root=process.cwd(),domain='https://tawodco.com',errors=[],warnings=[];
+const assetRevision=file=>createHash('sha256').update(fs.readFileSync(path.join(root,'assets','js',file))).digest('hex').slice(0,12);
+const analyticsSrc=`/assets/js/tawod-analytics.js?v=${assetRevision('tawod-analytics.js')}`;
 const ignoredDirectories=new Set(['.git','.next','node_modules','out','public']);
 const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>ignoredDirectories.has(e.name)?[]:e.isDirectory()?walk(path.join(d,e.name)):[path.join(d,e.name)]);
 const rel=f=>path.relative(root,f).split(path.sep).join('/');
@@ -13,7 +15,6 @@ const pagePath=r=>r==='index.html'?'/':r.endsWith('/index.html')?'/'+r.slice(0,-
 const htmlFiles=walk(root).filter(f=>f.endsWith('.html'));
 const pages=new Map(htmlFiles.map(f=>[rel(f),fs.readFileSync(f,'utf8')]));
 const titles=new Map(),canonicals=new Map(),indexable=new Set();
-const assetRevision=file=>createHash('sha256').update(fs.readFileSync(path.join(root,'assets','js',file))).digest('hex').slice(0,12);
 const sharedScriptRevisions=new Map([['tawod-home.js',assetRevision('tawod-home.js')],['tawod-inner.js',assetRevision('tawod-inner.js')],['contact-conversion.js',assetRevision('contact-conversion.js')]]);
 
 function schemaHas(node,type){if(!node||typeof node!=='object')return false;if(node['@type']===type||(Array.isArray(node['@type'])&&node['@type'].includes(type)))return true;return Object.values(node).some(v=>Array.isArray(v)?v.some(x=>schemaHas(x,type)):schemaHas(v,type))}

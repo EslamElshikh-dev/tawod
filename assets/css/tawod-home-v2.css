@@ -1294,3 +1294,20 @@ html body.home-page .contact-card {
     font-size: 13px;
   }
 }
+
+/* Keep the homepage's asynchronous CSS hydration on compositor-safe properties. */
+html body.home-page {
+  --transition: transform .32s ease, opacity .32s ease;
+}
+
+html body.home-page .header {
+  transition: none !important;
+}
+
+html body.home-page .sidebar-services-menu {
+  transition: opacity .24s ease;
+}
+
+html body.home-page .sidebar-services-list {
+  transition: none;
+}

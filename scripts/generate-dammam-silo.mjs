@@ -13,6 +13,7 @@ const changes = [];
 const assetRevision = (file) => createHash('sha256').update(fs.readFileSync(path.join(root, 'assets', 'js', file))).digest('hex').slice(0, 12);
 const homeJsRevision = assetRevision('tawod-home.js');
 const innerJsRevision = assetRevision('tawod-inner.js');
+const systemCssRevision = createHash('sha256').update(fs.readFileSync(path.join(root, 'assets', 'css', 'tawod-system.css'))).digest('hex').slice(0, 12);
 
 const escapeHtml = (value) => String(value)
   .replace(/&/g, '&amp;')
@@ -101,7 +102,7 @@ function styleLinks(article = false) {
 <link href="/assets/css/tawod-upgrades.css" rel="stylesheet">
 <link href="/assets/css/tawod-inner.css" rel="stylesheet">
 <link href="/assets/css/tawod-blog.css" rel="stylesheet">
-${article ? '<link href="/assets/css/tawod-article.css" rel="stylesheet">\n' : ''}<link href="/assets/css/tawod-system.css" rel="stylesheet">
+${article ? '<link href="/assets/css/tawod-article.css" rel="stylesheet">\n' : ''}<link href="/assets/css/tawod-system.css?v=${systemCssRevision}" rel="stylesheet">
 <link href="/assets/css/tawod-dammam.css" rel="stylesheet">`;
 }
 

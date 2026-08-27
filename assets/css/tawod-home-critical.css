@@ -16,7 +16,7 @@
   --white: #FFFFFF;
   --success: #25D366;
   --shadow-header: 0 10px 30px rgba(0, 0, 0, .12);
-  --transition: all .32s ease;
+  --transition: transform .32s ease, opacity .32s ease;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }

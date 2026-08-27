@@ -3,15 +3,19 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const source = fs.readFileSync('assets/js/tawod-analytics.js', 'utf8');
+assert.match(source, /مسجد و ٢ فيلا \| حي العربية/, 'the injected project card must preserve the approved title');
+assert.doesNotMatch(source, /حي العروبة/, 'the obsolete project location must not return through analytics injection');
 
 function runAnalytics({ pathname = '/', leadFlag = null } = {}) {
   const listeners = new Map();
   const windowListeners = new Map();
   const storage = new Map();
   const appendedScripts = [];
+  const timers = [];
   if (leadFlag !== null) storage.set('tawodLeadSubmitted', leadFlag);
 
   const document = {
+    readyState: 'loading',
     head: { appendChild: (element) => appendedScripts.push(element) },
     createElement: () => ({ setAttribute(name, value) { this[name] = value; } }),
     addEventListener: (name, handler) => listeners.set(name, handler)
@@ -24,18 +28,25 @@ function runAnalytics({ pathname = '/', leadFlag = null } = {}) {
       removeItem: (key) => storage.delete(key)
     },
     addEventListener: (name, handler) => windowListeners.set(name, handler),
-    setTimeout: () => 1,
+    setTimeout: (handler, delay) => {
+      timers.push({ handler, delay });
+      return timers.length;
+    },
     clearTimeout: () => {}
   };
   const sandbox = { window, document, encodeURIComponent, Date, Object, console };
   vm.runInNewContext(source, sandbox, { filename: 'tawod-analytics.js' });
-  return { window, listeners, storage, appendedScripts, rerun: () => vm.runInNewContext(source, sandbox) };
+  return { window, listeners, windowListeners, storage, appendedScripts, timers, rerun: () => vm.runInNewContext(source, sandbox) };
 }
 
 const normal = runAnalytics({ pathname: '/service-construction.html' });
 const configs = normal.window.dataLayer.filter((item) => item[0] === 'config').map((item) => item[1]);
 assert.deepEqual([...configs], ['G-YE1NT4R4YT', 'AW-18266173285']);
 assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'generate_lead').length, 0);
+assert.equal(normal.appendedScripts.length, 0, 'Google Tag must stay off the critical loading path');
+normal.windowListeners.get('scroll')();
+assert.equal(normal.appendedScripts.length, 0, 'scrolling may schedule Google Tag but must not parse it during the interaction');
+assert.equal(normal.timers.at(-1).delay, 2000, 'interaction loading must be delayed away from the input task');
 normal.rerun();
 assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'config').length, 2, 'analytics must initialize once');
 

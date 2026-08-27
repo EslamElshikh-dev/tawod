@@ -48,7 +48,7 @@
   --white: #FFFFFF;
   --success: #25D366;
   --shadow-header: 0 10px 30px rgba(0, 0, 0, .12);
-  --transition: all .32s ease;
+  --transition: transform .32s ease, opacity .32s ease;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -249,8 +249,8 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
 }
   </style>
   <!-- TAWOD_CRITICAL_CSS_END -->
-  <link rel='preload' as='style' href='assets/css/tawod-home-performance.css?v=06c95ab7d374' onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link href='assets/css/tawod-home-performance.css?v=06c95ab7d374' rel='stylesheet'></noscript>
+  <link rel='preload' as='style' href='assets/css/tawod-home-performance.css?v=555d2bef06fe' onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href='assets/css/tawod-home-performance.css?v=555d2bef06fe' rel='stylesheet'></noscript>
 
   <script type='application/ld+json'>
   {
@@ -346,7 +346,7 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
     ]
   }
   </script>
-<!-- TAWOD_ANALYTICS_START --><script src="/assets/js/tawod-analytics.js?v=20260823-1" defer></script><!-- TAWOD_ANALYTICS_END --></head>
+<!-- TAWOD_ANALYTICS_START --><script src="/assets/js/tawod-analytics.js?v=fbca8a499cce" defer></script><!-- TAWOD_ANALYTICS_END --></head>
 <body class='home-page no-mobile-action-bar'>
   <!-- TAWOD_ICON_SPRITE_START -->
   <svg class='icon-sprite' aria-hidden='true' focusable='false' xmlns='http://www.w3.org/2000/svg'>
@@ -392,7 +392,7 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
   <aside class='mobile-sidebar' id='mobileSidebar' aria-label='قائمة الجوال' aria-hidden='true' inert>
     <button class='fa-solid fa-xmark close-sidebar' id='closeSidebar' type='button' aria-label='إغلاق القائمة'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-xmark'></use></svg></button>
     <a class='logo sidebar-logo' href='index.html'>
-      <img class='logo-img' src='images/logo/tawod-logo-300.png' width='300' height='133' loading='lazy' decoding='async' alt='شركة تعاود للمقاولات'>
+      <img class='logo-img' src='images/logo/tawod-logo-180.webp' width='180' height='80' loading='lazy' decoding='async' alt='شركة تعاود للمقاولات'>
     </a>
     <div class='mobile-socials'>
       <a aria-label='TikTok' href='https://tiktok.com/@tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-tiktok'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-brands-tiktok'></use></svg></i></a>
@@ -422,7 +422,7 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
   <header class='header' id='header'>
     <div class='container'>
       <a class='logo' href='index.html' aria-label='شركة تعاود للمقاولات'>
-        <img class='logo-img' src='images/logo/tawod-logo-300.png' width='300' height='133' decoding='async' alt='شركة تعاود للمقاولات'>
+        <img class='logo-img' src='images/logo/tawod-logo-180.webp' width='180' height='80' decoding='async' alt='شركة تعاود للمقاولات'>
       </a>
       <nav aria-label='القائمة الرئيسية'>
         <ul class='nav-links'>
@@ -450,7 +450,7 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
     <section class='hero' aria-labelledby='home-hero-title'>
       <picture class='hero-media' aria-hidden='true'>
         <source srcset='images/hero-bg-mobile-optimized.webp' media='(max-width: 767px)' width='720' height='920' type='image/webp'>
-        <img src='images/hero-bg-desktop-optimized.webp' width='1599' height='900' fetchpriority='high' loading='eager' decoding='async' alt=''>
+        <img src='images/hero-bg-desktop-optimized.webp' width='1599' height='900' fetchpriority='high' loading='eager' decoding='sync' alt=''>
       </picture>
       <div class='container hero-content reveal-up'>
         <h1 id='home-hero-title'><span class='hero-title-main'>أفضل شركة مقاولات عامة في الرياض</span><span class='hero-title-sub'>نبني المستقبل بخطى ثابتة ورؤية مدروسة</span></h1>
@@ -487,27 +487,27 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
         <div class='grid-3'>
           <article class='premium-card reveal-up'>
             <div class='card-img-wrap'><img class='card-img' src='images/services/service-construction-riyadh.webp' width='1536' height='1024' loading='lazy' decoding='async' alt='خدمة البناء والإنشاءات في الرياض'><div class='card-icon-wrap'><i class='fa-solid fa-building'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-building'></use></svg></i></div></div>
-            <div class='card-body'><h3>البناء والإنشاءات</h3><div class='service-meta'><span>فلل</span><span>ملاحق</span><span>مبانٍ تجارية</span></div><p>ننفذ أعمال البناء والإنشاءات للفلل والملاحق والمباني السكنية والتجارية في الرياض، بدءًا من تجهيز الموقع وأعمال الهيكل الإنشائي وحتى استكمال البنود الأساسية، بما يراعي المخططات المعتمدة ومتطلبات الكود السعودي ونطاق العمل المتفق عليه.</p><a class='card-link' href='service-construction.html'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
+            <div class='card-body'><h3>البناء والإنشاءات</h3><div class='service-meta'><span>فلل</span><span>ملاحق</span><span>مبانٍ تجارية</span></div><p>ننفذ أعمال البناء والإنشاءات للفلل والملاحق والمباني السكنية والتجارية في الرياض، بدءًا من تجهيز الموقع وأعمال الهيكل الإنشائي وحتى استكمال البنود الأساسية، بما يراعي المخططات المعتمدة ومتطلبات الكود السعودي ونطاق العمل المتفق عليه.</p><a class='card-link' href='service-construction.html' aria-label='تفاصيل خدمة البناء والإنشاءات'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
           </article>
           <article class='premium-card reveal-up delay-100'>
             <div class='card-img-wrap'><img class='card-img' src='images/services/service-turnkey-riyadh.webp' width='1536' height='1024' loading='lazy' decoding='async' alt='خدمة تسليم مفتاح في الرياض'><div class='card-icon-wrap'><i class='fa-solid fa-key'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-key'></use></svg></i></div></div>
-            <div class='card-body'><h3>تسليم مفتاح</h3><div class='service-meta'><span>حصر</span><span>تنفيذ</span><span>تسليم</span></div><p>نتولى إدارة مشاريع تسليم المفتاح في الرياض من حصر البنود وتنسيق فرق الإنشاء والأعمال الكهروميكانيكية، حتى التشطيبات والفحص النهائي والتسليم الجاهز للاستخدام، ضمن مراحل ومواصفات واضحة تسهّل متابعة المشروع واتخاذ القرار.</p><a class='card-link' href='service-turnkey.html'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
+            <div class='card-body'><h3>تسليم مفتاح</h3><div class='service-meta'><span>حصر</span><span>تنفيذ</span><span>تسليم</span></div><p>نتولى إدارة مشاريع تسليم المفتاح في الرياض من حصر البنود وتنسيق فرق الإنشاء والأعمال الكهروميكانيكية، حتى التشطيبات والفحص النهائي والتسليم الجاهز للاستخدام، ضمن مراحل ومواصفات واضحة تسهّل متابعة المشروع واتخاذ القرار.</p><a class='card-link' href='service-turnkey.html' aria-label='تفاصيل خدمة تسليم مفتاح'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
           </article>
           <article class='premium-card reveal-up delay-200'>
             <div class='card-img-wrap'><img class='card-img' src='images/services/service-restoration-riyadh.webp' width='1535' height='1024' loading='lazy' decoding='async' alt='ترميم مبانٍ في الرياض'><div class='card-icon-wrap'><i class='fa-solid fa-screwdriver-wrench'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-screwdriver-wrench'></use></svg></i></div></div>
-            <div class='card-body'><h3>ترميم المباني</h3><div class='service-meta'><span>معالجة</span><span>تجديد</span><span>واجهات</span></div><p>ننفذ ترميم وتجديد المباني والفلل في الرياض بعد تقييم الحالة القائمة وتحديد الأعمال المطلوبة، بما يشمل معالجة التشققات والرطوبة وتجديد الواجهات والمساحات الداخلية، مع تنسيق البنود للحفاظ على جودة العناصر القائمة وتحسين كفاءة الاستخدام.</p><a class='card-link' href='service-restoration.html'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
+            <div class='card-body'><h3>ترميم المباني</h3><div class='service-meta'><span>معالجة</span><span>تجديد</span><span>واجهات</span></div><p>ننفذ ترميم وتجديد المباني والفلل في الرياض بعد تقييم الحالة القائمة وتحديد الأعمال المطلوبة، بما يشمل معالجة التشققات والرطوبة وتجديد الواجهات والمساحات الداخلية، مع تنسيق البنود للحفاظ على جودة العناصر القائمة وتحسين كفاءة الاستخدام.</p><a class='card-link' href='service-restoration.html' aria-label='تفاصيل خدمة ترميم المباني'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
           </article>
           <article class='premium-card reveal-up'>
             <div class='card-img-wrap'><img class='card-img' src='images/services/service-finishing-riyadh.webp' width='1536' height='1024' loading='lazy' decoding='async' alt='تشطيبات داخلية وخارجية في الرياض'><div class='card-icon-wrap'><i class='fa-solid fa-paint-roller'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-paint-roller'></use></svg></i></div></div>
-            <div class='card-body'><h3>التشطيبات العامة</h3><div class='service-meta'><span>داخلي</span><span>خارجي</span><span>واجهات</span></div><p>نقدم تشطيبات داخلية وخارجية للفلل والمباني السكنية والتجارية في الرياض، تشمل الأرضيات والدهانات والأسقف والواجهات، مع تنسيق الخامات والألوان والتفاصيل التنفيذية للوصول إلى مظهر متجانس وجودة عملية تدوم.</p><a class='card-link' href='service-finishing.html'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
+            <div class='card-body'><h3>التشطيبات العامة</h3><div class='service-meta'><span>داخلي</span><span>خارجي</span><span>واجهات</span></div><p>نقدم تشطيبات داخلية وخارجية للفلل والمباني السكنية والتجارية في الرياض، تشمل الأرضيات والدهانات والأسقف والواجهات، مع تنسيق الخامات والألوان والتفاصيل التنفيذية للوصول إلى مظهر متجانس وجودة عملية تدوم.</p><a class='card-link' href='service-finishing.html' aria-label='تفاصيل خدمة التشطيبات العامة'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
           </article>
           <article class='premium-card reveal-up delay-100'>
             <div class='card-img-wrap'><img class='card-img' src='images/services/service-decor-riyadh.webp' width='1536' height='1024' loading='lazy' decoding='async' alt='ديكور وتصميم داخلي في الرياض'><div class='card-icon-wrap'><i class='fa-solid fa-compass-drafting'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-compass-drafting'></use></svg></i></div></div>
-            <div class='card-body'><h3>الديكور والتصميم الداخلي</h3><div class='service-meta'><span>منازل</span><span>مكاتب</span><span>محلات</span></div><p>نصمم وننفذ الديكور الداخلي للمنازل والمكاتب والمحلات في الرياض بأسلوب يجمع بين الهوية الجمالية وكفاءة الاستخدام، مع تنسيق الألوان والإضاءة والخامات وتوزيع العناصر بما يلائم طبيعة المساحة واحتياجات المشروع.</p><a class='card-link' href='service-decor.html'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
+            <div class='card-body'><h3>الديكور والتصميم الداخلي</h3><div class='service-meta'><span>منازل</span><span>مكاتب</span><span>محلات</span></div><p>نصمم وننفذ الديكور الداخلي للمنازل والمكاتب والمحلات في الرياض بأسلوب يجمع بين الهوية الجمالية وكفاءة الاستخدام، مع تنسيق الألوان والإضاءة والخامات وتوزيع العناصر بما يلائم طبيعة المساحة واحتياجات المشروع.</p><a class='card-link' href='service-decor.html' aria-label='تفاصيل خدمة الديكور والتصميم الداخلي'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
           </article>
           <article class='premium-card reveal-up delay-200'>
             <div class='card-img-wrap'><img class='card-img' src='images/services/service-mep-riyadh.webp' width='1536' height='1024' loading='lazy' decoding='async' alt='أعمال الكهرباء والسباكة والميكانيكا في الرياض'><div class='card-icon-wrap'><i class='fa-solid fa-gears'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-gears'></use></svg></i></div></div>
-            <div class='card-body'><h3>أعمال الكهرباء والسباكة</h3><div class='service-meta'><span>كهرباء</span><span>سباكة</span><span>MEP</span></div><p>ننفذ وننسق أعمال الكهرباء والسباكة والميكانيكا (MEP) للمشاريع السكنية والتجارية في الرياض، مع مراجعة مسارات الخدمات ونقاط التشغيل قبل إغلاق التشطيبات، للحد من التعارضات وإعادة العمل وتحسين كفاءة الاستخدام بعد التسليم.</p><a class='card-link' href='service-mep.html'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
+            <div class='card-body'><h3>أعمال الكهرباء والسباكة</h3><div class='service-meta'><span>كهرباء</span><span>سباكة</span><span>MEP</span></div><p>ننفذ وننسق أعمال الكهرباء والسباكة والميكانيكا (MEP) للمشاريع السكنية والتجارية في الرياض، مع مراجعة مسارات الخدمات ونقاط التشغيل قبل إغلاق التشطيبات، للحد من التعارضات وإعادة العمل وتحسين كفاءة الاستخدام بعد التسليم.</p><a class='card-link' href='service-mep.html' aria-label='تفاصيل خدمة الكهرباء والسباكة'>تفاصيل الخدمة <i class='fa-solid fa-arrow-left-long'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-arrow-left-long'></use></svg></i></a></div>
           </article>
         </div>
       </div>
@@ -697,7 +697,7 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
     <div class='container'>
       <div class='footer-grid'>
         <div class='footer-about'>
-          <img class='logo-img' src='images/logo/tawod-logo-300.png' width='300' height='133' loading='lazy' decoding='async' alt='شركة تعاود'>
+          <img class='logo-img' src='images/logo/tawod-logo-180.webp' width='180' height='80' loading='lazy' decoding='async' alt='شركة تعاود'>
           <p>شركة تعاود للمقاولات العامة بالرياض متخصصة في البناء والإنشاءات والترميم والتشطيب وتقديم حلول هندسية متكاملة بأعلى معايير الجودة.</p>
           <div class='footer-socials'>
             <a aria-label='Instagram' href='https://instagram.com/tawodco' target='_blank' rel='noopener'><i class='fa-brands fa-instagram'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-brands-instagram'></use></svg></i></a>
@@ -750,7 +750,7 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
     <a aria-label='اتصال' class='float-btn float-call' href='tel:0551128884'><i class='fa-solid fa-phone'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-phone'></use></svg></i></a>
   </div>
 
-  <script src='assets/js/tawod-home.js?v=c4090d88b0a5' defer></script>
+  <script src='assets/js/tawod-home.js?v=04939acfc8d4' defer></script>
   <script src='assets/js/tawod-upgrades.js?v=bb1e3d7f440e' defer></script>
 </body>
 </html>
