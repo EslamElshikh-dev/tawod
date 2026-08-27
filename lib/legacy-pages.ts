@@ -120,8 +120,8 @@ function enhanceLegacyHtml(relativePath: string, html: string) {
   if (relativePath === "projects.html") {
     enhancedHtml = enhancedHtml
       .replace(
-        '<link href="assets/css/tawod-system.css" rel="stylesheet">',
-        '<link href="assets/css/tawod-system.css" rel="stylesheet"><link href="assets/css/tawod-projects-showcase.css?v=20260827-1" rel="stylesheet">',
+        /(<link href="assets\/css\/tawod-system\.css(?:\?[^\"]*)?" rel="stylesheet">)/,
+        '$1<link href="assets/css/tawod-projects-showcase.css?v=20260827-1" rel="stylesheet">',
       )
       .replace("<body>", '<body class="projects-page">')
       .replace(

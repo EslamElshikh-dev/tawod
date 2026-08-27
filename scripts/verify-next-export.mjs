@@ -19,6 +19,7 @@ const intentionalHtmlTransforms = new Map([
   [
     "projects.html",
     [
+      'href="assets/css/tawod-projects-showcase.css?v=20260827-1"',
       'data-project="faisaliah-villa-facades-finishing"',
       'data-project="villa-plaster-ceramic-marble-uhud-riyadh"',
       'data-project="alrajhi-tanks-king-salman-park"',
