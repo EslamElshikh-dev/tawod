@@ -21,7 +21,155 @@
     });
   }
 
+  function setupHeaderServicesMenu() {
+    var services = [
+      { href: '/service-construction.html', label: 'البناء والإنشاءات', detail: 'الهياكل والأعمال الإنشائية' },
+      { href: '/service-turnkey.html', label: 'تسليم مفتاح', detail: 'من التخطيط حتى التسليم' },
+      { href: '/service-restoration.html', label: 'الترميم والتجديد', detail: 'معالجة المباني ورفع كفاءتها' },
+      { href: '/service-finishing.html', label: 'التشطيبات العامة', detail: 'تشطيبات داخلية وخارجية' },
+      { href: '/service-decor.html', label: 'الديكور والتصميم الداخلي', detail: 'تصميم وتنفيذ المساحات' },
+      { href: '/service-mep.html', label: 'الكهرباء والسباكة', detail: 'حلول فنية متكاملة' }
+    ];
+    var currentFile = window.location.pathname.split('/').filter(Boolean).pop() || 'index.html';
+
+    function isServicesLink(link) {
+      var href = (link && link.getAttribute('href')) || '';
+      return href === '#services' || /(?:^|\/)index\.html#services$/i.test(href) || /\/#services$/i.test(href);
+    }
+
+    function createServiceLink(service, index, mobile) {
+      var link = document.createElement('a');
+      var label = document.createElement('span');
+      var number = document.createElement('span');
+      link.href = service.href;
+      link.className = mobile ? 'sidebar-service-link' : 'nav-service-link';
+      number.className = 'nav-service-number';
+      number.textContent = String(index + 1).padStart(2, '0');
+      label.className = 'nav-service-copy';
+      label.innerHTML = '<strong>' + service.label + '</strong>' + (mobile ? '' : '<small>' + service.detail + '</small>');
+      link.appendChild(number);
+      link.appendChild(label);
+      if (currentFile === service.href.slice(1)) {
+        link.classList.add('active');
+        link.setAttribute('aria-current', 'page');
+      }
+      return link;
+    }
+
+    var desktopLink = Array.from(document.querySelectorAll('.nav-links > li > a')).find(isServicesLink);
+    if (desktopLink && !desktopLink.dataset.servicesMenuReady) {
+      var desktopItem = desktopLink.closest('li');
+      var desktopMenu = document.createElement('ul');
+      var desktopToggle = document.createElement('button');
+      var desktopMenuId = 'header-services-menu';
+
+      desktopLink.dataset.servicesMenuReady = 'true';
+      desktopLink.classList.add('nav-services-main-link');
+      desktopItem.classList.add('nav-services-item');
+      desktopMenu.id = desktopMenuId;
+      desktopMenu.className = 'nav-services-dropdown';
+      desktopMenu.setAttribute('aria-label', 'خدمات شركة تعاود');
+      services.forEach(function (service, index) {
+        var item = document.createElement('li');
+        item.appendChild(createServiceLink(service, index, false));
+        desktopMenu.appendChild(item);
+      });
+
+      desktopToggle.type = 'button';
+      desktopToggle.className = 'nav-services-toggle';
+      desktopToggle.setAttribute('aria-label', 'عرض قائمة الخدمات');
+      desktopToggle.setAttribute('aria-controls', desktopMenuId);
+      desktopToggle.setAttribute('aria-haspopup', 'true');
+      desktopToggle.setAttribute('aria-expanded', 'false');
+      desktopToggle.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m5 7.5 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      desktopLink.insertAdjacentElement('afterend', desktopToggle);
+      desktopItem.appendChild(desktopMenu);
+
+      function setDesktopOpen(open) {
+        desktopItem.classList.toggle('is-open', open);
+        desktopToggle.setAttribute('aria-expanded', String(open));
+      }
+
+      desktopToggle.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        setDesktopOpen(!desktopItem.classList.contains('is-open'));
+      });
+      desktopItem.addEventListener('mouseenter', function () { desktopToggle.setAttribute('aria-expanded', 'true'); });
+      desktopItem.addEventListener('mouseleave', function () {
+        if (!desktopItem.classList.contains('is-open')) desktopToggle.setAttribute('aria-expanded', 'false');
+      });
+      desktopItem.addEventListener('focusin', function () { desktopToggle.setAttribute('aria-expanded', 'true'); });
+      desktopItem.addEventListener('focusout', function () {
+        window.setTimeout(function () {
+          if (!desktopItem.contains(document.activeElement)) setDesktopOpen(false);
+        }, 0);
+      });
+      document.addEventListener('pointerdown', function (event) {
+        if (!desktopItem.contains(event.target)) setDesktopOpen(false);
+      });
+      document.addEventListener('keydown', function (event) {
+        if (event.key !== 'Escape' || !desktopItem.contains(document.activeElement)) return;
+        setDesktopOpen(false);
+        desktopToggle.focus();
+      });
+
+      if (/^service-[a-z-]+\.html$/i.test(currentFile)) desktopLink.classList.add('active');
+    }
+
+    var mobileLink = Array.from(document.querySelectorAll('.sidebar-nav > a')).find(isServicesLink);
+    if (mobileLink && !mobileLink.dataset.servicesMenuReady) {
+      var mobileWrap = document.createElement('div');
+      var mobileRow = document.createElement('div');
+      var mobileToggle = document.createElement('button');
+      var mobileMenu = document.createElement('div');
+      var mobileList = document.createElement('div');
+      var mobileMenuId = 'sidebar-services-menu';
+      var existingIcon = mobileLink.querySelector('i');
+
+      mobileLink.dataset.servicesMenuReady = 'true';
+      mobileLink.classList.add('sidebar-services-main-link');
+      if (existingIcon) existingIcon.remove();
+      mobileWrap.className = 'sidebar-services';
+      mobileRow.className = 'sidebar-services-row';
+      mobileToggle.type = 'button';
+      mobileToggle.className = 'sidebar-services-toggle';
+      mobileToggle.setAttribute('aria-label', 'عرض قائمة الخدمات');
+      mobileToggle.setAttribute('aria-controls', mobileMenuId);
+      mobileToggle.setAttribute('aria-expanded', 'false');
+      mobileToggle.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m5 7.5 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      mobileMenu.id = mobileMenuId;
+      mobileMenu.className = 'sidebar-services-menu';
+      mobileList.className = 'sidebar-services-list';
+      services.forEach(function (service, index) {
+        mobileList.appendChild(createServiceLink(service, index, true));
+      });
+      mobileMenu.appendChild(mobileList);
+      mobileLink.parentNode.insertBefore(mobileWrap, mobileLink);
+      mobileRow.appendChild(mobileLink);
+      mobileRow.appendChild(mobileToggle);
+      mobileWrap.appendChild(mobileRow);
+      mobileWrap.appendChild(mobileMenu);
+
+      function setMobileServicesOpen(open) {
+        mobileWrap.classList.toggle('is-open', open);
+        mobileToggle.setAttribute('aria-expanded', String(open));
+      }
+
+      mobileToggle.addEventListener('click', function () {
+        setMobileServicesOpen(!mobileWrap.classList.contains('is-open'));
+      });
+      if (/^service-[a-z-]+\.html$/i.test(currentFile)) {
+        mobileLink.classList.add('active');
+        setMobileServicesOpen(true);
+      }
+    }
+
+    document.documentElement.classList.add('tawod-services-nav-ready');
+  }
+
   ready(function () {
+    setupHeaderServicesMenu();
     var header = document.getElementById('header');
     var menuBtn = document.getElementById('menuBtn');
     var mobileSidebar = document.getElementById('mobileSidebar');

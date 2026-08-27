@@ -216,3 +216,326 @@ html body .faq-question {
     padding: 20px;
   }
 }
+
+/* Shared header transitions and service navigation. */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+}
+
+html body .header {
+  transition:
+    height .34s cubic-bezier(.22, 1, .36, 1),
+    background-color .34s ease,
+    box-shadow .34s ease,
+    backdrop-filter .34s ease !important;
+}
+
+html body .header.scrolled {
+  box-shadow: 0 13px 34px rgba(8, 9, 13, .24);
+}
+
+html body .nav-services-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+html body .nav-services-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 25px;
+  height: 32px;
+  margin-right: -2px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255,255,255,.72);
+  transition: color .22s ease, background-color .22s ease, transform .3s cubic-bezier(.22, 1, .36, 1);
+}
+
+html body .nav-services-toggle:hover,
+html body .nav-services-toggle:focus-visible {
+  background: rgba(255,255,255,.09);
+  color: var(--primary);
+  outline: none;
+}
+
+html body .nav-services-toggle svg {
+  width: 16px;
+  height: 16px;
+  transition: transform .3s cubic-bezier(.22, 1, .36, 1);
+}
+
+html body .nav-services-item:hover .nav-services-toggle svg,
+html body .nav-services-item:focus-within .nav-services-toggle svg,
+html body .nav-services-item.is-open .nav-services-toggle svg {
+  transform: rotate(180deg);
+}
+
+html body .nav-services-dropdown {
+  position: absolute;
+  top: calc(100% + 15px);
+  right: 50%;
+  z-index: 1200;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  width: min(560px, 86vw);
+  margin: 0;
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(var(--primary-rgb), .13), transparent 34%),
+    rgba(25, 26, 34, .98);
+  box-shadow: 0 24px 60px rgba(5, 6, 10, .34);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(50%, 12px) scale(.985);
+  transform-origin: top center;
+  transition:
+    opacity .24s ease,
+    visibility .24s ease,
+    transform .34s cubic-bezier(.22, 1, .36, 1);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+html body .nav-services-dropdown::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  left: 0;
+  height: 16px;
+}
+
+html body .nav-services-dropdown::after {
+  content: '';
+  position: absolute;
+  right: 50%;
+  bottom: 100%;
+  width: 14px;
+  height: 14px;
+  border-top: 1px solid rgba(255,255,255,.13);
+  border-right: 1px solid rgba(255,255,255,.13);
+  background: #24252e;
+  transform: translate(50%, 7px) rotate(-45deg);
+}
+
+html body .nav-services-item:hover .nav-services-dropdown,
+html body .nav-services-item:focus-within .nav-services-dropdown,
+html body .nav-services-item.is-open .nav-services-dropdown {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(50%, 0) scale(1);
+}
+
+html body .nav-services-dropdown > li {
+  min-width: 0;
+}
+
+html body .nav-links .nav-services-dropdown a.nav-service-link {
+  display: grid !important;
+  grid-template-columns: 40px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-height: 72px;
+  padding: 11px 12px !important;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: rgba(255,255,255,.045);
+  color: #fff !important;
+  white-space: normal !important;
+  transition: transform .23s ease, border-color .23s ease, background-color .23s ease !important;
+}
+
+html body .nav-links .nav-services-dropdown a.nav-service-link::after {
+  display: none !important;
+  content: none !important;
+}
+
+html body .nav-links .nav-services-dropdown a.nav-service-link:hover,
+html body .nav-links .nav-services-dropdown a.nav-service-link:focus-visible,
+html body .nav-links .nav-services-dropdown a.nav-service-link.active {
+  border-color: rgba(var(--primary-rgb), .42);
+  background: rgba(var(--primary-rgb), .12);
+  color: #fff !important;
+  outline: none;
+  transform: translateY(-2px);
+}
+
+html body .nav-service-number {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(var(--primary-rgb), .28);
+  border-radius: 12px;
+  background: rgba(var(--primary-rgb), .1);
+  color: var(--primary);
+  direction: ltr;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+html body .nav-service-copy {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+  text-align: right;
+}
+
+html body .nav-service-copy strong {
+  color: inherit;
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1.55;
+}
+
+html body .nav-service-copy small {
+  color: rgba(255,255,255,.58);
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+html body .sidebar-services {
+  display: grid;
+}
+
+html body .sidebar-services-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 42px;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+
+html body .sidebar-nav a.sidebar-services-main-link {
+  min-width: 0;
+  border-bottom: 0 !important;
+}
+
+html body .sidebar-services-toggle {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-right: auto;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 11px;
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.78);
+  transition: color .22s ease, background-color .22s ease, border-color .22s ease;
+}
+
+html body .sidebar-services-toggle:hover,
+html body .sidebar-services-toggle:focus-visible {
+  border-color: rgba(var(--primary-rgb), .34);
+  background: rgba(var(--primary-rgb), .11);
+  color: var(--primary);
+  outline: none;
+}
+
+html body .sidebar-services-toggle svg {
+  width: 17px;
+  height: 17px;
+  transition: transform .3s cubic-bezier(.22, 1, .36, 1);
+}
+
+html body .sidebar-services.is-open .sidebar-services-toggle svg {
+  transform: rotate(180deg);
+}
+
+html body .sidebar-services-menu {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows .34s cubic-bezier(.22, 1, .36, 1), opacity .24s ease;
+}
+
+html body .sidebar-services.is-open .sidebar-services-menu {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+html body .sidebar-services-list {
+  display: grid;
+  gap: 4px;
+  min-height: 0;
+  padding: 0 10px 0 0;
+  overflow: hidden;
+  transition: padding .3s ease;
+}
+
+html body .sidebar-services.is-open .sidebar-services-list {
+  padding-top: 7px;
+  padding-bottom: 10px;
+}
+
+html body .sidebar-nav .sidebar-service-link {
+  display: grid !important;
+  grid-template-columns: 31px minmax(0, 1fr);
+  justify-content: initial !important;
+  gap: 9px;
+  min-height: 44px;
+  padding: 7px 9px !important;
+  border: 0 !important;
+  border-radius: 11px;
+  background: rgba(255,255,255,.035);
+  color: rgba(255,255,255,.72) !important;
+}
+
+html body .sidebar-nav .sidebar-service-link:hover,
+html body .sidebar-nav .sidebar-service-link:focus-visible,
+html body .sidebar-nav .sidebar-service-link.active {
+  padding-right: 9px !important;
+  background: rgba(var(--primary-rgb), .11);
+  color: var(--primary) !important;
+  outline: none;
+}
+
+html body .sidebar-service-link .nav-service-number {
+  width: 31px;
+  height: 31px;
+  border-radius: 9px;
+  font-size: 10px;
+}
+
+html body .sidebar-service-link .nav-service-copy strong {
+  font-size: 12.5px;
+  font-weight: 650;
+}
+
+@media (max-width: 1199px) {
+  html body .nav-services-dropdown,
+  html body .nav-services-toggle {
+    display: none !important;
+  }
+
+  html {
+    scroll-padding-top: 84px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  html body .header,
+  html body .nav-services-toggle,
+  html body .nav-services-toggle svg,
+  html body .nav-services-dropdown,
+  html body .nav-service-link,
+  html body .sidebar-services-toggle,
+  html body .sidebar-services-toggle svg,
+  html body .sidebar-services-menu,
+  html body .sidebar-services-list {
+    transition: none !important;
+  }
+}
