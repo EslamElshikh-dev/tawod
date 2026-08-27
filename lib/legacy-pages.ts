@@ -40,7 +40,7 @@ const projectsShowcaseMarkup = `
         </a>
         <div class="tawod-project-copy">
           <div class="tawod-project-tags"><span>فيلا سكنية</span><span>واجهات وتشطيبات</span></div>
-          <h3><a href="project-faisaliah-villa-facades-finishing.html">فيلا سكنية – حي الفيصلية</a></h3>
+          <h3><a href="project-faisaliah-villa-facades-finishing.html">فيلا سكنية | حي الفيصلية</a></h3>
           <p>تنفيذ الواجهات واللياسة والرخام والسيراميك الداخلي والخارجي ضمن برنامج تنفيذي واضح.</p>
           <dl class="tawod-project-facts"><div><dt>المساحة</dt><dd>900 م²</dd></div><div><dt>المدة</dt><dd>شهران</dd></div><div><dt>الموقع</dt><dd>الرياض</dd></div></dl>
           <a class="tawod-project-link" href="project-faisaliah-villa-facades-finishing.html">استكشف المشروع <i class="fa-solid fa-arrow-left-long"></i></a>
@@ -48,7 +48,7 @@ const projectsShowcaseMarkup = `
       </article>
       <article class="tawod-project-card reveal-up" data-project="villa-plaster-ceramic-marble-uhud-riyadh">
         <a class="tawod-project-media" href="project-villa-plaster-ceramic-marble-uhud-riyadh.html"><img src="images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp" width="480" height="640" loading="lazy" decoding="async" alt="تشطيب فيلا سكنية في حي أحد بالرياض"><span class="tawod-project-number">02</span></a>
-        <div class="tawod-project-copy"><div class="tawod-project-tags"><span>فيلا سكنية</span><span>تشطيبات</span></div><h3><a href="project-villa-plaster-ceramic-marble-uhud-riyadh.html">فيلا سكنية – حي أحد</a></h3><p>لياسة داخلية وخارجية وقروفات وسيراميك ورخام لمساحة 700 م².</p><dl class="tawod-project-facts"><div><dt>المساحة</dt><dd>700 م²</dd></div><div><dt>المدة</dt><dd>3 أشهر</dd></div></dl><a class="tawod-project-link" href="project-villa-plaster-ceramic-marble-uhud-riyadh.html">استكشف المشروع <i class="fa-solid fa-arrow-left-long"></i></a></div>
+        <div class="tawod-project-copy"><div class="tawod-project-tags"><span>فيلا سكنية</span><span>تشطيبات</span></div><h3><a href="project-villa-plaster-ceramic-marble-uhud-riyadh.html">فيلا سكنية | حي أحد</a></h3><p>لياسة داخلية وخارجية وقروفات وسيراميك ورخام لمساحة 700 م².</p><dl class="tawod-project-facts"><div><dt>المساحة</dt><dd>700 م²</dd></div><div><dt>المدة</dt><dd>3 أشهر</dd></div></dl><a class="tawod-project-link" href="project-villa-plaster-ceramic-marble-uhud-riyadh.html">استكشف المشروع <i class="fa-solid fa-arrow-left-long"></i></a></div>
       </article>
       <article class="tawod-project-card reveal-up delay-100" data-project="alrajhi-tanks-king-salman-park">
         <a class="tawod-project-media" href="project-alrajhi-tanks-king-salman-park.html"><img src="images/projects/alrajhi-tanks-king-salman-park-01.webp" width="480" height="640" loading="lazy" decoding="async" alt="حدادة وعزل خزانات في حديقة الملك سلمان بالرياض"><span class="tawod-project-number">03</span></a>
@@ -59,8 +59,8 @@ const projectsShowcaseMarkup = `
         <div class="tawod-project-copy"><div class="tawod-project-tags"><span>مشروع صناعي</span><span>8 مستودعات</span></div><h3><a href="project-modon-eight-warehouses-riyadh.html">مستودعات الصناعية الثانية</a></h3><p>تنفيذ ثمانية مستودعات ضمن موقع صناعي واحد وبرنامج عمل متزامن.</p><dl class="tawod-project-facts"><div><dt>المساحة</dt><dd>29,122 م²</dd></div><div><dt>المدة</dt><dd>6 أشهر</dd></div></dl><a class="tawod-project-link" href="project-modon-eight-warehouses-riyadh.html">استكشف المشروع <i class="fa-solid fa-arrow-left-long"></i></a></div>
       </article>
       <article class="tawod-project-card reveal-up delay-100" data-project="arouba-mosque-villas">
-        <a class="tawod-project-media" href="project-arouba-mosque-villas.html"><img src="images/projects/arouba-mosque-villas-01.webp" width="420" height="560" loading="lazy" decoding="async" alt="مشروع مسجد وفللتين سكنيتين في حي العروبة"><span class="tawod-project-number">05</span></a>
-        <div class="tawod-project-copy"><div class="tawod-project-tags"><span>مسجد وفلل</span><span>تسليم مفتاح</span></div><h3><a href="project-arouba-mosque-villas.html">مسجد وفللتان – حي العروبة</a></h3><p>تنفيذ متكامل بنظام تسليم مفتاح لمسجد وفللتين ضمن نطاق موحد.</p><dl class="tawod-project-facts"><div><dt>المساحة</dt><dd>1,800 م²</dd></div><div><dt>المدة</dt><dd>12 شهرًا</dd></div></dl><a class="tawod-project-link" href="project-arouba-mosque-villas.html">استكشف المشروع <i class="fa-solid fa-arrow-left-long"></i></a></div>
+        <a class="tawod-project-media" href="project-arouba-mosque-villas.html"><img src="images/projects/arouba-mosque-villas-01.webp" width="420" height="560" loading="lazy" decoding="async" alt="مشروع مسجد و٢ فيلا في حي العربية"><span class="tawod-project-number">05</span></a>
+        <div class="tawod-project-copy"><div class="tawod-project-tags"><span>مسجد وفلل</span><span>تسليم مفتاح</span></div><h3><a href="project-arouba-mosque-villas.html">مسجد و ٢ فيلا | حي العربية</a></h3><p>تنفيذ متكامل بنظام تسليم مفتاح لمسجد وفللتين ضمن نطاق موحد.</p><dl class="tawod-project-facts"><div><dt>المساحة</dt><dd>1,800 م²</dd></div><div><dt>المدة</dt><dd>12 شهرًا</dd></div></dl><a class="tawod-project-link" href="project-arouba-mosque-villas.html">استكشف المشروع <i class="fa-solid fa-arrow-left-long"></i></a></div>
       </article>
     </div>
   </div>
@@ -114,6 +114,42 @@ function replaceProjectImageUrls(html: string) {
   );
 }
 
+function normalizeProjectPresentation(relativePath: string, html: string) {
+  let normalizedHtml = html
+    .replaceAll("فيلا سكنية – حي الفيصلية", "فيلا سكنية | حي الفيصلية")
+    .replaceAll("فيلا سكنية – حي أحد", "فيلا سكنية | حي أحد")
+    .replaceAll(
+      "خزان مياه وأعمال عزل – حديقة الملك سلمان",
+      "خزان مياه وأعمال عزل | حديقة الملك سلمان",
+    )
+    .replaceAll(
+      "٨ مستودعات – المدينة الصناعية الثانية بالرياض",
+      "٨ مستودعات | المدينة الصناعية الثانية بالرياض",
+    )
+    .replaceAll(
+      "٨ مستودعات – المدينة الصناعية الثانية",
+      "٨ مستودعات | المدينة الصناعية الثانية",
+    )
+    .replaceAll("مسجد وفللتان – حي العروبة", "مسجد و ٢ فيلا | حي العربية");
+
+  if (relativePath === "index.html") {
+    normalizedHtml = normalizedHtml.replaceAll(
+      ">فيلا حي الفيصلية<",
+      ">فيلا سكنية | حي الفيصلية<",
+    );
+  }
+
+  if (relativePath === "project-arouba-mosque-villas.html") {
+    normalizedHtml = normalizedHtml
+      .replaceAll("حي العروبة", "حي العربية")
+      .replaceAll("مسجد وفللتين سكنيتين", "مسجد و ٢ فيلا سكنية")
+      .replaceAll("مسجد وفللتين", "مسجد و ٢ فيلا")
+      .replaceAll("مسجد وفللتان", "مسجد و ٢ فيلا");
+  }
+
+  return normalizedHtml;
+}
+
 function enhanceLegacyHtml(relativePath: string, html: string) {
   let enhancedHtml = html;
 
@@ -134,7 +170,10 @@ function enhanceLegacyHtml(relativePath: string, html: string) {
       );
   }
 
-  return replaceProjectImageUrls(enhancedHtml);
+  return normalizeProjectPresentation(
+    relativePath,
+    replaceProjectImageUrls(enhancedHtml),
+  );
 }
 
 export function readLegacyHtml(relativePath: string) {
