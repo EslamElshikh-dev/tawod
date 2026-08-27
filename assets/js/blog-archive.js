@@ -4,6 +4,166 @@
   document.documentElement.classList.add("blog-archive-js");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
+  function initHeaderScroll() {
+    const header = document.getElementById("header");
+    if (!header) return;
+
+    let ticking = false;
+    function update() {
+      header.classList.toggle("scrolled", window.scrollY > 20);
+      ticking = false;
+    }
+    function requestUpdate() {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(update);
+    }
+
+    requestUpdate();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+  }
+
+  function initServicesMenu() {
+    const services = [
+      { href: "/service-construction.html", label: "البناء والإنشاءات", detail: "الهياكل والأعمال الإنشائية" },
+      { href: "/service-turnkey.html", label: "تسليم مفتاح", detail: "من التخطيط حتى التسليم" },
+      { href: "/service-restoration.html", label: "الترميم والتجديد", detail: "معالجة المباني ورفع كفاءتها" },
+      { href: "/service-finishing.html", label: "التشطيبات العامة", detail: "تشطيبات داخلية وخارجية" },
+      { href: "/service-decor.html", label: "الديكور والتصميم الداخلي", detail: "تصميم وتنفيذ المساحات" },
+      { href: "/service-mep.html", label: "الكهرباء والسباكة", detail: "حلول فنية متكاملة" }
+    ];
+
+    function isServicesLink(link) {
+      const href = (link && link.getAttribute("href")) || "";
+      return href === "#services" || /(?:^|\/)index\.html#services$/i.test(href) || /\/#services$/i.test(href);
+    }
+
+    function createServiceLink(service, index, mobile) {
+      const link = document.createElement("a");
+      const number = document.createElement("span");
+      const copy = document.createElement("span");
+      const title = document.createElement("strong");
+
+      link.href = service.href;
+      link.className = mobile ? "sidebar-service-link" : "nav-service-link";
+      number.className = "nav-service-number";
+      number.textContent = String(index + 1).padStart(2, "0");
+      copy.className = "nav-service-copy";
+      title.textContent = service.label;
+      copy.appendChild(title);
+
+      if (!mobile) {
+        const detail = document.createElement("small");
+        detail.textContent = service.detail;
+        copy.appendChild(detail);
+      }
+
+      link.append(number, copy);
+      return link;
+    }
+
+    const desktopLink = Array.from(document.querySelectorAll(".nav-links > li > a")).find(isServicesLink);
+    if (desktopLink && !desktopLink.dataset.servicesMenuReady) {
+      const item = desktopLink.closest("li");
+      const toggle = document.createElement("button");
+      const menu = document.createElement("ul");
+      const menuId = "header-services-menu";
+
+      desktopLink.dataset.servicesMenuReady = "true";
+      desktopLink.classList.add("nav-services-main-link");
+      item.classList.add("nav-services-item");
+      menu.id = menuId;
+      menu.className = "nav-services-dropdown";
+      menu.setAttribute("aria-label", "خدمات شركة تعاود");
+
+      services.forEach(function (service, index) {
+        const menuItem = document.createElement("li");
+        menuItem.appendChild(createServiceLink(service, index, false));
+        menu.appendChild(menuItem);
+      });
+
+      toggle.type = "button";
+      toggle.className = "nav-services-toggle";
+      toggle.setAttribute("aria-label", "عرض قائمة الخدمات");
+      toggle.setAttribute("aria-controls", menuId);
+      toggle.setAttribute("aria-haspopup", "true");
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m5 7.5 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      desktopLink.insertAdjacentElement("afterend", toggle);
+      item.appendChild(menu);
+
+      function setOpen(open) {
+        item.classList.toggle("is-open", open);
+        toggle.setAttribute("aria-expanded", String(open));
+      }
+
+      toggle.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        setOpen(!item.classList.contains("is-open"));
+      });
+      item.addEventListener("mouseenter", function () { toggle.setAttribute("aria-expanded", "true"); });
+      item.addEventListener("mouseleave", function () {
+        if (!item.classList.contains("is-open")) toggle.setAttribute("aria-expanded", "false");
+      });
+      item.addEventListener("focusin", function () { toggle.setAttribute("aria-expanded", "true"); });
+      item.addEventListener("focusout", function () {
+        window.setTimeout(function () {
+          if (!item.contains(document.activeElement)) setOpen(false);
+        }, 0);
+      });
+      document.addEventListener("pointerdown", function (event) {
+        if (!item.contains(event.target)) setOpen(false);
+      });
+      document.addEventListener("keydown", function (event) {
+        if (event.key !== "Escape" || !item.contains(document.activeElement)) return;
+        setOpen(false);
+        toggle.focus();
+      });
+    }
+
+    const mobileLink = Array.from(document.querySelectorAll(".sidebar-nav > a")).find(isServicesLink);
+    if (mobileLink && !mobileLink.dataset.servicesMenuReady) {
+      const wrapper = document.createElement("div");
+      const row = document.createElement("div");
+      const toggle = document.createElement("button");
+      const menu = document.createElement("div");
+      const list = document.createElement("div");
+      const menuId = "sidebar-services-menu";
+
+      mobileLink.dataset.servicesMenuReady = "true";
+      mobileLink.classList.add("sidebar-services-main-link");
+      wrapper.className = "sidebar-services";
+      row.className = "sidebar-services-row";
+      toggle.type = "button";
+      toggle.className = "sidebar-services-toggle";
+      toggle.setAttribute("aria-label", "عرض قائمة الخدمات");
+      toggle.setAttribute("aria-controls", menuId);
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m5 7.5 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      menu.id = menuId;
+      menu.className = "sidebar-services-menu";
+      list.className = "sidebar-services-list";
+
+      services.forEach(function (service, index) {
+        list.appendChild(createServiceLink(service, index, true));
+      });
+
+      menu.appendChild(list);
+      mobileLink.parentNode.insertBefore(wrapper, mobileLink);
+      row.append(mobileLink, toggle);
+      wrapper.append(row, menu);
+
+      toggle.addEventListener("click", function () {
+        const open = !wrapper.classList.contains("is-open");
+        wrapper.classList.toggle("is-open", open);
+        toggle.setAttribute("aria-expanded", String(open));
+      });
+    }
+
+    document.documentElement.classList.add("tawod-services-nav-ready");
+  }
+
   function initMobileMenu() {
     const openButton = document.getElementById("menuBtn");
     const closeButton = document.getElementById("closeSidebar");
@@ -288,6 +448,8 @@
     });
   }
 
+  initServicesMenu();
+  initHeaderScroll();
   initMobileMenu();
   initCarousel();
   initReveal();
