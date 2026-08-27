@@ -115,6 +115,13 @@ function replaceProjectImageUrls(html: string) {
 }
 
 function normalizeProjectPresentation(relativePath: string, html: string) {
+  if (relativePath === "index.html") {
+    return html.replaceAll(
+      ">فيلا حي الفيصلية<",
+      ">فيلا سكنية | حي الفيصلية<",
+    );
+  }
+
   let normalizedHtml = html
     .replaceAll("فيلا سكنية – حي الفيصلية", "فيلا سكنية | حي الفيصلية")
     .replaceAll("فيلا سكنية – حي أحد", "فيلا سكنية | حي أحد")
@@ -131,13 +138,6 @@ function normalizeProjectPresentation(relativePath: string, html: string) {
       "٨ مستودعات | المدينة الصناعية الثانية",
     )
     .replaceAll("مسجد وفللتان – حي العروبة", "مسجد و ٢ فيلا | حي العربية");
-
-  if (relativePath === "index.html") {
-    normalizedHtml = normalizedHtml.replaceAll(
-      ">فيلا حي الفيصلية<",
-      ">فيلا سكنية | حي الفيصلية<",
-    );
-  }
 
   if (relativePath === "project-arouba-mosque-villas.html") {
     normalizedHtml = normalizedHtml
