@@ -3,8 +3,8 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const source = fs.readFileSync('assets/js/tawod-analytics.js', 'utf8');
-assert.match(source, /مسجد و ٢ فيلا \| حي العربية/, 'the injected project card must preserve the approved title');
-assert.doesNotMatch(source, /حي العروبة/, 'the obsolete project location must not return through analytics injection');
+assert.match(source, /مسجد و ٢ فيلا \| حي العروبة/, 'the injected project card must preserve the approved title');
+assert.doesNotMatch(source, /حي العربية/, 'the obsolete project location must not return through analytics injection');
 
 function runAnalytics({ pathname = '/', leadFlag = null } = {}) {
   const listeners = new Map();

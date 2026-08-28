@@ -142,7 +142,7 @@
     var article = document.createElement('article');
     article.className = 'project-card reveal-up active visible in-view revealed show';
     article.setAttribute('data-project', 'arouba-mosque-villas');
-    article.innerHTML = '<div class="card-img-wrap"><img class="card-img" src="images/projects/arouba-mosque-villas-01.webp" width="420" height="560" loading="eager" decoding="async" alt="مشروع مسجد و٢ فيلا في حي العربية - شركة تعاود للمقاولات"></div><div class="card-body"><div class="project-meta"><span>مسجد + فلل</span><span>تسليم مفتاح</span></div><h3>مسجد و ٢ فيلا | حي العربية</h3><p>تنفيذ متكامل بنظام تسليم مفتاح كامل بمساحة 1800 م² خلال مدة زمنية قدرها 12 شهرًا.</p><a class="card-link" href="project-arouba-mosque-villas.html" aria-label="تفاصيل مشروع مسجد و ٢ فيلا | حي العربية">تفاصيل المشروع <i class="fa-solid fa-arrow-left-long"></i></a></div>';
+    article.innerHTML = '<div class="card-img-wrap"><img class="card-img" src="images/projects/arouba-mosque-villas-01.webp" width="420" height="560" loading="eager" decoding="async" alt="مشروع مسجد و٢ فيلا في حي العروبة - شركة تعاود للمقاولات"></div><div class="card-body"><div class="project-meta"><span>مسجد + فلل</span><span>تسليم مفتاح</span></div><h3>مسجد و ٢ فيلا | حي العروبة</h3><p>تنفيذ متكامل بنظام تسليم مفتاح كامل بمساحة 1800 م² خلال مدة زمنية قدرها 12 شهرًا.</p><a class="card-link" href="project-arouba-mosque-villas.html" aria-label="تفاصيل مشروع مسجد و ٢ فيلا | حي العروبة">تفاصيل المشروع <i class="fa-solid fa-arrow-left-long"></i></a></div>';
     grid.insertBefore(article, grid.firstChild);
   }
 
