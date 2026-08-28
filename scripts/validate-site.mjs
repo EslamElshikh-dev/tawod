@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto';
 const root=process.cwd(),domain='https://tawodco.com',errors=[],warnings=[];
 const assetRevision=file=>createHash('sha256').update(fs.readFileSync(path.join(root,'assets','js',file))).digest('hex').slice(0,12);
 const analyticsSrc=`/assets/js/tawod-analytics.js?v=${assetRevision('tawod-analytics.js')}`;
-const ignoredDirectories=new Set(['.git','.next','node_modules','out','public']);
+const ignoredDirectories=new Set(['.git','.next','node_modules','out','project-pages','public']);
 const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>ignoredDirectories.has(e.name)?[]:e.isDirectory()?walk(path.join(d,e.name)):[path.join(d,e.name)]);
 const rel=f=>path.relative(root,f).split(path.sep).join('/');
 const text=s=>s.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
@@ -18,13 +18,14 @@ const titles=new Map(),canonicals=new Map(),indexable=new Set();
 const sharedScriptRevisions=new Map([['tawod-home.js',assetRevision('tawod-home.js')],['tawod-inner.js',assetRevision('tawod-inner.js')],['contact-conversion.js',assetRevision('contact-conversion.js')]]);
 
 function schemaHas(node,type){if(!node||typeof node!=='object')return false;if(node['@type']===type||(Array.isArray(node['@type'])&&node['@type'].includes(type)))return true;return Object.values(node).some(v=>Array.isArray(v)?v.some(x=>schemaHas(x,type)):schemaHas(v,type))}
+function schemaCount(node,type){if(!node||typeof node!=='object')return 0;let count=node['@type']===type||(Array.isArray(node['@type'])&&node['@type'].includes(type))?1:0;for(const value of Object.values(node))count+=Array.isArray(value)?value.reduce((sum,item)=>sum+schemaCount(item,type),0):schemaCount(value,type);return count}
 function localTarget(from,value){if(!value||/^(?:https?:|mailto:|tel:|javascript:|data:)/i.test(value))return null;if(value.startsWith('#'))return{file:from,anchor:value.slice(1)};const clean=value.split('?')[0],[pathname,anchor='']=clean.split('#');let out=pathname.startsWith('/')?pathname.slice(1):path.posix.normalize(path.posix.join(path.posix.dirname(from),pathname));if(out.endsWith('/'))out+='index.html';if(!path.posix.extname(out)&&fs.existsSync(path.join(root,out,'index.html')))out=path.posix.join(out,'index.html');return{file:out,anchor}}
 function articleTokens(r){const h=pages.get(r)||'',match=h.match(/<article[^>]*class=["'][^"']*article-content[^"']*["'][^>]*>([\s\S]*?)<\/article>/i);if(!match)return new Set();return new Set(text(match[1]).replace(/الدمام|الخبر|الظهران/g,'المدينة').replace(/[^\p{L}\p{N}]+/gu,' ').toLowerCase().split(/\s+/).filter(word=>word.length>2))}
 function jaccard(a,b){let intersection=0;for(const value of a)if(b.has(value))intersection+=1;return intersection/(a.size+b.size-intersection||1)}
 
 for(const [r,h] of pages){
   const analyticsCount=h.split(analyticsSrc).length-1;if(analyticsCount!==1)errors.push(`${r}: expected one versioned analytics script, found ${analyticsCount}`);if(h.includes('Google tag: queued immediately'))errors.push(`${r}: legacy inline Google tag remains`);
-  for(const [file,revision] of sharedScriptRevisions)if(h.includes(file)&&!h.includes(`${file}?v=${revision}`))errors.push(`${r}: ${file} is not revisioned to current content`);if(h.includes('blog-archive.js')&&!h.includes('blog-archive.js?v=20260823-1'))errors.push(`${r}: blog-archive.js has a stale revision`);
+  for(const [file,revision] of sharedScriptRevisions)if(h.includes(file)&&!h.includes(`${file}?v=${revision}`))errors.push(`${r}: ${file} is not revisioned to current content`);if(h.includes('blog-archive.js')&&!h.includes(`blog-archive.js?v=${assetRevision('blog-archive.js')}`))errors.push(`${r}: blog-archive.js has a stale revision`);
   if(/^service-(?:construction|turnkey|restoration|finishing|decor|mep)\.html$/.test(r)){if(!h.includes('assets/css/tawod-service-decisions.css?v=20260823-1'))errors.push(`${r}: missing versioned decision-support styles`);const cards=all(h,/class=["'][^"']*tawod-decision-card[^"']*["']/gi).length;if(cards!==3)errors.push(`${r}: expected three decision-support cards, found ${cards}`);if((h.match(/TAWOD_STATIC_DECISION_START/g)||[]).length!==1)errors.push(`${r}: decision-support block is missing or duplicated`)}
   const ts=all(h,/<title[^>]*>([\s\S]*?)<\/title>/gi);if(ts.length!==1)errors.push(`${r}: expected one title, found ${ts.length}`);const title=ts[0]?text(ts[0][1]):'';if(title){if(titles.has(title))errors.push(`${r}: duplicate title with ${titles.get(title)}`);else titles.set(title,r);if(title.length<15||title.length>75)warnings.push(`${r}: title length ${title.length}`)}
   const ds=all(h,/<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["'][^>]*>|<meta[^>]*content=["']([^"']*)["'][^>]*name=["']description["'][^>]*>/gi);if(ds.length!==1)errors.push(`${r}: expected one meta description, found ${ds.length}`);const d=ds[0]?(ds[0][1]||ds[0][2]||''):'';if(d&&(d.length<70||d.length>180))warnings.push(`${r}: description length ${d.length}`);
@@ -32,10 +33,11 @@ for(const [r,h] of pages){
   const h1=all(h,/<h1\b[^>]*>/gi).length;if(h1!==1)errors.push(`${r}: expected one H1, found ${h1}`);
   const ids=all(h,/\bid=["']([^"']+)["']/gi).map(m=>m[1]);[...new Set(ids.filter((x,i,a)=>a.indexOf(x)!==i))].forEach(id=>errors.push(`${r}: duplicate id ${id}`));
   const schemas=[];all(h,/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi).forEach((m,i)=>{try{schemas.push(JSON.parse(m[1].trim()))}catch(e){errors.push(`${r}: invalid JSON-LD block ${i+1}: ${e.message}`)}});
+  if(r.startsWith('lp/')&&!/<meta\b(?=[^>]*name=["']robots["'])[^>]*content=["'][^"']*noindex/i.test(h))errors.push(`${r}: ads-only landing page must be noindex,follow`);
   const excluded=r==='index.html'||r==='privacy-policy.html'||r==='404.html'||r.startsWith('en/')||/noindex/i.test(h);
   const localMatch=r.match(/^(dammam|khobar|dhahran)\//),localCity=localMatch?.[1]||'',localSilo=Boolean(localCity),localArticle=localCity&&new RegExp(`^${localCity}/blog/[^/]+/index\\.html$`).test(r);
   const maintenanceSilo=r.startsWith('maintenance/'),maintenanceHub=r==='maintenance/index.html';
-  const blogArchivePage=r==='blog/index.html'||/^blog\/page\/\d+\/index\.html$/.test(r);
+  const blogArchivePage=r==='blog/index.html'||/^blog\/page\/\d+\/index\.html$/.test(r),blogTopicPage=/^blog\/topics\/[^/]+\/index\.html$/.test(r)||r==='blog/turnkey-riyadh/index.html',blogArticle=/^blog\/[^/]+\/index\.html$/.test(r)&&r!=='blog/turnkey-riyadh/index.html';
   if(!excluded){
     indexable.add(pagePath(r));
     if(maintenanceSilo){
@@ -58,10 +60,13 @@ for(const [r,h] of pages){
       if(r==='dhahran/index.html'&&title!=='شركة مقاولات بالظهران | تعاود للمقاولات العامة')errors.push(`${r}: homepage title must match the approved Dhahran title`);
     }
     if(!maintenanceHub&&!schemas.some(x=>schemaHas(x,'BreadcrumbList')))errors.push(`${r}: missing BreadcrumbList schema`);
-    if(blogArchivePage){
+    if(blogArchivePage||blogTopicPage){
       if(!schemas.some(x=>schemaHas(x,'CollectionPage')))errors.push(`${r}: missing CollectionPage schema`);
-    }else if(r.startsWith('blog/')){
+    }else if(blogArticle){
       if(!schemas.some(x=>schemaHas(x,'Article')))errors.push(`${r}: missing Article schema`);
+      const articleEntities=schemas.reduce((sum,node)=>sum+schemaCount(node,'Article')+schemaCount(node,'BlogPosting'),0);
+      if(articleEntities!==1)errors.push(`${r}: expected exactly one Article entity, found ${articleEntities}`);
+      if(!h.includes('/blog/topics/')&&!h.includes('/blog/turnkey-riyadh/'))errors.push(`${r}: missing topic-hub context link`);
     }else if(localSilo){
       const accepted=['WebPage','AboutPage','ContactPage','CollectionPage','Service'];
       if(!accepted.some(type=>schemas.some(x=>schemaHas(x,type))))errors.push(`${r}: missing local page schema`);

@@ -5,3 +5,10 @@ out/
 public/
 .vercel/
 *.tsbuildinfo
+
+# Reconstructed from the versioned project-page and media parts during prebuild.
+/project-faisaliah-villa-facades-finishing.html
+/images/projects/alrajhi-tanks-king-salman-park-01.webp
+/images/projects/modon-eight-warehouses-01-v3.webp
+/images/projects/modon-eight-warehouses-02-v3.webp
+/images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp

@@ -9,6 +9,7 @@ const excludedDirectories = new Set([
   "lib",
   "node_modules",
   "out",
+  "project-pages",
   "public",
 ]);
 const projectImageReplacements = [

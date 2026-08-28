@@ -73,6 +73,67 @@
     return null;
   }
 
+  function articleContext() {
+    var body = document.body;
+    if (!body || !body.dataset.articleSlug) return null;
+    return {
+      article_slug: body.dataset.articleSlug,
+      article_topic: body.dataset.articleTopic || 'unclassified',
+      content_role: body.dataset.articleRole || 'supporting',
+      page_path: window.location.pathname
+    };
+  }
+
+  function articleParameters(extra) {
+    var context = articleContext();
+    if (!context) return null;
+    Object.keys(extra || {}).forEach(function (key) { context[key] = extra[key]; });
+    context.send_to = GA4_ID;
+    context.transport_type = 'beacon';
+    return context;
+  }
+
+  function trackArticleClick(event) {
+    var context = articleContext();
+    if (!context) return;
+    var link = closestLink(event.target);
+    if (!link) return;
+    var kind = link.getAttribute('data-article-link');
+    var names = {
+      service: 'article_service_click',
+      project: 'article_project_click',
+      related: 'related_article_click',
+      quote: 'article_quote_click',
+      hub: 'article_hub_click'
+    };
+    if (!names[kind]) return;
+    track(names[kind], articleParameters({ target_url: link.href, link_type: kind }));
+  }
+
+  function initializeArticleTracking() {
+    var context = articleContext();
+    if (!context) return;
+    window.gtag('event', 'article_view', articleParameters());
+
+    var sent50 = false;
+    var sent90 = false;
+    function trackScrollDepth() {
+      var documentHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+      var available = Math.max(1, documentHeight - window.innerHeight);
+      var depth = Math.min(100, Math.round((window.scrollY / available) * 100));
+      if (!sent50 && depth >= 50) {
+        sent50 = true;
+        track('article_50_scroll', articleParameters({ scroll_depth: 50 }));
+      }
+      if (!sent90 && depth >= 90) {
+        sent90 = true;
+        track('article_90_scroll', articleParameters({ scroll_depth: 90 }));
+        window.removeEventListener('scroll', trackScrollDepth);
+      }
+    }
+    window.addEventListener('scroll', trackScrollDepth, { passive: true });
+  }
+
   function trackContactClick(event) {
     var link = closestLink(event.target);
     if (!link) return;
@@ -103,6 +164,9 @@
       link_url: link.href,
       transport_type: 'beacon'
     });
+    var articleEvent = isCall ? 'article_call_click' : 'article_whatsapp_click';
+    var parameters = articleParameters({ contact_method: method, link_url: link.href });
+    if (parameters) window.gtag('event', articleEvent, parameters);
     window.gtag('event', 'conversion', {
       send_to: CONTACT_CONVERSION,
       event_callback: continueNavigation,
@@ -153,7 +217,10 @@
     track: track
   });
 
-  document.addEventListener('click', trackContactClick, true);
+  document.addEventListener('click', function (event) {
+    trackContactClick(event);
+    trackArticleClick(event);
+  }, true);
   ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (eventName) {
     window.addEventListener(eventName, function () {
       scheduleGoogleTag(INTERACTION_LOAD_DELAY);
@@ -163,7 +230,13 @@
   if (/(?:^|\/)thank-you\.html$/.test(window.location.pathname)) loadGoogleTag();
   else scheduleFallbackLoad();
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', injectFeaturedProject);
-  else injectFeaturedProject();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () {
+    injectFeaturedProject();
+    initializeArticleTracking();
+  });
+  else {
+    injectFeaturedProject();
+    initializeArticleTracking();
+  }
   trackConfirmedLead();
 })();

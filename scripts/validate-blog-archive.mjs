@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { legacyArchiveCopy, legacyArticleTitles, legacyCardOverrides } from "./blog-archive-content.mjs";
+import { legacyTopicHubSlugs } from "./blog-topic-data.mjs";
 
 const pageSize = 10;
 const blogRoot = "blog";
@@ -25,7 +26,7 @@ const blogNode = firstGraph.find((node) => node["@type"] === "Blog");
 if (!blogNode) throw new Error("Missing Blog schema");
 
 const totalArticles = readdirSync(blogRoot, { withFileTypes: true })
-  .filter((entry) => entry.isDirectory() && entry.name !== "page" && existsSync(join(blogRoot, entry.name, "index.html")))
+  .filter((entry) => entry.isDirectory() && !["page", "topics"].includes(entry.name) && !legacyTopicHubSlugs.has(entry.name) && existsSync(join(blogRoot, entry.name, "index.html")))
   .length;
 if (totalArticles < 1) throw new Error("Could not determine article count");
 const totalPages = Math.ceil(totalArticles / pageSize);

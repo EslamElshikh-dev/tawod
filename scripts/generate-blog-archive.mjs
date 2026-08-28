@@ -1,13 +1,18 @@
+import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { legacyArchiveCopy, legacyArticleTitles, legacyCardOverrides } from "./blog-archive-content.mjs";
+import { blogTopics, legacyTopicHubSlugs, topicForArticle, topicUrl } from "./blog-topic-data.mjs";
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const blogDir = join(rootDir, "blog");
 const pageSize = 10;
-const buildDate = "2026-08-23";
-const archiveAssetVersion = "20260823-1";
+const buildDate = "2026-08-28";
+const assetVersion = (relativePath) => createHash("sha256").update(readFileSync(join(rootDir, relativePath))).digest("hex").slice(0, 12);
+const archiveCssVersion = assetVersion("assets/css/blog-archive.css");
+const archiveJsVersion = assetVersion("assets/js/blog-archive.js");
+const architectureVersion = assetVersion("assets/css/tawod-blog-architecture.css");
 
 const featuredSlugs = [
   "best-contracting-company-riyadh",
@@ -115,7 +120,7 @@ function articleFromDirectory(slug) {
 
 function getArticles() {
   return readdirSync(blogDir, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory() && entry.name !== "page" && existsSync(join(blogDir, entry.name, "index.html")))
+    .filter((entry) => entry.isDirectory() && !["page", "topics"].includes(entry.name) && !legacyTopicHubSlugs.has(entry.name) && existsSync(join(blogDir, entry.name, "index.html")))
     .map((entry) => articleFromDirectory(entry.name))
     .sort((a, b) => b.datePublished.localeCompare(a.datePublished) || a.slug.localeCompare(b.slug));
 }
@@ -184,6 +189,17 @@ function featuredSection(featuredArticles) {
   </section>`;
 }
 
+function topicExplorerSection(articles) {
+  const cards = blogTopics.map((topic) => {
+    const count = articles.filter((article) => topicForArticle(article.slug).slug === topic.slug).length;
+    return `<a class="topic-explorer-card reveal" href="${topicUrl(topic)}">
+      <span class="topic-explorer-card-head"><span class="topic-explorer-icon"><i class="fa-solid ${topic.icon}" aria-hidden="true"></i></span><span class="topic-explorer-count">${count} مقالًا</span></span>
+      <h3>${topic.title}</h3><p>${topic.description}</p><span class="topic-explorer-link">استكشف المركز <i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i></span>
+    </a>`;
+  }).join("\n");
+  return `<section class="section topic-explorer" aria-labelledby="topic-explorer-title"><div class="container"><div class="section-heading reveal"><div class="section-heading-copy"><span class="eyebrow"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> بنية معرفية واضحة</span><h2 id="topic-explorer-title">استكشف المدونة حسب موضوع مشروعك</h2><p>انتقل مباشرة إلى المركز المناسب، وابدأ بالدليل المحوري ثم الأدلة المتخصصة والخدمة المرتبطة.</p></div></div><div class="topic-explorer-grid">${cards}</div></div></section>`;
+}
+
 function archiveContent(page, totalPages, articles, featuredArticles) {
   const start = (page - 1) * pageSize;
   const pageArticles = articles.slice(start, start + pageSize);
@@ -198,13 +214,14 @@ function archiveContent(page, totalPages, articles, featuredArticles) {
     ? legacyArchiveCopy.hero.description
     : `تابع تصفح مقالات تعاود المرتبة من الأحدث إلى الأقدم. تعرض هذه الصفحة المقالات من ${start + 1} إلى ${end}.`;
   const featured = page === 1 ? featuredSection(featuredArticles) : "";
+  const topics = page === 1 ? topicExplorerSection(articles) : "";
   const cards = pageArticles.map((article, index) => articleCard(article, { eager: index < 2 })).join("\n");
 
   return `<!-- BLOG_ARCHIVE_CONTENT_START -->
   <section class="page-hero">
     <div class="container reveal"><nav aria-label="مسار التنقل" class="breadcrumb"><a href="/">الرئيسية</a><i aria-hidden="true" class="fa-solid fa-angle-left"></i>${page === 1 ? "" : '<a href="/blog/">المدونة</a><i aria-hidden="true" class="fa-solid fa-angle-left"></i>'}<span aria-current="page">${pageLabel}</span></nav><h1>${page === 1 ? legacyArchiveCopy.hero.title : `مدونة تعاود — الصفحة ${page}`}</h1><p>${intro}</p></div>
   </section>
-  ${featured ? `${featured}\n  ` : ""}<section aria-labelledby="latest-title" class="section">
+  ${topics ? `${topics}\n  ` : ""}${featured ? `${featured}\n  ` : ""}<section aria-labelledby="latest-title" class="section">
     <div class="container">
       <div class="section-heading reveal"><div class="section-heading-copy"><span class="eyebrow"><i aria-hidden="true" class="fa-solid fa-clock-rotate-left"></i> ${eyebrow}</span><h2 id="latest-title">${heading}</h2><p>${sectionDescription}</p></div><span class="archive-status"><i aria-hidden="true" class="fa-regular fa-file-lines"></i> المقالات ${start + 1}–${end} من ${articles.length}</span></div>
       <div class="latest-grid">${cards}</div>
@@ -215,8 +232,9 @@ function archiveContent(page, totalPages, articles, featuredArticles) {
 }
 
 function normalizeShell(html) {
-  const cssHref = `/assets/css/blog-archive.css?v=${archiveAssetVersion}`;
-  const jsSrc = `/assets/js/blog-archive.js?v=${archiveAssetVersion}`;
+  const cssHref = `/assets/css/blog-archive.css?v=${archiveCssVersion}`;
+  const jsSrc = `/assets/js/blog-archive.js?v=${archiveJsVersion}`;
+  const architectureHref = `/assets/css/tawod-blog-architecture.css?v=${architectureVersion}`;
   let output = html
     .replace(/<style>\.blog-lead[\s\S]*?<\/style>/i, "")
     .replace(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/gi, "")
@@ -226,10 +244,14 @@ function normalizeShell(html) {
     .replace(/<script\s+src=["']\/assets\/js\/tawod-inner\.js["']\s+defer><\/script>/i, "")
     .replace(/\/assets\/css\/blog-archive\.css(?:\?v=[^"']*)?/g, cssHref)
     .replace(/\/assets\/js\/blog-archive\.js(?:\?v=[^"']*)?/g, jsSrc)
+    .replace(/\/assets\/css\/tawod-blog-architecture\.css(?:\?v=[^"']*)?/g, architectureHref)
     .replace(/<body>/i, '<body class="blog-archive-page">');
 
   if (!output.includes(cssHref)) {
     output = output.replace("</head>", `<link href="${cssHref}" rel="stylesheet"></head>`);
+  }
+  if (!output.includes(architectureHref)) {
+    output = output.replace("</head>", `<link href="${architectureHref}" rel="stylesheet"></head>`);
   }
   if (!output.includes(jsSrc)) {
     output = output.replace("</body>", `<script defer src="${jsSrc}"></script></body>`);

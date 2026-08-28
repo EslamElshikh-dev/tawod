@@ -5,6 +5,7 @@
     "predev": "node scripts/prepare-next-public.mjs",
     "dev": "next dev",
     "prebuild": "node scripts/prepare-next-public.mjs",
+    "prepare:assets": "node scripts/prepare-next-public.mjs",
     "build": "next build",
     "postbuild": "node scripts/finalize-next-export.mjs && node scripts/verify-next-export.mjs",
     "typecheck": "tsc --noEmit",
@@ -16,8 +17,10 @@
     "check:static": "node scripts/build-static-pages.mjs --check",
     "build:home": "node scripts/build-home-performance.mjs && node scripts/install-site-analytics.mjs",
     "check:home": "node scripts/build-home-performance.mjs --check",
-    "generate:blog": "node scripts/generate-blog-archive.mjs && node scripts/install-site-analytics.mjs",
+    "generate:blog": "node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/build-static-pages.mjs && node scripts/install-site-analytics.mjs",
     "check:blog": "node scripts/validate-blog-archive.mjs",
+    "generate:blog-architecture": "node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/build-static-pages.mjs && node scripts/install-site-analytics.mjs",
+    "check:blog-architecture": "node scripts/validate-blog-architecture.mjs",
     "generate:dammam": "node scripts/generate-dammam-silo.mjs && node scripts/install-site-analytics.mjs",
     "check:dammam": "node scripts/generate-dammam-silo.mjs --check",
     "generate:khobar": "node scripts/generate-khobar-silo.mjs && node scripts/install-site-analytics.mjs",
@@ -27,7 +30,7 @@
     "generate:seo-batch": "node scripts/generate-seo-batch-2026-08-09.mjs && node scripts/build-static-pages.mjs && node scripts/build-home-performance.mjs && node scripts/generate-blog-archive.mjs && node scripts/install-site-analytics.mjs",
     "generate:seo-cluster-2026-08-23": "node scripts/generate-seo-cluster-2026-08-23.mjs && node scripts/build-static-pages.mjs && node scripts/generate-blog-archive.mjs && node scripts/install-site-analytics.mjs",
     "validate:site": "node scripts/validate-site.mjs",
-    "check": "npm run typecheck && npm run check:analytics && npm run test:analytics && npm run check:static && npm run check:home && npm run check:blog && npm run check:dammam && npm run check:khobar && npm run check:dhahran && npm run validate:site && npm run build"
+    "check": "npm run prepare:assets && npm run typecheck && npm run check:analytics && npm run test:analytics && npm run check:static && npm run check:home && npm run check:blog && npm run check:blog-architecture && npm run check:dammam && npm run check:khobar && npm run check:dhahran && npm run validate:site && npm run build"
   },
   "dependencies": {
     "next": "16.3.2",

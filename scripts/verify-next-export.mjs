@@ -13,6 +13,7 @@ const excludedDirectories = new Set([
   "lib",
   "node_modules",
   "out",
+  "project-pages",
   "public",
 ]);
 const intentionalHtmlTransforms = new Map([
@@ -40,7 +41,6 @@ const intentionalHtmlTransforms = new Map([
       "مسجد و ٢ فيلا | حي العروبة",
     ],
   ],
-  ["assets/project-pages/faisaliah-villa.part00.html", ["فيلا سكنية | حي الفيصلية"]],
   ["project-faisaliah-villa-facades-finishing.html", ["فيلا سكنية | حي الفيصلية"]],
   ["project-villa-plaster-ceramic-marble-uhud-riyadh.html", ["فيلا سكنية | حي أحد"]],
   ["project-arouba-mosque-villas.html", ["حي العروبة", "مسجد و ٢ فيلا"]],

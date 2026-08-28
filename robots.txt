@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
 Sitemap: https://tawodco.com/sitemap.xml
-Sitemap: https://tawodco.com/sitemap-projects.xml
