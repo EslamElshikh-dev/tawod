@@ -168,7 +168,7 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
   .nav-links,
   .header-actions > .btn,
   .header-actions > .lang-switch { display: none; }
-  .mobile-menu-btn,
+  .mobile-menu-btn { display: inline-flex; align-items: center; justify-content: center; }
   .header-actions { gap: 18px; }
   .hero { min-height: 650px; }
 }
