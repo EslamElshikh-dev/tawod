@@ -252,6 +252,11 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
   <link rel='preload' as='style' href='assets/css/tawod-home-performance.css?v=555d2bef06fe' onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link href='assets/css/tawod-home-performance.css?v=555d2bef06fe' rel='stylesheet'></noscript>
   <style id='tawod-footer-mobile-polish'>
+    @media (min-width: 768px) {
+      html body.home-page .footer-grid {
+        grid-template-columns: minmax(0, 1.6fr) repeat(2, minmax(0, .8fr));
+      }
+    }
     @media (max-width: 767px) {
       html body.home-page .footer { padding-top: 48px; }
       html body.home-page .footer-grid {
@@ -268,48 +273,6 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
       html body.home-page .footer-nav-column .footer-title { margin-bottom: 13px; }
       html body.home-page .footer-nav-column .footer-links { gap: 8px; }
       html body.home-page .footer-title::after { width: 44px; }
-      html body.home-page .footer-contact-column {
-        position: relative;
-        padding-top: 28px;
-        border-top: 1px solid rgba(255, 255, 255, .11);
-      }
-      html body.home-page .footer-contact-column .footer-title { margin-bottom: 17px; }
-      html body.home-page .footer-contact {
-        width: min(100%, 360px);
-        margin-inline: auto;
-        padding-left: 58px;
-        gap: 8px;
-      }
-      html body.home-page .footer-contact a,
-      html body.home-page .footer-contact .info-only {
-        display: grid !important;
-        grid-template-columns: 24px minmax(0, 1fr);
-        align-items: center;
-        justify-content: stretch !important;
-        min-height: 42px;
-        gap: 10px;
-        padding: 7px 10px;
-        border-radius: 12px;
-        background: rgba(255, 255, 255, .035);
-        text-align: right;
-      }
-      html body.home-page .footer-contact i {
-        width: 24px;
-        height: 24px;
-        margin-top: 0;
-      }
-      html body.home-page .footer-contact span {
-        max-width: none;
-        font-size: 14.5px;
-        line-height: 1.65;
-        text-align: right;
-        overflow-wrap: anywhere;
-      }
-      html body.home-page .footer-contact a[href^='tel:'] span,
-      html body.home-page .footer-contact a[href^='mailto:'] span {
-        direction: ltr;
-        unicode-bidi: isolate;
-      }
       html body.home-page .float-btns {
         left: max(10px, env(safe-area-inset-left));
         bottom: max(14px, env(safe-area-inset-bottom));
@@ -320,8 +283,6 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
     }
     @media (max-width: 420px) {
       html body.home-page .footer-grid { gap: 26px 9px !important; }
-      html body.home-page .footer-contact { padding-left: 54px; }
-      html body.home-page .footer-contact span { font-size: 14px; }
       html body.home-page .float-btn { width: 46px; height: 46px; font-size: 20px; }
     }
   </style>
@@ -801,15 +762,6 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
             <li><a href='service-finishing.html'><i class='fa-solid fa-angle-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-angle-left'></use></svg></i> تشطيبات عامة</a></li>
             <li><a href='service-decor.html'><i class='fa-solid fa-angle-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-angle-left'></use></svg></i> ديكورات</a></li>
             <li><a href='service-mep.html'><i class='fa-solid fa-angle-left'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-angle-left'></use></svg></i> أعمال الكهرباء والسباكة</a></li>
-          </ul>
-        </div>
-        <div class='footer-contact-column'>
-          <h4 class='footer-title'>تواصل معنا</h4>
-          <ul class='footer-contact'>
-            <li><div class='info-only'><i class='fa-solid fa-location-dot'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-location-dot'></use></svg></i><span>الرياض، المملكة العربية السعودية</span></div></li>
-            <li><a href='tel:0551128884'><i class='fa-solid fa-phone'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-phone'></use></svg></i><span>0551128884</span></a></li>
-            <li><a href='mailto:info@tawodco.com'><i class='fa-solid fa-envelope'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-solid-envelope'></use></svg></i><span>info@tawodco.com</span></a></li>
-            <li><div class='info-only'><i class='fa-regular fa-clock'><svg class='icon-svg' aria-hidden='true' focusable='false'><use href='#icon-regular-clock'></use></svg></i><span>متاحون للرد على استفساراتكم ومناقشة المشاريع</span></div></li>
           </ul>
         </div>
       </div>
