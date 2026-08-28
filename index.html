@@ -251,6 +251,80 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
   <!-- TAWOD_CRITICAL_CSS_END -->
   <link rel='preload' as='style' href='assets/css/tawod-home-performance.css?v=555d2bef06fe' onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link href='assets/css/tawod-home-performance.css?v=555d2bef06fe' rel='stylesheet'></noscript>
+  <style id='tawod-footer-mobile-polish'>
+    @media (max-width: 767px) {
+      html body.home-page .footer { padding-top: 48px; }
+      html body.home-page .footer-grid {
+        gap: 28px 12px !important;
+        padding-bottom: 30px;
+      }
+      html body.home-page .footer-about p {
+        max-width: 300px;
+        margin-bottom: 16px;
+        font-size: 15px;
+        line-height: 1.8;
+      }
+      html body.home-page .footer-socials { gap: 10px; }
+      html body.home-page .footer-nav-column .footer-title { margin-bottom: 13px; }
+      html body.home-page .footer-nav-column .footer-links { gap: 8px; }
+      html body.home-page .footer-title::after { width: 44px; }
+      html body.home-page .footer-contact-column {
+        position: relative;
+        padding-top: 28px;
+        border-top: 1px solid rgba(255, 255, 255, .11);
+      }
+      html body.home-page .footer-contact-column .footer-title { margin-bottom: 17px; }
+      html body.home-page .footer-contact {
+        width: min(100%, 360px);
+        margin-inline: auto;
+        padding-left: 58px;
+        gap: 8px;
+      }
+      html body.home-page .footer-contact a,
+      html body.home-page .footer-contact .info-only {
+        display: grid !important;
+        grid-template-columns: 24px minmax(0, 1fr);
+        align-items: center;
+        justify-content: stretch !important;
+        min-height: 42px;
+        gap: 10px;
+        padding: 7px 10px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, .035);
+        text-align: right;
+      }
+      html body.home-page .footer-contact i {
+        width: 24px;
+        height: 24px;
+        margin-top: 0;
+      }
+      html body.home-page .footer-contact span {
+        max-width: none;
+        font-size: 14.5px;
+        line-height: 1.65;
+        text-align: right;
+        overflow-wrap: anywhere;
+      }
+      html body.home-page .footer-contact a[href^='tel:'] span,
+      html body.home-page .footer-contact a[href^='mailto:'] span {
+        direction: ltr;
+        unicode-bidi: isolate;
+      }
+      html body.home-page .float-btns {
+        left: max(10px, env(safe-area-inset-left));
+        bottom: max(14px, env(safe-area-inset-bottom));
+        gap: 10px;
+      }
+      html body.home-page .float-btn { width: 48px; height: 48px; font-size: 21px; }
+      html body.home-page .float-btn::before { inset: -5px; }
+    }
+    @media (max-width: 420px) {
+      html body.home-page .footer-grid { gap: 26px 9px !important; }
+      html body.home-page .footer-contact { padding-left: 54px; }
+      html body.home-page .footer-contact span { font-size: 14px; }
+      html body.home-page .float-btn { width: 46px; height: 46px; font-size: 20px; }
+    }
+  </style>
 
   <script type='application/ld+json'>
   {
