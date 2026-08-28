@@ -169,7 +169,6 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
   .header-actions > .btn,
   .header-actions > .lang-switch { display: none; }
   .mobile-menu-btn,
-  .mobile-call-icon { display: inline-flex; align-items: center; justify-content: center; }
   .header-actions { gap: 18px; }
   .hero { min-height: 650px; }
 }

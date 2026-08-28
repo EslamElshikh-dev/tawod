@@ -472,7 +472,7 @@ textarea.form-control { min-height: 132px; resize: vertical; }
   .header.scrolled { height: 70px; }
   .logo img, .logo-img { height: 46px; max-width: 150px; }
   .nav-links, .header-actions > .btn, .header-actions > .lang-switch { display: none; }
-  .mobile-menu-btn, .mobile-call-icon { display: inline-flex; align-items: center; justify-content: center; }
+  .mobile-menu-btn { display: inline-flex; align-items: center; justify-content: center; }
   .header-actions { gap: 18px; }
   .hero { min-height: auto; padding: 135px 0 95px; }
   .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
