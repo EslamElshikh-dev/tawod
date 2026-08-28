@@ -115,6 +115,12 @@ function replaceProjectImageUrls(html: string) {
   );
 }
 
+function normalizeInternalHomepageLinks(html: string) {
+  return html
+    .replace(/href="(?:\.\.\/)*index\.html(?=[#"])/gi, 'href="/')
+    .replace(/href='(?:\.\.\/)*index\.html(?=[#'])/gi, "href='/");
+}
+
 function normalizeProjectPresentation(relativePath: string, html: string) {
   if (relativePath === "index.html") {
     return html.replaceAll(
@@ -170,9 +176,11 @@ function enhanceLegacyHtml(relativePath: string, html: string) {
       );
   }
 
-  return normalizeProjectPresentation(
-    relativePath,
-    replaceProjectImageUrls(enhancedHtml),
+  return normalizeInternalHomepageLinks(
+    normalizeProjectPresentation(
+      relativePath,
+      replaceProjectImageUrls(enhancedHtml),
+    ),
   );
 }
 

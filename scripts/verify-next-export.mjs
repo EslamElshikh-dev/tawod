@@ -69,6 +69,12 @@ function collectHtmlFiles(directory) {
   return files;
 }
 
+function normalizeInternalHomepageLinks(html) {
+  return html
+    .replace(/href="(?:\.\.\/)*index\.html(?=[#"])/gi, 'href="/')
+    .replace(/href='(?:\.\.\/)*index\.html(?=[#'])/gi, "href='/");
+}
+
 if (!existsSync(outputDirectory)) {
   throw new Error("Run npm run build before verifying the export.");
 }
@@ -92,13 +98,19 @@ for (const sourceFile of sourceFiles) {
     continue;
   }
 
-  const source = readFileSync(sourceFile);
-  const output = readFileSync(outputFile);
-  if (source.equals(output)) continue;
+  const sourceHtml = normalizeInternalHomepageLinks(
+    readFileSync(sourceFile, "utf8"),
+  );
+  const outputHtml = readFileSync(outputFile, "utf8");
+
+  if (/href=["'](?:\.\.\/)*index\.html(?:[#?][^"']*)?["']/i.test(outputHtml)) {
+    mismatches.push(`${relativePath}: exported HTML still links to index.html`);
+  }
+
+  if (sourceHtml === outputHtml) continue;
 
   const expectedMarkers = intentionalHtmlTransforms.get(relativePath);
   if (expectedMarkers) {
-    const outputHtml = output.toString("utf8");
     for (const marker of expectedMarkers) {
       if (!outputHtml.includes(marker)) {
         mismatches.push(`${relativePath}: expected generated marker missing: ${marker}`);

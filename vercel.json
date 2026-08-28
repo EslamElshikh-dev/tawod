@@ -2,6 +2,48 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build",
   "outputDirectory": "out",
+  "redirects": [
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/index.html",
+      "destination": "/blog/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/construction-building-riyadh/index.html",
+      "destination": "/blog/construction-building-riyadh/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/mechanical-mep-works-riyadh/index.html",
+      "destination": "/blog/mechanical-mep-works-riyadh/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/best-contracting-company-riyadh/index.html",
+      "destination": "/blog/best-contracting-company-riyadh/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/bone-construction-riyadh-guide/index.html",
+      "destination": "/blog/bone-construction-riyadh-guide/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/turnkey-commercial-fitout-riyadh/index.html",
+      "destination": "/blog/turnkey-commercial-fitout-riyadh/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/finishing-facades-restoration-riyadh/index.html",
+      "destination": "/blog/finishing-facades-restoration-riyadh/",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",
