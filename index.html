@@ -252,12 +252,24 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
   <link rel='preload' as='style' href='assets/css/tawod-home-performance.css?v=555d2bef06fe' onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link href='assets/css/tawod-home-performance.css?v=555d2bef06fe' rel='stylesheet'></noscript>
   <style id='tawod-footer-mobile-polish'>
+    html body.home-page .footer-bottom {
+      padding: 16px 10px;
+    }
+    html body.home-page .footer-bottom p {
+      margin: 0;
+      font-size: clamp(11px, .18vw + 10.8px, 12.5px);
+      line-height: 1.65;
+      letter-spacing: -.01em;
+    }
     @media (min-width: 768px) {
       html body.home-page .footer-grid {
         grid-template-columns: minmax(0, 1.6fr) repeat(2, minmax(0, .8fr));
       }
     }
     @media (max-width: 767px) {
+      html body.home-page .footer-bottom p {
+        font-size: clamp(10.5px, 3vw, 12px);
+      }
       html body.home-page .footer { padding-top: 48px; }
       html body.home-page .footer-grid {
         gap: 28px 12px !important;
