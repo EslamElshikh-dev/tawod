@@ -4,11 +4,12 @@ import process from "node:process";
 
 import { articles as originalClusterArticles } from "./seo-cluster-2026-08-23.mjs";
 import { articles as boneConstructionSeries } from "./bone-construction-series-2026-08-29.mjs";
+import { articles as boneConstructionDecisionGuides } from "./bone-construction-decision-guides-2026-08-29.mjs";
 
 const root = process.cwd();
 const domain = "https://tawodco.com";
 const isoDate = "2026-08-23";
-const articles = [...originalClusterArticles, ...boneConstructionSeries];
+const articles = [...originalClusterArticles, ...boneConstructionSeries, ...boneConstructionDecisionGuides];
 const basePath = path.join(root, "blog", "best-contracting-company-riyadh", "index.html");
 const base = fs.readFileSync(basePath, "utf8");
 
@@ -22,7 +23,8 @@ const dimensions = {
   "images/projects/construction-01.webp": [1200, 1600],
   "images/projects/arouba-mosque-villas-01.webp": [420, 560],
   "images/projects/arouba-mosque-villas-02.webp": [420, 560],
-  "images/projects/modon-eight-warehouses-01-v3.webp": [360, 480]
+  "images/projects/modon-eight-warehouses-01-v3.webp": [360, 480],
+  "images/projects/project-luxury-villa-turnkey-alqusur.webp": [1536, 1024]
 };
 
 function publishedDate(article) {

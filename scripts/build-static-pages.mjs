@@ -78,7 +78,7 @@ function articleArchitecture(r,metadata){
 function serviceGuides(r){
   const topic=topicForService(r);if(!topic)return'';
   const curated={
-    'service-construction.html':['bone-construction-riyadh-guide','bone-construction-quote-request-riyadh','bone-construction-contract-riyadh','bone-construction-execution-plan-riyadh'],
+    'service-construction.html':['bone-construction-riyadh-guide','bone-construction-quote-request-riyadh','bone-construction-contract-riyadh','bone-construction-execution-plan-riyadh','bone-construction-cost-riyadh','bone-construction-duration-riyadh','bone-construction-quality-checklist-riyadh','bone-construction-handover-riyadh'],
     'service-turnkey.html':['turnkey-construction-riyadh-guide','turnkey-project-cost-riyadh','turnkey-contracts-riyadh','turnkey-commercial-fitout-riyadh'],
     'service-restoration.html':['best-renovation-company-riyadh','building-facade-restoration-riyadh','facade-restoration-cost-riyadh','renovation-company-site-assessment-riyadh'],
     'service-finishing.html':['finishing-villa-riyadh-guide','finishing-cost-riyadh','finishing-materials-riyadh','finishing-mistakes-riyadh'],

@@ -19,6 +19,13 @@ export const queryOwnership = [
   { query: "أفضل شركة مقاولات بالرياض", intent: "commercial", file: "index.html", url: "/", signal: "أفضل شركة مقاولات عامة في الرياض" },
   { query: "عقد مقاولات تسليم مفتاح", intent: "informational", file: "blog/turnkey-contracts-riyadh/index.html", url: "/blog/turnkey-contracts-riyadh/", signal: "عقد مقاولات تسليم مفتاح في الرياض" },
   { query: "كود الدمام", intent: "informational", file: "dammam/blog/saudi-building-code-owner-guide-dammam/index.html", url: "/dammam/blog/saudi-building-code-owner-guide-dammam/", signal: "الكود السعودي للبناء في الدمام" },
+  { query: "تكلفة بناء العظم في الرياض", intent: "informational", file: "blog/bone-construction-cost-riyadh/index.html", url: "/blog/bone-construction-cost-riyadh/", signal: "تكلفة بناء العظم في الرياض" },
+  { query: "مدة بناء العظم في الرياض", intent: "informational", file: "blog/bone-construction-duration-riyadh/index.html", url: "/blog/bone-construction-duration-riyadh/", signal: "مدة بناء العظم في الرياض" },
+  { query: "أخطاء بناء العظم", intent: "informational", file: "blog/bone-construction-mistakes-riyadh/index.html", url: "/blog/bone-construction-mistakes-riyadh/", signal: "أخطاء بناء العظم في الرياض" },
+  { query: "استلام بناء العظم", intent: "informational", file: "blog/bone-construction-handover-riyadh/index.html", url: "/blog/bone-construction-handover-riyadh/", signal: "استلام بناء العظم في الرياض" },
+  { query: "جودة بناء العظم", intent: "informational", file: "blog/bone-construction-quality-checklist-riyadh/index.html", url: "/blog/bone-construction-quality-checklist-riyadh/", signal: "جودة بناء العظم" },
+  { query: "خرسانة بناء العظم", intent: "informational", file: "blog/bone-construction-concrete-quality-riyadh/index.html", url: "/blog/bone-construction-concrete-quality-riyadh/", signal: "خرسانة بناء العظم في الرياض" },
+  { query: "جدول دفعات بناء العظم", intent: "informational", file: "blog/bone-construction-payment-schedule-riyadh/index.html", url: "/blog/bone-construction-payment-schedule-riyadh/", signal: "جدول دفعات بناء العظم" },
 ];
 
 const replacements = {
@@ -135,7 +142,7 @@ function expectedCanonical(url) {
 
 function validate() {
   const errors = [];
-  if (queryOwnership.length !== 12) errors.push(`Expected 12 query owners, found ${queryOwnership.length}`);
+  if (queryOwnership.length !== 19) errors.push(`Expected 19 query owners, found ${queryOwnership.length}`);
 
   for (const owner of queryOwnership) {
     const absolute = path.join(root, owner.file);
