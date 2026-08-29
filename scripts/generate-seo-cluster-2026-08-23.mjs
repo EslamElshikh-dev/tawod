@@ -2,12 +2,13 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 
-import { articles } from "./seo-cluster-2026-08-23.mjs";
+import { articles as originalClusterArticles } from "./seo-cluster-2026-08-23.mjs";
+import { articles as boneConstructionSeries } from "./bone-construction-series-2026-08-29.mjs";
 
 const root = process.cwd();
 const domain = "https://tawodco.com";
 const isoDate = "2026-08-23";
-const arabicDate = "23 أغسطس 2026";
+const articles = [...originalClusterArticles, ...boneConstructionSeries];
 const basePath = path.join(root, "blog", "best-contracting-company-riyadh", "index.html");
 const base = fs.readFileSync(basePath, "utf8");
 
@@ -17,8 +18,25 @@ const dimensions = {
   "images/blog/construction-building-riyadh.webp": [1600, 1200],
   "images/blog/finishing-interior-design-riyadh.webp": [1200, 1600],
   "images/projects/project-villa-facade-marble-ceramic-manar.webp": [1536, 1024],
-  "images/projects/project-luxury-villa-turnkey-alqusur.webp": [1536, 1024]
+  "images/projects/project-luxury-villa-turnkey-alqusur.webp": [1536, 1024],
+  "images/projects/construction-01.webp": [1200, 1600],
+  "images/projects/arouba-mosque-villas-01.webp": [420, 560],
+  "images/projects/arouba-mosque-villas-02.webp": [420, 560],
+  "images/projects/modon-eight-warehouses-01-v3.webp": [360, 480]
 };
+
+function publishedDate(article) {
+  return article.datePublished || isoDate;
+}
+
+function modifiedDate(article) {
+  return article.dateModified || publishedDate(article);
+}
+
+function formatArabicDate(value) {
+  return new Intl.DateTimeFormat("ar-SA-u-ca-gregory-nu-latn", { day: "numeric", month: "long", year: "numeric" })
+    .format(new Date(`${value}T12:00:00Z`));
+}
 
 function escapeHtml(value = "") {
   return String(value)
@@ -62,8 +80,8 @@ function renderSchema(article, wordCount, minutes) {
         name: article.seoTitle,
         description: article.description,
         inLanguage: "ar-SA",
-        datePublished: isoDate,
-        dateModified: isoDate,
+        datePublished: publishedDate(article),
+        dateModified: modifiedDate(article),
         isPartOf: { "@id": `${domain}/#website` },
         mainEntity: { "@id": articleId },
         breadcrumb: { "@id": `${url}#breadcrumb` }
@@ -77,8 +95,8 @@ function renderSchema(article, wordCount, minutes) {
         author: { "@id": organizationId },
         publisher: { "@id": organizationId },
         mainEntityOfPage: { "@id": pageId },
-        datePublished: isoDate,
-        dateModified: isoDate,
+        datePublished: publishedDate(article),
+        dateModified: modifiedDate(article),
         inLanguage: "ar-SA",
         articleSection: article.category,
         keywords: article.keywords.join(", "),
@@ -113,6 +131,8 @@ function renderSchema(article, wordCount, minutes) {
 function renderHead(article, wordCount, minutes) {
   const url = `${domain}/blog/${article.slug}/`;
   const image = `${domain}/${article.image}`;
+  const [imageWidth, imageHeight] = dimensions[article.image] || [];
+  if (!imageWidth || !imageHeight) throw new Error(`Missing image dimensions for ${article.image}`);
 
   return [
     "<head>",
@@ -132,9 +152,11 @@ function renderHead(article, wordCount, minutes) {
     `<meta property="og:description" content="${escapeHtml(article.ogDescription)}">`,
     `<meta property="og:image" content="${image}">`,
     `<meta property="og:image:alt" content="${escapeHtml(article.imageAlt)}">`,
+    `<meta property="og:image:width" content="${imageWidth}">`,
+    `<meta property="og:image:height" content="${imageHeight}">`,
     `<meta property="og:url" content="${url}">`,
-    '<meta property="article:published_time" content="2026-08-23T12:00:00+03:00">',
-    '<meta property="article:modified_time" content="2026-08-23T12:00:00+03:00">',
+    `<meta property="article:published_time" content="${publishedDate(article)}T12:00:00+03:00">`,
+    `<meta property="article:modified_time" content="${modifiedDate(article)}T12:00:00+03:00">`,
     '<meta name="twitter:card" content="summary_large_image">',
     `<meta name="twitter:title" content="${escapeHtml(article.title)}">`,
     `<meta name="twitter:description" content="${escapeHtml(article.ogDescription)}">`,
@@ -151,7 +173,7 @@ function renderHead(article, wordCount, minutes) {
     '<link href="../../assets/css/tawod-inner.css" rel="stylesheet">',
     '<link href="../../assets/css/tawod-blog.css" rel="stylesheet">',
     '<link href="../../assets/css/tawod-article.css" rel="stylesheet">',
-    '<link href="../../assets/css/tawod-system.css" rel="stylesheet">',
+    '<link href="../../assets/css/tawod-system.css?v=c44028090c45" rel="stylesheet">',
     renderSchema(article, wordCount, minutes),
     '<!-- TAWOD_ANALYTICS_START --><script src="/assets/js/tawod-analytics.js?v=20260823-1" defer></script><!-- TAWOD_ANALYTICS_END -->',
     "</head>"
@@ -163,7 +185,7 @@ function renderHero(article, minutes) {
     '<section class="article-hero">',
     '<div class="container reveal-up">',
     '<div class="article-meta-line">',
-    `<span><i class="fa-regular fa-calendar"></i> محدث ${arabicDate}</span>`,
+    `<span><i class="fa-regular fa-calendar"></i> محدث ${formatArabicDate(modifiedDate(article))}</span>`,
     '<span><i class="fa-solid fa-location-dot"></i> الرياض</span>',
     `<span><i class="fa-solid fa-building"></i> ${escapeHtml(article.category)}</span>`,
     `<span data-reading-time><i class="fa-regular fa-clock"></i> ${minutes} دقائق قراءة</span>`,
@@ -217,7 +239,7 @@ function renderArticleBody(article) {
     intro,
     `<div class="article-note">${escapeHtml(article.note)}</div>`,
     sections,
-    '<div class="seo-inline-cta"><h3>هل تريد مناقشة مشروعك في الرياض؟</h3><p>أرسل نوع المشروع وموقعه والمرحلة الحالية والمخططات أو الصور المتاحة لنحدد معك نطاق المعاينة والعمل بوضوح.</p><a href="../../contact.html">طلب استشارة أو عرض سعر</a></div>',
+    `<div class="seo-inline-cta"><h3>${escapeHtml(article.ctaTitle || "هل تريد مناقشة مشروعك في الرياض؟")}</h3><p>${escapeHtml(article.ctaText || "أرسل نوع المشروع وموقعه والمرحلة الحالية والمخططات أو الصور المتاحة لنحدد معك نطاق المعاينة والعمل بوضوح.")}</p><a href="../../contact.html">طلب استشارة أو عرض سعر</a></div>`,
     `<h2 id="article-section-${article.sections.length + 1}">الخلاصة</h2>`,
     `<p>${article.conclusion}</p>`,
     '<!-- TAWOD_STATIC_TOOLS_START --><div class="tawod-article-tools"><strong>وجدت الدليل مفيدًا؟</strong><div><button type="button" data-share-article><i class="fa-solid fa-share-nodes"></i> مشاركة</button><button type="button" data-print-article><i class="fa-solid fa-print"></i> طباعة</button><a href="https://wa.me/" data-whatsapp-share target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"></i> واتساب</a></div></div><!-- TAWOD_STATIC_TOOLS_END -->'
@@ -262,12 +284,12 @@ function renderFaq(article) {
   }).join("");
 
   return [
-    '<!-- TAWOD_STATIC_FAQ_START --><section id="faq" class="section-padding bg-light tawod-faq-section">',
+    '<!-- TAWOD_AUTHORED_FAQ_START --><section id="faq" class="section-padding bg-light tawod-faq-section">',
     '<div class="container">',
     `<div class="section-title"><span class="eyebrow">أسئلة شائعة</span><h2>إجابات واضحة حول ${escapeHtml(article.title)}</h2><p>معلومات عملية تساعدك على فهم النطاق والجودة والتكلفة والتنفيذ قبل اتخاذ القرار.</p></div>`,
     `<div class="faq-wrap tawod-faq-grid">${cards}</div>`,
     "</div>",
-    "</section><!-- TAWOD_STATIC_FAQ_END -->"
+    "</section><!-- TAWOD_AUTHORED_FAQ_END -->"
   ].join("\n");
 }
 
@@ -305,11 +327,12 @@ function updateSitemap() {
     xml = xml.replace(new RegExp(`\\s*<url><loc>${domain.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\/blog\\/${escapedSlug}\\/<\\/loc>[\\s\\S]*?<\\/url>`, "g"), "");
   }
 
+  const latestModified = articles.map(modifiedDate).sort().at(-1) || isoDate;
   xml = xml
-    .replace(/(<loc>https:\/\/tawodco\.com\/<\/loc><lastmod>)[^<]+/, `$1${isoDate}`)
-    .replace(/(<loc>https:\/\/tawodco\.com\/blog\/<\/loc><lastmod>)[^<]+/, `$1${isoDate}`);
+    .replace(/(<loc>https:\/\/tawodco\.com\/<\/loc><lastmod>)[^<]+/, `$1${latestModified}`)
+    .replace(/(<loc>https:\/\/tawodco\.com\/blog\/<\/loc><lastmod>)[^<]+/, `$1${latestModified}`);
 
-  const entries = articles.map((article) => `  <url><loc>${domain}/blog/${article.slug}/</loc><lastmod>${isoDate}</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>`).join("\n");
+  const entries = articles.map((article) => `  <url><loc>${domain}/blog/${article.slug}/</loc><lastmod>${modifiedDate(article)}</lastmod><changefreq>monthly</changefreq><priority>${article.slug === "bone-construction-riyadh-guide" ? "0.82" : "0.75"}</priority></url>`).join("\n");
   xml = xml.replace("</urlset>", `${entries}\n</urlset>`);
   fs.writeFileSync(sitemapPath, `${xml.trim()}\n`);
 }

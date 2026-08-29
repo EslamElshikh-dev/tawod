@@ -2,10 +2,10 @@
   "name": "tawod-nextjs-site",
   "private": true,
   "scripts": {
-    "predev": "node scripts/prepare-next-public.mjs",
+    "predev": "node scripts/prepare-next-public.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/prepare-next-public.mjs",
-    "prepare:assets": "node scripts/prepare-next-public.mjs",
+    "prebuild": "node scripts/prepare-next-public.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "prepare:assets": "node scripts/prepare-next-public.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "build": "next build",
     "postbuild": "node scripts/finalize-next-export.mjs && node scripts/verify-next-export.mjs",
     "typecheck": "tsc --noEmit",
@@ -31,8 +31,10 @@
     "check:dhahran": "node scripts/generate-dhahran-silo.mjs --check",
     "generate:seo-batch": "node scripts/generate-seo-batch-2026-08-09.mjs && node scripts/build-static-pages.mjs && node scripts/build-home-performance.mjs && node scripts/generate-blog-archive.mjs && node scripts/install-site-analytics.mjs",
     "generate:seo-cluster-2026-08-23": "node scripts/generate-seo-cluster-2026-08-23.mjs && node scripts/build-static-pages.mjs && node scripts/generate-blog-archive.mjs && node scripts/install-site-analytics.mjs",
+    "generate:bone-series": "node scripts/generate-seo-cluster-2026-08-23.mjs && node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/install-site-analytics.mjs && node scripts/build-static-pages.mjs && node scripts/install-site-analytics.mjs",
+    "check:bone-series": "node scripts/validate-bone-construction-series.mjs",
     "validate:site": "node scripts/validate-site.mjs",
-    "check": "npm run prepare:assets && npm run typecheck && npm run check:analytics && npm run test:analytics && npm run check:static && npm run check:home && npm run check:blog && npm run check:blog-architecture && npm run check:seo-ownership && npm run check:dammam && npm run check:khobar && npm run check:dhahran && npm run validate:site && npm run build"
+    "check": "npm run prepare:assets && npm run typecheck && npm run check:analytics && npm run test:analytics && npm run check:static && npm run check:home && npm run check:blog && npm run check:blog-architecture && npm run check:bone-series && npm run check:seo-ownership && npm run check:dammam && npm run check:khobar && npm run check:dhahran && npm run validate:site && npm run build"
   },
   "dependencies": {
     "next": "16.3.2",

@@ -78,7 +78,7 @@ function articleArchitecture(r,metadata){
 function serviceGuides(r){
   const topic=topicForService(r);if(!topic)return'';
   const curated={
-    'service-construction.html':['bone-construction-riyadh-guide','best-contracting-company-riyadh','building-saudi-code-owner-guide','modern-construction-technologies-saudi-arabia'],
+    'service-construction.html':['bone-construction-riyadh-guide','bone-construction-quote-request-riyadh','bone-construction-contract-riyadh','bone-construction-execution-plan-riyadh'],
     'service-turnkey.html':['turnkey-construction-riyadh-guide','turnkey-project-cost-riyadh','turnkey-contracts-riyadh','turnkey-commercial-fitout-riyadh'],
     'service-restoration.html':['best-renovation-company-riyadh','building-facade-restoration-riyadh','facade-restoration-cost-riyadh','renovation-company-site-assessment-riyadh'],
     'service-finishing.html':['finishing-villa-riyadh-guide','finishing-cost-riyadh','finishing-materials-riyadh','finishing-mistakes-riyadh'],
@@ -109,7 +109,7 @@ function article(h,r,metadata){
     const key=`${ka}<aside class="tawod-key-takeaways"><h2><i class="fa-solid fa-lightbulb"></i> ما الذي ستخرج به من هذا الدليل؟</h2><ul>${heads.slice(0,4).map(x=>`<li>${esc(x[1])}</li>`).join('')}</ul></aside>${kb}`;
     body=body.replace(/(<img\b[^>]*>)\s*/i,'$1'+toc+key);
   }
-  body=/<img\b[^>]*>/i.test(body)?body.replace(/(<img\b[^>]*>)/i,`$1${architecture.trail}`):architecture.trail+body;
+  body=/<img\b[^>]*>/i.test(body)?body.replace(/(<img\b[^>]*>)\s*/i,`$1${architecture.trail}`):architecture.trail+body;
   body+=architecture.cluster;
   const hasAuthoredTools=/<div[^>]*class=["'][^"']*tawod-article-tools[^"']*["']/i.test(body);
   if(!hasAuthoredTools){

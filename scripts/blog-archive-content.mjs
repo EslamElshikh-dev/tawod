@@ -32,7 +32,7 @@ export const legacyArticleTitles = {
   "best-contracting-company-riyadh": "أفضل شركة مقاولات في الرياض",
   "best-construction-company-riyadh": "أفضل شركة بناء في الرياض",
   "construction-building-riyadh": "البناء والإنشاءات في الرياض",
-  "bone-construction-riyadh-guide": "دليل البناء عظم بالرياض",
+  "bone-construction-riyadh-guide": "بناء عظم بالرياض: دليل المراحل والجودة قبل التنفيذ",
   "bone-contractor-turnkey-riyadh": "مقاول عظم وتسليم مفتاح",
   "contracting-riyadh-project-guide": "دليل مشروع المقاولات بالرياض",
   "general-contracting-company-riyadh": "شركة مقاولات عامة بالرياض",

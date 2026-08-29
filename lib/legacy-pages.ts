@@ -1,17 +1,11 @@
-import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { join, posix, sep } from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { join } from "node:path";
+
+import { legacyHtmlFiles, legacyHtmlHashes } from "@/lib/legacy-html-files";
 
 const siteRoot = process.cwd();
-const excludedDirectories = new Set([
-  ".git",
-  ".next",
-  "app",
-  "lib",
-  "node_modules",
-  "out",
-  "project-pages",
-  "public",
-]);
+const legacyHtmlFileSet = new Set<string>(legacyHtmlFiles);
 const projectImageReplacements = [
   [
     "images/projects/modon-eight-warehouses-01.webp",
@@ -67,39 +61,8 @@ const projectsShowcaseMarkup = `
   </div>
 </section>`;
 
-function toPosixPath(value: string) {
-  return value.split(sep).join(posix.sep);
-}
-
-function collectHtmlFiles(directory: string, relativeDirectory = ""): string[] {
-  const entries = readdirSync(directory, { withFileTypes: true });
-  const files: string[] = [];
-
-  for (const entry of entries) {
-    const relativePath = relativeDirectory
-      ? join(relativeDirectory, entry.name)
-      : entry.name;
-
-    if (entry.isDirectory()) {
-      if (!excludedDirectories.has(entry.name)) {
-        files.push(...collectHtmlFiles(join(directory, entry.name), relativePath));
-      }
-      continue;
-    }
-
-    if (entry.isFile() && entry.name.endsWith(".html")) {
-      files.push(toPosixPath(relativePath));
-    }
-  }
-
-  return files.sort((a, b) => a.localeCompare(b, "en"));
-}
-
-let cachedHtmlFiles: string[] | undefined;
-
 export function getLegacyHtmlFiles() {
-  cachedHtmlFiles ??= collectHtmlFiles(siteRoot);
-  return cachedHtmlFiles;
+  return legacyHtmlFiles;
 }
 
 export function getRoutedLegacyHtmlFiles() {
@@ -185,7 +148,7 @@ function enhanceLegacyHtml(relativePath: string, html: string) {
 }
 
 export function readLegacyHtml(relativePath: string) {
-  if (!getLegacyHtmlFiles().includes(relativePath)) {
+  if (!legacyHtmlFileSet.has(relativePath)) {
     throw new Error(`Unknown legacy HTML route: ${relativePath}`);
   }
 
@@ -193,8 +156,13 @@ export function readLegacyHtml(relativePath: string) {
   if (!existsSync(absolutePath)) {
     throw new Error(`Missing legacy HTML source: ${relativePath}`);
   }
-
-  return enhanceLegacyHtml(relativePath, readFileSync(absolutePath, "utf8"));
+  const source = readFileSync(absolutePath, "utf8");
+  const actualHash = createHash("sha256").update(source).digest("hex");
+  const expectedHash = legacyHtmlHashes[relativePath as keyof typeof legacyHtmlHashes];
+  if (actualHash !== expectedHash) {
+    throw new Error(`Stale legacy HTML manifest entry: ${relativePath}`);
+  }
+  return enhanceLegacyHtml(relativePath, source);
 }
 
 export function htmlResponse(relativePath: string) {

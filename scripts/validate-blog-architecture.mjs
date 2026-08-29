@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { articleRole, blogTopics, legacyTopicHubSlugs, topicForArticle, topicForService, topicUrl } from "./blog-topic-data.mjs";
+import { newArticleSlugs } from "./bone-construction-series-2026-08-29.mjs";
 
 const root = process.cwd();
 const blogRoot = join(root, "blog");
@@ -30,7 +31,8 @@ function articleEntityCount(html) {
   return count;
 }
 
-if (articleSlugs.length + legacyTopicHubSlugs.size !== 82) errors.push(`Expected 82 legacy content URLs, found ${articleSlugs.length + legacyTopicHubSlugs.size}`);
+const expectedContentUrls = 82 + newArticleSlugs.length;
+if (articleSlugs.length + legacyTopicHubSlugs.size !== expectedContentUrls) errors.push(`Expected ${expectedContentUrls} content URLs after the bone-construction series, found ${articleSlugs.length + legacyTopicHubSlugs.size}`);
 
 const blogIndex = readFileSync(join(blogRoot, "index.html"), "utf8");
 for (const topic of blogTopics) {

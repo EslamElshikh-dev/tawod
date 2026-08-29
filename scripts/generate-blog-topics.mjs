@@ -7,7 +7,7 @@ import { articleRole, blogTopics, legacyTopicHubSlugs, topicForArticle, topicUrl
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const blogDir = join(rootDir, "blog");
 const domain = "https://tawodco.com";
-const buildDate = "2026-08-28";
+const buildDate = "2026-08-29";
 const architectureCss = join(rootDir, "assets/css/tawod-blog-architecture.css");
 const architectureVersion = createHash("sha256").update(readFileSync(architectureCss)).digest("hex").slice(0, 12);
 const architectureHref = `/assets/css/tawod-blog-architecture.css?v=${architectureVersion}`;

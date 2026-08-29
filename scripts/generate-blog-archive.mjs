@@ -8,7 +8,7 @@ import { blogTopics, legacyTopicHubSlugs, topicForArticle, topicUrl } from "./bl
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const blogDir = join(rootDir, "blog");
 const pageSize = 10;
-const buildDate = "2026-08-28";
+const buildDate = "2026-08-29";
 const assetVersion = (relativePath) => createHash("sha256").update(readFileSync(join(rootDir, relativePath))).digest("hex").slice(0, 12);
 const archiveCssVersion = assetVersion("assets/css/blog-archive.css");
 const archiveJsVersion = assetVersion("assets/js/blog-archive.js");
