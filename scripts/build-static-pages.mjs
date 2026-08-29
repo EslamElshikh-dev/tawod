@@ -10,6 +10,22 @@ const rootServices=new Set(['service-construction.html','service-turnkey.html','
 const ignoredDirectories=new Set(['.git','.next','node_modules','out','public']);
 const architectureCss='assets/css/tawod-blog-architecture.css';
 const architectureVersion=createHash('sha256').update(fs.readFileSync(path.join(root,architectureCss))).digest('hex').slice(0,12);
+const contentRefreshDates=new Map([
+  ['blog/mechanical-mep-works-riyadh/index.html','2026-08-29'],
+  ['blog/turnkey-commercial-fitout-riyadh/index.html','2026-08-29'],
+  ['blog/turnkey-contracts-riyadh/index.html','2026-08-29'],
+  ['blog/turnkey-contract-checklist-riyadh/index.html','2026-08-29'],
+  ['blog/finishing-apartment-riyadh/index.html','2026-08-29'],
+  ['blog/finishing-materials-riyadh/index.html','2026-08-29'],
+  ['blog/finishing-villa-riyadh-guide/index.html','2026-08-29'],
+]);
+const serviceRefreshDates=new Map([
+  ['service-construction.html','2026-08-29'],
+  ['service-turnkey.html','2026-08-29'],
+  ['service-finishing.html','2026-08-29'],
+  ['service-decor.html','2026-08-29'],
+  ['service-mep.html','2026-08-29'],
+]);
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const text=s=>s.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
 const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>ignoredDirectories.has(e.name)?[]:e.isDirectory()?walk(path.join(d,e.name)):[path.join(d,e.name)]);
@@ -19,6 +35,7 @@ const pagePath=r=>r==='index.html'?'/':r.endsWith('/index.html')?'/'+r.slice(0,-
 const marker=n=>[`<!-- TAWOD_STATIC_${n}_START -->`,`<!-- TAWOD_STATIC_${n}_END -->`];
 const strip=(h,n)=>{const [a,b]=marker(n);return h.replace(new RegExp(a+'[\\s\\S]*?'+b+'\\s*','g'),'')};
 const first=(h,re,d='')=>{const m=h.match(re);return m?text(m[1]):d};
+const metaDescription=(h,d='')=>{const tag=h.match(/<meta\b(?=[^>]*\bname=["']description["'])[^>]*>/i)?.[0],value=tag?.match(/\bcontent=["']([^"']*)["']/i)?.[1];return value?text(value):d};
 const insertBeforeMainEnd=(h,m)=>h.replace(/<\/main>/i,m+'\n</main>');
 const insertBeforeHeadEnd=(h,m)=>h.includes('<!-- TAWOD_ANALYTICS_START -->')?h.replace('<!-- TAWOD_ANALYTICS_START -->',m+'<!-- TAWOD_ANALYTICS_START -->'):h.replace(/<\/head>/i,m+'</head>');
 
@@ -62,7 +79,7 @@ function serviceGuides(r){
   const topic=topicForService(r);if(!topic)return'';
   const curated={
     'service-construction.html':['bone-construction-riyadh-guide','best-contracting-company-riyadh','building-saudi-code-owner-guide','modern-construction-technologies-saudi-arabia'],
-    'service-turnkey.html':['turnkey-construction-riyadh-guide','turnkey-project-cost-riyadh','turnkey-contract-checklist-riyadh','turnkey-handover-checklist-riyadh'],
+    'service-turnkey.html':['turnkey-construction-riyadh-guide','turnkey-project-cost-riyadh','turnkey-contracts-riyadh','turnkey-commercial-fitout-riyadh'],
     'service-restoration.html':['best-renovation-company-riyadh','building-facade-restoration-riyadh','facade-restoration-cost-riyadh','renovation-company-site-assessment-riyadh'],
     'service-finishing.html':['finishing-villa-riyadh-guide','finishing-cost-riyadh','finishing-materials-riyadh','finishing-mistakes-riyadh'],
     'service-decor.html':['best-interior-design-company-riyadh','interior-design-execution-stages-riyadh','commercial-interior-design-riyadh','villa-interior-design-riyadh'],
@@ -107,8 +124,8 @@ function article(h,r,metadata){
   }
   return{h,stats:{words,minutes}};
 }
-function pageSchema(r,h,c,q,pageDate=date){const title=first(h,/<h1[^>]*>([\s\S]*?)<\/h1>/i,c.name),desc=first(h,/<meta[^>]*name="description"[^>]*content="([^"]*)"/i,c.scope),url=domain+pagePath(r);const page={'@context':'https://schema.org','@type':'WebPage',name:title,headline:title,description:desc,url,inLanguage:'ar-SA',dateModified:pageDate,isPartOf:{'@id':domain+'/#website'},publisher:{'@id':domain+'/#organization'}};const faq={'@context':'https://schema.org','@type':'FAQPage',mainEntity:q.map(x=>({'@type':'Question',name:x[0],acceptedAnswer:{'@type':'Answer',text:x[1]}}))};const crumbs={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'الرئيسية',item:domain+'/'},{'@type':'ListItem',position:2,name:title,item:url}]};const [a,b]=marker('SCHEMA');return`${a}<script id="tawod-static-page-schema" type="application/ld+json">${JSON.stringify(page)}</script><script id="tawod-static-faq-schema" type="application/ld+json">${JSON.stringify(faq)}</script><script id="tawod-static-breadcrumb-schema" type="application/ld+json">${JSON.stringify(crumbs)}</script>${b}`}
-function articleSchema(r,h,c,q,stats,metadata){const slug=r.split('/')[1],topic=topicForArticle(slug),title=first(h,/<h1[^>]*>([\s\S]*?)<\/h1>/i,c.name),desc=first(h,/<meta[^>]*name="description"[^>]*content="([^"]*)"/i,c.scope),url=domain+pagePath(r),pageId=`${url}#webpage`,articleId=`${url}#article`,breadcrumbId=`${url}#breadcrumb`,topicAbsolute=domain+topicUrl(topic);const article={'@type':'Article','@id':articleId,headline:title,description:desc,url,image:metadata.image,author:{'@id':domain+'/#organization'},publisher:{'@id':domain+'/#organization'},datePublished:metadata.datePublished,dateModified:metadata.dateModified,articleSection:topic.title,inLanguage:'ar-SA',mainEntityOfPage:{'@id':pageId},isPartOf:{'@id':domain+'/blog/#blog'},about:{'@id':`${topicAbsolute}#webpage`}};if(metadata.keywords)article.keywords=metadata.keywords;if(stats){article.wordCount=stats.words;article.timeRequired=`PT${stats.minutes}M`}const graph={'@context':'https://schema.org','@graph':[{'@type':'Organization','@id':domain+'/#organization',name:'شركة تعاود للمقاولات العامة',url:domain+'/',logo:{'@type':'ImageObject',url:domain+'/images/logo/tawod-logo.png'},telephone:'+966551128884'},{'@type':'WebPage','@id':pageId,url,name:title,description:desc,inLanguage:'ar-SA',isPartOf:{'@id':domain+'/#website'},breadcrumb:{'@id':breadcrumbId},mainEntity:{'@id':articleId}},article,{'@type':'BreadcrumbList','@id':breadcrumbId,itemListElement:[{'@type':'ListItem',position:1,name:'الرئيسية',item:domain+'/'},{'@type':'ListItem',position:2,name:'المدونة',item:domain+'/blog/'},{'@type':'ListItem',position:3,name:topic.title,item:topicAbsolute},{'@type':'ListItem',position:4,name:title,item:url}]},...(q.length?[{'@type':'FAQPage','@id':`${url}#faq`,mainEntity:q.map(item=>({'@type':'Question',name:item[0],acceptedAnswer:{'@type':'Answer',text:item[1]}}))}]:[])]};const [a,b]=marker('SCHEMA');return`${a}<script id="tawod-article-graph" type="application/ld+json">${JSON.stringify(graph)}</script>${b}`}
+function pageSchema(r,h,c,q,pageDate=date){const title=first(h,/<h1[^>]*>([\s\S]*?)<\/h1>/i,c.name),desc=metaDescription(h,c.scope),url=domain+pagePath(r);const page={'@context':'https://schema.org','@type':'WebPage',name:title,headline:title,description:desc,url,inLanguage:'ar-SA',dateModified:pageDate,isPartOf:{'@id':domain+'/#website'},publisher:{'@id':domain+'/#organization'}};const faq={'@context':'https://schema.org','@type':'FAQPage',mainEntity:q.map(x=>({'@type':'Question',name:x[0],acceptedAnswer:{'@type':'Answer',text:x[1]}}))};const crumbs={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'الرئيسية',item:domain+'/'},{'@type':'ListItem',position:2,name:title,item:url}]};const [a,b]=marker('SCHEMA');return`${a}<script id="tawod-static-page-schema" type="application/ld+json">${JSON.stringify(page)}</script><script id="tawod-static-faq-schema" type="application/ld+json">${JSON.stringify(faq)}</script><script id="tawod-static-breadcrumb-schema" type="application/ld+json">${JSON.stringify(crumbs)}</script>${b}`}
+function articleSchema(r,h,c,q,stats,metadata){const slug=r.split('/')[1],topic=topicForArticle(slug),title=first(h,/<h1[^>]*>([\s\S]*?)<\/h1>/i,c.name),desc=metaDescription(h,c.scope),url=domain+pagePath(r),pageId=`${url}#webpage`,articleId=`${url}#article`,breadcrumbId=`${url}#breadcrumb`,topicAbsolute=domain+topicUrl(topic);const article={'@type':'Article','@id':articleId,headline:title,description:desc,url,image:metadata.image,author:{'@id':domain+'/#organization'},publisher:{'@id':domain+'/#organization'},datePublished:metadata.datePublished,dateModified:metadata.dateModified,articleSection:topic.title,inLanguage:'ar-SA',mainEntityOfPage:{'@id':pageId},isPartOf:{'@id':domain+'/blog/#blog'},about:{'@id':`${topicAbsolute}#webpage`}};if(metadata.keywords)article.keywords=metadata.keywords;if(stats){article.wordCount=stats.words;article.timeRequired=`PT${stats.minutes}M`}const graph={'@context':'https://schema.org','@graph':[{'@type':'Organization','@id':domain+'/#organization',name:'شركة تعاود للمقاولات العامة',url:domain+'/',logo:{'@type':'ImageObject',url:domain+'/images/logo/tawod-logo.png'},telephone:'+966551128884'},{'@type':'WebPage','@id':pageId,url,name:title,description:desc,inLanguage:'ar-SA',isPartOf:{'@id':domain+'/#website'},breadcrumb:{'@id':breadcrumbId},mainEntity:{'@id':articleId}},article,{'@type':'BreadcrumbList','@id':breadcrumbId,itemListElement:[{'@type':'ListItem',position:1,name:'الرئيسية',item:domain+'/'},{'@type':'ListItem',position:2,name:'المدونة',item:domain+'/blog/'},{'@type':'ListItem',position:3,name:topic.title,item:topicAbsolute},{'@type':'ListItem',position:4,name:title,item:url}]},...(q.length?[{'@type':'FAQPage','@id':`${url}#faq`,mainEntity:q.map(item=>({'@type':'Question',name:item[0],acceptedAnswer:{'@type':'Answer',text:item[1]}}))}]:[])]};const [a,b]=marker('SCHEMA');return`${a}<script id="tawod-article-graph" type="application/ld+json">${JSON.stringify(graph)}</script>${b}`}
 
 const changes=[];
 for(const f of walk(root).filter(x=>x.endsWith('.html')&&!rel(x).startsWith('assets/project-pages/'))){
@@ -120,6 +137,7 @@ for(const f of walk(root).filter(x=>x.endsWith('.html')&&!rel(x).startsWith('ass
   let h=fs.readFileSync(f,'utf8'),old=h;
   if(r.startsWith('lp/'))h=landingRobots(h);
   const s=state(r,h),metadata=s.article?articleMetadata(h):null;
+  if(metadata&&contentRefreshDates.has(r))metadata.dateModified=contentRefreshDates.get(r);
   const existingDate=h.match(/<script[^>]*id=["']tawod-static-page-schema["'][^>]*>[\s\S]*?"dateModified"\s*:\s*"([^"]+)"/i)?.[1]||date;
   for(const n of marks)h=strip(h,n);
   if(s.article)h=stripArticleSchemas(h);
@@ -137,7 +155,7 @@ for(const f of walk(root).filter(x=>x.endsWith('.html')&&!rel(x).startsWith('ass
     const hasFaq=/<section[^>]*(?:id=["']faq["']|class=["'][^"']*(?:seo-faq|tawod-faq-section)[^"']*["'])/i.test(h);
     if(!hasFaq)h=insertBeforeMainEnd(h,fq.html);
     if(s.indexable&&s.article){const questions=visibleFaqs(h);h=insertBeforeHeadEnd(h,articleSchema(r,h,c,questions.length?questions:fq.q,stats,metadata))}
-    else if(s.indexable){const hasPageSchema=/"@type"\s*:\s*"WebPage"/.test(h),hasSchemas=hasPageSchema&&/"@type"\s*:\s*"FAQPage"/.test(h)&&/"@type"\s*:\s*"BreadcrumbList"/.test(h);if(!hasSchemas)h=insertBeforeHeadEnd(h,pageSchema(r,h,c,fq.q,rootServices.has(r)?'2026-08-23':existingDate))}
+    else if(s.indexable){const hasPageSchema=/"@type"\s*:\s*"WebPage"/.test(h),hasSchemas=hasPageSchema&&/"@type"\s*:\s*"FAQPage"/.test(h)&&/"@type"\s*:\s*"BreadcrumbList"/.test(h);if(!hasSchemas)h=insertBeforeHeadEnd(h,pageSchema(r,h,c,fq.q,serviceRefreshDates.get(r)||existingDate))}
   }
   h=h.replace(/[ \t]+$/gm,'').replace(/\n{3,}/g,'\n\n');
   if(h!==old){changes.push(r);if(!check)fs.writeFileSync(f,h)}
