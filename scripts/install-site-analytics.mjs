@@ -24,22 +24,6 @@ const markerPattern = new RegExp(`${start}[\\s\\S]*?${end}\\s*`, 'g');
 const analyticsScriptPattern = /\s*<script\b[^>]*\bsrc=["']\/assets\/js\/tawod-analytics\.js(?:\?v=[^"']*)?["'][^>]*><\/script>\s*/gi;
 const legacyHomeTag = /\s*<!-- Google tag: queued immediately,[\s\S]*?-->\s*<script>[\s\S]*?<\/script>\s*/i;
 const inlineScript = /<script\b(?![^>]*\bsrc=)[^>]*>[\s\S]*?<\/script>\s*/gi;
-const revision = (file) => createHash('sha256').update(fs.readFileSync(path.join(root, 'assets', 'js', file))).digest('hex').slice(0, 12);
-const scriptRevisions = new Map([
-  ['tawod-home.js', revision('tawod-home.js')],
-  ['tawod-inner.js', revision('tawod-inner.js')],
-  ['contact-conversion.js', revision('contact-conversion.js')]
-]);
-
-function versionSharedScripts(html) {
-  for (const [file, assetRevision] of scriptRevisions) {
-    const escaped = file.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const pattern = new RegExp(`((?:\\/|(?:\\.\\.\\/)*)assets\\/js\\/${escaped})(?:\\?v=[^"'\\s>]*)?`, 'g');
-    html = html.replace(pattern, `$1?v=${assetRevision}`);
-  }
-  return html;
-}
-
 const changes = [];
 for (const file of walk(root).filter((candidate) => candidate.endsWith('.html') && !relative(candidate).startsWith('assets/project-pages/'))) {
   const oldHtml = fs.readFileSync(file, 'utf8');
@@ -47,7 +31,6 @@ for (const file of walk(root).filter((candidate) => candidate.endsWith('.html') 
   html = html.replace(inlineScript, (block) => (
     block.includes('tawodLeadSubmitted') && block.includes('lead_confirmation') ? '' : block
   ));
-  html = versionSharedScripts(html);
   html = html.replace(/<\/head>/i, `${install}</head>`);
   html = html.replace(/[ \t]+$/gm, '').replace(/\n{3,}/g, '\n\n');
 

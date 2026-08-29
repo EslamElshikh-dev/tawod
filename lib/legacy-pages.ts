@@ -6,6 +6,7 @@ import { legacyHtmlFiles, legacyHtmlHashes } from "@/lib/legacy-html-files";
 
 const siteRoot = process.cwd();
 const legacyHtmlFileSet = new Set<string>(legacyHtmlFiles);
+const localAssetRevisionCache = new Map<string, string>();
 const projectImageReplacements = [
   [
     "images/projects/modon-eight-warehouses-01.webp",
@@ -84,6 +85,68 @@ function normalizeInternalHomepageLinks(html: string) {
     .replace(/href='(?:\.\.\/)*index\.html(?=[#'])/gi, "href='/");
 }
 
+function versionLocalAssets(html: string) {
+  return html.replace(
+    /((?:(?:\.\.\/)*|\/)assets\/(css|js)\/([a-zA-Z0-9._-]+\.(?:css|js)))(?:\?v=[^"'\s>]*)?/g,
+    (match, url: string, assetType: string, fileName: string) => {
+      const relativeAssetPath = `assets/${assetType}/${fileName}`;
+      const absoluteAssetPath = join(siteRoot, ...relativeAssetPath.split("/"));
+      if (!existsSync(absoluteAssetPath)) return match;
+      let revision = localAssetRevisionCache.get(relativeAssetPath);
+      if (!revision) {
+        revision = createHash("sha256")
+          .update(readFileSync(absoluteAssetPath))
+          .digest("hex")
+          .slice(0, 12);
+        localAssetRevisionCache.set(relativeAssetPath, revision);
+      }
+      return `${url}?v=${revision}`;
+    },
+  );
+}
+
+function optimizeFontLoading(html: string) {
+  if (!/assets\/css\/(?:tawod-system|tawod-home-performance)\.css/i.test(html)) {
+    return html;
+  }
+  let optimizedHtml = html
+    .replace(/\s*<link\b[^>]*href=["']https:\/\/fonts\.googleapis\.com[^"']*["'][^>]*>\s*/gi, "\n")
+    .replace(/\s*<link\b[^>]*href=["']https:\/\/fonts\.gstatic\.com[^"']*["'][^>]*>\s*/gi, "\n");
+  if (!/rel=["']preload["'][^>]*alexandria-arabic-variable\.woff2/i.test(optimizedHtml)) {
+    optimizedHtml = optimizedHtml.replace(
+      /(<link\b[^>]*rel=["']stylesheet["'][^>]*>)/i,
+      '<link rel="preload" href="/assets/fonts/alexandria-arabic-variable.woff2" as="font" type="font/woff2" crossorigin>\n$1',
+    );
+  }
+  return optimizedHtml;
+}
+
+function isBlogArticle(relativePath: string) {
+  return /(?:^|\/)blog\/(?!page\/|topics\/)[^/]+\/index\.html$/.test(relativePath);
+}
+
+function optimizeArticleMarkup(relativePath: string, html: string) {
+  if (!isBlogArticle(relativePath)) return html;
+  let optimizedHtml = html.replace(
+    /(<article\b[^>]*\bclass=(["']))([^"']*\barticle-content\b[^"']*)(\2[^>]*>)/i,
+    (match, start: string, quote: string, classes: string, end: string) => {
+      const safeClasses = classes.split(/\s+/).filter((name) => name && name !== "reveal-up").join(" ");
+      return `${start}${safeClasses}${end}`;
+    },
+  );
+  optimizedHtml = optimizedHtml.replace(
+    /(<article\b[^>]*\bclass=["'][^"']*\barticle-content\b[^"']*["'][^>]*>[\s\S]*?<img\b)([^>]*)(>)/i,
+    (match, start: string, attributes: string, end: string) => {
+      const optimizedAttributes = attributes
+        .replace(/\s+loading=["'][^"']*["']/i, "")
+        .replace(/\s+fetchpriority=["'][^"']*["']/i, "")
+        .replace(/\s+decoding=["'][^"']*["']/i, "");
+      return `${start}${optimizedAttributes} loading="lazy" decoding="async" fetchpriority="low"${end}`;
+    },
+  );
+  return optimizedHtml;
+}
+
 function normalizeProjectPresentation(relativePath: string, html: string) {
   if (relativePath === "index.html") {
     return html.replaceAll(
@@ -139,10 +202,17 @@ function enhanceLegacyHtml(relativePath: string, html: string) {
       );
   }
 
-  return normalizeInternalHomepageLinks(
-    normalizeProjectPresentation(
-      relativePath,
-      replaceProjectImageUrls(enhancedHtml),
+  return versionLocalAssets(
+    optimizeFontLoading(
+      optimizeArticleMarkup(
+        relativePath,
+        normalizeInternalHomepageLinks(
+          normalizeProjectPresentation(
+            relativePath,
+            replaceProjectImageUrls(enhancedHtml),
+          ),
+        ),
+      ),
     ),
   );
 }

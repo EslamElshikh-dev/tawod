@@ -1,6 +1,15 @@
 /* Tawod shared system: local stable base followed by the premium 2026 overrides. */
-@import url('./tawod-system-base.css');
-@import url('./tawod-premium-2026.css');
+@import url('./tawod-system-base.css?v=ad7ddbaeb2ef');
+@import url('./tawod-premium-2026.css?v=1d9145624dc4');
+
+/* Critical copy must never depend on a motion observer to become readable. */
+.article-hero .reveal-up,
+.blog-hero .reveal-up,
+.page-hero .reveal-up,
+.article-content.reveal-up {
+  opacity: 1 !important;
+  transform: none !important;
+}
 
 .mobile-menu-btn,
 .close-sidebar {

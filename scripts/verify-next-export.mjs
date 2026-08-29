@@ -1,4 +1,5 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { join, relative, sep } from "node:path";
 
 const root = process.cwd();
@@ -21,7 +22,7 @@ const intentionalHtmlTransforms = new Map([
   [
     "projects.html",
     [
-      'href="assets/css/tawod-projects-showcase.css?v=20260827-1"',
+      'href="assets/css/tawod-projects-showcase.css?v=',
       'data-project="faisaliah-villa-facades-finishing"',
       'data-project="villa-plaster-ceramic-marble-uhud-riyadh"',
       'data-project="alrajhi-tanks-king-salman-park"',
@@ -75,6 +76,71 @@ function normalizeInternalHomepageLinks(html) {
     .replace(/href='(?:\.\.\/)*index\.html(?=[#'])/gi, "href='/");
 }
 
+const localAssetRevisionCache = new Map();
+
+function versionLocalAssets(html) {
+  return html.replace(
+    /((?:(?:\.\.\/)*|\/)assets\/(css|js)\/([a-zA-Z0-9._-]+\.(?:css|js)))(?:\?v=[^"'\s>]*)?/g,
+    (match, url, assetType, fileName) => {
+      const relativeAssetPath = `assets/${assetType}/${fileName}`;
+      const absoluteAssetPath = join(root, relativeAssetPath);
+      if (!existsSync(absoluteAssetPath)) return match;
+      let revision = localAssetRevisionCache.get(relativeAssetPath);
+      if (!revision) {
+        revision = createHash("sha256").update(readFileSync(absoluteAssetPath)).digest("hex").slice(0, 12);
+        localAssetRevisionCache.set(relativeAssetPath, revision);
+      }
+      return `${url}?v=${revision}`;
+    },
+  );
+}
+
+function optimizeFontLoading(html) {
+  if (!/assets\/css\/(?:tawod-system|tawod-home-performance)\.css/i.test(html)) return html;
+  let optimizedHtml = html
+    .replace(/\s*<link\b[^>]*href=["']https:\/\/fonts\.googleapis\.com[^"']*["'][^>]*>\s*/gi, "\n")
+    .replace(/\s*<link\b[^>]*href=["']https:\/\/fonts\.gstatic\.com[^"']*["'][^>]*>\s*/gi, "\n");
+  if (!/rel=["']preload["'][^>]*alexandria-arabic-variable\.woff2/i.test(optimizedHtml)) {
+    optimizedHtml = optimizedHtml.replace(
+      /(<link\b[^>]*rel=["']stylesheet["'][^>]*>)/i,
+      '<link rel="preload" href="/assets/fonts/alexandria-arabic-variable.woff2" as="font" type="font/woff2" crossorigin>\n$1',
+    );
+  }
+  return optimizedHtml;
+}
+
+function isBlogArticle(relativePath) {
+  return /(?:^|\/)blog\/(?!page\/|topics\/)[^/]+\/index\.html$/.test(relativePath);
+}
+
+function optimizeArticleMarkup(relativePath, html) {
+  if (!isBlogArticle(relativePath)) return html;
+  let optimizedHtml = html.replace(
+    /(<article\b[^>]*\bclass=(["']))([^"']*\barticle-content\b[^"']*)(\2[^>]*>)/i,
+    (match, start, quote, classes, end) => `${start}${classes.split(/\s+/).filter((name) => name && name !== "reveal-up").join(" ")}${end}`,
+  );
+  optimizedHtml = optimizedHtml.replace(
+    /(<article\b[^>]*\bclass=["'][^"']*\barticle-content\b[^"']*["'][^>]*>[\s\S]*?<img\b)([^>]*)(>)/i,
+    (match, start, attributes, end) => {
+      const optimizedAttributes = attributes
+        .replace(/\s+loading=["'][^"']*["']/i, "")
+        .replace(/\s+fetchpriority=["'][^"']*["']/i, "")
+        .replace(/\s+decoding=["'][^"']*["']/i, "");
+      return `${start}${optimizedAttributes} loading="lazy" decoding="async" fetchpriority="low"${end}`;
+    },
+  );
+  return optimizedHtml;
+}
+
+function expectedExportHtml(relativePath, html) {
+  if (relativePath === "404.html") return normalizeInternalHomepageLinks(html);
+  return versionLocalAssets(
+    optimizeFontLoading(
+      optimizeArticleMarkup(relativePath, normalizeInternalHomepageLinks(html)),
+    ),
+  );
+}
+
 if (!existsSync(outputDirectory)) {
   throw new Error("Run npm run build before verifying the export.");
 }
@@ -98,13 +164,21 @@ for (const sourceFile of sourceFiles) {
     continue;
   }
 
-  const sourceHtml = normalizeInternalHomepageLinks(
-    readFileSync(sourceFile, "utf8"),
-  );
+  const sourceHtml = expectedExportHtml(relativePath, readFileSync(sourceFile, "utf8"));
   const outputHtml = readFileSync(outputFile, "utf8");
 
   if (/href=["'](?:\.\.\/)*index\.html(?:[#?][^"']*)?["']/i.test(outputHtml)) {
     mismatches.push(`${relativePath}: exported HTML still links to index.html`);
+  }
+
+  if (isBlogArticle(relativePath)) {
+    if (/<article\b[^>]*class=["'][^"']*\barticle-content\b[^"']*\breveal-up\b/i.test(outputHtml)) {
+      mismatches.push(`${relativePath}: article content can still be hidden by reveal animation`);
+    }
+    const cover = outputHtml.match(/<article\b[^>]*class=["'][^"']*\barticle-content\b[^"']*["'][^>]*>[\s\S]*?<img\b([^>]*)>/i)?.[1] || "";
+    if (cover && (!/loading=["']lazy["']/i.test(cover) || !/fetchpriority=["']low["']/i.test(cover))) {
+      mismatches.push(`${relativePath}: article cover does not use low-priority lazy loading`);
+    }
   }
 
   if (sourceHtml === outputHtml) continue;

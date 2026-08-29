@@ -15,7 +15,6 @@ const pagePath=r=>r==='index.html'?'/':r.endsWith('/index.html')?'/'+r.slice(0,-
 const htmlFiles=walk(root).filter(f=>f.endsWith('.html'));
 const pages=new Map(htmlFiles.map(f=>[rel(f),fs.readFileSync(f,'utf8')]));
 const titles=new Map(),canonicals=new Map(),indexable=new Set();
-const sharedScriptRevisions=new Map([['tawod-home.js',assetRevision('tawod-home.js')],['tawod-inner.js',assetRevision('tawod-inner.js')],['contact-conversion.js',assetRevision('contact-conversion.js')]]);
 
 function schemaHas(node,type){if(!node||typeof node!=='object')return false;if(node['@type']===type||(Array.isArray(node['@type'])&&node['@type'].includes(type)))return true;return Object.values(node).some(v=>Array.isArray(v)?v.some(x=>schemaHas(x,type)):schemaHas(v,type))}
 function schemaCount(node,type){if(!node||typeof node!=='object')return 0;let count=node['@type']===type||(Array.isArray(node['@type'])&&node['@type'].includes(type))?1:0;for(const value of Object.values(node))count+=Array.isArray(value)?value.reduce((sum,item)=>sum+schemaCount(item,type),0):schemaCount(value,type);return count}
@@ -25,7 +24,7 @@ function jaccard(a,b){let intersection=0;for(const value of a)if(b.has(value))in
 
 for(const [r,h] of pages){
   const analyticsCount=h.split(analyticsSrc).length-1;if(analyticsCount!==1)errors.push(`${r}: expected one versioned analytics script, found ${analyticsCount}`);if(h.includes('Google tag: queued immediately'))errors.push(`${r}: legacy inline Google tag remains`);
-  for(const [file,revision] of sharedScriptRevisions)if(h.includes(file)&&!h.includes(`${file}?v=${revision}`))errors.push(`${r}: ${file} is not revisioned to current content`);if(h.includes('blog-archive.js')&&!h.includes(`blog-archive.js?v=${assetRevision('blog-archive.js')}`))errors.push(`${r}: blog-archive.js has a stale revision`);
+  if(h.includes('blog-archive.js')&&!h.includes(`blog-archive.js?v=${assetRevision('blog-archive.js')}`))errors.push(`${r}: blog-archive.js has a stale revision`);
   if(/^service-(?:construction|turnkey|restoration|finishing|decor|mep)\.html$/.test(r)){if(!h.includes('assets/css/tawod-service-decisions.css?v=20260823-1'))errors.push(`${r}: missing versioned decision-support styles`);const cards=all(h,/class=["'][^"']*tawod-decision-card[^"']*["']/gi).length;if(cards!==3)errors.push(`${r}: expected three decision-support cards, found ${cards}`);if((h.match(/TAWOD_STATIC_DECISION_START/g)||[]).length!==1)errors.push(`${r}: decision-support block is missing or duplicated`)}
   const ts=all(h,/<title[^>]*>([\s\S]*?)<\/title>/gi);if(ts.length!==1)errors.push(`${r}: expected one title, found ${ts.length}`);const title=ts[0]?text(ts[0][1]):'';if(title){if(titles.has(title))errors.push(`${r}: duplicate title with ${titles.get(title)}`);else titles.set(title,r);if(title.length<15||title.length>75)warnings.push(`${r}: title length ${title.length}`)}
   const ds=all(h,/<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["'][^>]*>|<meta[^>]*content=["']([^"']*)["'][^>]*name=["']description["'][^>]*>/gi);if(ds.length!==1)errors.push(`${r}: expected one meta description, found ${ds.length}`);const d=ds[0]?(ds[0][1]||ds[0][2]||''):'';if(d&&(d.length<70||d.length>180))warnings.push(`${r}: description length ${d.length}`);
