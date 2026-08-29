@@ -6,6 +6,7 @@
   var GOOGLE_ADS_ID = 'AW-18266173285';
   var CONTACT_CONVERSION = 'AW-18266173285/qi4gCLu5lsUcEOXe_oVE';
   var LEAD_SESSION_KEY = 'tawodLeadSubmitted';
+  var LEAD_CONTEXT_VERSION = 1;
   var INTERACTION_LOAD_DELAY = 2000;
   var FALLBACK_LOAD_DELAY = 8000;
 
@@ -175,22 +176,91 @@
     if (shouldDelayNavigation) window.setTimeout(continueNavigation, 850);
   }
 
+  function isLeadForm(form) {
+    if (!form || form.tagName !== 'FORM' || typeof form.getAttribute !== 'function') return false;
+    return /(?:^|\/\/)(?:www\.)?formsubmit\.co(?:\/|$)/i.test(form.getAttribute('action') || '');
+  }
+
+  function createSubmissionId() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+      return window.crypto.randomUUID();
+    }
+    return 'tawod-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+  }
+
+  function trackFormSubmit(event) {
+    var form = event.target;
+    if (event.defaultPrevented || !isLeadForm(form)) return;
+
+    var service = form.querySelector ? form.querySelector('[name="الخدمة_المطلوبة"]') : null;
+    var context = {
+      version: LEAD_CONTEXT_VERSION,
+      submission_id: createSubmissionId(),
+      form_name: form.getAttribute('data-analytics-form') || 'contact_quote_request',
+      form_source_path: window.location.pathname,
+      service_type: service && service.value ? service.value : 'not_selected'
+    };
+
+    try {
+      window.sessionStorage.setItem(LEAD_SESSION_KEY, JSON.stringify(context));
+    } catch (error) {}
+
+    track('form_submit_attempt', {
+      send_to: GA4_ID,
+      form_name: context.form_name,
+      form_source_path: context.form_source_path,
+      service_type: context.service_type,
+      page_path: window.location.pathname,
+      transport_type: 'beacon'
+    });
+  }
+
+  function storedLeadContext() {
+    var stored = null;
+    try {
+      stored = window.sessionStorage.getItem(LEAD_SESSION_KEY);
+    } catch (error) {}
+    if (!stored) return null;
+    if (stored === '1') {
+      return {
+        version: 0,
+        form_name: 'contact_quote_request',
+        form_source_path: 'unknown',
+        service_type: 'unknown'
+      };
+    }
+    try {
+      var parsed = JSON.parse(stored);
+      return parsed && parsed.form_name ? parsed : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
   function trackConfirmedLead() {
     if (!/(?:^|\/)thank-you\.html$/.test(window.location.pathname)) return;
 
-    var confirmed = false;
-    try {
-      confirmed = window.sessionStorage.getItem(LEAD_SESSION_KEY) === '1';
-    } catch (error) {}
-    if (!confirmed) return;
+    var context = storedLeadContext();
+    if (!context) return;
 
     track('generate_lead', {
       send_to: GA4_ID,
       lead_source: 'contact_form',
-      form_name: 'contact_quote_request',
+      form_name: context.form_name,
+      form_source_path: context.form_source_path || 'unknown',
+      service_type: context.service_type || 'unknown',
       page_path: window.location.pathname,
       transport_type: 'beacon'
     });
+    var adsParameters = {
+      send_to: CONTACT_CONVERSION,
+      form_name: context.form_name,
+      form_source_path: context.form_source_path || 'unknown',
+      service_type: context.service_type || 'unknown',
+      transport_type: 'beacon'
+    };
+    if (context.submission_id) adsParameters.transaction_id = context.submission_id;
+    window.gtag('event', 'conversion', adsParameters);
     try {
       window.sessionStorage.removeItem(LEAD_SESSION_KEY);
     } catch (error) {}
@@ -221,6 +291,7 @@
     trackContactClick(event);
     trackArticleClick(event);
   }, true);
+  document.addEventListener('submit', trackFormSubmit);
   ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (eventName) {
     window.addEventListener(eventName, function () {
       scheduleGoogleTag(INTERACTION_LOAD_DELAY);

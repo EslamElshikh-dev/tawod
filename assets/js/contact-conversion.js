@@ -14,17 +14,6 @@
     return /^(?:\+?966|00966|0)?5\d{8}$/.test(normalizePhone(value));
   }
 
-  function trackSubmitAttempt() {
-    var parameters = {
-      send_to: 'G-YE1NT4R4YT',
-      form_name: 'contact_quote_request',
-      page_path: window.location.pathname,
-      transport_type: 'beacon'
-    };
-    if (window.TawodAnalytics) window.TawodAnalytics.track('form_submit_attempt', parameters);
-    else if (typeof window.gtag === 'function') window.gtag('event', 'form_submit_attempt', parameters);
-  }
-
   ready(function () {
     var form = document.getElementById('form');
     if (!form) return;
@@ -126,10 +115,6 @@
         submit.disabled = true;
         submit.innerHTML = 'جاري إرسال الطلب <i class="fa-solid fa-spinner" aria-hidden="true"></i>';
       }
-      try {
-        window.sessionStorage.setItem('tawodLeadSubmitted', '1');
-      } catch (error) {}
-      trackSubmitAttempt();
     });
   });
 })();

@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { createHash } from 'node:crypto';
 
 const file='contact.html';
 let html=fs.readFileSync(file,'utf8');
@@ -9,14 +10,14 @@ if(!/contact-conversion\.css/.test(html)){
   html=html.replace('</head>','<link href="assets/css/contact-conversion.css" rel="stylesheet"></head>');
 }
 
-if(!/contact-conversion\.js/.test(html)){
-  html=html.replace('</body>','<script src="assets/js/contact-conversion.js" defer></script></body>');
-}
+const contactConversionVersion=createHash('sha256').update(fs.readFileSync('assets/js/contact-conversion.js')).digest('hex').slice(0,12);
+if(!/contact-conversion\.js/.test(html)) html=html.replace('</body>',`<script src="assets/js/contact-conversion.js?v=${contactConversionVersion}" defer></script></body>`);
+else html=html.replace(/assets\/js\/contact-conversion\.js(?:\?v=[^"']*)?/i,`assets/js/contact-conversion.js?v=${contactConversionVersion}`);
 
-html=html.replace(/<form id="form" class="([^"]*)"/i,(match,classNames)=>{
+html=html.replace(/<form id="form" class="([^"]*)"(?: data-analytics-form="[^"]*")?/i,(match,classNames)=>{
   const classes=classNames.split(/\s+/).filter(Boolean).filter((value,index,list)=>list.indexOf(value)===index);
   if(!classes.includes('contact-lead-form')) classes.push('contact-lead-form');
-  return `<form id="form" class="${classes.join(' ')}"`;
+  return `<form id="form" class="${classes.join(' ')}" data-analytics-form="contact_quote_request"`;
 });
 
 html=html.replace(/<input\b[^>]*name="_next"[^>]*>/i,'<input name="_next" type="hidden" value="https://tawodco.com/thank-you.html">');
