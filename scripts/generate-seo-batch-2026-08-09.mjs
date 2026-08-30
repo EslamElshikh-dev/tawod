@@ -100,10 +100,9 @@ function renderHead(article, wordCount, minutes) {
     '<meta name="twitter:description" content="' + escapeHtml(article.ogDescription) + '">',
     '<meta name="twitter:image" content="' + image + '">',
     '<link rel="icon" href="../../images/logo/tawod-logo.png" sizes="32x32" type="image/png">',
-    '<link rel="preconnect" href="https://fonts.googleapis.com">',
-    '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
+    '<link rel="preload" as="font" href="../../assets/fonts/alexandria-arabic-variable.woff2" type="font/woff2" crossorigin>',
+    '<link rel="preload" as="font" href="../../assets/fonts/ibm-plex-sans-arabic-regular.woff2" type="font/woff2" crossorigin>',
     '<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>',
-    '<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">',
     '<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">',
     '<link href="../../assets/css/tawod-home.css" rel="stylesheet">',
     '<link href="../../assets/css/tawod-upgrades.css" rel="stylesheet">',
@@ -111,6 +110,7 @@ function renderHead(article, wordCount, minutes) {
     '<link href="../../assets/css/tawod-blog.css" rel="stylesheet">',
     '<link href="../../assets/css/tawod-article.css" rel="stylesheet">',
     '<link href="../../assets/css/tawod-system.css" rel="stylesheet">',
+    '<link href="../../assets/css/tawod-typography.css" rel="stylesheet">',
     schemas(article, wordCount, minutes),
     '</head>'
   ].join('\n');

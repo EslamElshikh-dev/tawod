@@ -32,8 +32,12 @@
 
   <link rel="icon" href="/images/logo/tawod-logo.png" type="image/png">
   <link rel="apple-touch-icon" href="/images/logo/tawod-logo.png">
-  <link rel="preload" href="/assets/fonts/alexandria-arabic-variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/maintenance.css">
+
+  <!-- TAWOD_FONT_PRELOADS_START -->
+<link rel="preload" as="font" href="/assets/fonts/alexandria-arabic-variable.woff2" type="font/woff2" crossorigin>
+<link rel="preload" as="font" href="/assets/fonts/ibm-plex-sans-arabic-regular.woff2" type="font/woff2" crossorigin>
+<!-- TAWOD_FONT_PRELOADS_END -->
+<link rel="stylesheet" href="assets/css/maintenance.css">
   <script>document.documentElement.classList.add('js');</script>
 
   <script type="application/ld+json">
@@ -109,6 +113,9 @@
     ]
   }
   </script>
+<!-- TAWOD_TYPOGRAPHY_CSS_START -->
+<link rel="stylesheet" href="/assets/css/tawod-typography.css?v=1a7e8a8c723e">
+<!-- TAWOD_TYPOGRAPHY_CSS_END -->
 <!-- TAWOD_ANALYTICS_START --><script src="/assets/js/tawod-analytics.js?v=3dc2f867690b" defer></script><!-- TAWOD_ANALYTICS_END --></head>
 
 <body class="maintenance-page service-detail-page theme-cleaning">

@@ -15,8 +15,8 @@
   --tawod-line:#e7e9ee;
   --tawod-muted:#687080;
   --tawod-shadow:0 18px 55px rgba(29,30,38,.09);
-  --tawod-font-display:'29LT Bukra','Alexandria','DIN Next LT Arabic','Noto Kufi Arabic',sans-serif;
-  --tawod-font-body:'Alexandria','DIN Next LT Arabic','Noto Sans Arabic','Tajawal',sans-serif;
+  --tawod-font-display:'Alexandria','IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;
+  --tawod-font-body:'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;
 }
 
 .tawod-system-ready body{overflow-x:clip}.tawod-inner-trust{position:relative;z-index:5;margin-top:-30px;padding:0 0 24px}.tawod-inner-trust-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:14px;border:1px solid rgba(231,233,238,.9);border-radius:22px;background:rgba(255,255,255,.96);box-shadow:var(--tawod-shadow);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}.tawod-inner-trust-grid>div{display:flex;align-items:center;gap:12px;min-height:72px;padding:12px 14px;border-radius:16px;background:#f8f9fb}.tawod-inner-trust-grid i{display:grid;place-items:center;width:44px;height:44px;flex:0 0 44px;border-radius:13px;background:rgba(242,164,97,.16);color:var(--tawod-gold-dark);font-size:19px}.tawod-inner-trust-grid span{display:grid;gap:3px}.tawod-inner-trust-grid strong{color:var(--tawod-ink);font-size:16px;line-height:1.3}.tawod-inner-trust-grid small{color:var(--tawod-muted);font-size:13px;line-height:1.55}.tawod-service-page .page-hero p,.tawod-landing-page .blog-hero p{max-width:920px;margin-inline:auto;text-wrap:pretty}.tawod-service-page main .content>p{font-size:clamp(16.5px,1.2vw,19px);line-height:1.95}.tawod-service-page .check-list li{align-items:flex-start;line-height:1.75}.tawod-service-page .steps-grid .step-card,.tawod-landing-page .steps-grid .step-card{position:relative;overflow:hidden;padding-top:30px}.tawod-service-page .steps-grid .step-card::after,.tawod-landing-page .steps-grid .step-card::after{content:'';position:absolute;inset:0 auto 0 0;width:4px;background:linear-gradient(var(--tawod-gold),transparent)}
@@ -30,9 +30,8 @@
 @media print{.header,.footer,.float-btns,.tawod-reading-progress,.tawod-article-tools,.tawod-related-reading,.tawod-faq-section,.tawod-inner-trust{display:none!important}.article-layout{display:block!important}.article-content{max-width:none!important;box-shadow:none!important;border:0!important}.article-content a{color:#000;text-decoration:none}}
 
 /*
- * Premium typography system inspired by the Burj Urubah visual language.
- * Commercial font family names are kept first in the stack; Alexandria and
- * IBM Plex Sans Arabic provide web-safe, licensed equivalents on every device.
+ * Baseline typography tokens. The final responsive scale lives in
+ * tawod-typography.css and is loaded last across every route.
  */
 html{
   font-synthesis:none;

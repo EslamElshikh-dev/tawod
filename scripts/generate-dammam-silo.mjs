@@ -14,6 +14,7 @@ const assetRevision = (file) => createHash('sha256').update(fs.readFileSync(path
 const homeJsRevision = assetRevision('tawod-home.js');
 const innerJsRevision = assetRevision('tawod-inner.js');
 const systemCssRevision = createHash('sha256').update(fs.readFileSync(path.join(root, 'assets', 'css', 'tawod-system.css'))).digest('hex').slice(0, 12);
+const typographyCssRevision = createHash('sha256').update(fs.readFileSync(path.join(root, 'assets', 'css', 'tawod-typography.css'))).digest('hex').slice(0, 12);
 
 const escapeHtml = (value) => String(value)
   .replace(/&/g, '&amp;')
@@ -95,8 +96,11 @@ function trustStrip() {
 }
 
 function styleLinks(article = false) {
-  return `<link rel="preload" as="font" href="/assets/fonts/alexandria-arabic-variable.woff2" type="font/woff2" crossorigin>
-<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  return `<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<!-- TAWOD_FONT_PRELOADS_START -->
+<link rel="preload" as="font" href="/assets/fonts/alexandria-arabic-variable.woff2" type="font/woff2" crossorigin>
+<link rel="preload" as="font" href="/assets/fonts/ibm-plex-sans-arabic-regular.woff2" type="font/woff2" crossorigin>
+<!-- TAWOD_FONT_PRELOADS_END -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 <link href="/assets/css/tawod-home.css" rel="stylesheet">
 <link href="/assets/css/tawod-upgrades.css" rel="stylesheet">
@@ -104,6 +108,12 @@ function styleLinks(article = false) {
 <link href="/assets/css/tawod-blog.css" rel="stylesheet">
 ${article ? '<link href="/assets/css/tawod-article.css" rel="stylesheet">\n' : ''}<link href="/assets/css/tawod-system.css?v=${systemCssRevision}" rel="stylesheet">
 <link href="/assets/css/tawod-dammam.css" rel="stylesheet">`;
+}
+
+function typographyStylesheet() {
+  return `<!-- TAWOD_TYPOGRAPHY_CSS_START -->
+<link rel="stylesheet" href="/assets/css/tawod-typography.css?v=${typographyCssRevision}">
+<!-- TAWOD_TYPOGRAPHY_CSS_END -->`;
 }
 
 function articleSchemas(article, wordCount, minutes) {
@@ -183,6 +193,7 @@ function articleHead(article, wordCount, minutes) {
 <link rel="icon" href="/images/logo/tawod-logo.png" sizes="32x32" type="image/png">
 ${styleLinks(true)}
 ${articleSchemas(article, wordCount, minutes)}
+${typographyStylesheet()}
 </head>`;
 }
 
@@ -295,6 +306,7 @@ function renderBlogIndex() {
 <link rel="icon" href="/images/logo/tawod-logo.png" sizes="32x32" type="image/png">
 ${styleLinks(false)}
 ${blogSchemas()}
+${typographyStylesheet()}
 </head>
 <body class="dammam-page dammam-blog-index">
 ${header('blog')}

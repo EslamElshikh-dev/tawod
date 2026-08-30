@@ -1,9 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700&display=swap');
-
 /* Tawod premium responsive typography and spacing system */
 :root{
-  --premium-display:'Iwan Zaza','29LT Bukra','Alexandria','DIN Next LT Arabic',sans-serif;
-  --premium-body:'Iwan Zaza','Alexandria','DIN Next LT Arabic',sans-serif;
+  --premium-display:'Alexandria','IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;
+  --premium-body:'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;
   --premium-container:1280px;
   --premium-reading:760px;
   --premium-section:clamp(64px,8vw,120px);

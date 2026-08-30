@@ -37,7 +37,11 @@ const strip=(h,n)=>{const [a,b]=marker(n);return h.replace(new RegExp(a+'[\\s\\S
 const first=(h,re,d='')=>{const m=h.match(re);return m?text(m[1]):d};
 const metaDescription=(h,d='')=>{const tag=h.match(/<meta\b(?=[^>]*\bname=["']description["'])[^>]*>/i)?.[0],value=tag?.match(/\bcontent=["']([^"']*)["']/i)?.[1];return value?text(value):d};
 const insertBeforeMainEnd=(h,m)=>h.replace(/<\/main>/i,m+'\n</main>');
-const insertBeforeHeadEnd=(h,m)=>h.includes('<!-- TAWOD_ANALYTICS_START -->')?h.replace('<!-- TAWOD_ANALYTICS_START -->',m+'<!-- TAWOD_ANALYTICS_START -->'):h.replace(/<\/head>/i,m+'</head>');
+const insertBeforeHeadEnd=(h,m)=>h.includes('<!-- TAWOD_TYPOGRAPHY_CSS_START -->')
+  ?h.replace('<!-- TAWOD_TYPOGRAPHY_CSS_START -->',m+'<!-- TAWOD_TYPOGRAPHY_CSS_START -->')
+  :h.includes('<!-- TAWOD_ANALYTICS_START -->')
+    ?h.replace('<!-- TAWOD_ANALYTICS_START -->',m+'<!-- TAWOD_ANALYTICS_START -->')
+    :h.replace(/<\/head>/i,m+'</head>');
 
 function state(r,h){const slug=r.match(/^blog\/([^/]+)\/index\.html$/)?.[1];return{home:r==='index.html',skip:['privacy-policy.html','thank-you.html','404.html'].includes(r)||r.startsWith('en/'),article:Boolean(slug&&!legacyTopicHubSlugs.has(slug)),indexable:!r.endsWith('404.html')&&!/noindex/i.test(h)}}
 function landingRobots(h){const tag='<meta name="robots" content="noindex,follow,max-image-preview:large">';return /<meta\b(?=[^>]*\bname=["']robots["'])[^>]*>/i.test(h)?h.replace(/<meta\b(?=[^>]*\bname=["']robots["'])[^>]*>/i,tag):h.replace(/<\/title>/i,`</title>${tag}`)}
