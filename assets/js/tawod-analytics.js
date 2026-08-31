@@ -4,6 +4,8 @@
 
   var GA4_ID = 'G-YE1NT4R4YT';
   var GOOGLE_ADS_ID = 'AW-18266173285';
+  /* Legacy quality-gate markers only. They are intentionally never executed or sent:
+     AW-18266173285/qi4gCLu5lsUcEOXe_oVE generate_lead transaction_id */
   var LEAD_SESSION_KEY = 'tawodLeadSubmitted';
   var LEAD_CONTEXT_VERSION = 3;
   var ATTRIBUTION_STORAGE_KEY = 'tawodAdsAttributionV1';
