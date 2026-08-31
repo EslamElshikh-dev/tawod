@@ -1,0 +1,60 @@
+name: Finalize Static Reference Fixes
+
+on:
+  push:
+    branches:
+      - feat/google-ads-rescue-2026-08-31
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/google-ads-rescue-2026-08-31
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Fix generator sources and stable media references
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          topic = Path('scripts/blog-topic-data.mjs')
+          text = topic.read_text(encoding='utf-8')
+          text = text.replace('projectUrl: "/project-faisaliah-villa-facades-finishing.html",\n    projectLabel: "مشروع واجهات وتشطيبات الفيصلية",', 'projectUrl: "/projects.html",\n    projectLabel: "مشاريع الترميم والتجديد",')
+          topic.write_text(text, encoding='utf-8')
+
+          ignored = {'.git', '.next', 'node_modules', 'out', 'public'}
+          for file in Path('.').rglob('*.html'):
+              if any(part in ignored for part in file.parts):
+                  continue
+              html = file.read_text(encoding='utf-8')
+              updated = html.replace('modon-eight-warehouses-01-v3.webp', 'modon-eight-warehouses-01.webp')
+              updated = updated.replace('modon-eight-warehouses-02-v3.webp', 'modon-eight-warehouses-02.webp')
+              if updated != html:
+                  file.write_text(updated, encoding='utf-8')
+          PY
+
+          node scripts/run-static-pages.mjs
+          node scripts/install-site-analytics.mjs
+          node scripts/validate-site.mjs
+
+      - name: Commit stable generated output
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nothing to commit."
+            exit 0
+          fi
+          git commit -m "Fix static project reference sources"
+          git push origin HEAD:feat/google-ads-rescue-2026-08-31
