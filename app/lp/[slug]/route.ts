@@ -112,6 +112,7 @@ function page(config: LandingConfig) {
 <link rel="stylesheet" href="/assets/css/tawod-system.css">
 <link rel="stylesheet" href="/assets/css/tawod-ads-landing.css">
 <script src="/assets/js/tawod-analytics.js" defer></script>
+<script src="/assets/js/tawod-whatsapp-attribution.js" defer></script>
 </head>
 <body>
 <div class="ads-shell">
