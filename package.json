@@ -2,10 +2,10 @@
   "name": "tawod-nextjs-site",
   "private": true,
   "scripts": {
-    "predev": "node scripts/prepare-next-public.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "predev": "node scripts/install-site-analytics.mjs && node scripts/prepare-next-public.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/prepare-next-public.mjs && node scripts/generate-legacy-html-manifest.mjs",
-    "prepare:assets": "node scripts/prepare-next-public.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "prebuild": "node scripts/install-site-analytics.mjs && node scripts/prepare-next-public.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "prepare:assets": "node scripts/install-site-analytics.mjs && node scripts/prepare-next-public.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "build": "next build",
     "postbuild": "node scripts/finalize-next-export.mjs && node scripts/verify-next-export.mjs",
     "typecheck": "tsc --noEmit",
@@ -44,7 +44,7 @@
   "devDependencies": {
     "@types/node": "^24.0.0",
     "@types/react": "19.2.18",
-    "@types/react-dom": "^19.2.3",
+    "@types/react-dom": "19.2.3",
     "lightningcss": "1.33.0",
     "typescript": "^5.9.3"
   }
