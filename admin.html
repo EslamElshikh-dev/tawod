@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#11131a">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="referrer" content="no-referrer">
+<title>لوحة إدارة تعاود | العملاء والتحليلات</title>
+<link rel="icon" href="/images/logo/tawod-logo.png" type="image/png">
+<link rel="stylesheet" href="/assets/css/tawod-admin.css">
+</head>
+<body class="tawod-admin-body">
+<div class="admin-login" id="adminLogin">
+  <div class="admin-login__card">
+    <img src="/images/logo/tawod-logo.png" width="180" height="80" alt="شركة تعاود للمقاولات">
+    <span class="admin-kicker">لوحة خاصة · غير مفهرسة</span>
+    <h1>مركز قرار تعاود</h1>
+    <p>تحليلات العملاء المحتملين، مصادر الطلب، أداء الصفحات، ونقاط التحسين في مكان واحد.</p>
+    <form id="adminLoginForm" autocomplete="off">
+      <label for="adminPassword">مفتاح الدخول</label>
+      <div class="admin-password-row"><input id="adminPassword" type="password" required autocomplete="current-password" placeholder="أدخل مفتاح الإدارة"><button type="submit">دخول</button></div>
+      <p class="admin-login__error" id="adminLoginError" role="alert"></p>
+    </form>
+  </div>
+</div>
+
+<main class="admin-app" id="adminApp" hidden>
+  <aside class="admin-side">
+    <a class="admin-brand" href="/" aria-label="العودة للموقع"><img src="/images/logo/tawod-logo.png" alt="تعاود"><span><b>TAWOD</b><small>Admin Intelligence</small></span></a>
+    <nav>
+      <a href="#overview" class="is-active">نظرة عامة</a>
+      <a href="#growth">النمو والتحويل</a>
+      <a href="#leads">العملاء المحتملون</a>
+      <a href="#sources">مصادر الطلب</a>
+      <a href="#pages">أداء الصفحات</a>
+      <a href="#services">الخدمات المطلوبة</a>
+      <a href="#insights">مقترحات التحسين</a>
+    </nav>
+    <div class="admin-side__footer"><span>قياس First-party</span><small>بدون تخزين الاسم أو الجوال أو البريد</small></div>
+  </aside>
+
+  <section class="admin-main">
+    <header class="admin-topbar">
+      <div><span class="admin-kicker">مركز التشغيل والمبيعات</span><h1>لوحة إدارة شركة تعاود للمقاولات</h1><p>قراءة مباشرة لأداء الموقع والعملاء المحتملين واتجاهات الطلب.</p></div>
+      <div class="admin-actions"><select id="periodSelect" aria-label="فترة التقرير"><option value="7">7 أيام</option><option value="30" selected>30 يومًا</option><option value="90">90 يومًا</option></select><button id="refreshButton" type="button">تحديث البيانات</button><button id="logoutButton" class="is-ghost" type="button">خروج</button></div>
+    </header>
+
+    <section id="overview" class="admin-section">
+      <div class="section-head"><div><span>الآن</span><h2>صحة القمع التسويقي</h2></div><p id="generatedAt">—</p></div>
+      <div class="metric-grid" id="summaryMetrics"></div>
+    </section>
+
+    <section id="growth" class="admin-section">
+      <div class="section-head"><div><span>آخر 7 أيام</span><h2>المقارنة مع الأسبوع السابق</h2></div><p>اتجاه النمو والتحويل</p></div>
+      <div class="comparison-grid" id="comparisonMetrics"></div>
+      <div class="panel chart-panel"><div class="panel-head"><div><span>اتجاه يومي</span><h3>الزيارات والتواصل والعملاء المحتملون</h3></div></div><div class="daily-chart" id="dailyChart"></div></div>
+    </section>
+
+    <section id="leads" class="admin-section">
+      <div class="section-head"><div><span>Leads</span><h2>آخر العملاء المحتملين</h2></div><p>بيانات تشغيلية مجهولة الهوية</p></div>
+      <div class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>الوقت</th><th>الخدمة</th><th>صفحة المصدر</th><th>المصدر</th><th>الحملة</th><th>الجهاز</th></tr></thead><tbody id="recentLeadsBody"></tbody></table></div><div class="empty-state" id="recentLeadsEmpty" hidden>لا توجد Leads مسجلة بعد.</div></div>
+    </section>
+
+    <section id="sources" class="admin-section split-grid">
+      <div class="panel"><div class="panel-head"><div><span>Acquisition</span><h3>مصادر الزيارات والطلبات</h3></div></div><div class="rank-list" id="sourcesList"></div></div>
+      <div class="panel"><div class="panel-head"><div><span>Devices</span><h3>الأجهزة المستخدمة</h3></div></div><div class="rank-list" id="devicesList"></div></div>
+    </section>
+
+    <section id="pages" class="admin-section">
+      <div class="section-head"><div><span>Landing & Content</span><h2>الصفحات الأكثر تأثيرًا</h2></div><p>مشاهدات + تواصل + Lead rate</p></div>
+      <div class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>الصفحة</th><th>المشاهدات</th><th>التواصل</th><th>Leads</th><th>معدل التواصل</th><th>Lead Rate</th></tr></thead><tbody id="pagesBody"></tbody></table></div></div>
+    </section>
+
+    <section id="services" class="admin-section">
+      <div class="section-head"><div><span>Demand</span><h2>الخدمات الأكثر طلبًا</h2></div><p>من محاولات إرسال النموذج والتحويل المؤكد</p></div>
+      <div class="service-grid" id="servicesGrid"></div>
+    </section>
+
+    <section id="insights" class="admin-section">
+      <div class="section-head"><div><span>Decision Engine</span><h2>مقترحات تحسين دورية</h2></div><p>تتغير تلقائيًا مع البيانات</p></div>
+      <div class="insight-grid" id="insightsGrid"></div>
+    </section>
+
+    <footer class="admin-footer">لوحة تعاود الداخلية · البيانات تبدأ من تاريخ تفعيل القياس الجديد · لا يتم تخزين بيانات تعريف العميل داخل هذه الطبقة.</footer>
+  </section>
+</main>
+
+<div class="admin-toast" id="adminToast" aria-live="polite"></div>
+<script src="/assets/js/tawod-admin.js" defer></script>
+</body>
+</html>
