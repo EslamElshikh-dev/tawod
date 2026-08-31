@@ -21,6 +21,7 @@
       var args = Array.prototype.slice.call(arguments);
       var payload = args[2] || {};
       if (args[0] === 'event' && args[1] === 'conversion' && payload.send_to === FORM_CONVERSION && !isThankYou()) {
+        if (typeof payload.event_callback === 'function') payload.event_callback();
         return;
       }
       return original.apply(window, args);
