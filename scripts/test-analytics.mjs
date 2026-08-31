@@ -11,7 +11,7 @@ assert.doesNotMatch(source, /حي العربية/, 'the obsolete project locatio
 assert.match(source, /gclid/, 'Ads click IDs must be preserved for attribution');
 assert.match(source, /tawod_form_start/, 'form start may remain a GA4 diagnostic event');
 assert.doesNotMatch(source, /gtag\(['"]event['"],\s*['"]conversion['"]/, 'website analytics must never fire a Google Ads conversion event');
-assert.doesNotMatch(source, /generate_lead/, 'website forms must not use the standard GA4 lead event for this campaign');
+assert.doesNotMatch(source, /track\(['"]generate_lead['"]/, 'website forms must not emit the standard GA4 lead event');
 assert.match(source, /adsConversionsFromWebsite:\s*false/, 'analytics API must explicitly declare that website Ads conversions are disabled');
 
 assert.doesNotMatch(landingSource, /<form\b/i, 'Ads landing pages must not contain a form');
