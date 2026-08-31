@@ -14,10 +14,14 @@ const contactConversionVersion=createHash('sha256').update(fs.readFileSync('asse
 if(!/contact-conversion\.js/.test(html)) html=html.replace('</body>',`<script src="assets/js/contact-conversion.js?v=${contactConversionVersion}" defer></script></body>`);
 else html=html.replace(/assets\/js\/contact-conversion\.js(?:\?v=[^"']*)?/i,`assets/js/contact-conversion.js?v=${contactConversionVersion}`);
 
-html=html.replace(/<form id="form" class="([^"]*)"(?: data-analytics-form="[^"]*")?/i,(match,classNames)=>{
-  const classes=classNames.split(/\s+/).filter(Boolean).filter((value,index,list)=>list.indexOf(value)===index);
-  if(!classes.includes('contact-lead-form')) classes.push('contact-lead-form');
-  return `<form id="form" class="${classes.join(' ')}" data-analytics-form="contact_quote_request"`;
+html=html.replace(/<form\b[^>]*\bid="form"[^>]*>/i,(tag)=>{
+  let normalized=tag.replace(/\sdata-analytics-form="[^"]*"/gi,'');
+  normalized=normalized.replace(/class="([^"]*)"/i,(match,classNames)=>{
+    const classes=classNames.split(/\s+/).filter(Boolean).filter((value,index,list)=>list.indexOf(value)===index);
+    if(!classes.includes('contact-lead-form')) classes.push('contact-lead-form');
+    return `class="${classes.join(' ')}"`;
+  });
+  return normalized.replace(/>$/,' data-analytics-form="contact_quote_request">');
 });
 
 html=html.replace(/<input\b[^>]*name="_next"[^>]*>/i,'<input name="_next" type="hidden" value="https://tawodco.com/thank-you.html">');
