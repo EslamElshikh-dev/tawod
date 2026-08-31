@@ -17,6 +17,7 @@ const start = '<!-- TAWOD_ANALYTICS_START -->';
 const end = '<!-- TAWOD_ANALYTICS_END -->';
 const install = `${start}<script src="/assets/js/tawod-analytics.js?v=${version}" defer></script>${end}`;
 const ignoredDirectories = new Set(['.git', '.next', 'node_modules', 'out', 'public']);
+const ignoredHtmlFiles = new Set(['admin.html']);
 
 const walk = (directory) => fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
   if (ignoredDirectories.has(entry.name)) return [];
@@ -51,7 +52,11 @@ const normalizeLeadForms = (html, file) => html.replace(
   }
 );
 const changes = [];
-for (const file of walk(root).filter((candidate) => candidate.endsWith('.html') && !relative(candidate).startsWith('assets/project-pages/'))) {
+for (const file of walk(root).filter((candidate) => {
+  if (!candidate.endsWith('.html')) return false;
+  const rel = relative(candidate);
+  return !rel.startsWith('assets/project-pages/') && !ignoredHtmlFiles.has(rel);
+})) {
   const oldHtml = fs.readFileSync(file, 'utf8');
   let html = oldHtml.replace(markerPattern, '').replace(analyticsScriptPattern, '').replace(legacyHomeTag, '\n');
   html = html.replace(inlineScript, (block) => (
