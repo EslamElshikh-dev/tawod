@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var GA4_ID = 'G-YE1NT4R4YT';
+  var GA4_ID = 'G-4M3LNJF2ED';
   var GOOGLE_ADS_ID = 'AW-18266173285';
   /* Legacy quality-gate markers only. They are intentionally never executed or sent:
      AW-18266173285/qi4gCLu5lsUcEOXe_oVE generate_lead transaction_id */
