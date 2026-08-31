@@ -6,7 +6,9 @@
   var GOOGLE_ADS_ID = 'AW-18266173285';
   var CONTACT_CONVERSION = 'AW-18266173285/qi4gCLu5lsUcEOXe_oVE';
   var LEAD_SESSION_KEY = 'tawodLeadSubmitted';
-  var LEAD_CONTEXT_VERSION = 1;
+  var LEAD_CONTEXT_VERSION = 2;
+  var ATTRIBUTION_STORAGE_KEY = 'tawodAdsAttributionV1';
+  var ATTRIBUTION_PARAMS = ['gclid', 'gbraid', 'wbraid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
   var INTERACTION_LOAD_DELAY = 2000;
   var FALLBACK_LOAD_DELAY = 8000;
 
@@ -16,6 +18,22 @@
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function () {
     window.dataLayer.push(arguments);
+  };
+
+  /*
+   * The Ads action above is reserved for confirmed form leads only.
+   * Legacy click tracking used the same Ads conversion action for phone/
+   * WhatsApp clicks; block that signal everywhere except thank-you.html so
+   * Smart Bidding cannot learn from an unqualified click.
+   */
+  var rawGtag = window.gtag;
+  window.gtag = function () {
+    var args = Array.prototype.slice.call(arguments);
+    var payload = args[2] || {};
+    var isReservedAdsConversion = args[0] === 'event' && args[1] === 'conversion' && payload.send_to === CONTACT_CONVERSION;
+    var isConfirmedLeadPage = /(?:^|\/)thank-you\.html$/.test(window.location.pathname || '');
+    if (isReservedAdsConversion && !isConfirmedLeadPage) return;
+    return rawGtag.apply(window, args);
   };
 
   window.gtag('js', new Date());
@@ -62,6 +80,66 @@
   function track(name, parameters) {
     loadGoogleTag();
     window.gtag('event', name, parameters || {});
+  }
+
+  function readAttribution() {
+    if (!window.localStorage) return {};
+    try {
+      var raw = window.localStorage.getItem(ATTRIBUTION_STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function writeAttribution(value) {
+    if (!window.localStorage) return;
+    try {
+      window.localStorage.setItem(ATTRIBUTION_STORAGE_KEY, JSON.stringify(value));
+    } catch (error) {}
+  }
+
+  function captureAttribution() {
+    var data = readAttribution();
+    var search = null;
+    if (typeof URLSearchParams !== 'undefined') {
+      try { search = new URLSearchParams(window.location.search || ''); } catch (error) {}
+    }
+    ATTRIBUTION_PARAMS.forEach(function (key) {
+      var value = search ? search.get(key) : null;
+      if (value) data[key] = value;
+    });
+    if (!data.first_landing_page) {
+      data.first_landing_page = (window.location.pathname || '/') + (window.location.search || '');
+      data.first_seen_at = new Date().toISOString();
+    }
+    data.last_landing_page = (window.location.pathname || '/') + (window.location.search || '');
+    data.last_seen_at = new Date().toISOString();
+    writeAttribution(data);
+    return data;
+  }
+
+  function upsertAttributionField(form, name, value) {
+    if (!value || !form || typeof form.appendChild !== 'function') return;
+    var input = form.querySelector ? form.querySelector('input[name="' + name + '"]') : null;
+    if (!input) {
+      input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = name;
+      form.appendChild(input);
+    }
+    input.value = value;
+  }
+
+  function applyAttributionToForm(form) {
+    if (!form || typeof form.appendChild !== 'function') return;
+    var data = captureAttribution();
+    ATTRIBUTION_PARAMS.forEach(function (key) {
+      upsertAttributionField(form, 'ads_' + key, data[key]);
+    });
+    upsertAttributionField(form, 'ads_first_landing_page', data.first_landing_page);
+    upsertAttributionField(form, 'ads_last_landing_page', data.last_landing_page);
+    upsertAttributionField(form, 'ads_first_seen_at', data.first_seen_at);
   }
 
   function closestLink(target) {
@@ -168,6 +246,10 @@
     var articleEvent = isCall ? 'article_call_click' : 'article_whatsapp_click';
     var parameters = articleParameters({ contact_method: method, link_url: link.href });
     if (parameters) window.gtag('event', articleEvent, parameters);
+
+    /* Kept for backwards-compatible navigation callback only. The gtag guard
+       above blocks this reserved Ads action outside the confirmed thank-you
+       page, so phone/WhatsApp clicks remain GA4 diagnostics, not bid signals. */
     window.gtag('event', 'conversion', {
       send_to: CONTACT_CONVERSION,
       event_callback: continueNavigation,
@@ -188,17 +270,33 @@
     return 'tawod-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
   }
 
+  function trackFormStart(event) {
+    var target = event.target;
+    if (!target || typeof target.closest !== 'function') return;
+    var form = target.closest('form');
+    if (!isLeadForm(form) || form.dataset && form.dataset.tawodFormStarted === '1') return;
+    if (form.dataset) form.dataset.tawodFormStarted = '1';
+    track('tawod_form_start', {
+      send_to: GA4_ID,
+      form_name: form.getAttribute('data-analytics-form') || 'contact_quote_request',
+      page_path: window.location.pathname,
+      transport_type: 'beacon'
+    });
+  }
+
   function trackFormSubmit(event) {
     var form = event.target;
     if (event.defaultPrevented || !isLeadForm(form)) return;
 
+    applyAttributionToForm(form);
     var service = form.querySelector ? form.querySelector('[name="الخدمة_المطلوبة"]') : null;
     var context = {
       version: LEAD_CONTEXT_VERSION,
       submission_id: createSubmissionId(),
       form_name: form.getAttribute('data-analytics-form') || 'contact_quote_request',
       form_source_path: window.location.pathname,
-      service_type: service && service.value ? service.value : 'not_selected'
+      service_type: service && service.value ? service.value : 'not_selected',
+      attribution: readAttribution()
     };
 
     try {
@@ -284,13 +382,16 @@
     ga4Id: GA4_ID,
     googleAdsId: GOOGLE_ADS_ID,
     load: loadGoogleTag,
-    track: track
+    track: track,
+    captureAttribution: captureAttribution
   });
 
+  captureAttribution();
   document.addEventListener('click', function (event) {
     trackContactClick(event);
     trackArticleClick(event);
   }, true);
+  document.addEventListener('focusin', trackFormStart, true);
   document.addEventListener('submit', trackFormSubmit);
   ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (eventName) {
     window.addEventListener(eventName, function () {
