@@ -27,14 +27,12 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Reconstruct and validate the project page/images from the encoded
-          # repository sources using the same production prebuild routine.
           node scripts/prepare-next-public.mjs
 
-          # Restore the two project pages to their exact project-media references.
           git checkout origin/main -- \
             project-villa-plaster-ceramic-marble-uhud-riyadh.html \
-            project-alrajhi-tanks-king-salman-park.html
+            project-alrajhi-tanks-king-salman-park.html \
+            sitemap.xml
 
           python - <<'PY'
           from pathlib import Path
@@ -58,7 +56,6 @@ jobs:
                   file.write_text(updated, encoding='utf-8')
           PY
 
-          # Regenerate article clusters from their source data and synchronize analytics.
           node scripts/run-static-pages.mjs
           node scripts/install-site-analytics.mjs
           node scripts/validate-site.mjs
