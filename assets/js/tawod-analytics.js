@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var GA4_ID = 'G-YE1NT4R4YT';
+  var GA4_ID = 'G-4M3LNJF2ED';
   var GOOGLE_ADS_ID = 'AW-18266173285';
   var CONTACT_CONVERSION = 'AW-18266173285/qi4gCLu5lsUcEOXe_oVE';
   var FIRST_PARTY_ENDPOINT = 'https://vddoeiggfcwllfxpirep.supabase.co/functions/v1/tawod-analytics';
