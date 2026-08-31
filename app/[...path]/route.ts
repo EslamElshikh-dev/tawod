@@ -1,4 +1,3 @@
-import { withAdsRescue } from "@/lib/ad-rescue-html";
 import {
   getRoutedLegacyHtmlFiles,
   htmlResponse,
@@ -18,5 +17,5 @@ export async function GET(
   { params }: { params: Promise<{ path: string[] }> },
 ) {
   const { path } = await params;
-  return withAdsRescue(htmlResponse(path.join("/")));
+  return htmlResponse(path.join("/"));
 }
