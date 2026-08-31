@@ -4,10 +4,29 @@ import path from 'node:path';
 import vm from 'node:vm';
 
 const source = fs.readFileSync('assets/js/tawod-analytics.js', 'utf8');
+const landingSource = fs.readFileSync('app/lp/[slug]/route.ts', 'utf8');
+
 assert.match(source, /مسجد و ٢ فيلا \| حي العروبة/, 'the injected project card must preserve the approved title');
 assert.doesNotMatch(source, /حي العربية/, 'the obsolete project location must not return through analytics injection');
-assert.match(source, /gclid/, 'Ads click IDs must be preserved for lead attribution');
-assert.match(source, /tawod_form_start/, 'form start must remain a GA4 diagnostic event');
+assert.match(source, /gclid/, 'Ads click IDs must be preserved for attribution');
+assert.match(source, /tawod_form_start/, 'form start may remain a GA4 diagnostic event');
+assert.doesNotMatch(source, /gtag\(['"]event['"],\s*['"]conversion['"]/, 'website analytics must never fire a Google Ads conversion event');
+assert.doesNotMatch(source, /generate_lead/, 'website forms must not use the standard GA4 lead event for this campaign');
+assert.match(source, /adsConversionsFromWebsite:\s*false/, 'analytics API must explicitly declare that website Ads conversions are disabled');
+
+assert.doesNotMatch(landingSource, /<form\b/i, 'Ads landing pages must not contain a form');
+assert.doesNotMatch(landingSource, /formsubmit\.co/i, 'Ads landing pages must not post to FormSubmit');
+assert.doesNotMatch(landingSource, /contact-conversion\.js/i, 'Ads landing pages must not load form conversion code');
+assert.doesNotMatch(landingSource, /tawod-ads-rescue\.js/i, 'Ads landing pages must not need a conversion guard script');
+assert.match(landingSource, /tel:0551128884/, 'Ads landing pages must expose the direct phone CTA');
+assert.match(landingSource, /https:\/\/wa\.me\/966551128884/, 'Ads landing pages must expose the direct WhatsApp CTA');
+assert.match(landingSource, /noindex,follow/, 'Ads landing pages must remain noindex');
+for (const canonical of [
+  'https://tawodco.com/service-turnkey.html',
+  'https://tawodco.com/service-construction.html',
+  'https://tawodco.com/service-restoration.html',
+  'https://tawodco.com/service-finishing.html',
+]) assert.match(landingSource, new RegExp(canonical.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `missing canonical ${canonical}`);
 
 function runAnalytics({ pathname = '/', leadFlag = null } = {}) {
   const listeners = new Map();
@@ -20,6 +39,7 @@ function runAnalytics({ pathname = '/', leadFlag = null } = {}) {
 
   const document = {
     readyState: 'loading',
+    body: null,
     head: { appendChild: (element) => appendedScripts.push(element) },
     createElement: () => ({ setAttribute(name, value) { this[name] = value; } }),
     addEventListener: (name, handler) => listeners.set(name, handler)
@@ -37,6 +57,7 @@ function runAnalytics({ pathname = '/', leadFlag = null } = {}) {
       removeItem: (key) => localStorage.delete(key)
     },
     addEventListener: (name, handler) => windowListeners.set(name, handler),
+    removeEventListener: () => {},
     setTimeout: (handler, delay) => {
       timers.push({ handler, delay });
       return timers.length;
@@ -50,35 +71,58 @@ function runAnalytics({ pathname = '/', leadFlag = null } = {}) {
 
 const normal = runAnalytics({ pathname: '/service-construction.html' });
 const configs = normal.window.dataLayer.filter((item) => item[0] === 'config').map((item) => item[1]);
-assert.deepEqual([...configs], ['G-YE1NT4R4YT', 'AW-18266173285']);
-assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'generate_lead').length, 0);
+assert.deepEqual([...configs], ['G-YE1NT4R4YT'], 'the website must configure GA4 only, not a Google Ads website conversion destination');
+assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'conversion').length, 0);
 assert.equal(normal.appendedScripts.length, 0, 'Google Tag must stay off the critical loading path');
 normal.windowListeners.get('scroll')();
-assert.equal(normal.appendedScripts.length, 0, 'scrolling may schedule Google Tag but must not parse it during the interaction');
+assert.equal(normal.appendedScripts.length, 0, 'scrolling may schedule the tag but must not parse it during the input task');
 assert.equal(normal.timers.at(-1).delay, 2000, 'interaction loading must be delayed away from the input task');
 normal.rerun();
-assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'config').length, 2, 'analytics must initialize once');
+assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'config').length, 1, 'analytics must initialize once');
 
 const phoneLink = {
-  target: '_blank',
+  target: '',
   href: 'tel:0551128884',
   getAttribute: () => 'tel:0551128884'
 };
-normal.listeners.get('click')({
+const phoneEvent = {
   target: { closest: () => phoneLink },
   defaultPrevented: false,
   button: 0,
   metaKey: false,
   ctrlKey: false,
   shiftKey: false,
-  altKey: false
-});
+  altKey: false,
+  preventDefault() { this.defaultPrevented = true; }
+};
+normal.listeners.get('click')(phoneEvent);
+assert.equal(phoneEvent.defaultPrevented, false, 'phone navigation must stay immediate and must not be delayed for tracking');
 assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'tawod_call_click').length, 1);
-const clickAdsConversions = normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'conversion' && item[2]?.send_to === 'AW-18266173285/qi4gCLu5lsUcEOXe_oVE');
-assert.equal(clickAdsConversions.length, 0, 'phone/WhatsApp clicks must not fire the reserved Google Ads lead conversion');
+assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'conversion').length, 0, 'phone clicks must never fire an Ads conversion');
+
+const whatsappLink = {
+  target: '',
+  href: 'https://wa.me/966551128884',
+  getAttribute: () => 'https://wa.me/966551128884'
+};
+const whatsappEvent = {
+  target: { closest: () => whatsappLink },
+  defaultPrevented: false,
+  button: 0,
+  metaKey: false,
+  ctrlKey: false,
+  shiftKey: false,
+  altKey: false,
+  preventDefault() { this.defaultPrevented = true; }
+};
+normal.listeners.get('click')(whatsappEvent);
+assert.equal(whatsappEvent.defaultPrevented, false, 'WhatsApp navigation must stay immediate and must not be delayed for tracking');
+assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'tawod_whatsapp_click').length, 1);
+assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'conversion').length, 0, 'WhatsApp clicks must never fire an Ads conversion');
 
 const leadForm = {
   tagName: 'FORM',
+  appendChild: () => {},
   getAttribute: (name) => ({
     action: 'https://formsubmit.co/info@tawodco.com',
     'data-analytics-form': 'home_quote_request'
@@ -88,39 +132,30 @@ const leadForm = {
     : null
 };
 normal.listeners.get('submit')({ target: leadForm, defaultPrevented: false });
-const submitAttempts = normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'form_submit_attempt');
-assert.equal(submitAttempts.length, 1, 'a valid FormSubmit request must record one submit attempt');
-assert.equal(submitAttempts[0][2].form_name, 'home_quote_request');
-assert.equal(submitAttempts[0][2].service_type, 'البناء والإنشاءات');
+const submitAttempts = normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'tawod_form_submit_attempt');
+assert.equal(submitAttempts.length, 1, 'organic forms may remain measurable in GA4 diagnostics');
+assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'conversion').length, 0, 'form submit must never fire an Ads conversion');
 const storedLead = JSON.parse(normal.storage.get('tawodLeadSubmitted'));
 assert.equal(storedLead.form_source_path, '/service-construction.html');
 assert.match(storedLead.submission_id, /^tawod-/);
-normal.listeners.get('submit')({ target: leadForm, defaultPrevented: true });
-assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'form_submit_attempt').length, 1, 'prevented submissions must not be measured');
 
 const directThankYou = runAnalytics({ pathname: '/thank-you.html' });
-assert.equal(directThankYou.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'generate_lead').length, 0, 'direct visits are not leads');
+assert.equal(directThankYou.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'tawod_form_confirmed').length, 0, 'direct thank-you visits are not form confirmations');
+assert.equal(directThankYou.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'conversion').length, 0);
 
 const confirmedContext = JSON.stringify({
-  version: 2,
+  version: 3,
   submission_id: 'submission-test-1',
   form_name: 'khobar_quote_request',
   form_source_path: '/khobar/contact/',
   service_type: 'تسليم مفتاح'
 });
 const confirmedThankYou = runAnalytics({ pathname: '/thank-you.html', leadFlag: confirmedContext });
-const confirmedLeads = confirmedThankYou.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'generate_lead');
-assert.equal(confirmedLeads.length, 1);
-assert.equal(confirmedLeads[0][2].send_to, 'G-YE1NT4R4YT');
-assert.equal(confirmedLeads[0][2].form_name, 'khobar_quote_request');
-assert.equal(confirmedLeads[0][2].form_source_path, '/khobar/contact/');
-const confirmedAds = confirmedThankYou.window.dataLayer.find((item) => item[0] === 'event' && item[1] === 'conversion');
-assert.equal(confirmedAds[2].send_to, 'AW-18266173285/qi4gCLu5lsUcEOXe_oVE');
-assert.equal(confirmedAds[2].transaction_id, 'submission-test-1');
-assert.equal(confirmedThankYou.storage.has('tawodLeadSubmitted'), false, 'confirmed lead flag must be consumed');
-
-const legacyThankYou = runAnalytics({ pathname: '/thank-you.html', leadFlag: '1' });
-assert.equal(legacyThankYou.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'generate_lead').length, 1, 'legacy in-flight submissions must remain measurable');
+const confirmedForms = confirmedThankYou.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'tawod_form_confirmed');
+assert.equal(confirmedForms.length, 1);
+assert.equal(confirmedForms[0][2].send_to, 'G-YE1NT4R4YT');
+assert.equal(confirmedThankYou.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'conversion').length, 0, 'thank-you confirmation must remain GA4-only');
+assert.equal(confirmedThankYou.storage.has('tawodLeadSubmitted'), false, 'diagnostic form context must be consumed');
 
 function htmlFiles(directory) {
   return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -130,17 +165,13 @@ function htmlFiles(directory) {
   });
 }
 
-const measuredForms = [];
+const organicForms = [];
 for (const file of htmlFiles('.')) {
   const html = fs.readFileSync(file, 'utf8');
   for (const match of html.matchAll(/<form\b(?=[^>]*\baction=["']https:\/\/(?:www\.)?formsubmit\.co\/[^"']+["'])[^>]*>[\s\S]*?<\/form>/gi)) {
-    measuredForms.push({ file, html: match[0] });
+    organicForms.push({ file, html: match[0] });
   }
 }
-assert.equal(measuredForms.length, 5, 'all five quote forms must stay in the confirmed conversion flow');
-for (const form of measuredForms) {
-  assert.match(form.html, /\bdata-analytics-form=["'][^"']+["']/i, `${form.file} must identify its form source`);
-  assert.match(form.html, /<input\b[^>]*\bname=["']_next["'][^>]*\bvalue=["']https:\/\/tawodco\.com\/thank-you\.html["'][^>]*>/i, `${form.file} must redirect to the confirmed thank-you page`);
-}
+assert.equal(organicForms.length, 5, 'the five existing organic quote forms must remain intact');
 
-console.log('Verified sitewide GA4/Ads configuration, click diagnostics, confirmed-lead-only Ads conversion, quote forms and attribution safeguards.');
+console.log('Verified call/WhatsApp-only Ads landing flow, immediate contact navigation, GA4-only diagnostics, attribution storage, and zero website Google Ads conversion events.');
