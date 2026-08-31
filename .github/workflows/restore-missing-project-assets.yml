@@ -1,4 +1,4 @@
-name: Restore Missing Project Assets
+name: Repair Missing Project References
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  restore:
+  repair:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
@@ -20,43 +20,62 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Restore project files from repository refs
+      - name: Repair unavailable references without fabricating project media
         shell: bash
         run: |
           set -euo pipefail
-          restore_from_refs() {
-            local target="$1"
-            if [ -e "$target" ]; then
-              echo "Already present: $target"
-              return 0
-            fi
-            while IFS= read -r ref; do
-              if git cat-file -e "$ref:$target" 2>/dev/null; then
-                mkdir -p "$(dirname "$target")"
-                git show "$ref:$target" > "$target"
-                echo "Restored $target from $ref"
-                return 0
-              fi
-            done < <(git for-each-ref --format='%(refname)' refs/remotes/origin)
-            return 1
-          }
-
-          if ! restore_from_refs project-faisaliah-villa-facades-finishing.html; then
-            python - <<'PY'
+          python - <<'PY'
           from pathlib import Path
           import re
 
-          missing = 'project-faisaliah-villa-facades-finishing.html'
           ignored = {'.git', '.next', 'node_modules', 'out', 'public'}
+          html_files = [p for p in Path('.').rglob('*.html') if not any(part in ignored for part in p.parts)]
+
+          faisaliah = 'project-faisaliah-villa-facades-finishing.html'
+          uhud_missing = 'images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp'
+          uhud_fallback = 'images/projects/villa-finishing-01.webp'
+          alrajhi_missing = 'images/projects/alrajhi-tanks-king-salman-park-01.webp'
+          alrajhi_fallback = 'images/services/service-construction-riyadh.webp'
+
+          for required in (uhud_fallback, alrajhi_fallback, 'images/projects/modon-eight-warehouses-01.webp', 'images/projects/modon-eight-warehouses-02.webp'):
+              if not Path(required).exists():
+                  raise SystemExit(f'Missing verified fallback asset: {required}')
+
           changed = 0
-          for file in Path('.').rglob('*.html'):
-              if any(part in ignored for part in file.parts):
-                  continue
+          for file in html_files:
               text = file.read_text(encoding='utf-8')
-              updated = text.replace(f'href="/{missing}"', 'href="/projects.html"')
-              updated = updated.replace(f"href='/{missing}'", "href='/projects.html'")
-              updated = updated.replace(f'href="{missing}"', 'href="/projects.html"')
-              updated = updated.replace(f"href='{missing}'", "href='/projects.html'")
+              updated = text
+              updated = updated.replace(f'href="/{faisaliah}"', 'href="/projects.html"')
+              updated = updated.replace(f"href='/{faisaliah}'", "href='/projects.html'")
+              updated = updated.replace(f'href="{faisaliah}"', 'href="/projects.html"')
+              updated = updated.replace(f"href='{faisaliah}'", "href='/projects.html'")
+              updated = updated.replace(uhud_missing, uhud_fallback)
+              updated = updated.replace(alrajhi_missing, alrajhi_fallback)
+
+              if file.name == 'project-villa-plaster-ceramic-marble-uhud-riyadh.html':
+                  updated = updated.replace(
+                      'توضح الواجهة الخارجية بعد تنفيذ اللياسة والقروفات المعمارية.',
+                      'تُستخدم صورة توضيحية لخدمات تشطيب الفلل، بينما يعرض النص نطاق المشروع وبياناته الفعلية.'
+                  )
+                  updated = updated.replace(
+                      'توضح الصورة الواجهة الخارجية بعد تنفيذ اللياسة والقروفات، مع ضبط الاستقامة والزوايا والتفاصيل البارزة قبل التشطيبات النهائية.',
+                      'تعرض الصفحة صورة توضيحية لخدمات تشطيب الفلل، بينما توثق بيانات المشروع نطاق اللياسة والقروفات والسيراميك والرخام المنفذ في حي أحد.'
+                  )
+                  updated = updated.replace('alt="تنفيذ اللياسة الخارجية والقروفات لفيلا سكنية في حي أحد بالرياض"', 'alt="صورة توضيحية لخدمات تشطيب الفلل بالرياض"')
+
+              if file.name == 'project-alrajhi-tanks-king-salman-park.html':
+                  updated = updated.replace(
+                      'توضح الصورة أعمال الحدادة وتسليح قاعدة الخزان داخل موقع التنفيذ.',
+                      'تُستخدم صورة توضيحية لأعمال الإنشاء، بينما يعرض النص نطاق أعمال الحدادة والعزل وبيانات المشروع الفعلية.'
+                  )
+                  updated = re.sub(
+                      r'وتوضح الصورة الميدانية[^<]*',
+                      'وتُستخدم في الصفحة صورة توضيحية لأعمال الإنشاء؛ أما نطاق المشروع الفعلي وبياناته فموثقة في النص أدناه.',
+                      updated,
+                      count=1
+                  )
+                  updated = updated.replace('alt="أعمال حدادة وتسليح قاعدة خزان في حديقة الملك سلمان بالرياض"', 'alt="صورة توضيحية لأعمال الإنشاء بالرياض"')
+
               if updated != text:
                   file.write_text(updated, encoding='utf-8')
                   changed += 1
@@ -64,38 +83,22 @@ jobs:
           sitemap = Path('sitemap.xml')
           if sitemap.exists():
               text = sitemap.read_text(encoding='utf-8')
-              pattern = rf'\s*<url>\s*<loc>https://tawodco\.com/{re.escape(missing)}</loc>[\s\S]*?</url>'
+              pattern = rf'\s*<url>\s*<loc>https://tawodco\.com/{re.escape(faisaliah)}</loc>[\s\S]*?</url>'
               updated = re.sub(pattern, '', text)
               if updated != text:
                   sitemap.write_text(updated, encoding='utf-8')
 
-          print(f'Removed unavailable Faisaliah project target from {changed} HTML file(s) and sitemap.')
+          print(f'Repaired unavailable project references in {changed} HTML file(s).')
           PY
-          fi
 
-          restore_from_refs images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp || {
-            echo "Could not find the Uhud villa project image in any remote ref."
-            exit 1
-          }
-
-          restore_from_refs images/projects/alrajhi-tanks-king-salman-park-01.webp || {
-            echo "Could not find the Al Rajhi project image in any remote ref."
-            exit 1
-          }
-
-          if ! restore_from_refs images/projects/modon-eight-warehouses-01-v3.webp; then
-            cp images/projects/modon-eight-warehouses-01.webp images/projects/modon-eight-warehouses-01-v3.webp
-            echo "Restored MODON image 01 from the repository's existing non-v3 original."
-          fi
-
-          if ! restore_from_refs images/projects/modon-eight-warehouses-02-v3.webp; then
-            cp images/projects/modon-eight-warehouses-02.webp images/projects/modon-eight-warehouses-02-v3.webp
-            echo "Restored MODON image 02 from the repository's existing non-v3 original."
-          fi
-
+          cp images/projects/modon-eight-warehouses-01.webp images/projects/modon-eight-warehouses-01-v3.webp
+          cp images/projects/modon-eight-warehouses-02.webp images/projects/modon-eight-warehouses-02-v3.webp
           node scripts/install-site-analytics.mjs
 
-      - name: Commit restored files
+      - name: Validate repaired references
+        run: node scripts/validate-site.mjs
+
+      - name: Commit repairs
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -104,5 +107,5 @@ jobs:
             echo "Nothing to commit."
             exit 0
           fi
-          git commit -m "Repair broken project references and restore assets"
+          git commit -m "Repair broken project references"
           git push origin HEAD:feat/google-ads-rescue-2026-08-31
