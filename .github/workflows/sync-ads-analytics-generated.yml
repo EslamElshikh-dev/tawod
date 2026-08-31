@@ -1,0 +1,35 @@
+name: Sync Ads Analytics Generated HTML
+
+on:
+  push:
+    branches:
+      - feat/google-ads-rescue-2026-08-31
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/google-ads-rescue-2026-08-31
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Synchronize versioned analytics references
+        run: node scripts/install-site-analytics.mjs
+      - name: Commit generated HTML
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- '*.html'; then
+            echo "Generated HTML already synchronized."
+            exit 0
+          fi
+          git add -- ':glob:**/*.html' ':glob:*.html'
+          git commit -m "Sync generated analytics version"
+          git push origin HEAD:feat/google-ads-rescue-2026-08-31
