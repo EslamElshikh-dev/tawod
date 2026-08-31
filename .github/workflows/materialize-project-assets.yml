@@ -73,7 +73,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add -u
-          git add \
+          git add -f \
             project-faisaliah-villa-facades-finishing.html \
             images/projects/modon-eight-warehouses-01-v3.webp \
             images/projects/modon-eight-warehouses-02-v3.webp \
