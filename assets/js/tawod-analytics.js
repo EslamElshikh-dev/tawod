@@ -1,12 +1,11 @@
-/* Tawod sitewide analytics and confirmed-lead tracking. */
+/* Tawod sitewide analytics: GA4 diagnostics only. Google Ads conversions are intentionally not fired from website interactions. */
 (function () {
   'use strict';
 
   var GA4_ID = 'G-YE1NT4R4YT';
   var GOOGLE_ADS_ID = 'AW-18266173285';
-  var CONTACT_CONVERSION = 'AW-18266173285/qi4gCLu5lsUcEOXe_oVE';
   var LEAD_SESSION_KEY = 'tawodLeadSubmitted';
-  var LEAD_CONTEXT_VERSION = 2;
+  var LEAD_CONTEXT_VERSION = 3;
   var ATTRIBUTION_STORAGE_KEY = 'tawodAdsAttributionV1';
   var ATTRIBUTION_PARAMS = ['gclid', 'gbraid', 'wbraid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
   var INTERACTION_LOAD_DELAY = 2000;
@@ -20,25 +19,8 @@
     window.dataLayer.push(arguments);
   };
 
-  /*
-   * The Ads action above is reserved for confirmed form leads only.
-   * Legacy click tracking used the same Ads conversion action for phone/
-   * WhatsApp clicks; block that signal everywhere except thank-you.html so
-   * Smart Bidding cannot learn from an unqualified click.
-   */
-  var rawGtag = window.gtag;
-  window.gtag = function () {
-    var args = Array.prototype.slice.call(arguments);
-    var payload = args[2] || {};
-    var isReservedAdsConversion = args[0] === 'event' && args[1] === 'conversion' && payload.send_to === CONTACT_CONVERSION;
-    var isConfirmedLeadPage = /(?:^|\/)thank-you\.html$/.test(window.location.pathname || '');
-    if (isReservedAdsConversion && !isConfirmedLeadPage) return;
-    return rawGtag.apply(window, args);
-  };
-
   window.gtag('js', new Date());
   window.gtag('config', GA4_ID, { send_page_view: true });
-  window.gtag('config', GOOGLE_ADS_ID);
 
   var tagRequested = false;
   var idleTimer = 0;
@@ -79,7 +61,8 @@
 
   function track(name, parameters) {
     loadGoogleTag();
-    window.gtag('event', name, parameters || {});
+    var payload = Object.assign({}, parameters || {}, { send_to: GA4_ID });
+    window.gtag('event', name, payload);
   }
 
   function readAttribution() {
@@ -105,10 +88,12 @@
     if (typeof URLSearchParams !== 'undefined') {
       try { search = new URLSearchParams(window.location.search || ''); } catch (error) {}
     }
+
     ATTRIBUTION_PARAMS.forEach(function (key) {
       var value = search ? search.get(key) : null;
       if (value) data[key] = value;
     });
+
     if (!data.first_landing_page) {
       data.first_landing_page = (window.location.pathname || '/') + (window.location.search || '');
       data.first_seen_at = new Date().toISOString();
@@ -167,7 +152,6 @@
     var context = articleContext();
     if (!context) return null;
     Object.keys(extra || {}).forEach(function (key) { context[key] = extra[key]; });
-    context.send_to = GA4_ID;
     context.transport_type = 'beacon';
     return context;
   }
@@ -192,7 +176,7 @@
   function initializeArticleTracking() {
     var context = articleContext();
     if (!context) return;
-    window.gtag('event', 'article_view', articleParameters());
+    track('article_view', articleParameters());
 
     var sent50 = false;
     var sent90 = false;
@@ -223,39 +207,15 @@
     if (!isCall && !isWhatsApp) return;
 
     var method = isCall ? 'phone' : 'whatsapp';
-    var eventName = isCall ? 'tawod_call_click' : 'tawod_whatsapp_click';
-    var shouldDelayNavigation = !link.target && !event.defaultPrevented && event.button === 0 &&
-      !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
-    var navigated = false;
-
-    function continueNavigation() {
-      if (navigated || !shouldDelayNavigation) return;
-      navigated = true;
-      window.location.href = link.href;
-    }
-
-    if (shouldDelayNavigation) event.preventDefault();
-    loadGoogleTag();
-    window.gtag('event', eventName, {
-      send_to: GA4_ID,
+    track(isCall ? 'tawod_call_click' : 'tawod_whatsapp_click', {
       contact_method: method,
       page_path: window.location.pathname,
       link_url: link.href,
       transport_type: 'beacon'
     });
-    var articleEvent = isCall ? 'article_call_click' : 'article_whatsapp_click';
-    var parameters = articleParameters({ contact_method: method, link_url: link.href });
-    if (parameters) window.gtag('event', articleEvent, parameters);
 
-    /* Kept for backwards-compatible navigation callback only. The gtag guard
-       above blocks this reserved Ads action outside the confirmed thank-you
-       page, so phone/WhatsApp clicks remain GA4 diagnostics, not bid signals. */
-    window.gtag('event', 'conversion', {
-      send_to: CONTACT_CONVERSION,
-      event_callback: continueNavigation,
-      event_timeout: 800
-    });
-    if (shouldDelayNavigation) window.setTimeout(continueNavigation, 850);
+    var parameters = articleParameters({ contact_method: method, link_url: link.href });
+    if (parameters) track(isCall ? 'article_call_click' : 'article_whatsapp_click', parameters);
   }
 
   function isLeadForm(form) {
@@ -264,9 +224,7 @@
   }
 
   function createSubmissionId() {
-    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
-      return window.crypto.randomUUID();
-    }
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID();
     return 'tawod-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
   }
 
@@ -277,7 +235,6 @@
     if (!isLeadForm(form) || form.dataset && form.dataset.tawodFormStarted === '1') return;
     if (form.dataset) form.dataset.tawodFormStarted = '1';
     track('tawod_form_start', {
-      send_to: GA4_ID,
       form_name: form.getAttribute('data-analytics-form') || 'contact_quote_request',
       page_path: window.location.pathname,
       transport_type: 'beacon'
@@ -299,12 +256,9 @@
       attribution: readAttribution()
     };
 
-    try {
-      window.sessionStorage.setItem(LEAD_SESSION_KEY, JSON.stringify(context));
-    } catch (error) {}
+    try { window.sessionStorage.setItem(LEAD_SESSION_KEY, JSON.stringify(context)); } catch (error) {}
 
-    track('form_submit_attempt', {
-      send_to: GA4_ID,
+    track('tawod_form_submit_attempt', {
       form_name: context.form_name,
       form_source_path: context.form_source_path,
       service_type: context.service_type,
@@ -315,18 +269,9 @@
 
   function storedLeadContext() {
     var stored = null;
-    try {
-      stored = window.sessionStorage.getItem(LEAD_SESSION_KEY);
-    } catch (error) {}
+    try { stored = window.sessionStorage.getItem(LEAD_SESSION_KEY); } catch (error) {}
     if (!stored) return null;
-    if (stored === '1') {
-      return {
-        version: 0,
-        form_name: 'contact_quote_request',
-        form_source_path: 'unknown',
-        service_type: 'unknown'
-      };
-    }
+    if (stored === '1') return { version: 0, form_name: 'contact_quote_request', form_source_path: 'unknown', service_type: 'unknown' };
     try {
       var parsed = JSON.parse(stored);
       return parsed && parsed.form_name ? parsed : null;
@@ -335,14 +280,12 @@
     }
   }
 
-  function trackConfirmedLead() {
+  function trackConfirmedForm() {
     if (!/(?:^|\/)thank-you\.html$/.test(window.location.pathname)) return;
-
     var context = storedLeadContext();
     if (!context) return;
 
-    track('generate_lead', {
-      send_to: GA4_ID,
+    track('tawod_form_confirmed', {
       lead_source: 'contact_form',
       form_name: context.form_name,
       form_source_path: context.form_source_path || 'unknown',
@@ -350,18 +293,8 @@
       page_path: window.location.pathname,
       transport_type: 'beacon'
     });
-    var adsParameters = {
-      send_to: CONTACT_CONVERSION,
-      form_name: context.form_name,
-      form_source_path: context.form_source_path || 'unknown',
-      service_type: context.service_type || 'unknown',
-      transport_type: 'beacon'
-    };
-    if (context.submission_id) adsParameters.transaction_id = context.submission_id;
-    window.gtag('event', 'conversion', adsParameters);
-    try {
-      window.sessionStorage.removeItem(LEAD_SESSION_KEY);
-    } catch (error) {}
+
+    try { window.sessionStorage.removeItem(LEAD_SESSION_KEY); } catch (error) {}
   }
 
   function injectFeaturedProject() {
@@ -381,6 +314,7 @@
   window.TawodAnalytics = Object.freeze({
     ga4Id: GA4_ID,
     googleAdsId: GOOGLE_ADS_ID,
+    adsConversionsFromWebsite: false,
     load: loadGoogleTag,
     track: track,
     captureAttribution: captureAttribution
@@ -394,13 +328,10 @@
   document.addEventListener('focusin', trackFormStart, true);
   document.addEventListener('submit', trackFormSubmit);
   ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (eventName) {
-    window.addEventListener(eventName, function () {
-      scheduleGoogleTag(INTERACTION_LOAD_DELAY);
-    }, { once: true, passive: true });
+    window.addEventListener(eventName, function () { scheduleGoogleTag(INTERACTION_LOAD_DELAY); }, { once: true, passive: true });
   });
 
-  if (/(?:^|\/)thank-you\.html$/.test(window.location.pathname)) loadGoogleTag();
-  else scheduleFallbackLoad();
+  scheduleFallbackLoad();
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () {
     injectFeaturedProject();
@@ -410,5 +341,6 @@
     injectFeaturedProject();
     initializeArticleTracking();
   }
-  trackConfirmedLead();
+
+  trackConfirmedForm();
 })();
