@@ -1,0 +1,81 @@
+name: Restore Missing Project Assets
+
+on:
+  push:
+    branches:
+      - feat/google-ads-rescue-2026-08-31
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/google-ads-rescue-2026-08-31
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Restore project files from repository refs
+        shell: bash
+        run: |
+          set -euo pipefail
+          restore_from_refs() {
+            local target="$1"
+            if [ -e "$target" ]; then
+              echo "Already present: $target"
+              return 0
+            fi
+            while IFS= read -r ref; do
+              if git cat-file -e "$ref:$target" 2>/dev/null; then
+                mkdir -p "$(dirname "$target")"
+                git show "$ref:$target" > "$target"
+                echo "Restored $target from $ref"
+                return 0
+              fi
+            done < <(git for-each-ref --format='%(refname)' refs/remotes/origin)
+            return 1
+          }
+
+          restore_from_refs project-faisaliah-villa-facades-finishing.html || {
+            echo "Could not find the Faisaliah project page in any remote ref."
+            exit 1
+          }
+
+          restore_from_refs images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp || {
+            echo "Could not find the Uhud villa project image in any remote ref."
+            exit 1
+          }
+
+          restore_from_refs images/projects/alrajhi-tanks-king-salman-park-01.webp || {
+            echo "Could not find the Al Rajhi project image in any remote ref."
+            exit 1
+          }
+
+          if ! restore_from_refs images/projects/modon-eight-warehouses-01-v3.webp; then
+            cp images/projects/modon-eight-warehouses-01.webp images/projects/modon-eight-warehouses-01-v3.webp
+            echo "Restored MODON image 01 from the repository's existing non-v3 original."
+          fi
+
+          if ! restore_from_refs images/projects/modon-eight-warehouses-02-v3.webp; then
+            cp images/projects/modon-eight-warehouses-02.webp images/projects/modon-eight-warehouses-02-v3.webp
+            echo "Restored MODON image 02 from the repository's existing non-v3 original."
+          fi
+
+          node scripts/install-site-analytics.mjs
+
+      - name: Commit restored files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nothing to commit."
+            exit 0
+          fi
+          git commit -m "Restore missing project assets referenced by site"
+          git push origin HEAD:feat/google-ads-rescue-2026-08-31
