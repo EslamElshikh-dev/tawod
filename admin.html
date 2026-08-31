@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0d12">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+<meta name="referrer" content="no-referrer">
+<title>مركز قيادة تعاود | التحليلات والقرارات</title>
+<link rel="icon" href="/images/logo/tawod-logo.png" type="image/png">
+<link rel="stylesheet" href="/assets/css/tawod-admin.css">
+<link rel="stylesheet" href="/assets/css/tawod-admin-ads.css">
+</head>
+<body class="admin-body">
+<div class="login-screen" id="adminLogin">
+  <section class="login-card" aria-labelledby="loginTitle">
+    <div class="login-brand">
+      <img src="/images/logo/tawod-logo.png" width="150" height="66" alt="شركة تعاود للمقاولات">
+      <span class="secure-pill"><i></i> جلسة إدارية آمنة</span>
+    </div>
+    <p class="eyebrow">TAWOD · COMMAND CENTER</p>
+    <h1 id="loginTitle">مركز قيادة تعاود</h1>
+    <p class="login-copy">لوحة داخلية لقراءة رحلة العميل، أداء الحملات، الطلب على الخدمات، وتحويل البيانات إلى قرارات واضحة.</p>
+    <form id="adminLoginForm" autocomplete="off">
+      <label for="adminPassword">مفتاح الدخول</label>
+      <div class="login-row">
+        <input id="adminPassword" type="password" required autocomplete="current-password" placeholder="أدخل مفتاح الإدارة" aria-describedby="loginHint adminLoginError">
+        <button id="loginButton" type="submit">دخول</button>
+      </div>
+      <small id="loginHint">المفتاح لا يُحفظ؛ يُستبدل بجلسة موقعة مؤقتة لمدة 4 ساعات.</small>
+      <p id="adminLoginError" class="form-error" role="alert"></p>
+    </form>
+  </section>
+</div>
+
+<div class="admin-shell" id="adminApp" hidden>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="العودة إلى موقع تعاود">
+      <img src="/images/logo/tawod-logo.png" width="76" height="34" alt="تعاود">
+      <span><b>TAWOD</b><small>Command Center</small></span>
+    </a>
+
+    <nav class="side-nav" id="adminNav" aria-label="أقسام لوحة الإدارة">
+      <div class="nav-group">
+        <span>القيادة</span>
+        <a class="is-active" href="#executive"><i>01</i> النظرة التنفيذية</a>
+        <a href="#funnel"><i>02</i> قمع التحويل</a>
+        <a href="#trend"><i>03</i> الاتجاه والنمو</a>
+      </div>
+      <div class="nav-group">
+        <span>الإعلانات والتسويق</span>
+        <a href="#google-ads"><i>04</i> Google Ads</a>
+        <a href="#acquisition"><i>05</i> المصادر والحملات</a>
+        <a href="#performance"><i>06</i> الصفحات والخدمات</a>
+        <a href="#leads"><i>07</i> العملاء المحتملون</a>
+      </div>
+      <div class="nav-group">
+        <span>القرار</span>
+        <a href="#decisions"><i>08</i> مركز القرارات</a>
+      </div>
+    </nav>
+
+    <div class="sidebar-status">
+      <div><i class="live-dot"></i><span id="trackingState">First-party Analytics</span></div>
+      <small>لا يتم تخزين الاسم أو الجوال أو البريد أو نص الرسائل.</small>
+    </div>
+  </aside>
+
+  <main class="workspace">
+    <header class="command-header">
+      <div class="header-title">
+        <p class="eyebrow">التشغيل · التسويق · التحويل</p>
+        <h1>مركز قيادة شركة تعاود للمقاولات</h1>
+        <p>قراءة مرتبة لأهم ما يحتاج قرارًا، ثم التفاصيل التي تفسّر السبب.</p>
+      </div>
+      <div class="header-actions">
+        <label class="period-control"><span>الفترة</span><select id="periodSelect" aria-label="فترة التقرير"><option value="7">7 أيام</option><option value="30" selected>30 يومًا</option><option value="90">90 يومًا</option></select></label>
+        <button id="refreshButton" type="button">تحديث</button>
+        <button id="copyButton" class="button-secondary" type="button">نسخ الملخص</button>
+        <button id="printButton" class="button-secondary" type="button">طباعة التقرير</button>
+        <button id="logoutButton" class="button-ghost" type="button">خروج</button>
+      </div>
+    </header>
+
+    <div class="preview-note" id="previewNotice" hidden>
+      <strong>وضع المعاينة</strong>
+      <span>زيارات نطاق Vercel لا تُسجّل داخل First-party Analytics حتى لا تلوّث بيانات Production.</span>
+    </div>
+
+    <section class="admin-section admin-section-first" id="executive">
+      <div class="section-heading">
+        <div><p class="eyebrow">EXECUTIVE OVERVIEW</p><h2>ما الذي يحتاج انتباهك الآن؟</h2></div>
+        <div class="freshness" id="generatedAt">—</div>
+      </div>
+      <div class="executive-grid">
+        <article class="panel health-panel">
+          <div class="health-ring" id="healthRing"><strong id="healthScore">—</strong><small>/100</small></div>
+          <div class="health-copy"><span class="micro-label">صحة القمع</span><h3 id="healthLabel">جاري التحليل</h3><p id="healthText">يظهر الحكم بعد تحميل العينة الحالية.</p><div class="confidence-row"><span>ثقة القراءة</span><b id="confidenceLabel">—</b></div></div>
+        </article>
+        <article class="panel decision-panel">
+          <div class="panel-title"><div><span class="micro-label">أهم قرار الآن</span><h3 id="primaryDecisionTitle">جاري ترتيب الأولويات</h3></div><span class="priority-badge" id="primaryDecisionPriority">—</span></div>
+          <p id="primaryDecisionEvidence">سيظهر الدليل الأقوى من البيانات الحالية هنا.</p>
+          <div class="decision-action"><span>الإجراء المقترح</span><strong id="primaryDecisionAction">—</strong></div>
+        </article>
+        <article class="panel today-panel">
+          <div class="panel-title"><div><span class="micro-label">آخر 24 ساعة</span><h3>نبض الموقع</h3></div><span class="live-badge"><i class="live-dot"></i> مباشر</span></div>
+          <div class="today-grid" id="todayPulse"></div>
+        </article>
+      </div>
+      <div class="kpi-grid" id="summaryMetrics" aria-live="polite"></div>
+      <div class="secondary-strip">
+        <div><span>مشاهدات الصفحات</span><strong id="secondaryViews">—</strong></div>
+        <div><span>الزوار</span><strong id="secondaryVisitors">—</strong></div>
+        <div><span>ضغطات الاتصال</span><strong id="secondaryCalls">—</strong></div>
+        <div><span>ضغطات واتساب</span><strong id="secondaryWhatsapp">—</strong></div>
+        <div><span>مشاهدات المقالات</span><strong id="secondaryArticles">—</strong></div>
+      </div>
+    </section>
+
+    <section class="admin-section" id="funnel">
+      <div class="section-heading"><div><p class="eyebrow">CONVERSION FUNNEL</p><h2>من الجلسة إلى العميل المحتمل</h2></div><p>النسب مبنية على جلسات فريدة، وليس عدد الضغطات.</p></div>
+      <div class="funnel-board panel" id="funnelGrid"></div>
+      <div class="two-column compact-top">
+        <article class="panel"><div class="panel-title"><div><span class="micro-label">قنوات التواصل</span><h3>اتصال أم واتساب؟</h3></div></div><div id="channelSplit" class="channel-list"></div></article>
+        <article class="panel"><div class="panel-title"><div><span class="micro-label">جودة القمع</span><h3>أين يحدث التسرب؟</h3></div></div><div id="leakSummary" class="leak-list"></div></article>
+      </div>
+    </section>
+
+    <section class="admin-section" id="trend">
+      <div class="section-heading"><div><p class="eyebrow">TREND & MOMENTUM</p><h2>هل الأداء يتحسن أم يتراجع؟</h2></div><p>مقارنة آخر 7 أيام بالأسبوع السابق.</p></div>
+      <div class="comparison-grid" id="comparisonMetrics"></div>
+      <article class="panel chart-panel">
+        <div class="panel-title"><div><span class="micro-label">الاتجاه اليومي</span><h3>مشاهدات · تواصل · Leads</h3></div><div class="legend"><span><i class="legend-views"></i>مشاهدات</span><span><i class="legend-contacts"></i>تواصل</span><span><i class="legend-leads"></i>Leads</span></div></div>
+        <div class="daily-chart" id="dailyChart" aria-label="اتجاه الأداء اليومي"></div>
+      </article>
+    </section>
+
+    <section class="admin-section" id="google-ads">
+      <div class="section-heading">
+        <div><p class="eyebrow">GOOGLE ADS PERFORMANCE</p><h2>أداء الإعلانات والمكالمات وواتساب</h2></div>
+        <p>بيانات Google Ads الفعلية منفصلة عن ضغطات الموقع، ثم تُقرأ معًا لاتخاذ القرار.</p>
+      </div>
+      <div class="ads-status-bar">
+        <div class="ads-status-copy"><span class="ads-status-chip" id="googleAdsStatus"><i></i> فحص الاتصال</span><div><strong>مزامنة Google Ads</strong><span id="googleAdsLastSync">—</span></div></div>
+        <span class="ads-status-chip">GA4 · G-4M3LNJF2ED</span>
+      </div>
+      <div class="ads-setup" id="googleAdsConnectHint">
+        <h3>مصدر Google Ads جاهز وينتظر أول مزامنة</h3>
+        <p>بعد تشغيل سكربت المزامنة من حساب Google Ads ستظهر هنا تلقائيًا: الإنفاق، النقرات، CTR، CPC، CPA، التحويلات، المكالمات، تحويلات واتساب وأداء كل حملة.</p>
+        <code>Google Ads → Tools → Bulk actions → Scripts</code>
+      </div>
+      <div class="ads-kpi-grid compact-top" id="adsSummaryMetrics"></div>
+
+      <div class="subsection-heading compact-top"><div><span class="micro-label">7D VS PREVIOUS 7D</span><h3>المقارنة الأسبوعية</h3></div></div>
+      <div class="ads-week-grid" id="adsComparisonMetrics"></div>
+
+      <div class="ads-grid compact-top">
+        <article class="panel">
+          <div class="panel-title"><div><span class="micro-label">DAILY PERFORMANCE</span><h3>الأداء اليومي: نقرات · إنفاق · تحويلات</h3></div><div class="ads-chart-legend"><span><i class="clicks"></i>نقرات</span><span><i class="cost"></i>إنفاق</span><span><i class="conv"></i>تحويلات</span></div></div>
+          <div class="ads-chart" id="adsDailyChart"></div>
+        </article>
+        <article class="panel">
+          <div class="panel-title"><div><span class="micro-label">OPTIMIZATION</span><h3>مقترحات تحسين Google Ads</h3></div></div>
+          <div class="ads-actions" id="adsRecommendations"></div>
+        </article>
+      </div>
+
+      <article class="panel table-panel compact-top">
+        <div class="table-header"><div><span class="micro-label">CAMPAIGN PERFORMANCE</span><h3>الحملات حسب القيمة والتكلفة</h3></div><span>الإنفاق · CTR · تحويلات · مكالمات · واتساب · CPA</span></div>
+        <div class="table-wrap"><table><caption class="sr-only">أداء حملات Google Ads</caption><thead><tr><th>الحملة</th><th>الحالة</th><th>الإنفاق</th><th>النقرات</th><th>CTR</th><th>التحويلات</th><th>مكالمات Google</th><th>واتساب</th><th>CPA</th></tr></thead><tbody id="adsCampaignsBody"></tbody></table></div>
+        <div class="table-empty" id="adsCampaignsEmpty" hidden>لا توجد بيانات حملات بعد.</div>
+      </article>
+
+      <article class="panel compact-top">
+        <div class="panel-title"><div><span class="micro-label">CONVERSION ACTIONS</span><h3>أحداث التحويل داخل Google Ads</h3></div></div>
+        <div class="ads-action-list" id="adsConversionActions"></div>
+      </article>
+    </section>
+
+    <section class="admin-section" id="acquisition">
+      <div class="section-heading"><div><p class="eyebrow">ACQUISITION</p><h2>من أين يأتي الطلب داخل الموقع؟</h2></div><p>افصل بين حجم الزيارات وجودة التحويل قبل زيادة الإنفاق.</p></div>
+      <div class="two-column acquisition-grid">
+        <article class="panel"><div class="panel-title"><div><span class="micro-label">المصادر</span><h3>أفضل مصادر الزيارات والعملاء</h3></div></div><div class="source-list" id="sourcesList"></div></article>
+        <article class="panel device-panel"><div class="panel-title"><div><span class="micro-label">الأجهزة</span><h3>توزيع الجلسات حسب الجهاز</h3></div></div><div class="device-layout"><div class="device-donut" id="deviceDonut"><strong>—</strong><span>جلسة</span></div><div class="device-legend" id="devicesList"></div></div></article>
+      </div>
+      <article class="panel table-panel compact-top">
+        <div class="table-header"><div><span class="micro-label">UTM CAMPAIGNS</span><h3>أداء الحملات داخل الموقع</h3></div><span>رتّب القرار على Leads وLead Rate، لا الزيارات وحدها.</span></div>
+        <div class="table-wrap"><table><caption class="sr-only">أداء الحملات التسويقية</caption><thead><tr><th>الحملة</th><th>المصدر</th><th>الوسيط</th><th>الجلسات</th><th>التواصل</th><th>Leads</th><th>Lead Rate</th></tr></thead><tbody id="campaignsBody"></tbody></table></div>
+        <div class="table-empty" id="campaignsEmpty" hidden>لا توجد حملات UTM في العينة الحالية.</div>
+      </article>
+    </section>
+
+    <section class="admin-section" id="performance">
+      <div class="section-heading"><div><p class="eyebrow">CONTENT & DEMAND</p><h2>أي الصفحات والخدمات تصنع قيمة؟</h2></div><p>أولوية التحسين للصفحات ذات الزيارات الأعلى والتحويل الأضعف.</p></div>
+      <div class="subsection-heading"><div><span class="micro-label">DEMAND</span><h3>الخدمات الأكثر طلبًا</h3></div></div>
+      <div class="service-grid" id="servicesGrid"></div>
+      <article class="panel table-panel compact-top">
+        <div class="table-header"><div><span class="micro-label">LANDING & CONTENT</span><h3>الصفحات الأكثر تأثيرًا</h3></div><span>مشاهدات · تواصل · Leads</span></div>
+        <div class="table-wrap"><table><caption class="sr-only">الصفحات الأكثر تأثيرًا</caption><thead><tr><th>الصفحة</th><th>المشاهدات</th><th>التواصل</th><th>Leads</th><th>معدل التواصل</th><th>Lead Rate</th><th>الحكم</th></tr></thead><tbody id="pagesBody"></tbody></table></div>
+      </article>
+    </section>
+
+    <section class="admin-section" id="leads">
+      <div class="section-heading"><div><p class="eyebrow">RECENT LEADS</p><h2>آخر العملاء المحتملين</h2></div><p>بيانات تشغيلية مجهولة الهوية فقط.</p></div>
+      <article class="panel table-panel">
+        <div class="table-wrap"><table><caption class="sr-only">آخر العملاء المحتملين</caption><thead><tr><th>الوقت</th><th>الخدمة</th><th>صفحة المصدر</th><th>المصدر</th><th>الحملة</th><th>الجهاز</th></tr></thead><tbody id="recentLeadsBody"></tbody></table></div>
+        <div class="table-empty" id="recentLeadsEmpty" hidden>لا توجد Leads مؤكدة في الفترة المختارة.</div>
+      </article>
+    </section>
+
+    <section class="admin-section" id="decisions">
+      <div class="section-heading"><div><p class="eyebrow">DECISION CENTER</p><h2>أولويات التحسين القادمة</h2></div><p>توصيات مرتبة حسب خطورة المشكلة، قوة الدليل، وأثر الإجراء.</p></div>
+      <div class="decision-list" id="insightsGrid"></div>
+    </section>
+
+    <footer class="admin-footer"><span>TAWOD Internal Command Center</span><span>First-party + Google Ads reporting · Privacy-safe · Asia/Riyadh</span></footer>
+  </main>
+</div>
+
+<div class="loading-layer" id="adminLoading" hidden><div class="loader"></div><p>جاري قراءة البيانات وترتيب الأولويات…</p></div>
+<div class="toast" id="adminToast" aria-live="polite"></div>
+<script src="/assets/js/tawod-admin.js" defer></script>
+<script src="/assets/js/tawod-admin-ads.js" defer></script>
+</body>
+</html>
