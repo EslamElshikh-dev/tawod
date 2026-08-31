@@ -6,11 +6,14 @@ import vm from 'node:vm';
 const source = fs.readFileSync('assets/js/tawod-analytics.js', 'utf8');
 assert.match(source, /مسجد و ٢ فيلا \| حي العروبة/, 'the injected project card must preserve the approved title');
 assert.doesNotMatch(source, /حي العربية/, 'the obsolete project location must not return through analytics injection');
+assert.match(source, /gclid/, 'Ads click IDs must be preserved for lead attribution');
+assert.match(source, /tawod_form_start/, 'form start must remain a GA4 diagnostic event');
 
 function runAnalytics({ pathname = '/', leadFlag = null } = {}) {
   const listeners = new Map();
   const windowListeners = new Map();
   const storage = new Map();
+  const localStorage = new Map();
   const appendedScripts = [];
   const timers = [];
   if (leadFlag !== null) storage.set('tawodLeadSubmitted', leadFlag);
@@ -22,11 +25,16 @@ function runAnalytics({ pathname = '/', leadFlag = null } = {}) {
     addEventListener: (name, handler) => listeners.set(name, handler)
   };
   const window = {
-    location: { pathname, href: `https://tawodco.com${pathname}` },
+    location: { pathname, href: `https://tawodco.com${pathname}`, search: '' },
     sessionStorage: {
       getItem: (key) => storage.get(key) ?? null,
       setItem: (key, value) => storage.set(key, String(value)),
       removeItem: (key) => storage.delete(key)
+    },
+    localStorage: {
+      getItem: (key) => localStorage.get(key) ?? null,
+      setItem: (key, value) => localStorage.set(key, String(value)),
+      removeItem: (key) => localStorage.delete(key)
     },
     addEventListener: (name, handler) => windowListeners.set(name, handler),
     setTimeout: (handler, delay) => {
@@ -35,9 +43,9 @@ function runAnalytics({ pathname = '/', leadFlag = null } = {}) {
     },
     clearTimeout: () => {}
   };
-  const sandbox = { window, document, encodeURIComponent, Date, Object, console };
+  const sandbox = { window, document, encodeURIComponent, Date, Object, console, URLSearchParams };
   vm.runInNewContext(source, sandbox, { filename: 'tawod-analytics.js' });
-  return { window, listeners, windowListeners, storage, appendedScripts, timers, rerun: () => vm.runInNewContext(source, sandbox) };
+  return { window, listeners, windowListeners, storage, localStorage, appendedScripts, timers, rerun: () => vm.runInNewContext(source, sandbox) };
 }
 
 const normal = runAnalytics({ pathname: '/service-construction.html' });
@@ -66,8 +74,8 @@ normal.listeners.get('click')({
   altKey: false
 });
 assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'tawod_call_click').length, 1);
-const adsConversion = normal.window.dataLayer.find((item) => item[0] === 'event' && item[1] === 'conversion');
-assert.equal(adsConversion[2].send_to, 'AW-18266173285/qi4gCLu5lsUcEOXe_oVE');
+const clickAdsConversions = normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'conversion' && item[2]?.send_to === 'AW-18266173285/qi4gCLu5lsUcEOXe_oVE');
+assert.equal(clickAdsConversions.length, 0, 'phone/WhatsApp clicks must not fire the reserved Google Ads lead conversion');
 
 const leadForm = {
   tagName: 'FORM',
@@ -94,7 +102,7 @@ const directThankYou = runAnalytics({ pathname: '/thank-you.html' });
 assert.equal(directThankYou.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'generate_lead').length, 0, 'direct visits are not leads');
 
 const confirmedContext = JSON.stringify({
-  version: 1,
+  version: 2,
   submission_id: 'submission-test-1',
   form_name: 'khobar_quote_request',
   form_source_path: '/khobar/contact/',
@@ -135,4 +143,4 @@ for (const form of measuredForms) {
   assert.match(form.html, /<input\b[^>]*\bname=["']_next["'][^>]*\bvalue=["']https:\/\/tawodco\.com\/thank-you\.html["'][^>]*>/i, `${form.file} must redirect to the confirmed thank-you page`);
 }
 
-console.log('Verified sitewide GA4/Ads configuration, click conversions, all quote forms, deduplicated confirmation and source attribution.');
+console.log('Verified sitewide GA4/Ads configuration, click diagnostics, confirmed-lead-only Ads conversion, quote forms and attribution safeguards.');
