@@ -41,10 +41,37 @@ jobs:
             return 1
           }
 
-          restore_from_refs project-faisaliah-villa-facades-finishing.html || {
-            echo "Could not find the Faisaliah project page in any remote ref."
-            exit 1
-          }
+          if ! restore_from_refs project-faisaliah-villa-facades-finishing.html; then
+            python - <<'PY'
+          from pathlib import Path
+          import re
+
+          missing = 'project-faisaliah-villa-facades-finishing.html'
+          ignored = {'.git', '.next', 'node_modules', 'out', 'public'}
+          changed = 0
+          for file in Path('.').rglob('*.html'):
+              if any(part in ignored for part in file.parts):
+                  continue
+              text = file.read_text(encoding='utf-8')
+              updated = text.replace(f'href="/{missing}"', 'href="/projects.html"')
+              updated = updated.replace(f"href='/{missing}'", "href='/projects.html'")
+              updated = updated.replace(f'href="{missing}"', 'href="/projects.html"')
+              updated = updated.replace(f"href='{missing}'", "href='/projects.html'")
+              if updated != text:
+                  file.write_text(updated, encoding='utf-8')
+                  changed += 1
+
+          sitemap = Path('sitemap.xml')
+          if sitemap.exists():
+              text = sitemap.read_text(encoding='utf-8')
+              pattern = rf'\s*<url>\s*<loc>https://tawodco\.com/{re.escape(missing)}</loc>[\s\S]*?</url>'
+              updated = re.sub(pattern, '', text)
+              if updated != text:
+                  sitemap.write_text(updated, encoding='utf-8')
+
+          print(f'Removed unavailable Faisaliah project target from {changed} HTML file(s) and sitemap.')
+          PY
+          fi
 
           restore_from_refs images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp || {
             echo "Could not find the Uhud villa project image in any remote ref."
@@ -77,5 +104,5 @@ jobs:
             echo "Nothing to commit."
             exit 0
           fi
-          git commit -m "Restore missing project assets referenced by site"
+          git commit -m "Repair broken project references and restore assets"
           git push origin HEAD:feat/google-ads-rescue-2026-08-31
