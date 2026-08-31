@@ -81,8 +81,8 @@ export const blogTopics = [
     pillar: "best-renovation-company-riyadh",
     serviceUrl: "/service-restoration.html",
     serviceLabel: "خدمة الترميم والتجديد",
-    projectUrl: "/project-faisaliah-villa-facades-finishing.html",
-    projectLabel: "مشروع واجهات وتشطيبات الفيصلية",
+    projectUrl: "/projects.html",
+    projectLabel: "مشاريع الترميم والتجديد",
     ctaTitle: "لديك مبنى يحتاج تقييمًا؟",
     ctaText: "أرسل صور الحالة والموقع والعمر التقريبي للمبنى لتحديد الحاجة إلى معاينة ونطاق الفحص الأولي.",
     steps: [
