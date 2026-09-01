@@ -11,7 +11,9 @@
   var login = $('adminLogin');
   var app = $('adminApp');
   var form = $('adminLoginForm');
+  var usernameInput = $('adminUsername');
   var input = $('adminPassword');
+  var togglePassword = $('togglePassword');
   var error = $('adminLoginError');
   var loginButton = $('loginButton');
   var period = $('periodSelect');
@@ -518,21 +520,22 @@
     }
   }
 
-  async function loginWithPassword(password) {
+  async function loginWithPassword(username, password) {
     loginButton.disabled = true;
     loginButton.textContent = 'تحقق…';
     error.textContent = '';
     try {
-      var result = await request({ mode: 'admin_login', password: password });
+      var result = await request({ mode: 'admin_login', username: username, password: password });
       if (!result.token) throw new Error('no_token');
       token = result.token;
       sessionStorage.setItem(TOKEN_KEY, token);
       input.value = '';
       login.hidden = true;
       app.hidden = false;
+      document.body.classList.add('is-authenticated');
       await load();
     } catch (e) {
-      error.textContent = e.status === 401 ? 'مفتاح الدخول غير صحيح.' : 'تعذر إنشاء جلسة الإدارة الآن.';
+      error.textContent = e.status === 401 ? 'اسم المستخدم أو كلمة المرور غير صحيحة.' : 'تعذر إنشاء جلسة الإدارة الآن.';
     } finally {
       loginButton.disabled = false;
       loginButton.textContent = 'دخول';
@@ -545,6 +548,8 @@
     lastData = null;
     app.hidden = true;
     login.hidden = false;
+    document.body.classList.remove('is-authenticated');
+    usernameInput.value = '';
     input.value = '';
     error.textContent = '';
   }
@@ -647,8 +652,17 @@
 
   form.addEventListener('submit', function (event) {
     event.preventDefault();
+    var username = usernameInput.value.trim();
     var value = input.value.trim();
-    if (value) loginWithPassword(value);
+    if (username && value) loginWithPassword(username, value);
+  });
+  togglePassword.addEventListener('click', function () {
+    var visible = input.type === 'text';
+    input.type = visible ? 'password' : 'text';
+    togglePassword.textContent = visible ? 'إظهار' : 'إخفاء';
+    togglePassword.setAttribute('aria-label', visible ? 'إظهار كلمة المرور' : 'إخفاء كلمة المرور');
+    togglePassword.setAttribute('aria-pressed', String(!visible));
+    input.focus();
   });
   refresh.addEventListener('click', load);
   period.addEventListener('change', load);
@@ -664,6 +678,7 @@
     token = cached;
     login.hidden = true;
     app.hidden = false;
+    document.body.classList.add('is-authenticated');
     load();
   }
 })();

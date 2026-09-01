@@ -22,10 +22,15 @@
     <h1 id="loginTitle">مركز قيادة تعاود</h1>
     <p class="login-copy">لوحة داخلية لقراءة رحلة العميل، أداء الحملات، الطلب على الخدمات، وتحويل البيانات إلى قرارات واضحة.</p>
     <form id="adminLoginForm" autocomplete="off">
-      <label for="adminPassword">مفتاح الدخول</label>
-      <div class="login-row">
-        <input id="adminPassword" type="password" required autocomplete="current-password" placeholder="أدخل مفتاح الإدارة" aria-describedby="loginHint adminLoginError">
-        <button id="loginButton" type="submit">دخول</button>
+      <div class="login-fields">
+        <label for="adminUsername">اسم المستخدم</label>
+        <input id="adminUsername" type="text" required autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="اسم المستخدم">
+        <label for="adminPassword">كلمة المرور</label>
+        <div class="password-field">
+          <input id="adminPassword" type="password" required autocomplete="current-password" placeholder="كلمة المرور" aria-describedby="loginHint adminLoginError">
+          <button id="togglePassword" class="password-toggle" type="button" aria-label="إظهار كلمة المرور" aria-pressed="false">إظهار</button>
+        </div>
+        <button id="loginButton" class="login-submit" type="submit">تسجيل الدخول</button>
       </div>
       <small id="loginHint">المفتاح لا يُحفظ؛ يُستبدل بجلسة موقعة مؤقتة لمدة 4 ساعات.</small>
       <p id="adminLoginError" class="form-error" role="alert"></p>
@@ -70,10 +75,11 @@
     <header class="command-header">
       <div class="header-title">
         <p class="eyebrow">التشغيل · التسويق · التحويل</p>
-        <h1>مركز قيادة شركة تعاود للمقاولات</h1>
+        <h1>هلا والله محمد</h1>
         <p>قراءة مرتبة لأهم ما يحتاج قرارًا، ثم التفاصيل التي تفسّر السبب.</p>
       </div>
       <div class="header-actions">
+        <div class="admin-profile" aria-label="المستخدم الحالي"><span class="profile-avatar">M</span><span><small>المستخدم</small><strong>Mohamed</strong></span></div>
         <label class="period-control"><span>الفترة</span><select id="periodSelect" aria-label="فترة التقرير"><option value="7">7 أيام</option><option value="30" selected>30 يومًا</option><option value="90">90 يومًا</option></select></label>
         <button id="refreshButton" type="button">تحديث</button>
         <button id="copyButton" class="button-secondary" type="button">نسخ الملخص</button>
