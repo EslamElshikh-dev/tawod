@@ -231,7 +231,6 @@ tawodco.com
 
 تم التصميم والتطوير والتوثيق بواسطة:
 
-**Eng. Eslam Elshikh**  
-Cybersecurity Engineer | Web Developer | Google Product Expert
+**Eng. Eslam Elshikh**
 
-Website: https://eslam-elshikh.com/
+Website: https://www.eslam-elshikh.com/
