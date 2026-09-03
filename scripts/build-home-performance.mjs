@@ -68,9 +68,9 @@ if (!pattern.test(index)) {
 
 let nextIndex = index.replace(pattern, `${start}\n  <style id='tawod-critical-css'>\n${critical}\n  </style>\n  ${end}`);
 
-// The site is Arabic-only. Keep language controls out of the generated homepage
-// so a future performance rebuild cannot accidentally reintroduce AR/EN switching.
-nextIndex = nextIndex.replace(/\s*<div\s+class=['"]lang-switch['"]>[\s\S]*?<\/div>/gi, '');
+// Preserve the reciprocal language switch added to the Arabic homepage. It is
+// hidden from the desktop action group on compact layouts and remains available
+// from the mobile sidebar, so it does not compete with the primary actions.
 
 // Keep a single menu control. The shared JS injects the SVG icon and owns all
 // open/close behavior; Font Awesome classes or a second inline icon are not needed.
@@ -111,5 +111,5 @@ if (check) {
 } else {
   fs.writeFileSync(bundlePath, bundle);
   fs.writeFileSync(indexPath, nextIndex);
-  console.log(`Built minified homepage CSS from ${cssSources.length} sources, refreshed critical CSS, removed language controls, normalized the mobile menu, and revisioned assets.`);
+  console.log(`Built minified homepage CSS from ${cssSources.length} sources, refreshed critical CSS, preserved language controls, normalized the mobile menu, and revisioned assets.`);
 }

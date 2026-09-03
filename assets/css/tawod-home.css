@@ -429,6 +429,21 @@ button { border: 0; cursor: pointer; background: transparent; color: inherit; }
 }
 textarea.form-control { min-height: 132px; resize: vertical; }
 .form-control:focus { border-color: var(--primary); background: var(--white); box-shadow: 0 0 0 4px rgba(var(--primary-rgb),.13); }
+.home-privacy-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-light);
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.home-privacy-consent input { width: 18px; height: 18px; margin-top: 3px; flex: 0 0 auto; accent-color: var(--primary); }
+.home-privacy-consent label { cursor: pointer; }
+.home-privacy-consent a { color: var(--primary-dark); font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
 .contact-map-area iframe { width: 100%; height: 100%; min-height: 520px; display: block; }
 
 .footer { background: var(--secondary); color: var(--white); padding-top: 72px; }

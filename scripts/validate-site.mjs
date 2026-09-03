@@ -12,7 +12,7 @@ const rel=f=>path.relative(root,f).split(path.sep).join('/');
 const text=s=>s.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
 const all=(h,re)=>[...h.matchAll(re)];
 const pagePath=r=>r==='index.html'?'/':r.endsWith('/index.html')?'/'+r.slice(0,-10):'/'+r;
-const htmlFiles=walk(root).filter(f=>f.endsWith('.html'));
+const htmlFiles=walk(root).filter(f=>f.endsWith('.html')&&rel(f)!=='admin.html');
 const pages=new Map(htmlFiles.map(f=>[rel(f),fs.readFileSync(f,'utf8')]));
 const titles=new Map(),canonicals=new Map(),indexable=new Set();
 
@@ -44,10 +44,11 @@ for(const [r,h] of pages){
       if(!h.includes('assets/js/maintenance.js'))errors.push(`${r}: missing maintenance.js`);
       all(h,/<a\b[^>]*href=["']([^"']+)["'][^>]*>/gi).map(m=>m[1]).forEach(v=>{const t=localTarget(r,v);if(t&&!t.file.startsWith('maintenance/'))errors.push(`${r}: maintenance silo link escapes to ${v}`)});
     }else if(!h.includes('tawod-system.css'))errors.push(`${r}: missing tawod-system.css`);
-    if(!localSilo&&!blogArchivePage){
+    if(!localSilo&&!blogArchivePage&&!blogArticle&&r!=='contact.html'){
       if(!/<section[^>]*(?:id=["']faq["']|class=["'][^"']*(?:seo-faq|tawod-faq-section)[^"']*["'])/i.test(h))errors.push(`${r}: missing visible FAQ section`);
       if(!schemas.some(x=>schemaHas(x,'FAQPage')))errors.push(`${r}: missing FAQPage schema`);
     }
+    if(blogArticle&&schemas.some(x=>schemaHas(x,'FAQPage'))&&!/<section[^>]*(?:id=["']faq["']|class=["'][^"']*(?:seo-faq|tawod-faq-section)[^"']*["'])/i.test(h))errors.push(`${r}: FAQPage schema has no matching visible FAQ section`);
     if(localCity){
       if(!h.includes(`tawod-${localCity}.css`))errors.push(`${r}: missing tawod-${localCity}.css`);
       if(/نطاق(?:\s+ال)?خدمة|عنوان فرع|فرعًا مستقلًا/.test(h))errors.push(`${r}: contains customer-facing service-area wording`);
@@ -72,7 +73,7 @@ for(const [r,h] of pages){
     }else if(maintenanceSilo){
       const expected=maintenanceHub?'WebPage':'Service';
       if(!schemas.some(x=>schemaHas(x,expected)))errors.push(`${r}: missing maintenance ${expected} schema`);
-    }else if(!schemas.some(x=>schemaHas(x,'WebPage')))errors.push(`${r}: missing WebPage schema`);
+    }else if(!['WebPage','AboutPage','ContactPage','CollectionPage','Service'].some(type=>schemas.some(x=>schemaHas(x,type))))errors.push(`${r}: missing page schema`);
   }
   all(h,/<(?:a|link|script|img|source|iframe)\b[^>]*(?:href|src|srcset)=["']([^"']+)["'][^>]*>/gi).forEach(m=>m[1].split(',').map(x=>x.trim().split(/\s+/)[0]).filter(Boolean).forEach(v=>{const t=localTarget(r,v);if(!t)return;const full=path.join(root,t.file);if(!fs.existsSync(full)){errors.push(`${r}: broken reference ${v} -> ${t.file}`);return}if(t.anchor&&t.file.endsWith('.html')){const target=pages.get(t.file)||fs.readFileSync(full,'utf8');const safe=t.anchor.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');if(!new RegExp(`\\bid=["']${safe}["']`).test(target))errors.push(`${r}: missing anchor #${t.anchor} in ${t.file}`)}}));
 }
@@ -82,11 +83,15 @@ const localCities=[...new Set([...indexable].map(p=>p.match(/^\/(dammam|khobar|d
 for(const city of localCities){const file=`sitemap-${city}.xml`;if(!fs.existsSync(file)){errors.push(`${file} missing`);continue}const s=fs.readFileSync(file,'utf8'),urls=new Set(all(s,/<loc>([^<]+)<\/loc>/gi).map(m=>new URL(m[1]).pathname)),cityPages=new Set([...indexable].filter(p=>p.startsWith(`/${city}/`)));for(const p of cityPages)if(!urls.has(p))errors.push(`${file} missing ${p}`);for(const p of urls){if(!p.startsWith(`/${city}/`))errors.push(`${file} contains non-${city} URL ${p}`);if(!cityPages.has(p))errors.push(`${file} has unexpected URL ${p}`)}}
 if(!fs.existsSync('robots.txt'))errors.push('robots.txt missing');else{const robots=fs.readFileSync('robots.txt','utf8'),sitemapLines=robots.split(/\r?\n/).filter(line=>/^Sitemap:/i.test(line.trim())).map(line=>line.trim());if(sitemapLines.length!==1||sitemapLines[0]!=='Sitemap: https://tawodco.com/sitemap.xml')errors.push(`robots.txt must advertise only the canonical sitemap.xml; found ${sitemapLines.join(', ')||'none'}`)}
 if(!fs.existsSync('assets/js/tawod-inner.js'))errors.push('tawod-inner.js missing');else{const js=fs.readFileSync('assets/js/tawod-inner.js','utf8');['injectComprehensiveFaq','addFaqSchema','applyServiceProfile','injectTrustStrip','addPageSchema'].forEach(x=>{if(js.includes(x))errors.push(`tawod-inner.js still contains runtime generator ${x}`)});if(/\.\.\/\.\.\/images\/logo\//.test(js))errors.push('tawod-inner.js contains a depth-dependent logo path')}
-if(!fs.existsSync('assets/js/tawod-analytics.js'))errors.push('tawod-analytics.js missing');else{const js=fs.readFileSync('assets/js/tawod-analytics.js','utf8');['G-YE1NT4R4YT','AW-18266173285','AW-18266173285/qi4gCLu5lsUcEOXe_oVE','form_submit_attempt','tawodLeadSubmitted','generate_lead','transaction_id'].forEach(value=>{if(!js.includes(value))errors.push(`tawod-analytics.js missing ${value}`)})}
+if(!fs.existsSync('assets/js/tawod-analytics.js'))errors.push('tawod-analytics.js missing');else{const js=fs.readFileSync('assets/js/tawod-analytics.js','utf8');['G-4M3LNJF2ED','AW-18266173285','AW-18266173285/qi4gCLu5lsUcEOXe_oVE','form_submit_attempt','tawodLeadSubmitted','generate_lead','transaction_id'].forEach(value=>{if(!js.includes(value))errors.push(`tawod-analytics.js missing ${value}`)})}
 for(const file of ['assets/js/tawod-home.js','assets/js/tawod-inner.js','assets/js/blog-archive.js']){const js=fs.readFileSync(file,'utf8');if(/\bgtag\s*\(/.test(js))errors.push(`${file}: duplicate analytics tracking remains`)}
 if(fs.existsSync('assets/js/contact-conversion.js')){const js=fs.readFileSync('assets/js/contact-conversion.js','utf8');for(const marker of ['form_submit_attempt','tawodLeadSubmitted','generate_lead'])if(js.includes(marker))errors.push(`contact-conversion.js must leave ${marker} to sitewide analytics`)}
 for(const [file,html] of pages){for(const form of all(html,/<form\b(?=[^>]*\baction=["']https:\/\/(?:www\.)?formsubmit\.co\/[^"']+["'])[^>]*>[\s\S]*?<\/form>/gi)){if(!/\bdata-analytics-form=["'][^"']+["']/i.test(form[0]))errors.push(`${file}: lead form missing data-analytics-form`);if(!/<input\b[^>]*\bname=["']_next["'][^>]*\bvalue=["']https:\/\/tawodco\.com\/thank-you\.html["'][^>]*>/i.test(form[0]))errors.push(`${file}: lead form must redirect to confirmed thank-you page`)}}
 const thankYou=pages.get('thank-you.html')||'';for(const marker of ['TAWOD_STATIC_CONTEXT','TAWOD_STATIC_FAQ','TAWOD_STATIC_SCHEMA','lead_confirmation'])if(thankYou.includes(marker))errors.push(`thank-you.html still contains ${marker}`);
 const home=pages.get('index.html')||'';for(const required of ['"@type": "GeneralContractor"','"@id": "https://tawodco.com/#organization"','"value": "7033495099"','"hasOfferCatalog"'])if(!home.includes(required))errors.push(`index.html entity graph missing ${required}`);for(const stale of ['https://tawodco.com/#localbusiness','"priceRange"'])if(home.includes(stale))errors.push(`index.html entity graph still contains ${stale}`);
+for(const required of ["hreflang='ar-SA' href='https://tawodco.com/'","hreflang='en-SA' href='https://tawodco.com/en/'","hreflang='x-default' href='https://tawodco.com/'","href='/en/' lang='en' hreflang='en-SA'"])if(!home.includes(required))errors.push(`index.html language navigation missing ${required}`);
+const socialImage='images/social/tawod-og-1200x630.png';if(!fs.existsSync(path.join(root,socialImage)))errors.push(`${socialImage} missing`);else if(fs.statSync(path.join(root,socialImage)).size<50000)errors.push(`${socialImage} appears incomplete`);
+for(const file of ['index.html','contact.html','privacy-policy.html','en/index.html']){const html=pages.get(file)||'';if(!html.includes('https://tawodco.com/images/social/tawod-og-1200x630.png'))errors.push(`${file}: missing branded social image`);for(const dimension of ['og:image:width','og:image:height'])if(!html.includes(dimension))errors.push(`${file}: missing ${dimension}`)}
+for(const file of ['index.html','contact.html']){const html=pages.get(file)||'';for(const match of all(html,/<(?:input|select|textarea)\b(?![^>]*type=["']hidden["'])[^>]*>/gi)){const tag=match[0];if(/type=["'](?:submit|button|checkbox|radio)["']/i.test(tag))continue;const id=tag.match(/\bid=["']([^"']+)["']/i)?.[1];if(!id){errors.push(`${file}: form control missing id: ${tag.slice(0,80)}`);continue}if(!html.includes(`for="${id}"`)&&!html.includes(`for='${id}'`))errors.push(`${file}: form control #${id} missing associated label`)}}
 const localArticleBases=fs.readdirSync(path.join(root,'dammam','blog'),{withFileTypes:true}).filter(entry=>entry.isDirectory()).map(entry=>entry.name.replace(/-dammam$/,''));for(const base of localArticleBases){const variants=['dammam','khobar','dhahran'].map(city=>({city,file:`${city}/blog/${base}-${city}/index.html`})).filter(item=>pages.has(item.file));for(let i=0;i<variants.length;i+=1)for(let j=i+1;j<variants.length;j+=1){const similarity=jaccard(articleTokens(variants[i].file),articleTokens(variants[j].file));if(similarity>0.86)errors.push(`local article similarity regression ${base}: ${variants[i].city}/${variants[j].city} = ${similarity.toFixed(3)}`)}}
 warnings.forEach(x=>console.warn('WARNING: '+x));if(errors.length){console.error(`Site validation failed with ${errors.length} error(s):`);errors.forEach(x=>console.error(' - '+x));process.exit(1)}console.log(`Validated ${htmlFiles.length} HTML files, ${indexable.size} indexable URLs, links, sitemap, metadata and JSON-LD.`);

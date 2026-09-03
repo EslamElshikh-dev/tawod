@@ -202,6 +202,7 @@ for (const relativePath of [
   "assets/css/tawod-projects-showcase.css",
   "assets/js/tawod-analytics.js",
   "images/logo/tawod-logo.png",
+  "images/social/tawod-og-1200x630.png",
   "images/projects/faisaliah-villa-facades-finishing-01-v3.webp",
   "images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp",
   "images/projects/alrajhi-tanks-king-salman-park-01.webp",

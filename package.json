@@ -2,10 +2,10 @@
   "name": "tawod-nextjs-site",
   "private": true,
   "scripts": {
-    "predev": "node scripts/install-site-analytics.mjs && node scripts/prepare-next-public.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "predev": "node scripts/install-site-analytics.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/install-site-analytics.mjs && node scripts/prepare-next-public.mjs && node scripts/generate-legacy-html-manifest.mjs",
-    "prepare:assets": "node scripts/install-site-analytics.mjs && node scripts/prepare-next-public.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "prebuild": "node scripts/install-site-analytics.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "prepare:assets": "node scripts/install-site-analytics.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "build": "next build",
     "postbuild": "node scripts/finalize-next-export.mjs && node scripts/verify-next-export.mjs",
     "typecheck": "tsc --noEmit",

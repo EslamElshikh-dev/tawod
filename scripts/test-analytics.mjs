@@ -71,7 +71,7 @@ function runAnalytics({ pathname = '/', leadFlag = null } = {}) {
 
 const normal = runAnalytics({ pathname: '/service-construction.html' });
 const configs = normal.window.dataLayer.filter((item) => item[0] === 'config').map((item) => item[1]);
-assert.deepEqual([...configs], ['G-YE1NT4R4YT'], 'the website must configure GA4 only, not a Google Ads website conversion destination');
+assert.deepEqual([...configs], ['G-4M3LNJF2ED'], 'the website must configure GA4 only, not a Google Ads website conversion destination');
 assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'conversion').length, 0);
 assert.equal(normal.appendedScripts.length, 0, 'Google Tag must stay off the critical loading path');
 normal.windowListeners.get('scroll')();
@@ -153,7 +153,7 @@ const confirmedContext = JSON.stringify({
 const confirmedThankYou = runAnalytics({ pathname: '/thank-you.html', leadFlag: confirmedContext });
 const confirmedForms = confirmedThankYou.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'tawod_form_confirmed');
 assert.equal(confirmedForms.length, 1);
-assert.equal(confirmedForms[0][2].send_to, 'G-YE1NT4R4YT');
+assert.equal(confirmedForms[0][2].send_to, 'G-4M3LNJF2ED');
 assert.equal(confirmedThankYou.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'conversion').length, 0, 'thank-you confirmation must remain GA4-only');
 assert.equal(confirmedThankYou.storage.has('tawodLeadSubmitted'), false, 'diagnostic form context must be consumed');
 
