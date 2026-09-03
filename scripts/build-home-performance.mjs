@@ -62,6 +62,10 @@ const index = fs.readFileSync(indexPath, 'utf8');
 const critical = fs.readFileSync(path.join(root, 'assets/css/tawod-home-critical.css'), 'utf8').trim();
 const pattern = new RegExp(`${start}[\\s\\S]*?${end}`);
 
+if (!critical.includes('.nav-services-dropdown,') || !critical.includes('.nav-services-toggle { display: none; }')) {
+  throw new Error('Critical CSS must hide deferred navigation controls to prevent a header flash.');
+}
+
 if (!pattern.test(index)) {
   throw new Error('Critical CSS markers are missing from index.html');
 }

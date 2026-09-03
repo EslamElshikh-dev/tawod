@@ -141,6 +141,9 @@ i[class*='fa-'] { display: inline-flex; align-items: center; justify-content: ce
 .nav-links a.active { color: var(--primary); }
 .nav-links a::after { content: ''; position: absolute; right: 0; bottom: 0; width: 0; height: 3px; border-radius: 3px; background: var(--primary); }
 .nav-links a.active::after { width: 100%; }
+/* JS injects these controls before the deferred stylesheet can finish loading. */
+.nav-services-dropdown,
+.nav-services-toggle { display: none; }
 .header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; flex: 0 0 auto; }
 .lang-switch { display: inline-flex; align-items: center; gap: 8px; color: var(--white); font-weight: 700; }
 .lang-switch a { opacity: .65; }
