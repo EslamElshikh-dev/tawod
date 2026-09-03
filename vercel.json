@@ -4,6 +4,60 @@
   "outputDirectory": "out",
   "redirects": [
     {
+      "source": "/2026/06/blog-post_25.html",
+      "destination": "https://tawodco.com/blog/general-contracting-project-management-riyadh/",
+      "statusCode": 301,
+      "has": [{ "type": "host", "value": "blog.tawodco.com" }]
+    },
+    {
+      "source": "/2026/06/blog-post_739.html",
+      "destination": "https://tawodco.com/blog/mechanical-mep-works-riyadh/",
+      "statusCode": 301,
+      "has": [{ "type": "host", "value": "blog.tawodco.com" }]
+    },
+    {
+      "source": "/2026/06/blog-post_13.html",
+      "destination": "https://tawodco.com/blog/electrical-installation-maintenance-riyadh/",
+      "statusCode": 301,
+      "has": [{ "type": "host", "value": "blog.tawodco.com" }]
+    },
+    {
+      "source": "/2026/06/blog-post.html",
+      "destination": "https://tawodco.com/blog/plumbing-installation-riyadh/",
+      "statusCode": 301,
+      "has": [{ "type": "host", "value": "blog.tawodco.com" }]
+    },
+    {
+      "source": "/2026/05/blog-post_299.html",
+      "destination": "https://tawodco.com/blog/facades-interior-decor-insulation-riyadh/",
+      "statusCode": 301,
+      "has": [{ "type": "host", "value": "blog.tawodco.com" }]
+    },
+    {
+      "source": "/2026/05/blog-post_20.html",
+      "destination": "https://tawodco.com/blog/bone-contractor-turnkey-riyadh/",
+      "statusCode": 301,
+      "has": [{ "type": "host", "value": "blog.tawodco.com" }]
+    },
+    {
+      "source": "/2026/05/blog-post_18.html",
+      "destination": "https://tawodco.com/blog/finishing-facades-restoration-riyadh/",
+      "statusCode": 301,
+      "has": [{ "type": "host", "value": "blog.tawodco.com" }]
+    },
+    {
+      "source": "/2026/05/blog-post.html",
+      "destination": "https://tawodco.com/blog/contracting-riyadh-project-guide/",
+      "statusCode": 301,
+      "has": [{ "type": "host", "value": "blog.tawodco.com" }]
+    },
+    {
+      "source": "/:path*",
+      "destination": "https://tawodco.com/blog/",
+      "statusCode": 301,
+      "has": [{ "type": "host", "value": "blog.tawodco.com" }]
+    },
+    {
       "source": "/index.html",
       "destination": "/",
       "permanent": true

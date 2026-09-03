@@ -19,6 +19,7 @@
     "check:home": "node scripts/build-home-performance.mjs --check",
     "generate:blog": "node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/build-static-pages.mjs && node scripts/install-site-analytics.mjs",
     "check:blog": "node scripts/validate-blog-archive.mjs",
+    "check:blogger-redirects": "node scripts/validate-blogger-redirects.mjs",
     "generate:blog-architecture": "node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/build-static-pages.mjs && node scripts/install-site-analytics.mjs",
     "check:blog-architecture": "node scripts/validate-blog-architecture.mjs",
     "fix:seo-ownership": "node scripts/enforce-seo-query-ownership.mjs --write",
@@ -34,7 +35,7 @@
     "generate:bone-series": "node scripts/generate-seo-cluster-2026-08-23.mjs && node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/install-site-analytics.mjs && node scripts/build-static-pages.mjs && node scripts/install-site-analytics.mjs",
     "check:bone-series": "node scripts/validate-bone-construction-series.mjs && node scripts/validate-bone-construction-decision-guides.mjs",
     "validate:site": "node scripts/validate-site.mjs",
-    "check": "npm run prepare:assets && npm run typecheck && npm run check:analytics && npm run test:analytics && npm run check:static && npm run check:home && npm run check:blog && npm run check:blog-architecture && npm run check:bone-series && npm run check:seo-ownership && npm run check:dammam && npm run check:khobar && npm run check:dhahran && npm run validate:site && npm run build"
+    "check": "npm run prepare:assets && npm run typecheck && npm run check:analytics && npm run test:analytics && npm run check:static && npm run check:home && npm run check:blog && npm run check:blogger-redirects && npm run check:blog-architecture && npm run check:bone-series && npm run check:seo-ownership && npm run check:dammam && npm run check:khobar && npm run check:dhahran && npm run validate:site && npm run build"
   },
   "dependencies": {
     "next": "16.3.2",
