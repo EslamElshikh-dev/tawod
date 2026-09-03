@@ -1311,3 +1311,23 @@ html body.home-page .sidebar-services-menu {
 html body.home-page .sidebar-services-list {
   transition: none;
 }
+
+/* Reduce paint and observer work on touch devices while preserving the layout. */
+@media (hover: none) and (pointer: coarse) {
+  html body.home-page .header,
+  html body.home-page .hero-trust a,
+  html body.home-page .hero-trust span {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  html body.home-page .stats {
+    background-attachment: scroll !important;
+  }
+
+  html body.home-page .reveal-up {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

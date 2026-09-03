@@ -17,6 +17,7 @@
     "check:static": "node scripts/build-static-pages.mjs --check",
     "build:home": "node scripts/build-home-performance.mjs && node scripts/install-site-analytics.mjs",
     "check:home": "node scripts/build-home-performance.mjs --check",
+    "check:mobile-performance": "node scripts/validate-mobile-performance.mjs",
     "generate:blog": "node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/build-static-pages.mjs && node scripts/install-site-analytics.mjs",
     "check:blog": "node scripts/validate-blog-archive.mjs",
     "check:blogger-redirects": "node scripts/validate-blogger-redirects.mjs",
@@ -30,12 +31,13 @@
     "check:khobar": "node scripts/generate-khobar-silo.mjs --check",
     "generate:dhahran": "node scripts/generate-dhahran-silo.mjs && node scripts/install-site-analytics.mjs",
     "check:dhahran": "node scripts/generate-dhahran-silo.mjs --check",
+    "check:city-distinctness": "node scripts/validate-city-page-distinctness.mjs",
     "generate:seo-batch": "node scripts/generate-seo-batch-2026-08-09.mjs && node scripts/build-static-pages.mjs && node scripts/build-home-performance.mjs && node scripts/generate-blog-archive.mjs && node scripts/install-site-analytics.mjs",
     "generate:seo-cluster-2026-08-23": "node scripts/generate-seo-cluster-2026-08-23.mjs && node scripts/build-static-pages.mjs && node scripts/generate-blog-archive.mjs && node scripts/install-site-analytics.mjs",
     "generate:bone-series": "node scripts/generate-seo-cluster-2026-08-23.mjs && node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/install-site-analytics.mjs && node scripts/build-static-pages.mjs && node scripts/install-site-analytics.mjs",
     "check:bone-series": "node scripts/validate-bone-construction-series.mjs && node scripts/validate-bone-construction-decision-guides.mjs",
     "validate:site": "node scripts/validate-site.mjs",
-    "check": "npm run prepare:assets && npm run typecheck && npm run check:analytics && npm run test:analytics && npm run check:static && npm run check:home && npm run check:blog && npm run check:blogger-redirects && npm run check:blog-architecture && npm run check:bone-series && npm run check:seo-ownership && npm run check:dammam && npm run check:khobar && npm run check:dhahran && npm run validate:site && npm run build"
+    "check": "npm run prepare:assets && npm run typecheck && npm run check:analytics && npm run test:analytics && npm run check:static && npm run check:home && npm run check:mobile-performance && npm run check:blog && npm run check:blogger-redirects && npm run check:blog-architecture && npm run check:bone-series && npm run check:seo-ownership && npm run check:dammam && npm run check:khobar && npm run check:dhahran && npm run check:city-distinctness && npm run validate:site && npm run build"
   },
   "dependencies": {
     "next": "16.3.2",

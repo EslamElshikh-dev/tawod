@@ -264,6 +264,7 @@
     var geometryTicking = false;
     var navigationHeaderHeight = 88;
     var sectionPositions = [];
+    var activeNavigationId = null;
 
     function refreshNavigationGeometry() {
       navigationHeaderHeight = header ? header.offsetHeight : 88;
@@ -283,6 +284,8 @@
     }
 
     function setActiveNavigation(activeId) {
+      if (activeNavigationId === activeId) return;
+      activeNavigationId = activeId;
       sectionLinks.concat(homeLinks).forEach(function (link) {
         link.classList.remove('active');
         link.removeAttribute('aria-current');
@@ -330,7 +333,11 @@
     }
 
     var revealElements = document.querySelectorAll('.reveal-up');
-    if ('IntersectionObserver' in window) {
+    var skipRevealMotion = window.matchMedia && (
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      window.matchMedia('(hover: none) and (pointer: coarse)').matches
+    );
+    if ('IntersectionObserver' in window && !skipRevealMotion) {
       var revealObserver = new IntersectionObserver(function (entries, observer) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
