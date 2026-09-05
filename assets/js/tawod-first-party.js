@@ -43,7 +43,11 @@
 
   function referrerHost() {
     if (!document.referrer) return null;
-    try { return new URL(document.referrer).hostname; } catch (e) { return null; }
+    try {
+      var host = new URL(document.referrer).hostname.toLowerCase();
+      if (host === 'tawodco.com' || host === 'www.tawodco.com') return null;
+      return host;
+    } catch (e) { return null; }
   }
 
   function campaignFromUrl() {
@@ -54,7 +58,8 @@
       utm_medium: params.get('utm_medium'),
       utm_campaign: params.get('utm_campaign'),
       utm_term: params.get('utm_term'),
-      utm_content: params.get('utm_content')
+      utm_content: params.get('utm_content'),
+      click_id: params.get('gclid') || params.get('gbraid') || params.get('wbraid')
     };
   }
 
@@ -75,7 +80,8 @@
         utm_medium: utm.utm_medium,
         utm_campaign: utm.utm_campaign,
         utm_term: utm.utm_term,
-        utm_content: utm.utm_content
+        utm_content: utm.utm_content,
+        click_id: utm.click_id
       };
     } else {
       current.lastSeen = now;
@@ -111,7 +117,8 @@
       utm_medium: current.utm_medium,
       utm_campaign: current.utm_campaign,
       utm_term: current.utm_term,
-      utm_content: current.utm_content
+      utm_content: current.utm_content,
+      click_id: current.click_id
     };
 
     Object.keys(extra || {}).forEach(function (key) { event[key] = extra[key]; });

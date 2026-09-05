@@ -29,6 +29,8 @@ function main() {
       campaign.name,
       campaign.status,
       campaign.advertising_channel_type,
+      campaign_budget.amount_micros,
+      campaign_budget.total_amount_micros,
       metrics.impressions,
       metrics.clicks,
       metrics.cost_micros,
@@ -50,6 +52,8 @@ function main() {
       campaignName: row.campaign.name,
       campaignStatus: String(row.campaign.status || ''),
       channelType: String(row.campaign.advertisingChannelType || ''),
+      dailyBudgetMicros: Number((row.campaignBudget || {}).amountMicros || 0),
+      totalBudgetMicros: Number((row.campaignBudget || {}).totalAmountMicros || 0),
       impressions: Number(row.metrics.impressions || 0),
       clicks: Number(row.metrics.clicks || 0),
       costMicros: Number(row.metrics.costMicros || 0),
@@ -90,8 +94,43 @@ function main() {
     });
   }
 
-  if (!campaigns.length) {
-    console.log(`No campaign rows found between ${fromDate} and ${toDate}.`);
+  const calls = [];
+  try {
+    const callRows = AdsApp.search(`
+      SELECT
+        call_view.resource_name,
+        call_view.start_call_date_time,
+        call_view.end_call_date_time,
+        call_view.call_duration_seconds,
+        call_view.call_status,
+        call_view.call_tracking_display_location,
+        call_view.type,
+        campaign.id,
+        campaign.name
+      FROM call_view
+      WHERE segments.date BETWEEN '${fromDate}' AND '${toDate}'
+    `);
+
+    while (callRows.hasNext()) {
+      const row = callRows.next();
+      calls.push({
+        resourceName: String(row.callView.resourceName || ''),
+        startedAt: String(row.callView.startCallDateTime || ''),
+        endedAt: String(row.callView.endCallDateTime || ''),
+        durationSeconds: Number(row.callView.callDurationSeconds || 0),
+        status: String(row.callView.callStatus || ''),
+        trackingLocation: String(row.callView.callTrackingDisplayLocation || ''),
+        callType: String(row.callView.type || ''),
+        campaignId: Number((row.campaign || {}).id || 0),
+        campaignName: String((row.campaign || {}).name || '')
+      });
+    }
+  } catch (error) {
+    console.log(`Call reporting unavailable: ${error && error.message ? error.message : error}`);
+  }
+
+  if (!campaigns.length && !calls.length) {
+    console.log(`No campaign or call rows found between ${fromDate} and ${toDate}.`);
     return;
   }
 
@@ -104,14 +143,15 @@ function main() {
       customerId,
       currency,
       campaigns,
-      conversions
+      conversions,
+      calls
     }),
     muteHttpExceptions: true
   });
 
   const code = response.getResponseCode();
   const body = response.getContentText();
-  console.log(`Tawod Ads sync: HTTP ${code} | campaigns=${campaigns.length} | conversions=${conversions.length}`);
+  console.log(`Tawod Ads sync: HTTP ${code} | campaigns=${campaigns.length} | conversions=${conversions.length} | calls=${calls.length}`);
   console.log(body);
   if (code < 200 || code >= 300) throw new Error(`Tawod sync failed: HTTP ${code} ${body}`);
 }
