@@ -4,6 +4,8 @@ import path from 'node:path';
 import vm from 'node:vm';
 
 const source = fs.readFileSync('assets/js/tawod-analytics.js', 'utf8');
+const whatsappSource = fs.readFileSync('assets/js/tawod-whatsapp-attribution.js', 'utf8');
+const installerSource = fs.readFileSync('scripts/install-site-analytics.mjs', 'utf8');
 const landingSource = fs.readFileSync('app/lp/[slug]/route.ts', 'utf8');
 
 assert.match(source, /مسجد و ٢ فيلا \| حي العروبة/, 'the injected project card must preserve the approved title');
@@ -11,8 +13,10 @@ assert.doesNotMatch(source, /حي العربية/, 'the obsolete project locatio
 assert.match(source, /gclid/, 'Ads click IDs must be preserved for attribution');
 assert.match(source, /tawod_form_start/, 'form start may remain a GA4 diagnostic event');
 assert.doesNotMatch(source, /gtag\(['"]event['"],\s*['"]conversion['"]/, 'website analytics must never fire a Google Ads conversion event');
-assert.doesNotMatch(source, /track\(['"]generate_lead['"]/, 'website forms must not emit the standard GA4 lead event');
+assert.match(source, /track\(['"]generate_lead['"]/, 'a confirmed form must emit the standard GA4 lead event');
 assert.match(source, /adsConversionsFromWebsite:\s*false/, 'analytics API must explicitly declare that website Ads conversions are disabled');
+assert.match(whatsappSource, /gclid/, 'WhatsApp attribution must preserve Google Ads click IDs');
+assert.match(installerSource, /tawod-whatsapp-attribution\.js/, 'WhatsApp attribution must be installed sitewide');
 
 assert.doesNotMatch(landingSource, /<form\b/i, 'Ads landing pages must not contain a form');
 assert.doesNotMatch(landingSource, /formsubmit\.co/i, 'Ads landing pages must not post to FormSubmit');
@@ -20,6 +24,7 @@ assert.doesNotMatch(landingSource, /contact-conversion\.js/i, 'Ads landing pages
 assert.doesNotMatch(landingSource, /tawod-ads-rescue\.js/i, 'Ads landing pages must not need a conversion guard script');
 assert.match(landingSource, /tel:0551128884/, 'Ads landing pages must expose the direct phone CTA');
 assert.match(landingSource, /https:\/\/wa\.me\/966551128884/, 'Ads landing pages must expose the direct WhatsApp CTA');
+assert.match(landingSource, /tawod-first-party\.js/, 'Ads landing pages must report privacy-safe lead diagnostics');
 assert.match(landingSource, /noindex,follow/, 'Ads landing pages must remain noindex');
 for (const canonical of [
   'https://tawodco.com/service-turnkey.html',
@@ -154,6 +159,9 @@ const confirmedThankYou = runAnalytics({ pathname: '/thank-you.html', leadFlag: 
 const confirmedForms = confirmedThankYou.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'tawod_form_confirmed');
 assert.equal(confirmedForms.length, 1);
 assert.equal(confirmedForms[0][2].send_to, 'G-4M3LNJF2ED');
+const confirmedGa4Leads = confirmedThankYou.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'generate_lead');
+assert.equal(confirmedGa4Leads.length, 1, 'a confirmed form must create one GA4 lead');
+assert.equal(confirmedGa4Leads[0][2].submission_id, 'submission-test-1');
 assert.equal(confirmedThankYou.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'conversion').length, 0, 'thank-you confirmation must remain GA4-only');
 assert.equal(confirmedThankYou.storage.has('tawodLeadSubmitted'), false, 'diagnostic form context must be consumed');
 

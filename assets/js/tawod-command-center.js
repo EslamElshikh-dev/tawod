@@ -52,6 +52,12 @@
   function deviceLabel(value) {
     return { mobile: 'جوال', desktop: 'كمبيوتر', tablet: 'تابلت', unknown: 'غير معروف' }[value] || value || '—';
   }
+  function salesSourceLabel(value) {
+    return { call: 'اتصال', whatsapp: 'واتساب', form: 'نموذج', other: 'أخرى' }[value] || value || '—';
+  }
+  function salesStageLabel(value) {
+    return { new: 'إحالة جديدة', qualified: 'عميل مؤهل', quote_sent: 'عرض سعر مرسل', site_visit: 'زيارة موقع', contract_signed: 'عقد موقّع', lost: 'لم يتم التعاقد' }[value] || value || '—';
+  }
   function statusFreshness(connected, at) {
     if (!connected) return { label: 'غير متصل', cls: 'is-offline' };
     var age = at ? (Date.now() - new Date(at).getTime()) / 3600000 : Infinity;
@@ -112,6 +118,13 @@
     if (!bp.connected) {
       rows.push(makeInsight('medium', 'الملف التجاري', 'أداء الملف التجاري غير متصل', 'لا يمكن قياس Search وMaps والمكالمات والاتجاهات بدقة بدون Performance API.', 'فعّل Business Profile Performance API وشغّل مزامنة الموقع التجاري.', 'Business Profile API'));
     }
+    var sales = data.salesPipeline || {};
+    var pipeline = sales.summary || {};
+    if (sales.connected && number(pipeline.opportunities) >= 3 && !number(pipeline.contracts)) {
+      rows.push(makeInsight('high', 'العقود', 'لا توجد عقود مسجلة من الفرص الحالية', n(pipeline.opportunities) + ' فرص في مسار البيع دون عقد موقّع مسجل.', 'راجع العروض المفتوحة وحدد موعد متابعة وقرارًا واضحًا لكل فرصة.', 'مسار البيع'));
+    } else if (sales.connected && number(pipeline.contracts)) {
+      rows.push(makeInsight('good', 'العقود', 'تم تسجيل عقود موقعة', n(pipeline.contracts) + ' عقد بقيمة ' + money(pipeline.contractValue, 'SAR') + '.', 'قارن مصدر العقود بالحملات قبل زيادة الميزانية.', 'مسار البيع'));
+    }
     if (number(s.sessions) >= 30 && number(s.referralRate) < 5) {
       rows.push(makeInsight('high', 'التحويل', 'معدل الإحالة أقل من 5%', n(s.referralSessions) + ' إحالة فريدة من ' + n(s.sessions) + ' زيارة.', 'حسّن عرض القيمة وأزرار الاتصال وواتساب في الصفحات الأعلى زيارة.', 'First-party'));
     }
@@ -143,6 +156,8 @@
     var q = data.dataQuality || {};
     var ads = data.googleAds || {};
     var a = ads.summary || {};
+    var sales = data.salesPipeline || {};
+    var pipeline = sales.summary || {};
     var h = health(data);
     el('healthRing').style.setProperty('--score', h.score);
     el('healthScore').textContent = h.score || '—';
@@ -168,7 +183,9 @@
       metric('إحالات الاتصال', n(s.callReferralSessions), 'جلسات فريدة — وليست عدد الضغطات', 'الموقع', 'calls'),
       metric('إحالات واتساب', n(s.whatsappReferralSessions), 'جلسات فريدة — وليست عدد الضغطات', 'الموقع', 'whatsapp'),
       metric('معدل الإحالة', pct(s.referralRate), 'الإحالات الفريدة ÷ الزيارات', 'محسوب', 'rate'),
-      metric('عميل محتمل', ads.callReportingConnected ? n(a.potentialCustomers) : 'غير متصل', 'مكالمة مستلمة أطول من 60 ثانية', 'Call Reporting', ads.callReportingConnected ? 'potential' : 'is-unavailable')
+      metric('عميل محتمل', ads.callReportingConnected ? n(a.potentialCustomers) : 'غير متصل', 'مكالمة مستلمة أطول من 60 ثانية', 'Call Reporting', ads.callReportingConnected ? 'potential' : 'is-unavailable'),
+      metric('عقود موقّعة', sales.connected ? n(pipeline.contracts) : 'غير متصل', 'من سجل مسار البيع', 'إدارة المبيعات', sales.connected ? 'confirmed' : 'is-unavailable'),
+      metric('قيمة العقود', sales.connected ? money(pipeline.contractValue, 'SAR') : 'غير متصل', 'قيمة العقود المسجلة', 'إدارة المبيعات', sales.connected ? 'confirmed' : 'is-unavailable')
     ].join('');
     el('secondaryViews').textContent = n(s.views);
     el('secondaryVisitors').textContent = n(s.visitors);
@@ -197,12 +214,15 @@
     var s = data.summary || {};
     var ads = data.googleAds || {};
     var a = ads.summary || {};
+    var sales = data.salesPipeline || {};
+    var pipeline = sales.summary || {};
     var stages = [
       { label: 'زيارة', value: n(s.sessions), note: 'جلسة فريدة', source: 'الموقع', cls: '' },
       { label: 'إحالة ناجحة', value: n(s.referralSessions), note: pct(s.referralRate) + ' من الزيارات', source: 'الموقع', cls: 'referral' },
       { label: 'مكالمة مقاسة', value: ads.callReportingConnected ? n(a.trackedCalls) : '—', note: ads.callReportingConnected ? 'سجل Call Reporting' : 'المصدر غير متصل', source: 'Google Ads', cls: ads.callReportingConnected ? '' : 'muted' },
       { label: 'عميل محتمل', value: ads.callReportingConnected ? n(a.potentialCustomers) : '—', note: 'مكالمة > 60 ثانية', source: 'Google Ads', cls: ads.callReportingConnected ? 'potential' : 'muted' },
-      { label: 'عميل مؤكد', value: ads.callReportingConnected ? n(a.confirmedCustomers) : '—', note: '>60ث + تكرار أو زيارة', source: 'تأهيل', cls: ads.callReportingConnected ? 'confirmed' : 'muted' }
+      { label: 'عميل مؤكد', value: ads.callReportingConnected ? n(a.confirmedCustomers) : '—', note: '>60ث + تكرار أو زيارة', source: 'تأهيل', cls: ads.callReportingConnected ? 'confirmed' : 'muted' },
+      { label: 'عقد موقّع', value: sales.connected ? n(pipeline.contracts) : '—', note: sales.connected ? pct(pipeline.contractRate) + ' من الفرص المسجلة' : 'المصدر غير متصل', source: 'المبيعات', cls: sales.connected ? 'confirmed' : 'muted' }
     ];
     el('funnelGrid').innerHTML = stages.map(function (stage, index) {
       return '<article class="funnel-stage ' + stage.cls + '"><span class="stage-index">0' + (index + 1) + '</span><em>' + esc(stage.source) + '</em><strong>' + esc(stage.value) + '</strong><h3>' + esc(stage.label) + '</h3><p>' + esc(stage.note) + '</p></article>';
@@ -226,6 +246,25 @@
       '<div><span>ضغطات خام</span><strong>' + n(q.rawContactClicks) + '</strong></div>' +
       '<b>−</b><div><span>تكرار/تقاطع</span><strong>' + n(q.duplicateOrCrossChannelClicks) + '</strong></div>' +
       '<b>=</b><div class="result"><span>إحالات فريدة</span><strong>' + n(q.uniqueReferralSessions) + '</strong></div>';
+  }
+
+  function renderSalesPipeline(data) {
+    var sales = data.salesPipeline || { connected: false, entries: [] };
+    var s = sales.summary || {};
+    el('pipelineSummaryMetrics').innerHTML = sales.connected ? [
+      metric('كل الفرص', n(s.opportunities), 'فرص مسجلة في الفترة', 'المبيعات', ''),
+      metric('عملاء مؤهلون', n(s.qualified), 'يشمل المراحل التالية', 'المبيعات', 'potential'),
+      metric('عروض مرسلة', n(s.quotes), 'يشمل الزيارات والعقود', 'المبيعات', ''),
+      metric('زيارات موقع', n(s.visits), 'يشمل العقود اللاحقة', 'المبيعات', 'calls'),
+      metric('عقود موقّعة', n(s.contracts), pct(s.contractRate) + ' من كل الفرص', 'المبيعات', 'confirmed'),
+      metric('قيمة العقود', money(s.contractValue, 'SAR'), 'المسجل للعقود الموقعة', 'المبيعات', 'confirmed')
+    ].join('') : unavailableMetrics(['كل الفرص', 'عملاء مؤهلون', 'عروض مرسلة', 'زيارات موقع', 'عقود موقّعة', 'قيمة العقود'], 'مسار البيع');
+    var entries = sales.entries || [];
+    el('pipelineEmpty').hidden = !!entries.length;
+    el('pipelineLastUpdate').textContent = sales.lastUpdatedAt ? 'آخر تحديث: ' + formatDate(sales.lastUpdatedAt) : 'لم تُسجل نتائج بعد';
+    el('pipelineBody').innerHTML = entries.map(function (row) {
+      return '<tr data-outcome="' + esc(row.id) + '"><td>' + esc(formatDate(row.occurredAt)) + '</td><td><span class="channel-tag ' + esc(row.sourceType) + '">' + esc(salesSourceLabel(row.sourceType)) + '</span></td><td>' + esc(row.serviceType) + '</td><td>' + esc(row.campaignName) + '</td><td><span class="stage-tag ' + esc(row.stage) + '">' + esc(salesStageLabel(row.stage)) + '</span></td><td>' + esc(money(row.estimatedValue, 'SAR')) + '</td><td><strong>' + esc(money(row.contractValue, 'SAR')) + '</strong></td><td>' + esc(row.notes) + '</td><td><button class="pipeline-edit" type="button">تعديل</button></td></tr>';
+    }).join('');
   }
 
   function growth(current, previous) {
@@ -390,7 +429,7 @@
     el('recentLeadsEmpty').hidden = !!referrals.length;
     el('recentLeadsBody').innerHTML = referrals.map(function (row) {
       var channel = row.method === 'call' ? '<span class="channel-tag call">اتصال</span>' : '<span class="channel-tag whatsapp">واتساب</span>';
-      return '<tr><td>' + esc(formatDate(row.at)) + '</td><td>' + channel + '</td><td>' + esc(cleanPath(row.sourcePath)) + '</td><td>' + esc(sourceLabel(row.source)) + '</td><td>' + esc(row.campaign) + '</td><td>' + esc(deviceLabel(row.device)) + '</td><td><code>' + esc(row.session) + '</code></td></tr>';
+      return '<tr><td>' + esc(formatDate(row.at)) + '</td><td>' + channel + '</td><td>' + esc(cleanPath(row.sourcePath)) + '</td><td>' + esc(sourceLabel(row.source)) + '</td><td>' + esc(row.campaign) + '</td><td>' + esc(deviceLabel(row.device)) + '</td><td><code>' + esc(row.session) + '</code></td><td><button class="promote-referral" type="button" data-source-type="' + esc(row.method) + '" data-source-ref="' + esc(row.session) + '" data-campaign="' + esc(row.campaign || '') + '" data-source-path="' + esc(cleanPath(row.sourcePath)) + '">نقل للمبيعات</button></td></tr>';
     }).join('');
     var ads = data.googleAds || {};
     var calls = ads.calls || [];
@@ -459,6 +498,7 @@
     payload = data;
     renderExecutive(data);
     renderFunnel(data);
+    renderSalesPipeline(data);
     renderTrend(data);
     renderSources(data);
     renderSiteTables(data);
@@ -514,6 +554,49 @@
     } catch (error) { showToast('تعذر حفظ التأهيل', true); }
     finally { button.disabled = false; button.textContent = 'حفظ'; }
   }
+  function resetPipelineForm() {
+    el('pipelineForm').reset();
+    el('pipelineId').value = '';
+    el('pipelineEstimatedValue').value = '0';
+    el('pipelineContractValue').value = '0';
+    delete el('pipelineForm').dataset.sourceRef;
+    el('pipelineSaveButton').textContent = 'حفظ في مسار البيع';
+    el('pipelineCancelButton').hidden = true;
+  }
+  function fillPipelineForm(row) {
+    el('pipelineId').value = row.id || '';
+    el('pipelineSourceType').value = row.sourceType || 'whatsapp';
+    el('pipelineStage').value = row.stage || 'new';
+    el('pipelineServiceType').value = row.serviceType || '';
+    el('pipelineCampaign').value = row.campaignName || '';
+    el('pipelineEstimatedValue').value = number(row.estimatedValue);
+    el('pipelineContractValue').value = number(row.contractValue);
+    el('pipelineNotes').value = row.notes || '';
+    if (row.sourceRef) el('pipelineForm').dataset.sourceRef = row.sourceRef;
+    else delete el('pipelineForm').dataset.sourceRef;
+    el('pipelineSaveButton').textContent = row.id ? 'حفظ التعديل' : 'حفظ في مسار البيع';
+    el('pipelineCancelButton').hidden = !row.id && !row.sourceRef;
+    location.hash = '#sales-pipeline';
+    el('pipelineStage').focus();
+  }
+  async function savePipeline(event) {
+    event.preventDefault();
+    var button = el('pipelineSaveButton');
+    button.disabled = true; button.textContent = 'حفظ…';
+    try {
+      await request({
+        mode: 'sales_outcome_upsert', token: token, id: el('pipelineId').value || null,
+        sourceRef: el('pipelineForm').dataset.sourceRef || null,
+        sourceType: el('pipelineSourceType').value, stage: el('pipelineStage').value,
+        serviceType: el('pipelineServiceType').value.trim(), campaignName: el('pipelineCampaign').value.trim(),
+        estimatedValue: number(el('pipelineEstimatedValue').value), contractValue: number(el('pipelineContractValue').value),
+        notes: el('pipelineNotes').value.trim()
+      });
+      showToast('تم حفظ مرحلة البيع وربطها بالإحصائيات', true);
+      resetPipelineForm(); await load();
+    } catch (error) { showToast('تعذر حفظ نتيجة البيع', true); }
+    finally { button.disabled = false; if (!el('pipelineId').value) button.textContent = 'حفظ في مسار البيع'; }
+  }
   function copySummary() {
     if (!payload) return;
     var s = payload.summary || {};
@@ -528,6 +611,8 @@
       'ضغطات خام: ' + n(number(s.callClicks) + number(s.whatsappClicks)),
       'العميل المحتمل: ' + ((payload.googleAds || {}).callReportingConnected ? n(a.potentialCustomers) : 'المصدر غير متصل'),
       'العميل المؤكد: ' + ((payload.googleAds || {}).callReportingConnected ? n(a.confirmedCustomers) : 'المصدر غير متصل'),
+      'العقود الموقعة: ' + n(((payload.salesPipeline || {}).summary || {}).contracts),
+      'قيمة العقود: ' + money(((payload.salesPipeline || {}).summary || {}).contractValue, 'SAR'),
       'مطابقة البيانات: ' + ((payload.dataQuality || {}).reconciled ? 'سليمة' : 'تحتاج مراجعة')
     ];
     navigator.clipboard.writeText(lines.join('\n')).then(function () { showToast('تم نسخ الملخص'); }).catch(function () { showToast('تعذر النسخ'); });
@@ -550,6 +635,21 @@
   el('printButton').addEventListener('click', function () { window.print(); });
   el('logoutButton').addEventListener('click', function () { logoutNow(); });
   el('callsBody').addEventListener('click', function (event) { if (event.target.classList.contains('save-call')) saveCall(event.target); });
+  el('pipelineForm').addEventListener('submit', savePipeline);
+  el('pipelineCancelButton').addEventListener('click', resetPipelineForm);
+  el('pipelineBody').addEventListener('click', function (event) {
+    var button = event.target.closest('.pipeline-edit'); if (!button || !payload) return;
+    var id = button.closest('tr[data-outcome]').getAttribute('data-outcome');
+    var row = ((payload.salesPipeline || {}).entries || []).filter(function (item) { return item.id === id; })[0];
+    if (row) fillPipelineForm(row);
+  });
+  el('recentLeadsBody').addEventListener('click', function (event) {
+    var button = event.target.closest('.promote-referral'); if (!button) return;
+    fillPipelineForm({
+      sourceType: button.dataset.sourceType === 'call' ? 'call' : 'whatsapp', sourceRef: button.dataset.sourceRef,
+      campaignName: button.dataset.campaign, notes: 'إحالة من الصفحة ' + button.dataset.sourcePath, stage: 'new'
+    });
+  });
   if (/\.vercel\.app$/i.test(window.location.hostname)) el('previewNotice').hidden = false;
   initNavigation();
   token = sessionStorage.getItem(TOKEN_KEY) || '';

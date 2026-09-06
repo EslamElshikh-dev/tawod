@@ -13,13 +13,17 @@ const firstPartyVersion = createHash('sha256')
   .update(fs.readFileSync(path.join(root, 'assets/js/tawod-first-party.js')))
   .digest('hex')
   .slice(0, 12);
+const whatsappAttributionVersion = createHash('sha256')
+  .update(fs.readFileSync(path.join(root, 'assets/js/tawod-whatsapp-attribution.js')))
+  .digest('hex')
+  .slice(0, 12);
 const contactConversionFile = path.join(root, 'assets/js/contact-conversion.js');
 const contactConversionVersion = fs.existsSync(contactConversionFile)
   ? createHash('sha256').update(fs.readFileSync(contactConversionFile)).digest('hex').slice(0, 12)
   : null;
 const start = '<!-- TAWOD_ANALYTICS_START -->';
 const end = '<!-- TAWOD_ANALYTICS_END -->';
-const install = `${start}<script src="/assets/js/tawod-analytics.js?v=${version}" defer></script><script src="/assets/js/tawod-first-party.js?v=${firstPartyVersion}" defer></script>${end}`;
+const install = `${start}<script src="/assets/js/tawod-analytics.js?v=${version}" defer></script><script src="/assets/js/tawod-first-party.js?v=${firstPartyVersion}" defer></script><script src="/assets/js/tawod-whatsapp-attribution.js?v=${whatsappAttributionVersion}" defer></script>${end}`;
 const ignoredDirectories = new Set(['.git', '.next', 'node_modules', 'out', 'public']);
 const ignoredHtmlFiles = new Set(['admin.html']);
 
@@ -32,6 +36,7 @@ const relative = (file) => path.relative(root, file).split(path.sep).join('/');
 const markerPattern = new RegExp(`${start}[\\s\\S]*?${end}\\s*`, 'g');
 const analyticsScriptPattern = /\s*<script\b[^>]*\bsrc=["']\/assets\/js\/tawod-analytics\.js(?:\?v=[^"']*)?["'][^>]*><\/script>\s*/gi;
 const firstPartyScriptPattern = /\s*<script\b[^>]*\bsrc=["']\/assets\/js\/tawod-first-party\.js(?:\?v=[^"']*)?["'][^>]*><\/script>\s*/gi;
+const whatsappAttributionScriptPattern = /\s*<script\b[^>]*\bsrc=["']\/assets\/js\/tawod-whatsapp-attribution\.js(?:\?v=[^"']*)?["'][^>]*><\/script>\s*/gi;
 const contactConversionUrlPattern = /assets\/js\/contact-conversion\.js(?:\?v=[^"']*)?/gi;
 const legacyHomeTag = /\s*<!-- Google tag: queued immediately,[\s\S]*?-->\s*<script>[\s\S]*?<\/script>\s*/i;
 const inlineScript = /<script\b(?![^>]*\bsrc=)[^>]*>[\s\S]*?<\/script>\s*/gi;
@@ -67,6 +72,7 @@ for (const file of walk(root).filter((candidate) => {
     .replace(markerPattern, '')
     .replace(analyticsScriptPattern, '')
     .replace(firstPartyScriptPattern, '')
+    .replace(whatsappAttributionScriptPattern, '')
     .replace(legacyHomeTag, '\n');
   html = html.replace(inlineScript, (block) => (
     block.includes('tawodLeadSubmitted') && block.includes('lead_confirmation') ? '' : block

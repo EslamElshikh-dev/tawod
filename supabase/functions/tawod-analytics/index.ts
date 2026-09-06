@@ -3,7 +3,6 @@ declare const Deno: {
   serve(handler: (request: Request) => Response | Promise<Response>): void;
 };
 
-const ADMIN_HASH = 'bbc662e02f9000a56d4cc600333105b192fcffa9f689e7084eabb00cbbb46481';
 const ADMIN_USERNAME = 'admin';
 const ALLOWED_ORIGINS = new Set(['https://tawodco.com', 'https://www.tawodco.com']);
 const EVENT_NAMES = new Set([
@@ -11,6 +10,8 @@ const EVENT_NAMES = new Set([
   'article_view','article_50_scroll','article_90_scroll','article_service_click',
   'article_project_click','related_article_click','article_quote_click','article_hub_click'
 ]);
+const SALES_SOURCES = new Set(['call', 'whatsapp', 'form', 'other']);
+const SALES_STAGES = new Set(['new', 'qualified', 'quote_sent', 'site_visit', 'contract_signed', 'lost']);
 const ADMIN_TTL_MS = 4 * 60 * 60 * 1000;
 
 function isPreviewOrigin(origin: string | null) {
@@ -65,7 +66,7 @@ function base64UrlToBytes(value: string) {
 async function adminSigningKey() {
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
   if (!serviceKey) throw new Error('Supabase runtime credentials unavailable');
-  return crypto.subtle.importKey('raw', new TextEncoder().encode(`${serviceKey}:${ADMIN_HASH}:tawod-admin-v1`), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify']);
+  return crypto.subtle.importKey('raw', new TextEncoder().encode(`${serviceKey}:${await adminPasswordHash()}:tawod-admin-v1`), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify']);
 }
 async function issueAdminToken() {
   const payload = bytesToBase64Url(new TextEncoder().encode(JSON.stringify({ scope: 'tawod-admin', exp: Date.now() + ADMIN_TTL_MS, nonce: crypto.randomUUID() })));
@@ -88,6 +89,17 @@ async function supabase(path: string, init: RequestInit = {}) {
   const url = Deno.env.get('SUPABASE_URL'); const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
   if (!url || !key) throw new Error('Supabase runtime credentials unavailable');
   return fetch(`${url}${path}`, { ...init, headers: { 'Authorization': `Bearer ${key}`, 'apikey': key, 'Content-Type': 'application/json', 'Accept': 'application/json', ...(init.headers || {}) } });
+}
+let adminHashPromise: Promise<string> | null = null;
+async function adminPasswordHash() {
+  if (!adminHashPromise) adminHashPromise = (async () => {
+    const response = await supabase('/rest/v1/tawod_admin_config?config_key=eq.password_hash&select=value_hash');
+    if (!response.ok) throw new Error('Admin credentials unavailable');
+    const value = (await response.json())?.[0]?.value_hash;
+    if (typeof value !== 'string' || !/^[0-9a-f]{64}$/.test(value)) throw new Error('Admin credentials unavailable');
+    return value;
+  })();
+  return adminHashPromise;
 }
 async function verifySyncKey(value: unknown, name: 'google_ads' | 'business_profile') {
   if (typeof value !== 'string' || value.length < 32 || value.length > 200) return false;
@@ -227,6 +239,95 @@ async function syncBusinessProfile(body: any, origin: string | null) {
   return json({ ok: true, daily: daily.length, keywords: keywords.length, syncedAt: new Date().toISOString() }, 200, origin);
 }
 
+function normalizeSalesRow(row: any) {
+  return {
+    id: row.id,
+    occurredAt: row.occurred_at,
+    sourceType: row.source_type,
+    sourceRef: row.source_ref,
+    stage: row.stage,
+    serviceType: row.service_type,
+    campaignName: row.campaign_name,
+    estimatedValue: finite(row.estimated_value),
+    contractValue: finite(row.contract_value),
+    notes: row.notes,
+    updatedAt: row.updated_at,
+  };
+}
+async function loadSalesPipeline(days: number) {
+  const since = new Date(Date.now() - days * 86400000).toISOString();
+  const query = new URLSearchParams({
+    select: 'id,occurred_at,source_type,source_ref,stage,service_type,campaign_name,estimated_value,contract_value,notes,updated_at',
+    occurred_at: `gte.${since}`,
+    order: 'occurred_at.desc',
+    limit: '500',
+  });
+  const response = await supabase(`/rest/v1/tawod_sales_outcomes?${query.toString()}`);
+  if (!response.ok) return { connected: false, error: 'sales_pipeline_query_failed', entries: [] };
+  const entries = (await response.json()).map(normalizeSalesRow);
+  const progressiveStages = {
+    qualified: new Set(['qualified', 'quote_sent', 'site_visit', 'contract_signed']),
+    quotes: new Set(['quote_sent', 'site_visit', 'contract_signed']),
+    visits: new Set(['site_visit', 'contract_signed']),
+  };
+  const sum = (key: 'estimatedValue' | 'contractValue', filter: (row: any) => boolean) =>
+    entries.filter(filter).reduce((total: number, row: any) => total + finite(row[key]), 0);
+  const contracts = entries.filter((row: any) => row.stage === 'contract_signed');
+  return {
+    connected: true,
+    lastUpdatedAt: entries.reduce((latest: string | null, row: any) => !latest || row.updatedAt > latest ? row.updatedAt : latest, null),
+    summary: {
+      opportunities: entries.length,
+      qualified: entries.filter((row: any) => progressiveStages.qualified.has(row.stage)).length,
+      quotes: entries.filter((row: any) => progressiveStages.quotes.has(row.stage)).length,
+      visits: entries.filter((row: any) => progressiveStages.visits.has(row.stage)).length,
+      contracts: contracts.length,
+      lost: entries.filter((row: any) => row.stage === 'lost').length,
+      openPipelineValue: sum('estimatedValue', (row: any) => row.stage !== 'lost' && row.stage !== 'contract_signed'),
+      contractValue: sum('contractValue', (row: any) => row.stage === 'contract_signed'),
+      contractRate: entries.length ? contracts.length / entries.length * 100 : 0,
+    },
+    entries,
+  };
+}
+
+async function upsertSalesOutcome(body: any, origin: string | null) {
+  const id = text(body?.id, 50);
+  if (id && !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)) {
+    return json({ error: 'invalid_sales_outcome' }, 400, origin);
+  }
+  const sourceType = text(body?.sourceType, 20);
+  const stage = text(body?.stage, 30);
+  if (!sourceType || !SALES_SOURCES.has(sourceType) || !stage || !SALES_STAGES.has(stage)) {
+    return json({ error: 'invalid_sales_outcome' }, 400, origin);
+  }
+  const sourceRef = text(body?.sourceRef, 300);
+  const payload = {
+    source_type: sourceType,
+    source_ref: sourceRef,
+    stage,
+    service_type: text(body?.serviceType, 160),
+    campaign_name: text(body?.campaignName, 180),
+    estimated_value: Math.max(0, Math.min(999999999, finite(body?.estimatedValue))),
+    contract_value: Math.max(0, Math.min(999999999, finite(body?.contractValue))),
+    notes: text(body?.notes, 500),
+    updated_at: new Date().toISOString(),
+  };
+  let targetId = id;
+  if (!targetId && sourceRef) {
+    const find = new URLSearchParams({ source_ref: `eq.${sourceRef}`, select: 'id', order: 'updated_at.desc', limit: '1' });
+    const existing = await supabase(`/rest/v1/tawod_sales_outcomes?${find.toString()}`);
+    if (existing.ok) targetId = (await existing.json())?.[0]?.id || null;
+  }
+  const response = targetId ?
+    await supabase(`/rest/v1/tawod_sales_outcomes?id=eq.${targetId}`, { method: 'PATCH', headers: { 'Prefer': 'return=representation' }, body: JSON.stringify(payload) }) :
+    await supabase('/rest/v1/tawod_sales_outcomes', { method: 'POST', headers: { 'Prefer': 'return=representation' }, body: JSON.stringify({ ...payload, occurred_at: validTimestamp(body?.occurredAt) || new Date().toISOString() }) });
+  if (!response.ok) return json({ error: 'sales_outcome_save_failed' }, 500, origin);
+  const rows = await response.json();
+  if (!rows.length) return json({ error: 'sales_outcome_not_found' }, 404, origin);
+  return json({ ok: true, outcome: normalizeSalesRow(rows[0]) }, 200, origin);
+}
+
 Deno.serve(async (req) => {
   const origin = req.headers.get('origin');
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors(origin) });
@@ -240,7 +341,7 @@ Deno.serve(async (req) => {
     if (!isAdminOrigin(origin)) return json({ error: 'origin_not_allowed' }, 403, origin);
     const username = typeof body.username === 'string' ? body.username.trim() : '';
     const password = typeof body.password === 'string' ? body.password : '';
-    if (username !== ADMIN_USERNAME || !password || await sha256(password) !== ADMIN_HASH) {
+    if (username !== ADMIN_USERNAME || !password || await sha256(password) !== await adminPasswordHash()) {
       await new Promise((resolve) => setTimeout(resolve, 450));
       return json({ error: 'unauthorized' }, 401, origin, { 'Retry-After': '1' });
     }
@@ -250,19 +351,20 @@ Deno.serve(async (req) => {
   if (body?.mode === 'admin') {
     if (!isAdminOrigin(origin)) return json({ error: 'origin_not_allowed' }, 403, origin);
     let authorized = await verifyAdminToken(body.token);
-    if (!authorized && typeof body.password === 'string' && body.password) authorized = await sha256(body.password) === ADMIN_HASH;
+    if (!authorized && typeof body.password === 'string' && body.password) authorized = await sha256(body.password) === await adminPasswordHash();
     if (!authorized) return json({ error: 'unauthorized' }, 401, origin);
     const days = Math.max(7, Math.min(Number(body.days) || 30, 90));
-    const [siteResponse, adsResponse, profileResponse] = await Promise.all([
+    const [siteResponse, adsResponse, profileResponse, salesPipeline] = await Promise.all([
       supabase('/rest/v1/rpc/tawod_admin_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
       supabase('/rest/v1/rpc/tawod_google_ads_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
-      supabase('/rest/v1/rpc/tawod_business_profile_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) })
+      supabase('/rest/v1/rpc/tawod_business_profile_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
+      loadSalesPipeline(days),
     ]);
     if (!siteResponse.ok) return json({ error: 'analytics_query_failed' }, 500, origin);
     const site = await siteResponse.json();
     const googleAds = adsResponse.ok ? await adsResponse.json() : { connected: false, error: 'google_ads_query_failed' };
     const businessProfile = profileResponse.ok ? await profileResponse.json() : { connected: false, error: 'business_profile_query_failed' };
-    return json({ ...site, googleAds, businessProfile }, 200, origin);
+    return json({ ...site, googleAds, businessProfile, salesPipeline }, 200, origin);
   }
 
   if (body?.mode === 'call_qualification_update') {
@@ -281,6 +383,12 @@ Deno.serve(async (req) => {
     const rows = await response.json();
     if (!rows.length) return json({ error: 'call_not_found' }, 404, origin);
     return json({ ok: true }, 200, origin);
+  }
+
+  if (body?.mode === 'sales_outcome_upsert') {
+    if (!isAdminOrigin(origin)) return json({ error: 'origin_not_allowed' }, 403, origin);
+    if (!await verifyAdminToken(body.token)) return json({ error: 'unauthorized' }, 401, origin);
+    return upsertSalesOutcome(body, origin);
   }
 
   if (!origin || !ALLOWED_ORIGINS.has(origin)) return json({ error: 'origin_not_allowed' }, 403, origin);

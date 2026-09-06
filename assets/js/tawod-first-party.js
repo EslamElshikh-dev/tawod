@@ -6,6 +6,7 @@
   var VISITOR_KEY = 'tawodVisitorId';
   var SESSION_KEY = 'tawodFirstPartySession';
   var LEAD_KEY = 'tawodFirstPartyLead';
+  var ATTRIBUTION_KEY = 'tawodAdsAttributionV1';
   var SESSION_TIMEOUT = 30 * 60 * 1000;
 
   if (window.__tawodFirstPartyInitialized) return;
@@ -53,13 +54,15 @@
   function campaignFromUrl() {
     var params;
     try { params = new URLSearchParams(window.location.search || ''); } catch (e) { return {}; }
+    var stored = {};
+    try { stored = JSON.parse(read(window.localStorage, ATTRIBUTION_KEY) || '{}'); } catch (e) {}
     return {
-      utm_source: params.get('utm_source'),
-      utm_medium: params.get('utm_medium'),
-      utm_campaign: params.get('utm_campaign'),
-      utm_term: params.get('utm_term'),
-      utm_content: params.get('utm_content'),
-      click_id: params.get('gclid') || params.get('gbraid') || params.get('wbraid')
+      utm_source: params.get('utm_source') || stored.utm_source || null,
+      utm_medium: params.get('utm_medium') || stored.utm_medium || null,
+      utm_campaign: params.get('utm_campaign') || stored.utm_campaign || null,
+      utm_term: params.get('utm_term') || stored.utm_term || null,
+      utm_content: params.get('utm_content') || stored.utm_content || null,
+      click_id: params.get('gclid') || params.get('gbraid') || params.get('wbraid') || stored.gclid || stored.gbraid || stored.wbraid || null
     };
   }
 
@@ -200,7 +203,8 @@
     var isWhatsApp = /(?:wa\.me\/|api\.whatsapp\.com\/)/i.test(href);
     if (!isCall && !isWhatsApp) return;
     send(isCall ? 'call_click' : 'whatsapp_click', {
-      contact_method: isCall ? 'phone' : 'whatsapp'
+      contact_method: isCall ? 'phone' : 'whatsapp',
+      service_type: link.getAttribute('data-contact-service') || null
     });
   }
 

@@ -8,6 +8,8 @@ const adsSync = fs.readFileSync('scripts/google-ads-sync.js', 'utf8');
 const profileSync = fs.readFileSync('scripts/google-business-profile-sync.js', 'utf8');
 const edge = fs.readFileSync('supabase/functions/tawod-analytics/index.ts', 'utf8');
 const migration = fs.readFileSync('supabase/migrations/20260905_tawod_command_center_v2.sql', 'utf8');
+const salesMigration = fs.readFileSync('supabase/migrations/20260906_tawod_sales_pipeline.sql', 'utf8');
+const adminCredentialsMigration = fs.readFileSync('supabase/migrations/20260906_tawod_admin_credentials.sql', 'utf8');
 
 new Function(app);
 new Function(tracker);
@@ -25,6 +27,8 @@ assert.match(html + app, /الإحالات الناجحة|الإحالة الن�
 assert.match(html, /أداء الملف التجاري للشركة/);
 assert.match(html, /الميزانية والصرف وجودة المكالمات/);
 assert.match(html, /notificationDrawer/);
+assert.match(html, /متابعة العروض والعقود/);
+assert.match(html, /عقد موقّع/);
 assert.doesNotMatch(html, /tawod-admin(?:-ads)?.js/);
 
 assert.match(tracker, /click_id/);
@@ -40,5 +44,15 @@ assert.match(migration, /called or s.whatsapp/);
 assert.match(migration, /duplicateOrCrossChannelClicks/);
 assert.match(edge, /call_qualification_update/);
 assert.match(edge, /business_profile_sync/);
+assert.match(edge, /sales_outcome_upsert/);
+assert.match(edge, /loadSalesPipeline/);
+assert.match(edge, /adminPasswordHash/);
+assert.doesNotMatch(edge, /const ADMIN_HASH|[0-9a-f]{64}';/);
+assert.match(salesMigration, /tawod_sales_outcomes/);
+assert.match(salesMigration, /contract_signed/);
+assert.match(salesMigration, /enable row level security/);
+assert.match(salesMigration, /revoke all .* anon, authenticated/);
+assert.match(adminCredentialsMigration, /tawod_admin_config/);
+assert.doesNotMatch(adminCredentialsMigration, /[0-9a-f]{64}/);
 
-console.log('Verified dashboard definitions, source integrations, unique IDs, notification UI, and strict call qualification rules.');
+console.log('Verified dashboard definitions, source integrations, contract pipeline, unique IDs, notification UI, and strict call qualification rules.');

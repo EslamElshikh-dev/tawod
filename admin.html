@@ -10,7 +10,7 @@
 <link rel="icon" href="/images/logo/tawod-logo.png" type="image/png">
 <link rel="stylesheet" href="/assets/css/tawod-admin.css">
 <link rel="stylesheet" href="/assets/css/tawod-admin-ads.css">
-<link rel="stylesheet" href="/assets/css/tawod-command-center.css">
+<link rel="stylesheet" href="/assets/css/tawod-command-center.css?v=20260906-2">
 </head>
 <body class="admin-body">
 <div class="login-screen" id="adminLogin">
@@ -35,9 +35,9 @@
   <aside class="sidebar">
     <a class="brand" href="/" aria-label="العودة إلى موقع تعاود"><img src="/images/logo/tawod-logo.png" width="76" height="34" alt="تعاود"><span><b>TAWOD</b><small>Command Center</small></span></a>
     <nav class="side-nav" id="adminNav" aria-label="أقسام لوحة الإدارة">
-      <div class="nav-group"><span>القيادة</span><a class="is-active" href="#executive"><i>01</i> النظرة التنفيذية</a><a href="#funnel"><i>02</i> الإحالات والتأهيل</a><a href="#trend"><i>03</i> الاتجاه والنمو</a></div>
-      <div class="nav-group"><span>التسويق</span><a href="#google-ads"><i>04</i> الميزانيات والإعلانات</a><a href="#business-profile"><i>05</i> الملف التجاري</a><a href="#acquisition"><i>06</i> المصادر والحملات</a></div>
-      <div class="nav-group"><span>التشغيل</span><a href="#performance"><i>07</i> الصفحات والخدمات</a><a href="#leads"><i>08</i> سجل الإحالات</a><a href="#decisions"><i>09</i> مركز القرارات</a></div>
+      <div class="nav-group"><span>القيادة</span><a class="is-active" href="#executive"><i>01</i> النظرة التنفيذية</a><a href="#funnel"><i>02</i> الإحالات والتأهيل</a><a href="#sales-pipeline"><i>03</i> العروض والعقود</a><a href="#trend"><i>04</i> الاتجاه والنمو</a></div>
+      <div class="nav-group"><span>التسويق</span><a href="#google-ads"><i>05</i> الميزانيات والإعلانات</a><a href="#business-profile"><i>06</i> الملف التجاري</a><a href="#acquisition"><i>07</i> المصادر والحملات</a></div>
+      <div class="nav-group"><span>التشغيل</span><a href="#performance"><i>08</i> الصفحات والخدمات</a><a href="#leads"><i>09</i> سجل الإحالات</a><a href="#decisions"><i>10</i> مركز القرارات</a></div>
     </nav>
     <div class="sidebar-status"><div><i class="live-dot"></i><span>First-party Analytics</span></div><small>بيانات مجهولة الهوية؛ لا نخزن الاسم أو الجوال أو نص الرسائل.</small></div>
   </aside>
@@ -81,6 +81,26 @@
       <div class="two-column compact-top"><article class="panel"><div class="panel-title"><div><span class="micro-label">قنوات الإحالة</span><h3>اتصال أم واتساب؟</h3></div></div><div id="channelSplit" class="channel-list"></div></article><article class="panel"><div class="panel-title"><div><span class="micro-label">وضوح القياس</span><h3>كيف تُحسب الأرقام؟</h3></div></div><div id="reconciliationBox" class="reconciliation-box"></div></article></div>
     </section>
 
+    <section class="admin-section" id="sales-pipeline">
+      <div class="section-heading"><div><p class="eyebrow">SALES & CONTRACTS</p><h2>متابعة العروض والعقود</h2></div><p>مرحلة تجارية واحدة لكل فرصة؛ تُحدّث يدويًا بعد مراجعة الاتصال أو محادثة واتساب.</p></div>
+      <div class="pipeline-kpi-grid" id="pipelineSummaryMetrics"></div>
+      <article class="panel pipeline-entry-panel compact-top">
+        <div class="panel-title"><div><span class="micro-label">ADD SALES OUTCOME</span><h3>إضافة فرصة أو تحديث نتيجتها</h3></div><span>لا تكتب اسم العميل أو رقم الجوال</span></div>
+        <form id="pipelineForm" class="pipeline-form" autocomplete="off">
+          <input id="pipelineId" type="hidden">
+          <label><span>القناة</span><select id="pipelineSourceType" required><option value="whatsapp">واتساب</option><option value="call">اتصال</option><option value="form">نموذج</option><option value="other">أخرى</option></select></label>
+          <label><span>المرحلة</span><select id="pipelineStage" required><option value="new">إحالة جديدة</option><option value="qualified">عميل مؤهل</option><option value="quote_sent">عرض سعر مرسل</option><option value="site_visit">زيارة موقع</option><option value="contract_signed">عقد موقّع</option><option value="lost">لم يتم التعاقد</option></select></label>
+          <label><span>الخدمة</span><input id="pipelineServiceType" type="text" maxlength="160" placeholder="مثال: بناء عظم"></label>
+          <label><span>الحملة</span><input id="pipelineCampaign" type="text" maxlength="180" placeholder="اسم الحملة إن وُجد"></label>
+          <label><span>قيمة متوقعة (ر.س)</span><input id="pipelineEstimatedValue" type="number" min="0" max="999999999" step="0.01" inputmode="decimal" value="0"></label>
+          <label><span>قيمة العقد (ر.س)</span><input id="pipelineContractValue" type="number" min="0" max="999999999" step="0.01" inputmode="decimal" value="0"></label>
+          <label class="pipeline-notes"><span>ملاحظة تشغيلية قصيرة</span><input id="pipelineNotes" type="text" maxlength="500" placeholder="مثال: أُرسل العرض وينتظر اعتماد المخططات"></label>
+          <div class="pipeline-form-actions"><button id="pipelineSaveButton" type="submit">حفظ في مسار البيع</button><button id="pipelineCancelButton" class="button-ghost" type="button" hidden>إلغاء التعديل</button></div>
+        </form>
+      </article>
+      <article class="panel table-panel compact-top"><div class="table-header"><div><span class="micro-label">ACTIVE PIPELINE</span><h3>الفرص والعقود حسب المصدر والحملة</h3></div><span id="pipelineLastUpdate">—</span></div><div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>القناة</th><th>الخدمة</th><th>الحملة</th><th>المرحلة</th><th>متوقع</th><th>قيمة العقد</th><th>ملاحظة</th><th>تعديل</th></tr></thead><tbody id="pipelineBody"></tbody></table></div><div class="table-empty" id="pipelineEmpty" hidden>لا توجد فرص مسجلة بعد. انقل إحالة حديثة أو أضف أول فرصة أعلاه.</div></article>
+    </section>
+
     <section class="admin-section" id="trend">
       <div class="section-heading"><div><p class="eyebrow">TREND & MOMENTUM</p><h2>اتجاه الزيارات والإحالات</h2></div><p>آخر 7 أيام مقارنة بالأسبوع السابق.</p></div>
       <div class="comparison-grid" id="comparisonMetrics"></div>
@@ -120,7 +140,7 @@
 
     <section class="admin-section" id="leads">
       <div class="section-heading"><div><p class="eyebrow">REFERRAL LOG</p><h2>آخر الإحالات وجودة المكالمات</h2></div><p>سجل مجهول الهوية لتدقيق المصدر والمرحلة.</p></div>
-      <article class="panel table-panel"><div class="table-header"><div><span class="micro-label">WEBSITE REFERRALS</span><h3>آخر ضغطات الاتصال وواتساب</h3></div></div><div class="table-wrap"><table><thead><tr><th>الوقت</th><th>القناة</th><th>صفحة الإحالة</th><th>المصدر</th><th>الحملة</th><th>الجهاز</th><th>الجلسة</th></tr></thead><tbody id="recentLeadsBody"></tbody></table></div><div class="table-empty" id="recentLeadsEmpty" hidden>لا توجد إحالات في الفترة.</div></article>
+      <article class="panel table-panel"><div class="table-header"><div><span class="micro-label">WEBSITE REFERRALS</span><h3>آخر ضغطات الاتصال وواتساب</h3></div></div><div class="table-wrap"><table><thead><tr><th>الوقت</th><th>القناة</th><th>صفحة الإحالة</th><th>المصدر</th><th>الحملة</th><th>الجهاز</th><th>الجلسة</th><th>متابعة</th></tr></thead><tbody id="recentLeadsBody"></tbody></table></div><div class="table-empty" id="recentLeadsEmpty" hidden>لا توجد إحالات في الفترة.</div></article>
       <article class="panel table-panel compact-top"><div class="table-header"><div><span class="micro-label">CALL QUALIFICATION</span><h3>المكالمات المقاسة والتأهيل</h3></div><span>يمكن اعتماد تكرار التواصل أو طلب الزيارة هنا</span></div><div class="call-source-note" id="callSourceNote"></div><div class="table-wrap"><table><thead><tr><th>الوقت</th><th>الحملة</th><th>المدة</th><th>الحالة</th><th>مرات التواصل</th><th>طلب زيارة</th><th>التصنيف</th><th>حفظ</th></tr></thead><tbody id="callsBody"></tbody></table></div><div class="table-empty" id="callsEmpty" hidden>لم تصل بيانات مدة المكالمات من Google بعد.</div></article>
     </section>
 
@@ -131,6 +151,6 @@
 
 <div class="loading-layer" id="adminLoading" hidden><div class="loader"></div><p>جاري مطابقة المصادر وترتيب القرارات…</p></div>
 <div class="toast" id="adminToast" aria-live="polite"></div>
-<script src="/assets/js/tawod-command-center.js" defer></script>
+<script src="/assets/js/tawod-command-center.js?v=20260906-2" defer></script>
 </body>
 </html>

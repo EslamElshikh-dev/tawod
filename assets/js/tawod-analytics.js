@@ -211,6 +211,7 @@
     var method = isCall ? 'phone' : 'whatsapp';
     track(isCall ? 'tawod_call_click' : 'tawod_whatsapp_click', {
       contact_method: method,
+      service_type: link.getAttribute('data-contact-service') || 'not_specified',
       page_path: window.location.pathname,
       link_url: link.href,
       transport_type: 'beacon'
@@ -292,6 +293,20 @@
       form_name: context.form_name,
       form_source_path: context.form_source_path || 'unknown',
       service_type: context.service_type || 'unknown',
+      submission_id: context.submission_id || 'unknown',
+      page_path: window.location.pathname,
+      transport_type: 'beacon'
+    });
+
+    /* Standard GA4 lead event, emitted only after a real form submission reaches
+       the thank-you page. Google Ads can safely import this event without
+       treating page views or button clicks as leads. */
+    track('generate_lead', {
+      lead_source: 'contact_form',
+      form_name: context.form_name,
+      form_source_path: context.form_source_path || 'unknown',
+      service_type: context.service_type || 'unknown',
+      submission_id: context.submission_id || 'unknown',
       page_path: window.location.pathname,
       transport_type: 'beacon'
     });
