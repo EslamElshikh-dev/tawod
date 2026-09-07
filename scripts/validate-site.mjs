@@ -23,6 +23,16 @@ function articleTokens(r){const h=pages.get(r)||'',match=h.match(/<article[^>]*c
 function jaccard(a,b){let intersection=0;for(const value of a)if(b.has(value))intersection+=1;return intersection/(a.size+b.size-intersection||1)}
 
 for(const [r,h] of pages){
+  // All public Tawod departments use the owner's confirmed company number.
+  const officialPhones=new Set(['0551128884','966551128884']);
+  for(const [,href] of all(h,/\bhref=["']([^"']+)["']/gi)){
+    let phone='';
+    if(/^tel:/i.test(href))phone=href.slice(4).split('?')[0];
+    else if(/^https:\/\/wa\.me\//i.test(href))phone=new URL(href.replace(/&amp;/g,'&')).pathname.slice(1);
+    else if(/^https:\/\/(?:api|web)\.whatsapp\.com\//i.test(href))phone=new URL(href.replace(/&amp;/g,'&')).searchParams.get('phone')||'';
+    if(phone&&!officialPhones.has(phone.replace(/\D/g,'')))errors.push(`${r}: contact link uses an unapproved company phone: ${href}`);
+  }
+  for(const [,phone] of all(h,/"telephone"\s*:\s*"([^"]+)"/g))if(!officialPhones.has(phone.replace(/\D/g,'')))errors.push(`${r}: schema uses an unapproved company phone: ${phone}`);
   const analyticsCount=h.split(analyticsSrc).length-1;if(analyticsCount!==1)errors.push(`${r}: expected one versioned analytics script, found ${analyticsCount}`);if(h.includes('Google tag: queued immediately'))errors.push(`${r}: legacy inline Google tag remains`);
   if(h.includes('blog-archive.js')&&!h.includes(`blog-archive.js?v=${assetRevision('blog-archive.js')}`))errors.push(`${r}: blog-archive.js has a stale revision`);
   if(/^service-(?:construction|turnkey|restoration|finishing|decor|mep)\.html$/.test(r)){if(!h.includes('assets/css/tawod-service-decisions.css?v=20260823-1'))errors.push(`${r}: missing versioned decision-support styles`);const cards=all(h,/class=["'][^"']*tawod-decision-card[^"']*["']/gi).length;if(cards!==3)errors.push(`${r}: expected three decision-support cards, found ${cards}`);if((h.match(/TAWOD_STATIC_DECISION_START/g)||[]).length!==1)errors.push(`${r}: decision-support block is missing or duplicated`)}
