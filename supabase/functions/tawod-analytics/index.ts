@@ -40,6 +40,7 @@ function text(value: unknown, max = 500) {
 function finite(value: unknown, fallback = 0) {
   const n = Number(value); return Number.isFinite(n) ? n : fallback;
 }
+function flag(value: unknown) { return value === true || value === 1 || value === 'true'; }
 function cleanMeta(value: unknown) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
   const safe: Record<string, string | number | boolean | null> = {};
@@ -137,6 +138,28 @@ function cleanConversionRows(body: any) {
       conversions: Math.max(0, finite(row?.conversions)), all_conversions: Math.max(0, finite(row?.allConversions)), conversions_value: finite(row?.conversionsValue), synced_at: new Date().toISOString() }];
   });
 }
+function cleanConversionActionRows(body: any) {
+  const customerId = text(body?.customerId, 40); if (!customerId) return [];
+  return (Array.isArray(body?.conversionActions) ? body.conversionActions : []).slice(0, 1000).flatMap((row: any) => {
+    const conversionActionId = Math.trunc(finite(row?.conversionActionId, -1));
+    const name = text(row?.name, 300);
+    if (conversionActionId < 0 || !name) return [];
+    return [{
+      customer_id: customerId,
+      conversion_action_id: conversionActionId,
+      name,
+      status: text(row?.status, 40),
+      action_type: text(row?.type, 80),
+      origin: text(row?.origin, 80),
+      category: text(row?.category, 80),
+      primary_for_goal: flag(row?.primaryForGoal),
+      include_in_conversions_metric: flag(row?.includeInConversionsMetric),
+      counting_type: text(row?.countingType, 60),
+      phone_call_duration_seconds: Math.max(0, Math.min(10000, Math.trunc(finite(row?.phoneCallDurationSeconds)))),
+      synced_at: new Date().toISOString()
+    }];
+  });
+}
 function validTimestamp(value: unknown) {
   if (typeof value !== 'string' || value.length > 60) return null;
   const parsed = new Date(value);
@@ -165,8 +188,9 @@ async function syncGoogleAds(body: any, origin: string | null) {
     await new Promise((resolve) => setTimeout(resolve, 350));
     return json({ error: 'unauthorized' }, 401, origin);
   }
-  const campaigns = cleanCampaignRows(body), conversions = cleanConversionRows(body), calls = cleanCallRows(body);
-  if (!campaigns.length && !calls.length) return json({ error: 'no_sync_rows' }, 400, origin);
+  const campaigns = cleanCampaignRows(body), conversions = cleanConversionRows(body);
+  const conversionActions = cleanConversionActionRows(body), calls = cleanCallRows(body);
+  if (!campaigns.length && !calls.length && !conversionActions.length) return json({ error: 'no_sync_rows' }, 400, origin);
   if (campaigns.length) {
     const campaignResponse = await supabase('/rest/v1/tawod_google_ads_daily?on_conflict=report_date,customer_id,campaign_id', {
       method: 'POST', headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify(campaigns)
@@ -179,6 +203,12 @@ async function syncGoogleAds(body: any, origin: string | null) {
     });
     if (!conversionResponse.ok) return json({ error: 'conversion_sync_failed', detail: await conversionResponse.text() }, 500, origin);
   }
+  if (conversionActions.length) {
+    const actionResponse = await supabase('/rest/v1/tawod_google_ads_conversion_actions?on_conflict=customer_id,conversion_action_id', {
+      method: 'POST', headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify(conversionActions)
+    });
+    if (!actionResponse.ok) return json({ error: 'conversion_action_sync_failed', detail: await actionResponse.text() }, 500, origin);
+  }
   if (calls.length) {
     const callResponse = await supabase('/rest/v1/tawod_google_ads_calls?on_conflict=resource_name', {
       method: 'POST', headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify(calls)
@@ -186,7 +216,43 @@ async function syncGoogleAds(body: any, origin: string | null) {
     if (!callResponse.ok) return json({ error: 'call_sync_failed', detail: await callResponse.text() }, 500, origin);
   }
   await supabase('/rest/v1/tawod_sync_keys?name=eq.google_ads', { method: 'PATCH', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify({ last_used_at: new Date().toISOString() }) });
-  return json({ ok: true, campaigns: campaigns.length, conversions: conversions.length, calls: calls.length, syncedAt: new Date().toISOString() }, 200, origin);
+  return json({ ok: true, campaigns: campaigns.length, conversions: conversions.length, conversionActions: conversionActions.length, calls: calls.length, syncedAt: new Date().toISOString() }, 200, origin);
+}
+
+function enrichGoogleAdsWithFirstParty(googleAds: any, site: any) {
+  if (!googleAds || typeof googleAds !== 'object') return googleAds;
+  const siteCampaigns = Array.isArray(site?.campaigns) ? site.campaigns : [];
+  const paidSource = (Array.isArray(site?.sources) ? site.sources : []).find((row: any) => row?.source === 'google-ads') || {};
+  const campaigns = (Array.isArray(googleAds.campaigns) ? googleAds.campaigns : []).map((row: any) => {
+    const id = String(row?.campaignId ?? '').trim();
+    const name = String(row?.name ?? '').trim();
+    const matches = siteCampaigns.filter((siteRow: any) => {
+      const campaign = String(siteRow?.campaign ?? '').trim();
+      return campaign && (campaign === id || campaign === name);
+    });
+    return {
+      ...row,
+      siteSessions: matches.reduce((sum: number, item: any) => sum + Math.max(0, finite(item?.sessions)), 0),
+      siteCalls: matches.reduce((sum: number, item: any) => sum + Math.max(0, finite(item?.calls)), 0),
+      siteWhatsapp: matches.reduce((sum: number, item: any) => sum + Math.max(0, finite(item?.whatsapp)), 0),
+      siteReferrals: matches.reduce((sum: number, item: any) => sum + Math.max(0, finite(item?.referrals)), 0)
+    };
+  });
+  const summary = googleAds.summary || {};
+  const siteReferrals = Math.max(0, finite(paidSource?.referrals));
+  const cost = Math.max(0, finite(summary?.cost));
+  return {
+    ...googleAds,
+    campaigns,
+    summary: {
+      ...summary,
+      siteSessions: Math.max(0, finite(paidSource?.sessions)),
+      siteCalls: Math.max(0, finite(paidSource?.calls)),
+      siteWhatsapp: Math.max(0, finite(paidSource?.whatsapp)),
+      siteReferrals,
+      siteCostPerReferral: siteReferrals ? Math.round(cost / siteReferrals * 100) / 100 : 0
+    }
+  };
 }
 
 function cleanProfileRows(body: any) {
@@ -362,7 +428,8 @@ Deno.serve(async (req) => {
     ]);
     if (!siteResponse.ok) return json({ error: 'analytics_query_failed' }, 500, origin);
     const site = await siteResponse.json();
-    const googleAds = adsResponse.ok ? await adsResponse.json() : { connected: false, error: 'google_ads_query_failed' };
+    const googleAdsRaw = adsResponse.ok ? await adsResponse.json() : { connected: false, error: 'google_ads_query_failed' };
+    const googleAds = enrichGoogleAdsWithFirstParty(googleAdsRaw, site);
     const businessProfile = profileResponse.ok ? await profileResponse.json() : { connected: false, error: 'business_profile_query_failed' };
     return json({ ...site, googleAds, businessProfile, salesPipeline }, 200, origin);
   }

@@ -61,8 +61,16 @@
   function statusFreshness(connected, at) {
     if (!connected) return { label: 'غير متصل', cls: 'is-offline' };
     var age = at ? (Date.now() - new Date(at).getTime()) / 3600000 : Infinity;
-    if (age <= 30) return { label: 'متصل · محدث', cls: 'is-live' };
-    return { label: 'متصل · يحتاج تحديث', cls: 'is-stale' };
+    if (age <= 2) return { label: 'متصل · محدث', cls: 'is-live' };
+    if (age <= 26) return { label: 'متصل · يحتاج مزامنة', cls: 'is-stale' };
+    return { label: 'متصل · بيانات قديمة', cls: 'is-stale' };
+  }
+  function adsActionCategory(value) {
+    return {
+      CONTACT: 'تواصل', PHONE_CALL_LEAD: 'مكالمة', SUBMIT_LEAD_FORM: 'نموذج',
+      QUALIFIED_LEAD: 'عميل مؤهل', CONVERTED_LEAD: 'عميل محوّل',
+      GET_DIRECTIONS: 'اتجاهات', OUTBOUND_CLICK: 'نقرة خارجية'
+    }[value] || value || 'غير مصنف';
   }
   function showToast(message, important) {
     var node = el('adminToast');
@@ -350,6 +358,7 @@
       el('adsDailyChart').innerHTML = '<div class="chart-empty">المصدر غير متصل.</div>';
       el('adsCampaignsBody').innerHTML = ''; el('adsCampaignsEmpty').hidden = false;
       el('adsConversionActions').innerHTML = '<div class="table-empty">المصدر غير متصل.</div>';
+      el('adsConversionGoalHealth').textContent = 'غير متصل';
     } else {
       el('adsSummaryMetrics').innerHTML = [
         metric('الميزانية اليومية', money(s.dailyBudget, currency), 'الميزانية الحالية للحملات المفعلة', 'Google Ads', 'budget'),
@@ -359,7 +368,8 @@
         metric('مكالمات مقاسة', ads.callReportingConnected ? n(s.trackedCalls) : 'غير متصل', 'مدة وحالة فعلية', 'Call Reporting', ''),
         metric('عملاء محتملون', ads.callReportingConnected ? n(s.potentialCustomers) : 'غير متصل', 'مكالمة مستلمة >60ث', 'Call Reporting', 'potential'),
         metric('عملاء مؤكدون', ads.callReportingConnected ? n(s.confirmedCustomers) : 'غير متصل', '>60ث + تكرار/زيارة', 'تأهيل', 'confirmed'),
-        metric('CPA', money(s.cpa, currency), 'تكلفة تحويل Google Ads', 'Google Ads', '')
+        metric('CPA', money(s.cpa, currency), 'تكلفة تحويل Google Ads', 'Google Ads', ''),
+        metric('تكلفة إحالة الموقع', number(s.siteReferrals) ? money(s.siteCostPerReferral, currency) : '—', n(s.siteReferrals) + ' إحالة فريدة من الإعلانات', 'First-party', 'referral-cpa')
       ].join('');
       var used = Math.min(100, Math.max(0, number(s.budgetUseRate)));
       el('budgetPanel').innerHTML = '<div class="budget-copy"><div><span class="micro-label">BUDGET CONTROL</span><h3>الصرف مقابل الميزانية المخططة</h3></div><strong>' + pct(s.budgetUseRate) + '</strong></div>' +
@@ -372,12 +382,20 @@
       var campaigns = ads.campaigns || [];
       el('adsCampaignsEmpty').hidden = !!campaigns.length;
       el('adsCampaignsBody').innerHTML = campaigns.map(function (row) {
-        var referrals = Math.max(number(row.trackedCalls), number(row.phoneCalls)) + number(row.whatsappConversions);
-        return '<tr><td><strong>' + esc(row.name) + '</strong><br><small>' + esc(row.campaignId) + '</small></td><td>' + esc(row.status) + '</td><td>' + money(row.dailyBudget, currency) + '</td><td>' + money(row.cost, currency) + '</td><td>' + n(row.clicks) + '</td><td>' + pct(row.ctr) + '</td><td>' + n(referrals, 1) + '</td><td>' + n(row.potentialCustomers) + '</td><td>' + n(row.confirmedCustomers) + '</td><td>' + money(row.cpa, currency) + '</td></tr>';
+        return '<tr><td><strong>' + esc(row.name) + '</strong><br><small>' + esc(row.campaignId) + '</small></td><td>' + esc(row.status) + '</td><td>' + money(row.dailyBudget, currency) + '</td><td>' + money(row.cost, currency) + '</td><td>' + n(row.clicks) + '</td><td>' + pct(row.ctr) + '</td><td><strong>' + n(row.siteReferrals) + '</strong><br><small>' + n(row.siteCalls) + ' اتصال · ' + n(row.siteWhatsapp) + ' واتساب</small></td><td>' + n(row.potentialCustomers) + '</td><td>' + n(row.confirmedCustomers) + '</td><td>' + money(row.cpa, currency) + '</td></tr>';
       }).join('');
       var actions = ads.conversionActions || [];
+      var leadCategories = ['CONTACT', 'PHONE_CALL_LEAD', 'SUBMIT_LEAD_FORM', 'QUALIFIED_LEAD', 'CONVERTED_LEAD'];
+      var enabledLeadActions = actions.filter(function (row) { return row.status === 'ENABLED' && leadCategories.indexOf(row.category) > -1; });
+      var primaryLeadActions = enabledLeadActions.filter(function (row) { return row.primaryForGoal && row.includedInConversionsMetric; });
+      el('adsConversionGoalHealth').textContent = ads.conversionActionMetadataConnected ?
+        n(primaryLeadActions.length) + ' أساسي · ' + n(Math.max(0, enabledLeadActions.length - primaryLeadActions.length)) + ' ثانوي' :
+        'تفاصيل الإعداد بانتظار المزامنة';
       el('adsConversionActions').innerHTML = actions.length ? actions.map(function (row) {
-        return '<div class="ads-conversion-action"><strong>' + esc(row.name) + '</strong><span>' + n(row.conversions, 1) + ' تحويل</span></div>';
+        var configured = row.configured === true;
+        var primary = configured && row.primaryForGoal && row.includedInConversionsMetric;
+        return '<div class="ads-conversion-action"><div class="ads-conversion-copy"><strong>' + esc(row.name) + '</strong><small>' + esc(adsActionCategory(row.category)) + ' · ' + n(row.conversions, 1) + ' تحويل</small></div><div class="ads-conversion-flags">' +
+          (configured ? '<span class="conversion-flag ' + (primary ? 'is-primary' : 'is-secondary') + '">' + (primary ? 'أساسي' : 'ثانوي') + '</span><span class="conversion-flag">' + (row.status === 'ENABLED' ? 'فعال' : esc(row.status)) + '</span>' : '<span class="conversion-flag is-pending">بانتظار تفاصيل الإعداد</span>') + '</div></div>';
       }).join('') : '<div class="table-empty">لا توجد Conversion Actions في الفترة.</div>';
     }
     el('adsRecommendations').innerHTML = insights.filter(function (row) { return row.area === 'Google Ads' || row.area === 'الميزانية' || row.area === 'المكالمات'; }).map(function (row) {

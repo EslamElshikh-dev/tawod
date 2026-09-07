@@ -10,6 +10,7 @@ const edge = fs.readFileSync('supabase/functions/tawod-analytics/index.ts', 'utf
 const migration = fs.readFileSync('supabase/migrations/20260905_tawod_command_center_v2.sql', 'utf8');
 const salesMigration = fs.readFileSync('supabase/migrations/20260906_tawod_sales_pipeline.sql', 'utf8');
 const adminCredentialsMigration = fs.readFileSync('supabase/migrations/20260906_tawod_admin_credentials.sql', 'utf8');
+const adsCompletenessMigration = fs.readFileSync('supabase/migrations/20260907081401_tawod_ads_sync_completeness.sql', 'utf8');
 
 new Function(app);
 new Function(tracker);
@@ -35,6 +36,9 @@ assert.match(tracker, /click_id/);
 assert.match(tracker, /host === 'tawodco.com'/);
 assert.match(adsSync, /campaign_budget.amount_micros/);
 assert.match(adsSync, /call_view.call_duration_seconds/);
+assert.match(adsSync, /FROM conversion_action/);
+assert.match(adsSync, /conversion_action.primary_for_goal/);
+assert.match(adsSync, /campaignConfigRows/);
 assert.match(profileSync, /businessprofileperformance.googleapis.com/);
 assert.match(profileSync, /BUSINESS_IMPRESSIONS_DESKTOP_SEARCH/);
 
@@ -46,6 +50,8 @@ assert.match(edge, /call_qualification_update/);
 assert.match(edge, /business_profile_sync/);
 assert.match(edge, /sales_outcome_upsert/);
 assert.match(edge, /loadSalesPipeline/);
+assert.match(edge, /tawod_google_ads_conversion_actions/);
+assert.match(edge, /enrichGoogleAdsWithFirstParty/);
 assert.match(edge, /adminPasswordHash/);
 assert.doesNotMatch(edge, /const ADMIN_HASH|[0-9a-f]{64}';/);
 assert.match(salesMigration, /tawod_sales_outcomes/);
@@ -54,5 +60,8 @@ assert.match(salesMigration, /enable row level security/);
 assert.match(salesMigration, /revoke all .* anon, authenticated/);
 assert.match(adminCredentialsMigration, /tawod_admin_config/);
 assert.doesNotMatch(adminCredentialsMigration, /[0-9a-f]{64}/);
+assert.match(adsCompletenessMigration, /tawod_google_ads_conversion_actions/);
+assert.match(adsCompletenessMigration, /enable row level security/);
+assert.match(adsCompletenessMigration, /revoke all .* anon, authenticated/);
 
 console.log('Verified dashboard definitions, source integrations, contract pipeline, unique IDs, notification UI, and strict call qualification rules.');

@@ -22,6 +22,7 @@ function main() {
   const toDate = Utilities.formatDate(end, timeZone, 'yyyy-MM-dd');
 
   const campaigns = [];
+  const campaignKeys = new Set();
   const campaignRows = AdsApp.search(`
     SELECT
       segments.date,
@@ -46,6 +47,7 @@ function main() {
 
   while (campaignRows.hasNext()) {
     const row = campaignRows.next();
+    campaignKeys.add(`${row.segments.date}:${row.campaign.id}`);
     campaigns.push({
       date: row.segments.date,
       campaignId: Number(row.campaign.id),
@@ -63,6 +65,81 @@ function main() {
       phoneCalls: Number(row.metrics.phoneCalls || 0),
       phoneImpressions: Number(row.metrics.phoneImpressions || 0),
       phoneThroughRate: Number(row.metrics.phoneThroughRate || 0)
+    });
+  }
+
+  // A segmented performance query can omit brand-new campaigns until they
+  // receive their first impression. Add a zero-metric snapshot for every
+  // current campaign so budget, status, and PMax launches appear immediately.
+  const campaignConfigRows = AdsApp.search(`
+    SELECT
+      campaign.id,
+      campaign.name,
+      campaign.status,
+      campaign.advertising_channel_type,
+      campaign_budget.amount_micros,
+      campaign_budget.total_amount_micros
+    FROM campaign
+    WHERE campaign.status != 'REMOVED'
+  `);
+
+  while (campaignConfigRows.hasNext()) {
+    const row = campaignConfigRows.next();
+    const key = `${toDate}:${row.campaign.id}`;
+    if (campaignKeys.has(key)) continue;
+    campaigns.push({
+      date: toDate,
+      campaignId: Number(row.campaign.id),
+      campaignName: row.campaign.name,
+      campaignStatus: String(row.campaign.status || ''),
+      channelType: String(row.campaign.advertisingChannelType || ''),
+      dailyBudgetMicros: Number((row.campaignBudget || {}).amountMicros || 0),
+      totalBudgetMicros: Number((row.campaignBudget || {}).totalAmountMicros || 0),
+      impressions: 0,
+      clicks: 0,
+      costMicros: 0,
+      conversions: 0,
+      allConversions: 0,
+      conversionsValue: 0,
+      phoneCalls: 0,
+      phoneImpressions: 0,
+      phoneThroughRate: 0
+    });
+  }
+
+  // Sync the configuration of every conversion action, including actions with
+  // zero conversions. This lets the dashboard distinguish primary goals from
+  // secondary diagnostics instead of inferring setup from performance rows.
+  const conversionActions = [];
+  const conversionActionRows = AdsApp.search(`
+    SELECT
+      conversion_action.id,
+      conversion_action.name,
+      conversion_action.status,
+      conversion_action.type,
+      conversion_action.origin,
+      conversion_action.category,
+      conversion_action.primary_for_goal,
+      conversion_action.include_in_conversions_metric,
+      conversion_action.counting_type,
+      conversion_action.phone_call_duration_seconds
+    FROM conversion_action
+    WHERE conversion_action.status != 'REMOVED'
+  `);
+
+  while (conversionActionRows.hasNext()) {
+    const row = conversionActionRows.next();
+    conversionActions.push({
+      conversionActionId: Number(row.conversionAction.id),
+      name: String(row.conversionAction.name || ''),
+      status: String(row.conversionAction.status || ''),
+      type: String(row.conversionAction.type || ''),
+      origin: String(row.conversionAction.origin || ''),
+      category: String(row.conversionAction.category || ''),
+      primaryForGoal: row.conversionAction.primaryForGoal === true,
+      includeInConversionsMetric: row.conversionAction.includeInConversionsMetric === true,
+      countingType: String(row.conversionAction.countingType || ''),
+      phoneCallDurationSeconds: Number(row.conversionAction.phoneCallDurationSeconds || 0)
     });
   }
 
@@ -129,8 +206,8 @@ function main() {
     console.log(`Call reporting unavailable: ${error && error.message ? error.message : error}`);
   }
 
-  if (!campaigns.length && !calls.length) {
-    console.log(`No campaign or call rows found between ${fromDate} and ${toDate}.`);
+  if (!campaigns.length && !calls.length && !conversionActions.length) {
+    console.log(`No campaign, conversion action, or call rows found between ${fromDate} and ${toDate}.`);
     return;
   }
 
@@ -144,6 +221,7 @@ function main() {
       currency,
       campaigns,
       conversions,
+      conversionActions,
       calls
     }),
     muteHttpExceptions: true
@@ -151,7 +229,7 @@ function main() {
 
   const code = response.getResponseCode();
   const body = response.getContentText();
-  console.log(`Tawod Ads sync: HTTP ${code} | campaigns=${campaigns.length} | conversions=${conversions.length} | calls=${calls.length}`);
+  console.log(`Tawod Ads sync: HTTP ${code} | campaigns=${campaigns.length} | conversions=${conversions.length} | conversionActions=${conversionActions.length} | calls=${calls.length}`);
   console.log(body);
   if (code < 200 || code >= 300) throw new Error(`Tawod sync failed: HTTP ${code} ${body}`);
 }
