@@ -58,6 +58,12 @@
   function salesStageLabel(value) {
     return { new: 'إحالة جديدة', qualified: 'عميل مؤهل', quote_sent: 'عرض سعر مرسل', site_visit: 'زيارة موقع', contract_signed: 'عقد موقّع', lost: 'لم يتم التعاقد' }[value] || value || '—';
   }
+  function sheetsSyncLabel(row) {
+    if (row.sourceType !== 'whatsapp' || !row.qualifiedAt) return { text: 'غير مشمول', cls: '' };
+    var test = /^TEST(?:-|_|$)/i.test(row.clickId || '');
+    if (row.sheetsSyncedAt) return { text: test ? 'وصل الاختبار' : 'تمت المزامنة', cls: 'contract_signed' };
+    return { text: test ? 'اختبار بانتظار الرفع' : 'بانتظار الرفع', cls: 'quote_sent' };
+  }
   function statusFreshness(connected, at) {
     if (!connected) return { label: 'غير متصل', cls: 'is-offline' };
     var age = at ? (Date.now() - new Date(at).getTime()) / 3600000 : Infinity;
@@ -271,7 +277,8 @@
     el('pipelineEmpty').hidden = !!entries.length;
     el('pipelineLastUpdate').textContent = sales.lastUpdatedAt ? 'آخر تحديث: ' + formatDate(sales.lastUpdatedAt) : 'لم تُسجل نتائج بعد';
     el('pipelineBody').innerHTML = entries.map(function (row) {
-      return '<tr data-outcome="' + esc(row.id) + '"><td>' + esc(formatDate(row.occurredAt)) + '</td><td><span class="channel-tag ' + esc(row.sourceType) + '">' + esc(salesSourceLabel(row.sourceType)) + '</span></td><td>' + esc(row.serviceType) + '</td><td>' + esc(row.campaignName) + '</td><td><span class="stage-tag ' + esc(row.stage) + '">' + esc(salesStageLabel(row.stage)) + '</span></td><td>' + esc(money(row.estimatedValue, 'SAR')) + '</td><td><strong>' + esc(money(row.contractValue, 'SAR')) + '</strong></td><td>' + esc(row.notes) + '</td><td><button class="pipeline-edit" type="button">تعديل</button></td></tr>';
+      var sync = sheetsSyncLabel(row);
+      return '<tr data-outcome="' + esc(row.id) + '"><td>' + esc(formatDate(row.occurredAt)) + '</td><td><span class="channel-tag ' + esc(row.sourceType) + '">' + esc(salesSourceLabel(row.sourceType)) + '</span></td><td>' + esc(row.serviceType) + '</td><td>' + esc(row.campaignName) + '</td><td><span class="stage-tag ' + esc(row.stage) + '">' + esc(salesStageLabel(row.stage)) + '</span></td><td><span class="stage-tag ' + esc(sync.cls) + '">' + esc(sync.text) + '</span></td><td>' + esc(money(row.estimatedValue, 'SAR')) + '</td><td><strong>' + esc(money(row.contractValue, 'SAR')) + '</strong></td><td>' + esc(row.notes) + '</td><td><button class="pipeline-edit" type="button">تعديل</button></td></tr>';
     }).join('');
   }
 
@@ -447,7 +454,7 @@
     el('recentLeadsEmpty').hidden = !!referrals.length;
     el('recentLeadsBody').innerHTML = referrals.map(function (row) {
       var channel = row.method === 'call' ? '<span class="channel-tag call">اتصال</span>' : '<span class="channel-tag whatsapp">واتساب</span>';
-      return '<tr><td>' + esc(formatDate(row.at)) + '</td><td>' + channel + '</td><td>' + esc(cleanPath(row.sourcePath)) + '</td><td>' + esc(sourceLabel(row.source)) + '</td><td>' + esc(row.campaign) + '</td><td>' + esc(deviceLabel(row.device)) + '</td><td><code>' + esc(row.session) + '</code></td><td><button class="promote-referral" type="button" data-source-type="' + esc(row.method) + '" data-source-ref="' + esc(row.session) + '" data-campaign="' + esc(row.campaign || '') + '" data-source-path="' + esc(cleanPath(row.sourcePath)) + '">نقل للمبيعات</button></td></tr>';
+      return '<tr><td>' + esc(formatDate(row.at)) + '</td><td>' + channel + '</td><td>' + esc(cleanPath(row.sourcePath)) + '</td><td>' + esc(sourceLabel(row.source)) + '</td><td>' + esc(row.campaign) + '</td><td>' + esc(deviceLabel(row.device)) + '</td><td><code>' + esc(row.session) + '</code></td><td><button class="promote-referral" type="button" data-source-type="' + esc(row.method) + '" data-source-ref="' + esc(row.sourceRef || row.session) + '" data-campaign="' + esc(row.campaign || '') + '" data-source-path="' + esc(cleanPath(row.sourcePath)) + '">نقل للمبيعات</button></td></tr>';
     }).join('');
     var ads = data.googleAds || {};
     var calls = ads.calls || [];
@@ -472,7 +479,7 @@
   function buildNotifications(data) {
     var rows = [];
     (data.recentReferrals || []).slice(0, 8).forEach(function (row) {
-      rows.push({ id: 'ref-' + row.at + '-' + row.session + '-' + row.method, at: row.at, level: 'good', title: row.method === 'call' ? 'إحالة اتصال جديدة' : 'إحالة واتساب جديدة', text: sourceLabel(row.source) + ' · ' + cleanPath(row.sourcePath) });
+      rows.push({ id: 'ref-' + (row.sourceRef || row.at + '-' + row.session) + '-' + row.method, at: row.at, level: 'good', title: row.method === 'call' ? 'إحالة اتصال جديدة' : 'إحالة واتساب جديدة', text: sourceLabel(row.source) + ' · ' + cleanPath(row.sourcePath) });
     });
     var ads = data.googleAds || {};
     if (!ads.connected) rows.push({ id: 'source-google-ads-offline', at: null, level: 'high', title: 'Google Ads غير متصل', text: 'الميزانية والصرف ومدة المكالمات غير متاحة.' });
@@ -600,17 +607,19 @@
   async function savePipeline(event) {
     event.preventDefault();
     var button = el('pipelineSaveButton');
+    var stage = el('pipelineStage').value;
+    var queuedForSheets = el('pipelineSourceType').value === 'whatsapp' && ['qualified', 'quote_sent', 'site_visit', 'contract_signed'].indexOf(stage) !== -1;
     button.disabled = true; button.textContent = 'حفظ…';
     try {
       await request({
         mode: 'sales_outcome_upsert', token: token, id: el('pipelineId').value || null,
         sourceRef: el('pipelineForm').dataset.sourceRef || null,
-        sourceType: el('pipelineSourceType').value, stage: el('pipelineStage').value,
+        sourceType: el('pipelineSourceType').value, stage: stage,
         serviceType: el('pipelineServiceType').value.trim(), campaignName: el('pipelineCampaign').value.trim(),
         estimatedValue: number(el('pipelineEstimatedValue').value), contractValue: number(el('pipelineContractValue').value),
         notes: el('pipelineNotes').value.trim()
       });
-      showToast('تم حفظ مرحلة البيع وربطها بالإحصائيات', true);
+      showToast(queuedForSheets ? 'تم الحفظ وإضافة العميل إلى طابور Google Sheets' : 'تم حفظ مرحلة البيع وربطها بالإحصائيات', true);
       resetPipelineForm(); await load();
     } catch (error) { showToast('تعذر حفظ نتيجة البيع', true); }
     finally { button.disabled = false; if (!el('pipelineId').value) button.textContent = 'حفظ في مسار البيع'; }
