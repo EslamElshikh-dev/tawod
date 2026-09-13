@@ -31,6 +31,8 @@ for (const match of app.matchAll(/el('([^']+)')/g)) {
 assert.match(html + app, /الإحالات الناجحة|الإحالة الناجحة/);
 assert.match(html, /أداء الملف التجاري للشركة/);
 assert.match(html, /الميزانية والصرف وجودة المكالمات/);
+assert.match(html, /id="googleAdsSyncButton"/);
+assert.match(html, /المشغّل التلقائي يعمل كل ساعة/);
 assert.match(html, /notificationDrawer/);
 assert.match(html, /متابعة العروض والعقود/);
 assert.match(html, /عقد موقّع/);
@@ -45,6 +47,9 @@ assert.match(adsSync, /call_view.call_duration_seconds/);
 assert.match(adsSync, /FROM conversion_action/);
 assert.match(adsSync, /conversion_action.primary_for_goal/);
 assert.match(adsSync, /campaignConfigRows/);
+assert.match(adsSync, /schedule hourly/);
+assert.match(app, /googleAdsSyncButton.*refreshGoogleAds/);
+assert.match(app, /300000/);
 assert.match(profileSync, /businessprofileperformance.googleapis.com/);
 assert.match(profileSync, /BUSINESS_IMPRESSIONS_DESKTOP_SEARCH/);
 

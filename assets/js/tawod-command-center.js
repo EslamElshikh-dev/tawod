@@ -87,7 +87,7 @@
   }
   function setLoading(on) {
     el('adminLoading').hidden = !on;
-    ['refreshButton', 'copyButton', 'printButton'].forEach(function (id) { el(id).disabled = on; });
+    ['refreshButton', 'copyButton', 'printButton', 'googleAdsSyncButton'].forEach(function (id) { el(id).disabled = on; });
     el('refreshButton').textContent = on ? 'تحديث…' : 'تحديث';
   }
   function metric(label, value, hint, source, cls) {
@@ -358,6 +358,7 @@
     el('googleAdsStatus').className = 'ads-status-chip ' + fresh.cls;
     el('googleAdsStatus').innerHTML = '<i></i>' + fresh.label;
     el('googleAdsLastSync').textContent = ads.connected ? 'آخر مزامنة: ' + formatDate(ads.lastSyncAt) : 'لم تصل بيانات من الحساب بعد';
+    el('googleAdsSyncFeedback').textContent = ads.connected && fresh.cls === 'is-live' ? 'مزامنة تلقائية كل ساعة · البيانات محدثة' : 'المشغّل التلقائي يعمل كل ساعة';
     el('googleAdsConnectHint').hidden = !!ads.connected;
     if (!ads.connected) {
       el('adsSummaryMetrics').innerHTML = unavailableMetrics(['الميزانية اليومية', 'الصرف', 'النقرات', 'التحويلات', 'مكالمات مقاسة', 'عملاء محتملون', 'عملاء مؤكدون', 'CPA'], 'Google Ads');
@@ -540,16 +541,50 @@
     if (!response.ok) { var failure = new Error(data.error || 'request_failed'); failure.status = response.status; throw failure; }
     return data;
   }
-  async function load() {
-    if (!token) return;
-    setLoading(true);
+  async function load(options) {
+    options = options || {};
+    if (!token) return null;
+    if (!options.background) setLoading(true);
     try {
-      render(await request({ mode: 'admin', token: token, days: number(el('periodSelect').value) || 30 }));
-      showToast('تم تحديث البيانات ومطابقة المصادر');
+      var data = await request({ mode: 'admin', token: token, days: number(el('periodSelect').value) || 30 });
+      render(data);
+      if (!options.quiet) showToast('تم تحديث البيانات ومطابقة المصادر');
+      return data;
     } catch (error) {
       if (error.status === 401) logoutNow('انتهت الجلسة. سجّل الدخول من جديد.');
       else showToast('تعذر تحميل البيانات الآن', true);
-    } finally { setLoading(false); }
+      return null;
+    } finally { if (!options.background) setLoading(false); }
+  }
+  async function refreshGoogleAds() {
+    var button = el('googleAdsSyncButton');
+    var before = payload && payload.googleAds ? payload.googleAds.lastSyncAt : null;
+    button.textContent = 'جارٍ التحديث…';
+    el('googleAdsSyncFeedback').textContent = 'جارٍ طلب أحدث دفعة وصلت من Google Ads…';
+    try {
+      var data = await load({ quiet: true });
+      if (!data) {
+        el('googleAdsSyncFeedback').textContent = 'تعذر طلب أحدث بيانات الآن';
+        return;
+      }
+      var ads = data.googleAds || { connected: false };
+      var after = ads.lastSyncAt;
+      if (!ads.connected) {
+        el('googleAdsSyncFeedback').textContent = 'لم تصل بيانات من المشغّل حتى الآن';
+        showToast('لم تصل بيانات Google Ads بعد', true);
+      } else if (after && (!before || new Date(after).getTime() > new Date(before).getTime())) {
+        el('googleAdsSyncFeedback').textContent = 'وصلت دفعة جديدة · المزامنة التلقائية كل ساعة';
+        showToast('وصلت مزامنة جديدة من Google Ads', true);
+      } else if (statusFreshness(true, after).cls === 'is-live') {
+        el('googleAdsSyncFeedback').textContent = 'البيانات محدثة · المزامنة التلقائية كل ساعة';
+        showToast('بيانات Google Ads محدثة بالفعل');
+      } else {
+        el('googleAdsSyncFeedback').textContent = 'لا توجد دفعة جديدة بعد · المشغّل يعمل كل ساعة';
+        showToast('لم تصل دفعة جديدة بعد؛ ستُفحص تلقائيًا', true);
+      }
+    } finally {
+      button.textContent = 'تحديث Google Ads';
+    }
   }
   async function loginNow(event) {
     event.preventDefault();
@@ -657,6 +692,7 @@
     this.textContent = visible ? 'إظهار' : 'إخفاء'; this.setAttribute('aria-pressed', String(!visible));
   });
   el('refreshButton').addEventListener('click', load);
+  el('googleAdsSyncButton').addEventListener('click', refreshGoogleAds);
   el('periodSelect').addEventListener('change', load);
   el('copyButton').addEventListener('click', copySummary);
   el('printButton').addEventListener('click', function () { window.print(); });
@@ -677,6 +713,9 @@
       campaignName: button.dataset.campaign, notes: 'إحالة من الصفحة ' + button.dataset.sourcePath, stage: 'new'
     });
   });
+  window.setInterval(function () {
+    if (token && !document.hidden) load({ quiet: true, background: true });
+  }, 300000);
   if (/\.vercel\.app$/i.test(window.location.hostname)) el('previewNotice').hidden = false;
   initNavigation();
   token = sessionStorage.getItem(TOKEN_KEY) || '';

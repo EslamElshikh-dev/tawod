@@ -1,7 +1,7 @@
 /*
  * Tawod Google Ads -> Supabase reporting sync.
  * Install in Google Ads > Tools > Bulk actions > Scripts.
- * Replace SYNC_KEY once, authorize, run once, then schedule hourly or daily.
+ * Replace SYNC_KEY once, authorize, run once, then schedule hourly.
  */
 const TAWOD_SYNC_URL = 'https://vddoeiggfcwllfxpirep.supabase.co/functions/v1/tawod-analytics';
 const TAWOD_SYNC_KEY = 'PASTE_TAWOD_SYNC_KEY_HERE';

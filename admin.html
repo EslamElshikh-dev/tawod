@@ -10,7 +10,7 @@
 <link rel="icon" href="/images/logo/tawod-logo.png" type="image/png">
 <link rel="stylesheet" href="/assets/css/tawod-admin.css">
 <link rel="stylesheet" href="/assets/css/tawod-admin-ads.css">
-<link rel="stylesheet" href="/assets/css/tawod-command-center.css?v=20260907-1">
+<link rel="stylesheet" href="/assets/css/tawod-command-center.css?v=20260913-1">
 </head>
 <body class="admin-body">
 <div class="login-screen" id="adminLogin">
@@ -109,7 +109,7 @@
 
     <section class="admin-section" id="google-ads">
       <div class="section-heading"><div><p class="eyebrow">GOOGLE ADS</p><h2>الميزانية والصرف وجودة المكالمات</h2></div><p>لا تظهر الأرقام كصفر عندما يكون المصدر غير متصل.</p></div>
-      <div class="ads-status-bar"><div class="ads-status-copy"><span class="ads-status-chip" id="googleAdsStatus"><i></i> فحص الاتصال</span><div><strong>مصدر Google Ads</strong><span id="googleAdsLastSync">—</span></div></div><span class="source-badge">المصدر: Google Ads API</span></div>
+      <div class="ads-status-bar"><div class="ads-status-copy"><span class="ads-status-chip" id="googleAdsStatus"><i></i> فحص الاتصال</span><div><strong>مصدر Google Ads</strong><span id="googleAdsLastSync">—</span></div></div><div class="ads-sync-actions"><button id="googleAdsSyncButton" class="ads-sync-button" type="button">تحديث Google Ads</button><small id="googleAdsSyncFeedback">المشغّل التلقائي يعمل كل ساعة</small><span class="source-badge">المصدر: Google Ads API</span></div></div>
       <div class="source-setup" id="googleAdsConnectHint"><strong>يلزم تشغيل مزامنة Google Ads</strong><p>بعد الربط تظهر الميزانية اليومية، الصرف، الحملات، التحويلات، ومدة المكالمات الفعلية. لا يتم اختراع قيم بديلة.</p></div>
       <div class="ads-kpi-grid compact-top" id="adsSummaryMetrics"></div>
       <div class="budget-panel panel compact-top" id="budgetPanel"></div>
@@ -151,6 +151,6 @@
 
 <div class="loading-layer" id="adminLoading" hidden><div class="loader"></div><p>جاري مطابقة المصادر وترتيب القرارات…</p></div>
 <div class="toast" id="adminToast" aria-live="polite"></div>
-<script src="/assets/js/tawod-command-center.js?v=20260907-1" defer></script>
+<script src="/assets/js/tawod-command-center.js?v=20260913-1" defer></script>
 </body>
 </html>
