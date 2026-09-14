@@ -12,7 +12,7 @@ const hubUrl = "/blog/topics/bone-construction/";
 const serviceUrl = "/service-construction.html";
 const projectUrl = "/project-arouba-mosque-villas.html";
 const expectedIntents = new Map([
-  [pillarSlug, "بناء عظم بالرياض"],
+  [pillarSlug, "بناء عظم في الرياض"],
   ["bone-construction-company-vs-contractor-riyadh", "شركة بناء عظم أم مقاول بناء عظم"],
   ["bone-construction-contract-riyadh", "عقد بناء عظم"],
   ["bone-construction-quote-request-riyadh", "طلب عرض سعر بناء عظم"],

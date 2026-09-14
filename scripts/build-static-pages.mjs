@@ -11,13 +11,17 @@ const ignoredDirectories=new Set(['.git','.next','node_modules','out','public'])
 const architectureCss='assets/css/tawod-blog-architecture.css';
 const architectureVersion=createHash('sha256').update(fs.readFileSync(path.join(root,architectureCss))).digest('hex').slice(0,12);
 const contentRefreshDates=new Map([
-  ['blog/mechanical-mep-works-riyadh/index.html','2026-08-29'],
+  ['blog/mechanical-mep-works-riyadh/index.html','2026-09-13'],
   ['blog/turnkey-commercial-fitout-riyadh/index.html','2026-08-29'],
   ['blog/turnkey-contracts-riyadh/index.html','2026-08-29'],
   ['blog/turnkey-contract-checklist-riyadh/index.html','2026-08-29'],
   ['blog/finishing-apartment-riyadh/index.html','2026-08-29'],
   ['blog/finishing-materials-riyadh/index.html','2026-08-29'],
-  ['blog/finishing-villa-riyadh-guide/index.html','2026-08-29'],
+  ['blog/finishing-villa-riyadh-guide/index.html','2026-09-13'],
+  ['blog/bone-construction-riyadh-guide/index.html','2026-09-13'],
+  ['blog/turnkey-construction-riyadh-guide/index.html','2026-09-13'],
+  ['blog/building-renovation-company-riyadh/index.html','2026-09-13'],
+  ['blog/interior-design-execution-stages-riyadh/index.html','2026-09-13'],
 ]);
 const serviceRefreshDates=new Map([
   ['service-construction.html','2026-09-03'],
