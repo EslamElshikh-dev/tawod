@@ -44,10 +44,6 @@ const generatedProjectPages = [
 ];
 const encodedProjectImages = [
   {
-    sources: ["assets/project-media/modon-01-v3.b64"],
-    output: "images/projects/modon-eight-warehouses-01-v3.webp",
-  },
-  {
     sources: [
       "assets/project-media/modon-02-v4.part00.b64",
       "assets/project-media/modon-02-v4.part01.b64",

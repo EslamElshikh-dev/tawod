@@ -23,7 +23,8 @@ const dimensions = {
   "images/projects/construction-01.webp": [1200, 1600],
   "images/projects/arouba-mosque-villas-01.webp": [420, 560],
   "images/projects/arouba-mosque-villas-02.webp": [420, 560],
-  "images/projects/modon-eight-warehouses-01-v3.webp": [360, 480],
+  "images/projects/modon-eight-warehouses-01-v3.webp": [1200, 1596],
+  "images/projects/modon-eight-warehouses-01-editorial.webp": [1200, 675],
   "images/projects/project-luxury-villa-turnkey-alqusur.webp": [1536, 1024]
 };
 

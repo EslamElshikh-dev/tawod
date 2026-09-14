@@ -207,6 +207,7 @@ for (const relativePath of [
   "images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp",
   "images/projects/alrajhi-tanks-king-salman-park-01.webp",
   "images/projects/modon-eight-warehouses-01-v3.webp",
+  "images/projects/modon-eight-warehouses-01-editorial.webp",
   "images/projects/modon-eight-warehouses-02-v3.webp",
   "maintenance/assets/css/maintenance.css",
   "robots.txt",
