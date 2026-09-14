@@ -48,7 +48,7 @@ const intentionalHtmlTransforms = new Map([
   [
     "project-modon-eight-warehouses-riyadh.html",
     [
-      "images/projects/modon-eight-warehouses-01-v3.webp",
+      "images/projects/modon-eight-warehouses-01-v4.webp",
       "images/projects/modon-eight-warehouses-02-v3.webp",
     ],
   ],
@@ -206,7 +206,7 @@ for (const relativePath of [
   "images/projects/faisaliah-villa-facades-finishing-01-v3.webp",
   "images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp",
   "images/projects/alrajhi-tanks-king-salman-park-01.webp",
-  "images/projects/modon-eight-warehouses-01-v3.webp",
+  "images/projects/modon-eight-warehouses-01-v4.webp",
   "images/projects/modon-eight-warehouses-01-editorial.webp",
   "images/projects/modon-eight-warehouses-02-v3.webp",
   "maintenance/assets/css/maintenance.css",

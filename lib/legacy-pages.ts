@@ -10,7 +10,7 @@ const localAssetRevisionCache = new Map<string, string>();
 const projectImageReplacements = [
   [
     "images/projects/modon-eight-warehouses-01.webp",
-    "images/projects/modon-eight-warehouses-01-v3.webp",
+    "images/projects/modon-eight-warehouses-01-v4.webp",
   ],
   [
     "images/projects/modon-eight-warehouses-02.webp",
