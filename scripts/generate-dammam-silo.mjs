@@ -3,6 +3,7 @@ import path from 'node:path';
 import process from 'node:process';
 import { createHash } from 'node:crypto';
 import articles from './dammam-articles-2026-08-13.mjs';
+import { dammam, enhanceBranchHtml } from './business-branches.mjs';
 
 const root = process.cwd();
 const check = process.argv.includes('--check');
@@ -25,6 +26,7 @@ const jsonScript = (value) => JSON.stringify(value).replace(/</g, '\\u003c');
 const articleBySlug = new Map(articles.map((article) => [article.slug, article]));
 
 function writeIfChanged(file, content) {
+  content = enhanceBranchHtml(content, path.relative(root, file).split(path.sep).join('/'));
   const old = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
   const analytics = old.match(/<!-- TAWOD_ANALYTICS_START -->[\s\S]*?<!-- TAWOD_ANALYTICS_END -->/)?.[0] || '';
   let normalized = content.replace(/[ \t]+$/gm, '').replace(/\n{3,}/g, '\n\n').trim() + '\n';
@@ -525,11 +527,12 @@ function updateSitemaps() {
   ];
   const mainFile = path.join(root, 'sitemap.xml');
   let main = fs.readFileSync(mainFile, 'utf8').replace(/\s*<url><loc>https:\/\/tawodco\.com\/dammam\/[\s\S]*?<\/url>/g, '');
-  const entries = paths.map((pathname) => `  <url><loc>${domain}${pathname}</loc><lastmod>${date}</lastmod></url>`).join('\n');
+  const updated = new Set(['/dammam/', '/dammam/about/', '/dammam/contact/']);
+  const entries = paths.map((pathname) => `  <url><loc>${domain}${pathname}</loc><lastmod>${updated.has(pathname) ? dammam.updatedAt : date}</lastmod></url>`).join('\n');
   main = main.replace(/\s*<\/urlset>/, `\n${entries}\n</urlset>`);
   writeIfChanged(mainFile, main);
 
-  const local = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${paths.map((pathname) => `  <url><loc>${domain}${pathname}</loc><lastmod>${date}</lastmod></url>`).join('\n')}\n</urlset>`;
+  const local = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>`;
   writeIfChanged(path.join(root, 'sitemap-dammam.xml'), local);
 }
 

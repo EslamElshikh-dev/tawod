@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import baseArticles from './dammam-articles-2026-08-13.mjs';
+import { stripBranchMarkup } from './business-branches.mjs';
 
 const root = process.cwd();
 const check = process.argv.includes('--check');
@@ -24,7 +25,7 @@ function writeIfChanged(file, content) {
 }
 
 function localizeString(value) {
-  return String(value)
+  return stripBranchMarkup(value)
     .replace(/DAMMAM/g, 'KHOBAR')
     .replace(/Dammam/g, 'Khobar')
     .replace(/dammam/g, 'khobar')
