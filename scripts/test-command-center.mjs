@@ -68,7 +68,6 @@ assert.match(edge, /tawod_visitor_frequency/);
 assert.match(edge, /sourceEventId/);
 assert.match(edge, /TEST_ONLY/);
 assert.match(edge, /DO_NOT_IMPORT/);
-assert.match(edge, /qualificationStatus: 'Qualified'/);
 assert.match(edge, /projectStage: 'غير محدد'/);
 assert.match(edge, /inspectionRequested: 'غير محدد'/);
 assert.match(edge, /quotationRequested: 'غير محدد'/);
@@ -108,3 +107,4 @@ assert.doesNotMatch(sheetsSync, /SpreadsheetApp\.openById/);
 assert.doesNotMatch(sheetsSync, /TAWOD_SHEETS_SYNC_KEY\s*=\s*['"][^'"]{32}/);
 
 console.log('Verified dashboard definitions, source integrations, qualified WhatsApp Sheets sync, deduplication, and strict call qualification rules.');
+await import('./test-qualified-lead-export.mjs');
