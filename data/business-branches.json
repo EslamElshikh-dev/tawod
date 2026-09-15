@@ -1,0 +1,50 @@
+{
+  "company": {
+    "name": "شركة تعاود للمقاولات العامة",
+    "schemaId": "https://tawodco.com/#organization",
+    "url": "https://tawodco.com/",
+    "logo": "https://tawodco.com/images/logo/tawod-logo.png",
+    "telephone": "+966551128884",
+    "displayTelephone": "0551128884",
+    "email": "info@tawodco.com",
+    "whatsappUrl": "https://wa.me/966551128884"
+  },
+  "workingHours": {
+    "timeZone": "Asia/Riyadh",
+    "days": ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
+    "opens": "07:00",
+    "closes": "22:00",
+    "closedDays": ["Friday"],
+    "label": "السبت إلى الخميس من 7:00 صباحًا إلى 10:00 مساءً",
+    "closedLabel": "الجمعة مغلق"
+  },
+  "dammam": {
+    "name": "شركة تعاود للمقاولات العامة - فرع الدمام",
+    "signageName": "شركة تعاود للمقاولات",
+    "schemaId": "https://tawodco.com/dammam/#branch",
+    "url": "https://tawodco.com/dammam/",
+    "contactUrl": "https://tawodco.com/dammam/contact/",
+    "address": {
+      "streetAddress": "7671 شارع زهير بن قيس، حي الشعلة",
+      "addressLocality": "الدمام",
+      "addressRegion": "المنطقة الشرقية",
+      "postalCode": "34271",
+      "addressCountry": "SA"
+    },
+    "formattedAddress": "7671 شارع زهير بن قيس، حي الشعلة، الدمام 34271، المملكة العربية السعودية",
+    "geo": {"latitude": 26.3550939, "longitude": 50.0602398},
+    "mapsUrl": "https://maps.app.goo.gl/9KoeHsrGg9AcT3iK7",
+    "areaServed": "الدمام",
+    "updatedAt": "2026-09-15",
+    "googleBusinessProfile": {
+      "status": "pending_creation",
+      "proposedName": "شركة تعاود للمقاولات",
+      "primaryCategoryLabel": "General contractor",
+      "storeCode": "dammam",
+      "locationId": null,
+      "placeId": null,
+      "customerReceptionConfirmed": null,
+      "suiteNumberConfirmed": null
+    }
+  }
+}

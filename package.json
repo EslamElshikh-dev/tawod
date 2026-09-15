@@ -2,10 +2,10 @@
   "name": "tawod-nextjs-site",
   "private": true,
   "scripts": {
-    "predev": "node scripts/install-site-analytics.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "predev": "node scripts/business-branches.mjs && node scripts/install-site-analytics.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/install-site-analytics.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
-    "prepare:assets": "node scripts/install-site-analytics.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "prebuild": "node scripts/business-branches.mjs && node scripts/install-site-analytics.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "prepare:assets": "node scripts/business-branches.mjs && node scripts/install-site-analytics.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "build": "next build",
     "postbuild": "node scripts/finalize-next-export.mjs && node scripts/verify-next-export.mjs",
     "typecheck": "tsc --noEmit",
@@ -38,7 +38,9 @@
     "generate:bone-series": "node scripts/generate-seo-cluster-2026-08-23.mjs && node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/install-site-analytics.mjs && node scripts/build-static-pages.mjs && node scripts/install-site-analytics.mjs",
     "check:bone-series": "node scripts/validate-bone-construction-series.mjs && node scripts/validate-bone-construction-decision-guides.mjs",
     "validate:site": "node scripts/validate-site.mjs",
-    "check": "npm run prepare:assets && npm run typecheck && npm run check:analytics && npm run test:analytics && npm run test:command-center && npm run check:static && npm run check:home && npm run check:mobile-performance && npm run check:blog && npm run check:blogger-redirects && npm run check:blog-architecture && npm run check:bone-series && npm run check:seo-ownership && npm run check:dammam && npm run check:khobar && npm run check:dhahran && npm run check:city-distinctness && npm run validate:site && npm run build"
+    "check": "npm run prepare:assets && npm run typecheck && npm run check:analytics && npm run test:analytics && npm run test:command-center && npm run check:static && npm run check:home && npm run check:mobile-performance && npm run check:blog && npm run check:blogger-redirects && npm run check:blog-architecture && npm run check:bone-series && npm run check:seo-ownership && npm run check:branches && npm run check:dammam && npm run check:khobar && npm run check:dhahran && npm run check:city-distinctness && npm run validate:site && npm run build",
+    "sync:branches": "node scripts/business-branches.mjs",
+    "check:branches": "node scripts/business-branches.mjs --check && node scripts/test-business-branches.mjs"
   },
   "dependencies": {
     "next": "16.3.2",
