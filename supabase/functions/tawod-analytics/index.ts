@@ -337,27 +337,28 @@ async function loadSalesPipeline(days: number) {
   const response = await supabase(`/rest/v1/tawod_sales_outcomes?${query.toString()}`);
   if (!response.ok) return { connected: false, error: 'sales_pipeline_query_failed', entries: [] };
   const entries = (await response.json()).map(normalizeSalesRow);
+  const realEntries = entries.filter((row: any) => !isTestSalesRow(row));
   const progressiveStages = {
     qualified: new Set(['qualified', 'quote_sent', 'site_visit', 'contract_signed']),
     quotes: new Set(['quote_sent', 'site_visit', 'contract_signed']),
     visits: new Set(['site_visit', 'contract_signed']),
   };
   const sum = (key: 'estimatedValue' | 'contractValue', filter: (row: any) => boolean) =>
-    entries.filter(filter).reduce((total: number, row: any) => total + finite(row[key]), 0);
-  const contracts = entries.filter((row: any) => row.stage === 'contract_signed');
+    realEntries.filter(filter).reduce((total: number, row: any) => total + finite(row[key]), 0);
+  const contracts = realEntries.filter((row: any) => row.stage === 'contract_signed');
   return {
     connected: true,
     lastUpdatedAt: entries.reduce((latest: string | null, row: any) => !latest || row.updatedAt > latest ? row.updatedAt : latest, null),
     summary: {
-      opportunities: entries.length,
-      qualified: entries.filter((row: any) => progressiveStages.qualified.has(row.stage)).length,
-      quotes: entries.filter((row: any) => progressiveStages.quotes.has(row.stage)).length,
-      visits: entries.filter((row: any) => progressiveStages.visits.has(row.stage)).length,
+      opportunities: realEntries.length,
+      qualified: realEntries.filter((row: any) => progressiveStages.qualified.has(row.stage)).length,
+      quotes: realEntries.filter((row: any) => progressiveStages.quotes.has(row.stage)).length,
+      visits: realEntries.filter((row: any) => progressiveStages.visits.has(row.stage)).length,
       contracts: contracts.length,
-      lost: entries.filter((row: any) => row.stage === 'lost').length,
+      lost: realEntries.filter((row: any) => row.stage === 'lost').length,
       openPipelineValue: sum('estimatedValue', (row: any) => row.stage !== 'lost' && row.stage !== 'contract_signed'),
       contractValue: sum('contractValue', (row: any) => row.stage === 'contract_signed'),
-      contractRate: entries.length ? contracts.length / entries.length * 100 : 0,
+      contractRate: realEntries.length ? contracts.length / realEntries.length * 100 : 0,
     },
     entries,
   };
@@ -497,29 +498,36 @@ function riyadhTimestamp(value: unknown) {
   return new Date(new Date(iso).getTime() + 3 * 3600000).toISOString().slice(0, 19).replace('T', ' ') + '+03:00';
 }
 function sheetQualificationStatus(row: any, clickId: string | null) {
-  if (clickId && /^TEST(?:-|_|$)/i.test(clickId)) return 'TEST_ONLY';
+  if (isTestSalesRow(row)) return 'TEST_ONLY';
   if (!clickId || !/^[a-zA-Z0-9._~-]{10,300}$/.test(clickId)) return 'QUALIFIED_NO_AD_CLICK_ID';
   return {
     qualified: 'QUALIFIED', quote_sent: 'QUOTE_SENT', site_visit: 'SITE_VISIT',
     contract_signed: 'CONTRACT_SIGNED', lost: 'LOST_AFTER_QUALIFICATION', new: 'REVIEWED_AFTER_QUALIFICATION',
   }[row.stage as string] || 'QUALIFIED';
 }
+function isTestSalesRow(row: any) {
+  return /^(?:TEST|DUMMY|EXAMPLE|FAKE)(?:-|_|$)/i.test(row.click_id || row.clickId || '') ||
+    /\bTEST_ONLY\b/i.test(row.notes || '');
+}
 function normalizeSheetLead(row: any) {
-  const clickId = text(row.click_id, 300);
+  // A click ID is opaque. Never trim or truncate it into an apparently valid ID.
+  const clickId = typeof row.click_id === 'string' ? row.click_id : null;
   const disposition = sheetQualificationStatus(row, clickId);
-  const importable = disposition !== 'TEST_ONLY' && disposition !== 'QUALIFIED_NO_AD_CLICK_ID';
+  const qualificationTime = riyadhTimestamp(row.qualified_at);
+  const importable = disposition !== 'TEST_ONLY' && disposition !== 'QUALIFIED_NO_AD_CLICK_ID' && !!qualificationTime;
   const testPrefix = disposition === 'TEST_ONLY' ? 'TEST_ONLY — ' : '';
   return {
     outcomeId: row.id,
     updatedAt: row.updated_at,
     leadId: `TAWOD-${row.id}`,
-    qualificationStatus: 'Qualified',
-    qualificationTime: riyadhTimestamp(row.qualified_at),
-    googleClickId: clickId || '',
+    // Data Manager filters Qualification Status; Conversion Name alone cannot exclude a row.
+    qualificationStatus: importable ? 'Qualified' : disposition === 'TEST_ONLY' ? 'Unqualified' : 'Pending',
+    qualificationTime,
+    googleClickId: importable ? clickId : '',
     email: '',
     phoneNumber: '',
     conversionName: importable ? 'Qualified WhatsApp Conversation' : 'DO_NOT_IMPORT',
-    conversionTime: riyadhTimestamp(row.qualified_at),
+    conversionTime: importable ? qualificationTime : '',
     conversionValue: Math.max(0, finite(row.estimated_value)),
     conversionCurrency: 'SAR',
     adUserDataConsent: 'DENIED',
