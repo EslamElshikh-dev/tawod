@@ -23,8 +23,15 @@ function articleTokens(r){const h=pages.get(r)||'',match=h.match(/<article[^>]*c
 function jaccard(a,b){let intersection=0;for(const value of a)if(b.has(value))intersection+=1;return intersection/(a.size+b.size-intersection||1)}
 
 for(const [r,h] of pages){
-  // All public Tawod departments use the owner's confirmed company number.
-  const officialPhones=new Set(['0551128884','966551128884']);
+  // Maintenance has its own contact number; other Tawod pages retain the contracting number.
+  const maintenanceSilo=r.startsWith('maintenance/');
+  const officialPhones=maintenanceSilo
+    ? new Set(['0533152133','966533152133'])
+    : new Set(['0551128884','966551128884']);
+  if(maintenanceSilo){
+    if(/0551128884|966551128884/.test(h))errors.push(`${r}: old maintenance phone remains`);
+    for(const required of ['0533152133','tel:+966533152133','https://wa.me/966533152133','"telephone": "+966533152133"'])if(!h.includes(required))errors.push(`${r}: missing maintenance contact ${required}`);
+  }
   for(const [,href] of all(h,/\bhref=["']([^"']+)["']/gi)){
     let phone='';
     if(/^tel:/i.test(href))phone=href.slice(4).split('?')[0];
@@ -45,7 +52,7 @@ for(const [r,h] of pages){
   if(r.startsWith('lp/')&&!/<meta\b(?=[^>]*name=["']robots["'])[^>]*content=["'][^"']*noindex/i.test(h))errors.push(`${r}: ads-only landing page must be noindex,follow`);
   const excluded=r==='index.html'||r==='privacy-policy.html'||r==='404.html'||r.startsWith('en/')||/noindex/i.test(h);
   const localMatch=r.match(/^(dammam|khobar|dhahran)\//),localCity=localMatch?.[1]||'',localSilo=Boolean(localCity),localArticle=localCity&&new RegExp(`^${localCity}/blog/[^/]+/index\\.html$`).test(r);
-  const maintenanceSilo=r.startsWith('maintenance/'),maintenanceHub=r==='maintenance/index.html';
+  const maintenanceHub=r==='maintenance/index.html';
   const blogArchivePage=r==='blog/index.html'||/^blog\/page\/\d+\/index\.html$/.test(r),blogTopicPage=/^blog\/topics\/[^/]+\/index\.html$/.test(r)||r==='blog/turnkey-riyadh/index.html',blogArticle=/^blog\/[^/]+\/index\.html$/.test(r)&&r!=='blog/turnkey-riyadh/index.html';
   if(!excluded){
     indexable.add(pagePath(r));
