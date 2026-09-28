@@ -1,167 +1,79 @@
 (function () {
-  "use strict";
-
-  var root = document.documentElement;
-  var body = document.body;
-  var header = document.getElementById("site-header");
-  var menuToggle = document.querySelector("[data-menu-toggle]");
-  var menuShell = document.querySelector("[data-mobile-menu]");
-  var menuClose = document.querySelector("[data-menu-close]");
-  var lastFocusedElement = null;
-
-  function updateHeader() {
-    if (!header) return;
-    header.classList.toggle("is-scrolled", window.scrollY > 24);
+  'use strict';
+  var toggle = document.querySelector('[data-menu-toggle]');
+  var menu = document.getElementById('mobile-menu');
+  var panel = menu && menu.querySelector('.menu-panel');
+  var previousFocus;
+  var background = ['.topline', '.site-header', '#main-content', '.site-footer', '.contact-float'].map(function (s) { return document.querySelector(s); }).filter(Boolean);
+  function setMenu(open) {
+    if (!menu || !toggle) return;
+    if (open) previousFocus = document.activeElement;
+    menu.hidden = !open;
+    document.body.classList.toggle('menu-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'إغلاق قائمة التنقل' : 'فتح قائمة التنقل');
+    background.forEach(function (el) { el.inert = open; });
+    if (open) panel.querySelector('button').focus();
+    else if (previousFocus && document.contains(previousFocus)) previousFocus.focus();
   }
-
-  updateHeader();
-  window.addEventListener("scroll", updateHeader, { passive: true });
-
-  function getMenuFocusableElements() {
-    if (!menuShell) return [];
-    return Array.prototype.slice.call(
-      menuShell.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')
-    ).filter(function (element) {
-      return element !== menuClose && !element.hasAttribute("hidden");
+  if (toggle) toggle.addEventListener('click', function () { setMenu(menu.hidden); });
+  if (menu) {
+    menu.querySelectorAll('[data-menu-close], nav a').forEach(function (el) { el.addEventListener('click', function () { setMenu(false); }); });
+    document.addEventListener('keydown', function (event) {
+      if (menu.hidden) return;
+      if (event.key === 'Escape') { setMenu(false); return; }
+      if (event.key !== 'Tab') return;
+      var elements = Array.from(panel.querySelectorAll('a[href], button'));
+      var first = elements[0], last = elements[elements.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     });
+    var desktop = window.matchMedia('(min-width: 1001px)');
+    var reset = function (e) { if (e.matches && !menu.hidden) setMenu(false); };
+    if (desktop.addEventListener) desktop.addEventListener('change', reset);
+    else if (desktop.addListener) desktop.addListener(reset);
   }
-
-  function setMenuState(isOpen) {
-    if (!menuToggle || !menuShell) return;
-
-    body.classList.toggle("menu-open", isOpen);
-    menuToggle.setAttribute("aria-expanded", String(isOpen));
-    menuToggle.setAttribute("aria-label", isOpen ? "إغلاق قائمة التنقل" : "فتح قائمة التنقل");
-    menuShell.setAttribute("aria-hidden", String(!isOpen));
-
-    if ("inert" in menuShell) {
-      menuShell.inert = !isOpen;
-    }
-
-    if (isOpen) {
-      lastFocusedElement = document.activeElement;
-      window.requestAnimationFrame(function () {
-        var focusable = getMenuFocusableElements();
-        if (focusable.length) focusable[0].focus();
-      });
-    } else if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
-      lastFocusedElement.focus();
-      lastFocusedElement = null;
-    }
-  }
-
-  if (menuShell && "inert" in menuShell) {
-    menuShell.inert = true;
-  }
-
-  if (menuToggle) {
-    menuToggle.addEventListener("click", function () {
-      setMenuState(!body.classList.contains("menu-open"));
-    });
-  }
-
-  if (menuClose) {
-    menuClose.addEventListener("click", function () {
-      setMenuState(false);
-    });
-  }
-
-  if (menuShell) {
-    menuShell.querySelectorAll("a[href]").forEach(function (link) {
-      link.addEventListener("click", function () {
-        setMenuState(false);
-      });
-    });
-  }
-
-  document.addEventListener("keydown", function (event) {
-    if (!body.classList.contains("menu-open")) return;
-
-    if (event.key === "Escape") {
-      setMenuState(false);
-      return;
-    }
-
-    if (event.key !== "Tab") return;
-
-    var focusable = getMenuFocusableElements();
-    if (!focusable.length) return;
-
-    var first = focusable[0];
-    var last = focusable[focusable.length - 1];
-
-    if (event.shiftKey && document.activeElement === first) {
+  var form = document.getElementById('service-request');
+  var review = document.getElementById('request-review');
+  if (form && review) {
+    form.addEventListener('submit', function (event) {
       event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
-    }
-  });
-
-  var desktopQuery = window.matchMedia("(min-width: 1121px)");
-  function closeMenuOnDesktop(event) {
-    if (event.matches && body.classList.contains("menu-open")) {
-      setMenuState(false);
-    }
-  }
-
-  if (typeof desktopQuery.addEventListener === "function") {
-    desktopQuery.addEventListener("change", closeMenuOnDesktop);
-  } else if (typeof desktopQuery.addListener === "function") {
-    desktopQuery.addListener(closeMenuOnDesktop);
-  }
-
-  var revealElements = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
-  var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  if (!revealElements.length || reducedMotion || !("IntersectionObserver" in window)) {
-    revealElements.forEach(function (element) {
-      element.classList.add("is-visible");
-    });
-  } else {
-    revealElements.forEach(function (element) {
-      var rect = element.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 0.92) {
-        element.classList.add("is-visible");
+      var selected = Array.from(form.querySelectorAll('input[name="services"]:checked')).map(function (el) { return el.value; });
+      var error = document.getElementById('form-error');
+      if (!selected.length) { error.textContent = 'اختر خدمة واحدة على الأقل لتجهيز طلبك.'; form.querySelector('input[name="services"]').focus(); return; }
+      error.textContent = '';
+      var district = form.elements.district.value.trim();
+      if (!district) { error.textContent = 'اكتب اسم الحي داخل الرياض.'; form.elements.district.focus(); return; }
+      var message = ['السلام عليكم، أرغب في دراسة احتياجي لدى تعاود للصيانة والتشغيل وإدارة المرافق.', '', 'الخدمات: ' + selected.join('، '), 'نوع الموقع: ' + form.elements.property.value, 'الموقع: الرياض، ' + district, 'نوع الطلب: ' + form.elements.duration.value];
+      var notes = form.elements.notes.value.trim();
+      if (notes) message.push('التفاصيل: ' + notes);
+      message.push('', 'أرجو التواصل لتحديد نطاق الخدمة والخطوة المناسبة.');
+      var text = message.join('\n');
+      document.getElementById('request-summary').textContent = text;
+      document.getElementById('request-whatsapp').href = 'https://wa.me/966533152133?text=' + encodeURIComponent(text);
+      form.hidden = true; review.hidden = false;
+      review.focus({preventScroll:true});
+      review.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+      // Preparation is not a confirmed lead. Never send user-entered text to analytics.
+      if (/^(www\.)?tawodco\.com$/.test(window.location.hostname) && typeof window.gtag === 'function') {
+        window.gtag('event','maintenance_request_prepared',{service_count:selected.length,page_path:window.location.pathname});
       }
     });
-
-    var revealObserver = new IntersectionObserver(
-      function (entries, observer) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
-        });
-      },
-      {
-        rootMargin: "0px 0px -8% 0px",
-        threshold: 0.08
-      }
-    );
-
-    revealElements.forEach(function (element) {
-      if (!element.classList.contains("is-visible")) {
-        revealObserver.observe(element);
-      }
-    });
-
-    root.classList.add("reveal-ready");
+    document.getElementById('request-edit').addEventListener('click',function () { review.hidden = true; form.hidden = false; form.querySelector('input').focus({preventScroll:true}); form.scrollIntoView({behavior:'auto',block:'start'}); });
+    form.addEventListener('change',function () { document.getElementById('form-error').textContent = ''; });
   }
-
-  var faqItems = Array.prototype.slice.call(document.querySelectorAll(".faq-list details"));
-  faqItems.forEach(function (item) {
-    item.addEventListener("toggle", function () {
-      if (!item.open) return;
-      faqItems.forEach(function (otherItem) {
-        if (otherItem !== item) otherItem.open = false;
+  document.querySelectorAll('[data-current-year]').forEach(function (el) { el.textContent = String(new Date().getFullYear()); });
+  // Keep quick contact buttons clear of the request flow and footer contacts.
+  var floatingContact = document.querySelector('.contact-float');
+  if (floatingContact && 'IntersectionObserver' in window) {
+    var contactSections = new Set();
+    var contactObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) contactSections.add(entry.target);
+        else contactSections.delete(entry.target);
       });
+      floatingContact.hidden = contactSections.size > 0;
     });
-  });
-
-  var year = String(new Date().getFullYear());
-  document.querySelectorAll("[data-current-year]").forEach(function (element) {
-    element.textContent = year;
-  });
+    document.querySelectorAll('.request-section, .service-cta, .site-footer').forEach(function (el) { contactObserver.observe(el); });
+  }
 })();

@@ -30,7 +30,8 @@ for(const [r,h] of pages){
     : new Set(['0551128884','966551128884']);
   if(maintenanceSilo){
     if(/0551128884|966551128884/.test(h))errors.push(`${r}: old maintenance phone remains`);
-    for(const required of ['0533152133','tel:+966533152133','https://wa.me/966533152133','"telephone": "+966533152133"'])if(!h.includes(required))errors.push(`${r}: missing maintenance contact ${required}`);
+    for(const required of ['0533152133','tel:+966533152133','https://wa.me/966533152133'])if(!h.includes(required))errors.push(`${r}: missing maintenance contact ${required}`);
+    if(!/"telephone"\s*:\s*"\+966533152133"/.test(h))errors.push(`${r}: missing maintenance schema telephone`);
   }
   for(const [,href] of all(h,/\bhref=["']([^"']+)["']/gi)){
     let phone='';
@@ -53,6 +54,8 @@ for(const [r,h] of pages){
   const excluded=r==='index.html'||r==='privacy-policy.html'||r==='404.html'||r.startsWith('en/')||/noindex/i.test(h);
   const localMatch=r.match(/^(dammam|khobar|dhahran)\//),localCity=localMatch?.[1]||'',localSilo=Boolean(localCity),localArticle=localCity&&new RegExp(`^${localCity}/blog/[^/]+/index\\.html$`).test(r);
   const maintenanceHub=r==='maintenance/index.html';
+  const maintenanceCatalog=r==='maintenance/services.html';
+  const maintenancePrivacy=r==='maintenance/privacy.html';
   const blogArchivePage=r==='blog/index.html'||/^blog\/page\/\d+\/index\.html$/.test(r),blogTopicPage=/^blog\/topics\/[^/]+\/index\.html$/.test(r)||r==='blog/turnkey-riyadh/index.html',blogArticle=/^blog\/[^/]+\/index\.html$/.test(r)&&r!=='blog/turnkey-riyadh/index.html';
   if(!excluded){
     indexable.add(pagePath(r));
@@ -61,7 +64,7 @@ for(const [r,h] of pages){
       if(!h.includes('assets/js/maintenance.js'))errors.push(`${r}: missing maintenance.js`);
       all(h,/<a\b[^>]*href=["']([^"']+)["'][^>]*>/gi).map(m=>m[1]).forEach(v=>{const t=localTarget(r,v);if(t&&!t.file.startsWith('maintenance/'))errors.push(`${r}: maintenance silo link escapes to ${v}`)});
     }else if(!h.includes('tawod-system.css'))errors.push(`${r}: missing tawod-system.css`);
-    if(!localSilo&&!blogArchivePage&&!blogArticle&&r!=='contact.html'){
+    if(!localSilo&&!blogArchivePage&&!blogArticle&&!maintenanceCatalog&&!maintenancePrivacy&&r!=='contact.html'){
       if(!/<section[^>]*(?:id=["']faq["']|class=["'][^"']*(?:seo-faq|tawod-faq-section)[^"']*["'])/i.test(h))errors.push(`${r}: missing visible FAQ section`);
       if(!schemas.some(x=>schemaHas(x,'FAQPage')))errors.push(`${r}: missing FAQPage schema`);
     }
@@ -88,7 +91,7 @@ for(const [r,h] of pages){
       const accepted=['WebPage','AboutPage','ContactPage','CollectionPage','Service'];
       if(!accepted.some(type=>schemas.some(x=>schemaHas(x,type))))errors.push(`${r}: missing local page schema`);
     }else if(maintenanceSilo){
-      const expected=maintenanceHub?'WebPage':'Service';
+      const expected=maintenanceCatalog?'CollectionPage':maintenanceHub||maintenancePrivacy?'WebPage':'Service';
       if(!schemas.some(x=>schemaHas(x,expected)))errors.push(`${r}: missing maintenance ${expected} schema`);
     }else if(!['WebPage','AboutPage','ContactPage','CollectionPage','Service'].some(type=>schemas.some(x=>schemaHas(x,type))))errors.push(`${r}: missing page schema`);
   }
