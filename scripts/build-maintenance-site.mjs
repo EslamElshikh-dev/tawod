@@ -52,10 +52,14 @@ const servicePhotos={
   ['tawod-cleaning-window.webp',941,1672,'تنظيف النوافذ','العناية بنافذة زجاجية مرتفعة'],
   ['tawod-cleaning-facade-wash.webp',1050,1400,'غسل الواجهة الزجاجية','عامل ينظف واجهة زجاجية خارجية'],
   ['tawod-cleaning-facade-access.webp',1050,1400,'العمل على واجهة زجاجية','عامل يعمل على واجهة زجاجية باستخدام سقالة'],
+  ['tawod-cleaning-glass-facade-team.webp',1448,1086,'فريق تنظيف الواجهات','فريق ينظف واجهة زجاجية في مساحة خارجية'],
+  ['tawod-cleaning-floor-equipment.webp',1449,1086,'معدات تنظيف الأرضيات','عاملان يستخدمان معدات تنظيف أرضيات داخلية'],
+  ['tawod-cleaning-arched-window.webp',844,1500,'تنظيف نافذة داخلية','عامل يعتني بنافذة داخلية مرتفعة باستخدام سلم'],
  ],
  'technical-maintenance':[
   ['tawod-ac-duct-maintenance.webp',1050,1400,'أعمال مجاري الهواء','فنيان يعملان على مجاري هواء التكييف'],
   ['tawod-electrical-control-panel.webp',1050,1400,'لوحة التحكم الكهربائية','لوحة تحكم كهربائية داخل الموقع'],
+  ['tawod-facility-mosque-lift.webp',670,1500,'أعمال علوية داخل مرفق','استخدام منصة رفع للوصول إلى أعمال علوية داخل مرفق','18%'],
  ],
  'ac-maintenance':[
   ['tawod-ac-duct-maintenance.webp',1050,1400,'أعمال مجاري الهواء','فنيان يعملان على مجاري هواء التكييف'],
@@ -67,6 +71,7 @@ const servicePhotos={
   ['tawod-landscaping-team.webp',1200,900,'العناية بالمساحات الخضراء','فريق يتابع النباتات في مساحة خارجية'],
   ['tawod-irrigation-controller.webp',1122,1402,'صيانة نظام الري','فحص وحدة التحكم في نظام الري'],
   ['tawod-landscaping-planting.webp',1315,1196,'أعمال البستنة','عامل يجهز التربة ضمن أعمال البستنة'],
+  ['tawod-irrigation-grass-access.webp',844,1500,'فحص نقطة ري في المسطح الأخضر','عامل يفحص صندوق خدمة داخل المسطح الأخضر'],
  ],
  'pest-control':[
   ['tawod-pest-garden.webp',1121,1403,'مكافحة الحشرات في الحديقة','عامل مجهز بالوقاية يتابع معالجة مساحة مزروعة'],
@@ -75,8 +80,22 @@ const servicePhotos={
   ['tawod-pest-interior-treatment.webp',1050,1400,'معالجة موضعية','عامل بملابس واقية يعالج مساحة داخلية'],
   ['tawod-pest-garden-sprayer.webp',1050,1400,'رش في مساحة خارجية','عامل يحمل مرشّة في مساحة خارجية'],
  ],
+ 'waterproofing-leak-detection':[
+  ['tawod-waterproofing-drain-inspection.webp',1086,1448,'فحص مصرف أرضي','عامل يفحص نقطة صرف داخل تجويف أرضي'],
+ ],
+ 'facility-management':[
+  ['tawod-cleaning-meeting-room.webp',1448,1086,'فريق العناية بالمرافق','عاملان يعتنيان بقاعة اجتماعات'],
+  ['tawod-facility-mosque-lift.webp',670,1500,'الوصول للأعمال العلوية','استخدام منصة رفع داخل مرفق','18%'],
+ ],
+ 'operations-staffing':[
+  ['tawod-cleaning-meeting-room.webp',1448,1086,'كوادر العناية بالمكان','عاملان يعتنيان بقاعة اجتماعات'],
+  ['tawod-cleaning-interior-detail.webp',844,1500,'العناية بالتفاصيل الداخلية','عامل يعتني بتفاصيل مساحة داخلية'],
+ ],
+ 'restoration-finishing':[
+  ['tawod-restoration-paving-team.webp',978,1500,'تنفيذ أرضية خارجية','فريق يركّب بلاط رصف في مساحة خارجية'],
+ ],
 };
-const photoImg=(photo)=>`<img src="${base}assets/images/${photo[0]}" width="${photo[1]}" height="${photo[2]}" alt="${esc(photo[4])}" loading="lazy" decoding="async">`;
+const photoImg=(photo)=>`<img src="${base}assets/images/${photo[0]}" width="${photo[1]}" height="${photo[2]}" alt="${esc(photo[4])}"${photo[5]?` style="object-position:center ${photo[5]}"`:''} loading="lazy" decoding="async">`;
 const cardPhoto=(slug)=>servicePhotos[slug]?`<a class="card-photo" href="${page(slug)}" aria-label="صور خدمة ${esc(servicePhotos[slug][0][3])}">${photoImg(servicePhotos[slug][0])}<span class="photo-badge" aria-hidden="true">من صور العمل</span></a>`:'';
 const photoGallery=(slug)=>servicePhotos[slug]?`<section class="section service-photo-section" aria-label="صور مرتبطة بالخدمة"><div class="container">${sectionHead('من صور العمل','الخدمة في الميدان.','لقطات ميدانية تعرض تفاصيل العمل المرتبطة بهذه الخدمة.')}<div class="service-photo-grid${servicePhotos[slug].length===2?' photo-count-2':''}">${servicePhotos[slug].map(photo=>`<figure>${photoImg(photo)}<figcaption>${esc(photo[3])}</figcaption></figure>`).join('')}</div></div></section>`:'';
 function shell({title,desc,path='',body,graph=[],pageType='WebPage'}){
