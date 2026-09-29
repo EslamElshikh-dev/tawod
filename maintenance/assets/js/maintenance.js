@@ -33,6 +33,40 @@
     if (desktop.addEventListener) desktop.addEventListener('change', reset);
     else if (desktop.addListener) desktop.addListener(reset);
   }
+  // The thin header line follows reading progress without changing the layout.
+  var siteHeader = document.querySelector('.site-header');
+  if (siteHeader) {
+    var scrollFrame = 0;
+    var updateReadingProgress = function () {
+      var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      siteHeader.style.setProperty('--scroll-progress', String(maxScroll > 0 ? Math.min(1, Math.max(0, window.scrollY / maxScroll)) : 0));
+      siteHeader.classList.toggle('is-scrolled', window.scrollY > 24);
+      scrollFrame = 0;
+    };
+    updateReadingProgress();
+    window.addEventListener('scroll', function () {
+      if (!scrollFrame) scrollFrame = window.requestAnimationFrame(updateReadingProgress);
+    }, { passive: true });
+    window.addEventListener('resize', updateReadingProgress, { passive: true });
+  }
+  // Reveal below-the-fold content only when motion is supported and welcome.
+  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var revealTargets = document.querySelectorAll('.section-heading, .service-card, .catalog-card, .service-photo-grid figure, .scope-card, .process-grid li, .sector-card, .related-grid > a, .scope-sheet, .service-brief');
+    var revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      });
+    }, { rootMargin: '0px 0px -6% 0px', threshold: 0.04 });
+    revealTargets.forEach(function (el, index) {
+      // Above-the-fold content stays immediately readable while the page loads.
+      if (el.getBoundingClientRect().top < window.innerHeight - 32) return;
+      el.style.setProperty('--reveal-delay', String(index % 3 * 75) + 'ms');
+      el.classList.add('reveal-pending');
+      revealObserver.observe(el);
+    });
+  }
   var form = document.getElementById('service-request');
   var review = document.getElementById('request-review');
   if (form && review) {
