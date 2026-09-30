@@ -105,6 +105,46 @@ assert.equal(phoneEvent.defaultPrevented, false, 'phone navigation must stay imm
 assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'tawod_call_click').length, 1);
 assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'conversion').length, 0, 'phone clicks must never fire an Ads conversion');
 
+// The same restoration CTA must identify its service and location in both
+// measurement systems, without turning a click into an answered call.
+const restoration = runAnalytics({ pathname: '/service-restoration.html' });
+const restorationLink = {
+  href: 'tel:0551128884',
+  getAttribute: (name) => ({ href: 'tel:0551128884', 'data-contact-service': 'restoration', 'data-contact-position': 'mobile_sticky' })[name] || null
+};
+const restorationEvent = { target: { closest: () => restorationLink }, defaultPrevented: false };
+restoration.listeners.get('click')(restorationEvent);
+const restorationClicks = restoration.window.dataLayer.filter((item) => item[0] === 'event');
+assert.equal(restorationClicks.length, 1, 'one phone click must emit one GA4 contact event');
+assert.equal(restorationClicks[0][1], 'tawod_call_click');
+assert.equal(restorationClicks[0][2].service_type, 'restoration');
+assert.equal(restorationClicks[0][2].cta_position, 'mobile_sticky');
+assert.equal(restorationClicks[0][2].interaction_type, 'click');
+assert.equal(restorationEvent.defaultPrevented, false);
+
+const firstPartyEvents = [];
+const firstPartyListeners = new Map();
+const firstPartyDocument = {
+  readyState: 'loading', body: null, referrer: '', title: 'Restoration test',
+  addEventListener: (name, handler) => firstPartyListeners.set(name, handler)
+};
+restoration.window.location.hostname = 'tawodco.com';
+const firstPartySource = fs.readFileSync('assets/js/tawod-first-party.js', 'utf8');
+vm.runInNewContext(firstPartySource, {
+  window: restoration.window, document: firstPartyDocument, URL, URLSearchParams,
+  fetch: (_url, options) => {
+    firstPartyEvents.push(...JSON.parse(options.body).events);
+    return Promise.resolve({ ok: true });
+  }
+});
+firstPartyListeners.get('click')(restorationEvent);
+assert.equal(firstPartyEvents.length, 2, 'one page view and one click must be recorded');
+assert.equal(firstPartyEvents[1].event_name, 'call_click');
+assert.equal(firstPartyEvents[1].service_type, 'restoration');
+assert.equal(firstPartyEvents[1].metadata.cta_position, 'mobile_sticky');
+assert.equal(firstPartyEvents[1].metadata.interaction_type, 'click');
+assert.equal(firstPartyEvents.some((event) => /answered|qualified|generate_lead/.test(event.event_name)), false);
+
 const whatsappLink = {
   target: '',
   href: 'https://wa.me/966551128884',
