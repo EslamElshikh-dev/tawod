@@ -212,6 +212,8 @@
     track(isCall ? 'tawod_call_click' : 'tawod_whatsapp_click', {
       contact_method: method,
       service_type: link.getAttribute('data-contact-service') || 'not_specified',
+      cta_position: link.getAttribute('data-contact-position') || 'not_specified',
+      interaction_type: 'click',
       page_path: window.location.pathname,
       link_url: link.href,
       transport_type: 'beacon'

@@ -204,7 +204,11 @@
     if (!isCall && !isWhatsApp) return;
     send(isCall ? 'call_click' : 'whatsapp_click', {
       contact_method: isCall ? 'phone' : 'whatsapp',
-      service_type: link.getAttribute('data-contact-service') || null
+      service_type: link.getAttribute('data-contact-service') || null,
+      metadata: {
+        cta_position: link.getAttribute('data-contact-position') || 'not_specified',
+        interaction_type: 'click'
+      }
     });
   }
 
