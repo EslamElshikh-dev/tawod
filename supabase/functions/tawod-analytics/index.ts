@@ -381,6 +381,10 @@ async function loadDecisions() {
   const workspace = await response.json();
   return { ...workspace, entries: (workspace.entries || []).map(normalizeDecision) };
 }
+async function loadNotificationFeed() {
+  const response = await supabase('/rest/v1/rpc/tawod_notification_feed', { method: 'POST', body: '{}' });
+  return response.ok ? await response.json() : { connected: false, error: 'notification_feed_failed', entries: [] };
+}
 async function findDecision(column: 'id' | 'insight_key', value: string) {
   const query = new URLSearchParams({ select: '*', [column]: `eq.${value}`, limit: '1' });
   const response = await supabase(`/rest/v1/tawod_decisions?${query.toString()}`);
@@ -737,7 +741,7 @@ Deno.serve(async (req) => {
       await new Promise((resolve) => setTimeout(resolve, 450));
       return json({ error: 'unauthorized' }, 401, origin, { 'Retry-After': '1' });
     }
-    return json({ token: await issueAdminToken(), expiresIn: ADMIN_TTL_MS / 1000 }, 200, origin);
+    return json({ token: await issueAdminToken(), expiresIn: ADMIN_TTL_MS / 1000, adminProfile: { username: ADMIN_USERNAME } }, 200, origin);
   }
 
   if (body?.mode === 'admin') {
@@ -746,7 +750,7 @@ Deno.serve(async (req) => {
     if (!authorized && typeof body.password === 'string' && body.password) authorized = await sha256(body.password) === await adminPasswordHash();
     if (!authorized) return json({ error: 'unauthorized' }, 401, origin);
     const days = Math.max(7, Math.min(Number(body.days) || 30, 90));
-    const [siteResponse, adsResponse, profileResponse, salesPipeline, recentReferrals, visitorFrequency, commercial, decisions] = await Promise.all([
+    const [siteResponse, adsResponse, profileResponse, salesPipeline, recentReferrals, visitorFrequency, commercial, decisions, notifications] = await Promise.all([
       supabase('/rest/v1/rpc/tawod_admin_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
       supabase('/rest/v1/rpc/tawod_google_ads_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
       supabase('/rest/v1/rpc/tawod_business_profile_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
@@ -755,6 +759,7 @@ Deno.serve(async (req) => {
       loadVisitorFrequency(days),
       loadCommercial(days),
       loadDecisions(),
+      loadNotificationFeed(),
     ]);
     if (!siteResponse.ok) return json({ error: 'analytics_query_failed' }, 500, origin);
     const siteRaw = await siteResponse.json();
@@ -769,7 +774,14 @@ Deno.serve(async (req) => {
     const googleAdsRaw = adsResponse.ok ? await adsResponse.json() : { connected: false, error: 'google_ads_query_failed' };
     const googleAds = enrichGoogleAdsWithFirstParty(googleAdsRaw, site);
     const businessProfile = profileResponse.ok ? await profileResponse.json() : { connected: false, error: 'business_profile_query_failed' };
-    return json({ ...site, recentReferrals: recentReferrals || site.recentReferrals || [], googleAds, businessProfile, salesPipeline, commercial, decisions }, 200, origin);
+    return json({ ...site, recentReferrals: recentReferrals || site.recentReferrals || [], googleAds, businessProfile, salesPipeline, commercial, decisions, notifications, adminProfile: { username: ADMIN_USERNAME } }, 200, origin);
+  }
+
+  if (body?.mode === 'notification_feed') {
+    if (!isAdminOrigin(origin)) return json({ error: 'origin_not_allowed' }, 403, origin);
+    if (!await verifyAdminToken(body.token)) return json({ error: 'unauthorized' }, 401, origin);
+    try { return json(await loadNotificationFeed(),200,origin); }
+    catch { return json({ error:'notification_service_unavailable' },503,origin); }
   }
 
   if (body?.mode === 'call_qualification_update') {

@@ -10,9 +10,36 @@
 <link rel="icon" href="/images/logo/tawod-logo.png" type="image/png">
 <link rel="stylesheet" href="/assets/css/tawod-admin.css">
 <link rel="stylesheet" href="/assets/css/tawod-admin-ads.css">
-<link rel="stylesheet" href="/assets/css/tawod-command-center.css?v=20260930-1">
+<link rel="stylesheet" href="/assets/css/tawod-command-center.css?v=20260930-3">
 </head>
 <body class="admin-body">
+<svg xmlns="http://www.w3.org/2000/svg" class="cc-icon-sprite" aria-hidden="true" width="0" height="0"><defs>
+<symbol id="cc-i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3Z"/><path d="M9 20v-7h6v7"/></symbol>
+<symbol id="cc-i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v4m10-4v4M3 11h18m-14 5 3 3 6-6"/></symbol>
+<symbol id="cc-i-board" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16m6-16v16M5 8h2m4 0h2m4 0h2M5 12h2m4 0h2"/></symbol>
+<symbol id="cc-i-chart" viewBox="0 0 24 24"><path d="M4 3v17h17M8 16v-4m5 4V7m5 9v-6"/></symbol>
+<symbol id="cc-i-funnel" viewBox="0 0 24 24"><path d="M3 4h18l-7 8v7l-4 2v-9Z"/></symbol>
+<symbol id="cc-i-trend" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-11M15 4h6v6"/></symbol>
+<symbol id="cc-i-megaphone" viewBox="0 0 24 24"><path d="m4 8 15-4v16L4 16ZM8 17l1 4H5l-1-5M22 9v6"/></symbol>
+<symbol id="cc-i-pin" viewBox="0 0 24 24"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+<symbol id="cc-i-sources" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="5" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="m7 7 3 3m4 0 3-3M7 17l3-3m4 0 3 3"/></symbol>
+<symbol id="cc-i-pages" viewBox="0 0 24 24"><path d="M14 3H5v18h14V8ZM14 3v5h5M8 12h8m-8 4h6"/></symbol>
+<symbol id="cc-i-message" viewBox="0 0 24 24"><path d="M4 4h16v13H9l-5 4Z"/><path d="M8 9h8m-8 4h5"/></symbol>
+<symbol id="cc-i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m7 12 3 3 7-7"/></symbol>
+<symbol id="cc-i-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9Zm4 12h4"/></symbol>
+<symbol id="cc-i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></symbol>
+<symbol id="cc-i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+<symbol id="cc-i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+<symbol id="cc-i-refresh" viewBox="0 0 24 24"><path d="M20 10a8 8 0 0 0-14-5L3 8m0-5v5h5M4 14a8 8 0 0 0 14 5l3-3m0 5v-5h-5"/></symbol>
+<symbol id="cc-i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+<symbol id="cc-i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V3H3v13h5"/></symbol>
+<symbol id="cc-i-print" viewBox="0 0 24 24"><path d="M6 8V3h12v5M6 17H3V8h18v9h-3M6 14h12v7H6Z"/></symbol>
+<symbol id="cc-i-logout" viewBox="0 0 24 24"><path d="M10 3H4v18h6m5-14 5 5-5 5m-7-5h12"/></symbol>
+<symbol id="cc-i-edit" viewBox="0 0 24 24"><path d="m16 3 5 5L9 20l-6 1 1-6Zm-3 3 5 5"/></symbol>
+<symbol id="cc-i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></symbol>
+<symbol id="cc-i-arrow" viewBox="0 0 24 24"><path d="M20 12H4m6-6-6 6 6 6"/></symbol>
+<symbol id="cc-i-plus" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></symbol>
+</defs></svg>
 <div class="login-screen" id="adminLogin">
   <section class="login-card" aria-labelledby="loginTitle">
     <div class="login-brand"><img src="/images/logo/tawod-logo.png" width="150" height="66" alt="شركة تعاود للمقاولات"><span class="secure-pill"><i></i> جلسة إدارية آمنة</span></div>
@@ -32,47 +59,48 @@
 </div>
 
 <div class="admin-shell" id="adminApp" hidden>
-  <aside class="sidebar">
+  <button id="navBackdrop" class="nav-backdrop" type="button" aria-label="إغلاق قائمة الأقسام" hidden></button>
+  <aside class="sidebar" id="adminSidebar" aria-label="قائمة أقسام اللوحة">
+    <button id="closeNavigation" class="icon-button nav-close" type="button" aria-label="إغلاق القائمة"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-close"></use></svg></button>
     <a class="brand" href="/" aria-label="العودة إلى موقع تعاود"><img src="/images/logo/tawod-logo.png" width="76" height="34" alt="تعاود"><span><b>TAWOD</b><small>Command Center</small></span></a>
     <nav class="side-nav" id="adminNav" aria-label="أقسام لوحة الإدارة">
-      <div class="nav-group"><span>القيادة</span><a class="is-active" href="#executive"><i>01</i> النظرة التنفيذية</a><a href="#followups"><i>02</i> المتابعات المستحقة</a><a href="#funnel"><i>03</i> الإحالات والتأهيل</a><a href="#sales-pipeline"><i>04</i> العروض والعقود</a><a href="#commercial"><i>05</i> النتائج التجارية</a><a href="#trend"><i>06</i> الاتجاه والنمو</a></div>
-      <div class="nav-group"><span>التسويق</span><a href="#google-ads"><i>07</i> الميزانيات والإعلانات</a><a href="#business-profile"><i>08</i> الملف التجاري</a><a href="#acquisition"><i>09</i> المصادر والحملات</a></div>
-      <div class="nav-group"><span>التشغيل</span><a href="#performance"><i>10</i> الصفحات والخدمات</a><a href="#leads"><i>11</i> سجل الإحالات</a><a href="#decisions"><i>12</i> مركز القرارات</a></div>
+      <div class="nav-group"><span>مساحة العمل</span><a class="is-active" href="#executive" data-icon="home">نظرة عامة</a><a href="#followups" data-icon="calendar">المتابعات <b id="navFollowupBadge" hidden></b></a><a href="#decisions" data-icon="check">القرارات والتنفيذ</a></div>
+      <div class="nav-group"><span>المبيعات</span><a href="#sales-pipeline" data-icon="board">الفرص والعقود</a><a href="#commercial" data-icon="chart">النتائج التجارية</a><a href="#funnel" data-icon="funnel">مسار التحويل</a><a href="#leads" data-icon="message">سجل التواصل</a></div>
+      <div class="nav-group"><span>التسويق</span><a href="#google-ads" data-icon="megaphone">Google Ads</a><a href="#business-profile" data-icon="pin">الملف التجاري</a><a href="#acquisition" data-icon="sources">مصادر الاكتساب</a></div>
+      <div class="nav-group"><span>التحليل</span><a href="#trend" data-icon="trend">اتجاه الأداء</a><a href="#performance" data-icon="pages">الصفحات والخدمات</a></div>
     </nav>
     <div class="sidebar-status"><div><i class="live-dot"></i><span>First-party Analytics</span></div><small>بيانات مجهولة الهوية؛ لا نخزن الاسم أو الجوال أو نص الرسائل.</small></div>
   </aside>
 
-  <main class="workspace">
+  <main class="workspace" id="adminWorkspace">
     <header class="command-header">
-      <div class="header-title"><p class="eyebrow">التشغيل · التسويق · التحويل</p><h1>مركز القرار</h1><p>كل رقم له تعريف ومصدر وحالة اتصال واضحة.</p></div>
-      <div class="header-actions">
-        <button id="notificationButton" class="notification-button" type="button" aria-label="الإشعارات" aria-expanded="false"><span>الإشعارات</span><b id="notificationBadge" hidden>0</b></button>
-        <label class="period-control"><span>الفترة</span><select id="periodSelect" aria-label="فترة التقرير"><option value="7">7 أيام</option><option value="30" selected>30 يومًا</option><option value="90">90 يومًا</option></select></label>
-        <button id="refreshButton" type="button">تحديث</button><button id="copyButton" class="button-secondary" type="button">نسخ الملخص</button><button id="printButton" class="button-secondary" type="button">طباعة</button><button id="logoutButton" class="button-ghost" type="button">خروج</button>
-      </div>
+      <div class="header-main-row"><button id="navigationButton" class="icon-button mobile-nav-toggle" type="button" aria-label="فتح قائمة الأقسام" aria-controls="adminSidebar" aria-expanded="false"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-menu"></use></svg></button><div class="header-title"><p class="header-breadcrumb">تعاود <span>/</span> <span id="viewGroup">مساحة العمل</span></p><h1 id="viewTitle">نظرة عامة</h1></div><div class="header-identity"><button id="notificationButton" class="icon-button notification-button" type="button" aria-label="الإشعارات" aria-controls="notificationDrawer" aria-expanded="false"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-bell"></use></svg><b id="notificationBadge" hidden>0</b></button><button id="accountButton" class="account-button" type="button" aria-label="فتح قائمة الحساب" aria-controls="accountMenu" aria-expanded="false"><span class="account-avatar" id="accountAvatar"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-user"></use></svg></span><span class="account-button-copy"><strong id="accountDisplayName">حساب الإدارة</strong><small>إدارة اللوحة</small></span></button></div></div>
+      <div class="header-actions"><label class="period-control"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-calendar"></use></svg><select id="periodSelect" aria-label="فترة التقرير"><option value="7">آخر 7 أيام</option><option value="30" selected>آخر 30 يومًا</option><option value="90">آخر 90 يومًا</option></select></label><span class="header-sync" id="headerSyncStatus">جاري قراءة البيانات</span><button id="refreshButton" class="icon-button" type="button" aria-label="تحديث البيانات"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-refresh"></use></svg><span id="refreshLabel" class="sr-only">تحديث البيانات</span></button><button id="toolsButton" class="icon-button" type="button" aria-label="أدوات التقرير" aria-controls="toolsMenu" aria-expanded="false"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-more"></use></svg></button></div>
     </header>
-
-    <aside class="notification-drawer" id="notificationDrawer" hidden aria-label="أهم الأحداث">
-      <div class="drawer-head"><div><span class="micro-label">LIVE ALERTS</span><h2>أهم الأحداث</h2></div><button id="closeNotifications" type="button" aria-label="إغلاق">×</button></div>
-      <div id="notificationList" class="notification-list"></div>
-    </aside>
+    <div id="toolsMenu" class="header-menu tools-menu" hidden><button id="copyButton" type="button" data-icon="copy">نسخ الملخص</button><button id="printButton" type="button" data-icon="print">طباعة القسم الحالي</button></div>
+    <div id="accountMenu" class="header-menu account-menu" hidden><div class="account-menu-identity"><span class="account-avatar" id="accountMenuAvatar"></span><div><strong id="accountMenuName">حساب الإدارة</strong><small id="accountUsername">admin</small></div></div><button id="editAccountButton" type="button" data-icon="edit">الصورة واسم العرض</button><button id="logoutButton" class="logout-action" type="button" data-icon="logout">تسجيل الخروج</button></div>
+    <aside class="notification-drawer" id="notificationDrawer" hidden aria-label="الإشعارات والأحداث المسجلة" tabindex="-1"><div class="drawer-head"><div><span class="micro-label">ACTIVITY CENTER</span><h2>الإشعارات</h2></div><button id="closeNotifications" class="icon-button" type="button" aria-label="إغلاق الإشعارات"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-close"></use></svg></button></div><div class="notification-tabs"><button id="notificationEventsTab" type="button" class="is-active" aria-pressed="true">الأحداث <b id="notificationUnreadCount">0</b></button><button id="notificationAlertsTab" type="button" aria-pressed="false">يحتاج متابعة <b id="notificationAlertCount">0</b></button></div><div id="notificationEventPanel"><div class="notification-toolbar"><label><input id="notificationUnreadOnly" type="checkbox"> غير المقروءة فقط</label><button type="button" id="markNotificationsRead">تعليم الكل كمقروء</button></div><div id="notificationList" class="notification-list"></div></div><div id="notificationAlertPanel" hidden><div id="notificationAlertList" class="notification-list"></div></div><p id="notificationFeedStatus" class="notification-feed-status">آخر 7 أيام · يتم الفحص دوريًا</p></aside>
 
     <div class="preview-note" id="previewNotice" hidden><strong>وضع المعاينة</strong><span>زيارات Vercel لا تدخل في بيانات Production.</span></div>
 
     <section class="admin-section admin-section-first" id="executive">
       <div class="section-heading"><div><p class="eyebrow">EXECUTIVE OVERVIEW</p><h2>الصورة التنفيذية الآن</h2></div><div class="freshness" id="generatedAt">—</div></div>
-      <div class="quality-bar" id="dataQualityBar"><span class="quality-dot"></span><strong>جاري فحص مطابقة البيانات</strong><small>—</small></div>
+      <div class="kpi-grid command-kpis" id="summaryMetrics" aria-live="polite"></div>
       <div class="executive-grid">
-        <article class="panel health-panel"><div class="health-ring" id="healthRing"><strong id="healthScore">—</strong><small>/100</small></div><div class="health-copy"><span class="micro-label">مؤشر الإحالات التقديري</span><h3 id="healthLabel">جاري التحليل</h3><p id="healthText">يظهر الحكم بعد تحميل البيانات.</p><div class="confidence-row"><span>حجم العينة</span><b id="confidenceLabel">—</b></div></div></article>
         <article class="panel decision-panel"><div class="panel-title"><div><span class="micro-label">أهم قرار الآن</span><h3 id="primaryDecisionTitle">جاري ترتيب الأولويات</h3></div><span class="priority-badge" id="primaryDecisionPriority">—</span></div><p id="primaryDecisionEvidence">—</p><div class="decision-action"><span>الإجراء المقترح</span><strong id="primaryDecisionAction">—</strong></div></article>
         <article class="panel today-panel"><div class="panel-title"><div><span class="micro-label">آخر 24 ساعة</span><h3>نبض الإحالات</h3></div><span class="live-badge"><i class="live-dot"></i> مباشر</span></div><div class="today-grid" id="todayPulse"></div></article>
       </div>
-      <div class="kpi-grid command-kpis" id="summaryMetrics" aria-live="polite"></div>
+      <div class="overview-shortcuts"><a href="#followups" data-icon="calendar"><span>متابعة الفرص</span><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-arrow"></use></svg></a><a href="#sales-pipeline" data-icon="board"><span>العروض والعقود</span><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-arrow"></use></svg></a><a href="#decisions" data-icon="check"><span>خطة التنفيذ</span><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-arrow"></use></svg></a></div>
+      <details class="measurement-details" id="executiveDetails"><summary><span data-icon="chart">تفاصيل القياس وحالة المصادر</span><small>قنوات التواصل، التعريفات، واكتمال البيانات</small></summary>
+      <div class="quality-bar" id="dataQualityBar"><span class="quality-dot"></span><strong>جاري فحص مطابقة البيانات</strong><small>—</small></div>
+      <article class="panel health-panel measurement-health"><div class="health-ring" id="healthRing"><strong id="healthScore">—</strong><small>/100</small></div><div class="health-copy"><span class="micro-label">مؤشر الإحالات التقديري</span><h3 id="healthLabel">جاري التحليل</h3><p id="healthText">يظهر الحكم بعد تحميل البيانات.</p><div class="confidence-row"><span>حجم العينة</span><b id="confidenceLabel">—</b></div></div></article>
+      <div class="kpi-grid" id="summaryExtraMetrics"></div>
       <div class="secondary-strip">
         <div><span>مشاهدات الصفحات</span><strong id="secondaryViews">—</strong></div><div><span>الزوار الفريدون</span><strong id="secondaryVisitors">—</strong></div><div><span title="زائر ظهر في جلسة واحدة خلال الفترة">زوار بجلسة واحدة</span><strong id="secondaryNewVisitors">—</strong></div><div><span title="زائر ظهر في أكثر من جلسة خلال الفترة">زوار متكررون</span><strong id="secondaryReturningVisitors">—</strong></div><div><span>ضغطات الاتصال الخام</span><strong id="secondaryCalls">—</strong></div><div><span>ضغطات واتساب الخام</span><strong id="secondaryWhatsapp">—</strong></div><div><span>ضغطات مكررة/مشتركة</span><strong id="secondaryDuplicates">—</strong></div><div><span>مشاهدات المقالات</span><strong id="secondaryArticles">—</strong></div>
       </div>
       <div class="definition-strip" id="definitionStrip"></div>
       <div class="source-quality-grid compact-top" id="sourceQualityGrid" aria-label="اكتمال البيانات وحالة المصادر"></div>
+      </details>
     </section>
 
     <section class="admin-section" id="followups">
@@ -100,7 +128,8 @@
       <div class="section-heading"><div><p class="eyebrow">SALES & CONTRACTS</p><h2>متابعة العروض والعقود</h2></div><p>مرحلة تجارية واحدة لكل فرصة؛ تُحدّث يدويًا بعد مراجعة الاتصال أو محادثة واتساب.</p></div>
       <div class="pipeline-kpi-grid" id="pipelineSummaryMetrics"></div>
       <article class="panel stage-board-panel compact-top"><div class="panel-title"><div><span class="micro-label">PIPELINE AT A GLANCE</span><h3>الفرص أمامك، مرحلة بمرحلة</h3></div><label class="board-scope"><span>نطاق العرض</span><select id="boardScope"><option value="open">كل الفرص المفتوحة</option><option value="period">فرص فترة التقرير · كل المراحل</option></select></label></div><p class="workspace-notice">القيم تقديرية للفرص المفتوحة، ومسجلة للعقود. عمر المرحلة يبدأ من وقت اعتمادها في اللوحة؛ التواريخ القديمة غير المعروفة تظهر بوضوح.</p><div id="salesStageBoard" class="sales-stage-board"></div></article>
-      <article class="panel pipeline-entry-panel compact-top" id="opportunity-editor">
+      <div class="pipeline-create-row"><button id="pipelineNewButton" type="button" data-icon="plus">إضافة فرصة جديدة</button></div>
+      <article class="panel pipeline-entry-panel compact-top" id="opportunity-editor" hidden>
         <div class="panel-title"><div><span class="micro-label">ADD SALES OUTCOME</span><h3>إضافة فرصة أو تحديث نتيجتها</h3></div><span>لا تكتب اسم العميل أو رقم الجوال</span></div>
         <form id="pipelineForm" class="pipeline-form" autocomplete="off">
           <input id="pipelineId" type="hidden">
@@ -188,12 +217,15 @@
       <article class="panel decision-editor compact-top" id="decisionEditor" hidden><div class="panel-title"><div><span class="micro-label">CLEAR OWNERSHIP · RECORDED RESULT</span><h3 id="decisionEditorTitle">إجراء جديد</h3></div></div><div class="decision-evidence" id="decisionEvidence"></div><form id="decisionForm" class="decision-form" autocomplete="off"><input type="hidden" id="decisionId"><label class="decision-wide"><span>عنوان الإجراء</span><input id="decisionTitle" type="text" maxlength="180" required></label><label class="decision-wide"><span>ما الذي سيتم تنفيذه؟</span><textarea id="decisionAction" maxlength="500" rows="3" required></textarea></label><label><span>الأولوية</span><select id="decisionPriority"><option value="high">عالية</option><option value="medium" selected>متوسطة</option><option value="low">منخفضة</option></select></label><label><span>الحالة</span><select id="decisionStatus"><option value="planned">مخطط</option><option value="in_progress">قيد التنفيذ</option><option value="done">تم التنفيذ</option><option value="dismissed">مستبعد</option></select></label><label><span>المسؤول الداخلي</span><input id="decisionAssignee" maxlength="80" type="text"></label><label><span>موعد المراجعة · توقيت الرياض</span><input id="decisionDueAt" type="datetime-local"></label><label class="decision-wide"><span>نتيجة التنفيذ / سبب الاستبعاد</span><textarea id="decisionResult" maxlength="500" rows="3" placeholder="سجّل ما حدث وما الذي تعلمه الفريق"></textarea></label><p class="pipeline-guidance decision-wide">بدء التنفيذ يحتاج مسؤولًا وموعدًا. الإغلاق يحتاج نتيجة مسجلة. ظهور توصية أو اختفاؤها لا يغيّر حالة الإجراء المحفوظ تلقائيًا.</p><p id="decisionError" class="form-error decision-wide" role="alert"></p><div class="pipeline-form-actions decision-wide"><button id="decisionSaveButton" type="submit">حفظ الإجراء</button><button type="button" id="decisionReloadButton" class="button-secondary" hidden>تحميل النسخة الأحدث</button><button type="button" id="decisionCancelButton" class="button-ghost">إغلاق المحرر</button></div></form><div class="pipeline-history" id="decisionHistory" hidden><h4>سجل الإجراء</h4><ol id="decisionHistoryList"></ol></div></article>
       <div class="section-heading compact-top"><div><p class="eyebrow">EVIDENCE BASED SUGGESTIONS</p><h3>مقترحات التحسين الحالية</h3></div><p>الدليل يتحدث مع البيانات؛ نسخة الدليل وقت الحفظ تبقى في سجل الإجراء.</p></div><div class="decision-list" id="insightsGrid"></div>
     </section>
-    <footer class="admin-footer"><span>TAWOD Internal Command Center</span><span>First-party + Google Ads + Business Profile · Asia/Riyadh</span></footer>
+    <footer class="admin-footer"><span>تعاود للمقاولات العامة · لوحة الإدارة</span><span>المواعيد والتقارير بتوقيت الرياض</span></footer>
   </main>
+  <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="التنقل السريع"><a href="#executive" data-icon="home">الرئيسية</a><a href="#followups" data-icon="calendar">المتابعات</a><a href="#sales-pipeline" data-icon="board">المبيعات</a><button id="mobileMoreButton" type="button" aria-label="عرض جميع الأقسام" aria-controls="adminSidebar" aria-expanded="false" data-icon="menu">المزيد</button></nav>
 </div>
+
+<dialog id="accountDialog" class="account-dialog" aria-labelledby="accountDialogTitle"><div class="drawer-head"><div><span class="micro-label">YOUR ACCOUNT</span><h2 id="accountDialogTitle">الصورة واسم العرض</h2></div><button id="closeAccountDialog" class="icon-button" type="button" aria-label="إغلاق إعدادات الحساب"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-close"></use></svg></button></div><form id="accountProfileForm"><div class="profile-photo-editor"><span class="account-avatar profile-preview" id="profilePhotoPreview"></span><div><label class="profile-photo-pick" for="profilePhotoInput">اختيار صورة</label><input type="file" id="profilePhotoInput" accept="image/png,image/jpeg,image/webp" class="sr-only"><button id="removeProfilePhoto" type="button" class="button-ghost">إزالة الصورة</button><small>JPG أو PNG أو WebP · حتى 3 ميجابايت</small></div></div><label class="profile-name-label" for="profileDisplayName">اسم العرض</label><input id="profileDisplayName" type="text" maxlength="80" placeholder="اسمك أو اسم مسؤول الإدارة"><p class="profile-device-note">تُحفظ الصورة واسم العرض على هذا المتصفح. اسم الدخول والصلاحيات يبقيان كما هما.</p><p class="form-error" id="profilePhotoError" role="alert"></p><button type="submit" id="saveAccountProfile">حفظ المظهر</button></form></dialog>
 
 <div class="loading-layer" id="adminLoading" hidden><div class="loader"></div><p>جاري مطابقة المصادر وترتيب القرارات…</p></div>
 <div class="toast" id="adminToast" aria-live="polite"></div>
-<script src="/assets/js/tawod-command-center.js?v=20260930-1" defer></script>
+<script src="/assets/js/tawod-command-center.js?v=20260930-3" defer></script>
 </body>
 </html>

@@ -28,6 +28,7 @@ await db.query(`insert into tawod_sales_outcomes(id,source_type,source_ref,stage
 await db.exec(fs.readFileSync('supabase/migrations/20260911090000_tawod_google_sheets_qualified_leads.sql','utf8'));
 await db.exec(fs.readFileSync('supabase/migrations/20260930014446_tawod_sales_followup_workspace.sql','utf8'));
 await db.exec(fs.readFileSync('supabase/migrations/20260930024439_tawod_decisions_commercial_workspace.sql','utf8'));
+await db.exec(fs.readFileSync('supabase/migrations/20260930034625_tawod_notification_feed.sql','utf8'));
 const legacy = (await db.query('select * from tawod_sales_outcomes where id=$1',[legacyId])).rows[0];
 assert.equal(legacy.acquisition_source,'google-ads');
 assert.equal(legacy.stage_entered_at,null,'do not invent historical stage timestamps');
@@ -54,6 +55,7 @@ async function restFetch(url,init={}) {
   }
   if (path === 'rpc/tawod_sales_commercial') return response((await db.query('select tawod_sales_commercial($1) as result',[JSON.parse(init.body).p_days])).rows[0].result);
   if (path === 'rpc/tawod_decision_workspace') return response((await db.query('select tawod_decision_workspace() as result')).rows[0].result);
+  if (path === 'rpc/tawod_notification_feed') return response((await db.query('select tawod_notification_feed() as result')).rows[0].result);
   assert.ok(tables.has(path),'unexpected REST table: '+path);
   const params = [], conditions = [];
   for (const [column,filter] of parsed.searchParams) {
@@ -100,7 +102,7 @@ const context = vm.createContext({
 });
 const source = fs.readFileSync('supabase/functions/tawod-analytics/index.ts','utf8');
 const compiled = ts.transpileModule(source,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.None}}).outputText;
-vm.runInContext(compiled+'\nglobalThis.salesTest={loadSalesPipeline,normalizeSheetLead,loadCommercial,loadDecisions};',context);
+vm.runInContext(compiled+'\nglobalThis.salesTest={loadSalesPipeline,normalizeSheetLead,loadCommercial,loadDecisions,loadNotificationFeed};',context);
 const origin = 'https://tawodco.com';
 const call = async (body,requestOrigin=origin) => {
   const result = await handler(new Request('https://isolated.local/functions/v1/tawod-analytics',{
@@ -112,6 +114,7 @@ assert.equal((await call({mode:'sales_outcome_get',id:legacyId})).status,401);
 assert.equal((await call({mode:'sales_outcome_get',id:legacyId},'https://untrusted.example')).status,403);
 const login = await call({mode:'admin_login',username:'admin',password:fakePassword});
 assert.equal(login.status,200);
+assert.equal(login.adminProfile.username,'admin');
 const token = login.token;
 const save = body => call({mode:'sales_outcome_upsert',token,sourceType:'other',stage:'new',estimatedValue:0,contractValue:0,...body});
 const review = {serviceType:'بناء عظم',serviceFit:'suitable',contactResult:'contacted',
@@ -258,6 +261,29 @@ assert.equal((await call({mode:'decision_get',token,id:decisionId})).history[0].
 const again = await decisionSave({id:decisionId,status:'planned',expectedUpdatedAt:doneDecision.decision.updatedAt});
 assert.equal(again.status,200);
 assert.equal(again.decision.completedAt,null,'reopening clears completion timestamp without erasing history');
+// Stable historical events are independent of report periods and current follow-up alerts.
+assert.equal((await call({mode:'notification_feed'})).status,401);
+assert.equal((await call({mode:'notification_feed',token},'https://untrusted.example')).status,403);
+for (const role of ['anon','authenticated']) {
+  assert.equal((await db.query("select has_function_privilege($1,'tawod_notification_feed()','EXECUTE') as allowed",[role])).rows[0].allowed,false);
+}
+const historicEvent = randomUUID(), futureEvent = randomUUID(), realNotificationEvent = randomUUID();
+await db.query(`insert into tawod_analytics_events(id,event_name,page_path,occurred_at) values
+  ($1,'call_click','/historic/',now()-interval '8 days'),
+  ($2,'call_click','/future/',now()+interval '1 day'),
+  ($3,'call_click','/services/',now()-interval '2 minutes')`,[historicEvent,futureEvent,realNotificationEvent]);
+let feed = await call({mode:'notification_feed',token,days:7});
+assert.equal(feed.status,200); assert.equal(feed.connected,true); assert.equal(feed.windowDays,7);
+assert.ok(feed.entries.some(row=>row.id==='referral:'+realNotificationEvent && row.kind==='referral' && row.detail.method==='call'));
+assert.ok(feed.entries.some(row=>row.kind==='sales' && row.outcomeId===id && row.detail.eventType==='stage_changed'));
+assert.ok(feed.entries.some(row=>row.kind==='decision' && row.decisionId===decisionId && row.detail.eventType==='status_changed'));
+assert.ok(feed.entries.every(row=>['created','stage_changed','status_changed'].includes(row.detail.eventType) || row.kind==='referral'),'metadata updates and Sheets acknowledgements are not invented notifications');
+assert.ok(feed.entries.every(row=>row.id!=='referral:'+legacyEvent && row.outcomeId!==legacyId),'test sales and clicks are excluded');
+assert.ok(feed.entries.every(row=>!['referral:'+historicEvent,'referral:'+futureEvent].includes(row.id)));
+assert.equal(new Set(feed.entries.map(row=>row.id)).size,feed.entries.length);
+const againFeed = await call({mode:'notification_feed',token,days:90});
+assert.deepEqual(againFeed.entries,feed.entries,'refreshing/changing report periods preserves event IDs and timestamps');
+assert.equal(feed.alerts.overdueFollowups,(await context.salesTest.loadSalesPipeline(7)).followups.overdue);
 // Display limits never truncate the totals. Database queries run with API service privileges.
 await db.exec(`set role service_role;
   insert into tawod_sales_outcomes(source_type,stage,occurred_at)
@@ -280,5 +306,9 @@ assert.equal(cappedDecisions.summary.total,502);
 assert.equal(cappedDecisions.entries.length,500);
 assert.equal(cappedDecisions.entriesTruncated,true);
 assert.equal((await call({mode:'decision_get',token,insightKey:'coverage-rule'})).decision.id,decisionId,'exact lookup works outside a capped workspace');
+feed = await context.salesTest.loadNotificationFeed();
+assert.equal(feed.entries.length,100); assert.equal(feed.truncated,true); assert.ok(feed.totalAvailable>100);
+assert.equal(feed.alerts.unassignedOpportunities,501,'alert counts are not limited by displayed events');
+assert.ok(feed.entries.every((row,i,all)=>!i || new Date(all[i-1].at)>=new Date(row.at)),'newest real events appear first');
 await db.close();
 console.log('Verified private Postgres migrations, uncapped sales/source/stage aggregates, cohort vs closure activity, unknown historical dates, persistent decision review/history/conflicts, follow-ups, and Sheets regression guards.');

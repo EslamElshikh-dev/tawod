@@ -3,8 +3,8 @@
 
   var API = 'https://vddoeiggfcwllfxpirep.supabase.co/functions/v1/tawod-analytics';
   var TOKEN_KEY = 'tawodAdminToken';
-  var NOTIFICATION_KEY = 'tawodSeenNotificationsV2';
-  var LAST_REFERRAL_KEY = 'tawodLastReferralV2';
+  var NOTIFICATION_KEY = 'tawodReadEventsV3';
+  var PROFILE_KEY = 'tawodAccountAppearanceV1';
   var token = '';
   var payload = null;
   var insights = [];
@@ -12,6 +12,20 @@
   var decisionDraft = null;
   var decisionEditRequest = 0;
   var boardExpanded = {};
+  var activeView = 'executive';
+  var notificationFeed = null;
+  var notificationRows = [];
+  var notificationPending = false;
+  var notificationTicket = 0;
+  var accountUsername = 'admin';
+  var profilePhotoDraft = null;
+  var profilePhotoTicket = 0;
+  var navTrigger = null;
+  var loadTicket = 0;
+
+  function icon(name) {
+    return /^[a-z-]+$/.test(name) ? '<svg class="cc-icon" aria-hidden="true" focusable="false"><use href="#cc-i-' + name + '"></use></svg>' : '';
+  }
 
   function el(id) { return document.getElementById(id); }
   function number(value) { return Number(value || 0); }
@@ -147,7 +161,9 @@
   function setLoading(on) {
     el('adminLoading').hidden = !on;
     ['refreshButton', 'copyButton', 'printButton', 'googleAdsSyncButton'].forEach(function (id) { el(id).disabled = on; });
-    el('refreshButton').textContent = on ? 'تحديث…' : 'تحديث';
+    el('refreshLabel').textContent = on ? 'جاري تحديث البيانات' : 'تحديث البيانات';
+    el('refreshButton').setAttribute('aria-label',el('refreshLabel').textContent);
+    el('refreshButton').setAttribute('aria-busy',String(on));
   }
   function metric(label, value, hint, source, cls) {
     return '<article class="kpi-card ' + esc(cls || '') + '"><div class="metric-top"><span>' + esc(label) +
@@ -255,13 +271,15 @@
 
     el('summaryMetrics').innerHTML = [
       metric('الزيارات', n(s.sessions), 'جلسات فريدة بدأت بمشاهدة صفحة', 'الموقع', 'visits'),
-      metric('الإحالات الناجحة', n(s.referralSessions), 'جلسة ضغطت اتصال أو واتساب', 'الموقع', 'referrals'),
+      metric('إحالات التواصل', n(s.referralSessions), 'جلسة ضغطت اتصال أو واتساب', 'الموقع', 'referrals'),
+      metric('عقود موقّعة', sales.connected ? n(pipeline.contracts) : 'غير متصل', 'الحالة الحالية لفرص الفترة', 'إدارة المبيعات', sales.connected ? 'confirmed' : 'is-unavailable'),
+      metric('قيمة العقود', sales.connected ? money(pipeline.contractValue, 'SAR') : 'غير متصل', 'قيمة عقود هذه الفرص المسجلة', 'إدارة المبيعات', sales.connected ? 'confirmed' : 'is-unavailable')
+    ].join('');
+    el('summaryExtraMetrics').innerHTML = [
       metric('إحالات الاتصال', n(s.callReferralSessions), 'جلسات فريدة — وليست عدد الضغطات', 'الموقع', 'calls'),
       metric('إحالات واتساب', n(s.whatsappReferralSessions), 'جلسات فريدة — وليست عدد الضغطات', 'الموقع', 'whatsapp'),
       metric('معدل الإحالة', pct(s.referralRate), 'الإحالات الفريدة ÷ الزيارات', 'محسوب', 'rate'),
-      metric('عميل محتمل', ads.callReportingConnected ? n(a.potentialCustomers) : 'غير متصل', 'مكالمة مستلمة أطول من 60 ثانية', 'Call Reporting', ads.callReportingConnected ? 'potential' : 'is-unavailable'),
-      metric('عقود موقّعة', sales.connected ? n(pipeline.contracts) : 'غير متصل', 'من سجل مسار البيع', 'إدارة المبيعات', sales.connected ? 'confirmed' : 'is-unavailable'),
-      metric('قيمة العقود', sales.connected ? money(pipeline.contractValue, 'SAR') : 'غير متصل', 'قيمة العقود المسجلة', 'إدارة المبيعات', sales.connected ? 'confirmed' : 'is-unavailable')
+      metric('عميل محتمل', ads.callReportingConnected ? n(a.potentialCustomers) : 'غير متصل', 'مكالمة مستلمة أطول من 60 ثانية', 'Call Reporting', ads.callReportingConnected ? 'potential' : 'is-unavailable')
     ].join('');
     el('secondaryViews').textContent = n(s.views);
     el('secondaryVisitors').textContent = n(s.visitors);
@@ -617,66 +635,106 @@
   }
 
   function buildNotifications(data) {
-    var rows = [];
-    (data.recentReferrals || []).slice(0, 8).forEach(function (row) {
-      rows.push({ id: 'ref-' + (row.sourceRef || row.at + '-' + row.session) + '-' + row.method, at: row.at, level: 'good', title: row.method === 'call' ? 'إحالة اتصال جديدة' : 'إحالة واتساب جديدة', text: sourceLabel(row.source) + ' · ' + cleanPath(row.sourcePath) });
-    });
-    var ads = data.googleAds || {};
-    if (!ads.connected) rows.push({ id: 'source-google-ads-offline', at: null, level: 'high', title: 'Google Ads غير متصل', text: 'الميزانية والصرف ومدة المكالمات غير متاحة.' });
-    if (!(data.businessProfile || {}).connected) rows.push({ id: 'source-business-profile-offline', at: null, level: 'medium', title: 'الملف التجاري غير متصل', text: 'إحصاءات Search وMaps والإجراءات غير متاحة.' });
-    if (!(data.dataQuality || {}).reconciled) rows.push({ id: 'quality-mismatch-' + data.generatedAt, at: data.generatedAt, level: 'high', title: 'فرق في مطابقة البيانات', text: 'إجماليات المصادر أو الأجهزة لا تطابق الزيارات.' });
-    (ads.calls || []).filter(function (row) { return row.confirmed; }).slice(0, 5).forEach(function (row) {
-      rows.push({ id: 'confirmed-' + row.resourceName, at: row.startedAt, level: 'good', title: 'عميل مؤكد', text: formatDuration(row.durationSeconds) + ' · ' + (row.campaignName || 'مكالمة') });
-    });
-    return rows;
-  }
-  function renderNotifications(data) {
-    var rows = buildNotifications(data);
-    var seen = [];
-    try { seen = JSON.parse(localStorage.getItem(NOTIFICATION_KEY) || '[]'); } catch (error) {}
-    var unread = rows.filter(function (row) { return seen.indexOf(row.id) === -1; }).length;
-    el('notificationBadge').hidden = !unread;
-    el('notificationBadge').textContent = n(unread);
-    el('notificationList').innerHTML = rows.length ? rows.map(function (row) {
-      return '<article class="notification-item ' + row.level + '"><i></i><div><strong>' + esc(row.title) + '</strong><p>' + esc(row.text) + '</p><small>' + (row.at ? formatDate(row.at) : 'إجراء مطلوب') + '</small></div></article>';
-    }).join('') : '<div class="empty-box">لا توجد أحداث مهمة.</div>';
-    var latest = (data.recentReferrals || [])[0];
-    if (latest) {
-      var key = latest.at + '-' + latest.session + '-' + latest.method;
-      var previous = localStorage.getItem(LAST_REFERRAL_KEY);
-      if (previous && previous !== key) showToast(latest.method === 'call' ? 'إحالة اتصال جديدة وصلت الآن' : 'إحالة واتساب جديدة وصلت الآن', true);
-      localStorage.setItem(LAST_REFERRAL_KEY, key);
-    }
-    el('notificationButton').onclick = function () {
-      var drawer = el('notificationDrawer');
-      drawer.hidden = !drawer.hidden;
-      el('notificationButton').setAttribute('aria-expanded', String(!drawer.hidden));
-      if (!drawer.hidden) {
-        localStorage.setItem(NOTIFICATION_KEY, JSON.stringify(rows.map(function (row) { return row.id; }).slice(0, 100)));
-        el('notificationBadge').hidden = true;
+    var unique = new Set();
+    return ((data || {}).entries || []).filter(function (row) {
+      if (!row.id || unique.has(row.id) || !row.at || isNaN(new Date(row.at).getTime())) return false;
+      unique.add(row.id); return ['referral','sales','decision'].includes(row.kind);
+    }).map(function (row) {
+      var detail = row.detail || {}, title, text, symbol, action;
+      if (row.kind === 'referral') {
+        title = detail.method === 'call' ? 'نقرة اتصال من الموقع' : 'نقرة واتساب من الموقع';
+        text = sourceLabel(detail.source) + ' · ' + cleanPath(detail.path); symbol = 'message'; action = 'مراجعة الإحالة';
+      } else if (row.kind === 'sales') {
+        title = detail.eventType === 'created' ? 'أُنشئت فرصة في المبيعات' : 'تغيرت مرحلة فرصة';
+        text = opportunityId({id:row.outcomeId}) + ' · ' + (detail.fromStage ? salesStageLabel(detail.fromStage) + ' ← ' : '') + salesStageLabel(detail.toStage);
+        symbol = detail.toStage === 'contract_signed' ? 'check' : 'board'; action = 'فتح الفرصة';
+      } else {
+        title = detail.eventType === 'created' ? 'أُضيف إجراء لخطة التنفيذ' : 'تغيرت حالة إجراء';
+        text = (detail.title || 'إجراء محفوظ') + ' · ' + decisionStatusLabel(detail.toStatus); symbol = 'check'; action = 'فتح الإجراء';
       }
-    };
-    el('closeNotifications').onclick = function () { el('notificationDrawer').hidden = true; el('notificationButton').setAttribute('aria-expanded', 'false'); };
+      return Object.assign({}, row, {title:title,text:text,icon:symbol,action:action});
+    });
+  }
+  function notificationReadKey() { return NOTIFICATION_KEY + ':' + accountUsername; }
+  function readNotificationIds() {
+    try { var saved = JSON.parse(localStorage.getItem(notificationReadKey()) || '[]'); return Array.isArray(saved) ? saved.filter(function (id) { return typeof id === 'string'; }).slice(-1000) : []; }
+    catch (error) { return []; }
+  }
+  function markRead(ids) {
+    var seen = new Set(readNotificationIds()); ids.forEach(function (id) { seen.add(id); });
+    try { localStorage.setItem(notificationReadKey(),JSON.stringify(Array.from(seen).slice(-1000))); }
+    catch (error) { showToast('تعذر حفظ حالة القراءة في هذا المتصفح',true); }
+    renderNotifications();
+  }
+  function renderNotifications(feed) {
+    if (feed) {
+      if (notificationFeed && feed.generatedAt && notificationFeed.generatedAt && new Date(feed.generatedAt)<new Date(notificationFeed.generatedAt)) return;
+      var previous = notificationFeed;
+      notificationFeed = feed; notificationRows = feed.connected ? buildNotifications(feed) : [];
+      if (previous && previous.connected && feed.connected && notificationRows.some(function (row) { return new Date(row.at)>new Date(previous.generatedAt); })) showToast('وصلت أحداث جديدة في سجل اللوحة');
+    }
+    var seen = readNotificationIds(), connected = !!(notificationFeed || {}).connected;
+    var unread = notificationRows.filter(function (row) { return !seen.includes(row.id); }).length;
+    el('notificationBadge').hidden = !unread;
+    el('notificationBadge').textContent = unread>99 ? '99+' : n(unread);
+    el('notificationButton').setAttribute('aria-label','الإشعارات' + (connected ? ' · ' + n(unread) + ' غير مقروءة من الأحداث المعروضة' : ' · تعذر تحميل الأحداث'));
+    el('notificationUnreadCount').textContent = n(unread);
+    el('markNotificationsRead').disabled = !connected || !unread;
+    var rows = notificationRows.filter(function (row) { return !el('notificationUnreadOnly').checked || !seen.includes(row.id); });
+    el('notificationList').innerHTML = rows.length ? rows.map(function (row) {
+      var isRead = seen.includes(row.id);
+      return '<article class="notification-event' + (isRead ? ' is-read' : ' is-unread') + '"><button type="button" class="notification-open" data-event="' + esc(row.id) + '"><span class="notification-event-icon">' + icon(row.icon) + '</span><span class="notification-event-copy"><strong>' + esc(row.title) + '</strong><span>' + esc(row.text) + '</span><time datetime="' + esc(row.at) + '">' + esc(formatDate(row.at)) + '</time><em>' + esc(row.action) + ' ←</em></span></button>' + (!isRead ? '<button class="notification-read" type="button" data-read-event="' + esc(row.id) + '" aria-label="تعليم هذا الحدث كمقروء">' + icon('check') + '</button>' : '') + '</article>';
+    }).join('') : '<div class="empty-box">' + (!connected ? 'تعذر تحميل سجل الأحداث الآن.' : el('notificationUnreadOnly').checked ? 'كل الأحداث المعروضة مقروءة.' : 'لا توجد أحداث مسجلة خلال آخر 7 أيام.') + '</div>';
+    var alerts = [], live = (notificationFeed || {}).alerts || {}, state = payload || {};
+    if (number(live.overdueFollowups)) alerts.push({view:'followups',filter:'overdue',icon:'calendar',title:'متابعات تجاوزت موعدها',text:n(live.overdueFollowups)+' فرصة مفتوحة تحتاج متابعة'});
+    if (number(live.unassignedOpportunities)) alerts.push({view:'followups',filter:'unassigned',icon:'user',title:'فرص دون مسؤول',text:n(live.unassignedOpportunities)+' فرصة مفتوحة تحتاج توزيعًا'});
+    if (number(live.overdueDecisions)) alerts.push({view:'decisions',filter:'overdue',icon:'clock',title:'إجراءات تجاوزت موعد المراجعة',text:n(live.overdueDecisions)+' إجراء مفتوح'});
+    if (payload && !(state.googleAds || {}).connected) alerts.push({view:'google-ads',icon:'megaphone',title:'بيانات Google Ads غير متاحة',text:'راجع اتصال مصدر الإنفاق والحملات'});
+    if (payload && !(state.businessProfile || {}).connected) alerts.push({view:'business-profile',icon:'pin',title:'بيانات الملف التجاري غير متاحة',text:'راجع آخر مزامنة للمصدر'});
+    if (payload && !(state.dataQuality || {}).reconciled) alerts.push({view:'executive',icon:'chart',title:'فرق في إجماليات الجلسات',text:'راجع مطابقة المصادر والأجهزة'});
+    el('notificationAlertCount').textContent = n(alerts.length);
+    el('notificationAlertList').innerHTML = alerts.length ? alerts.map(function (row) {
+      return '<button type="button" class="notification-alert" data-alert-view="' + row.view + '" data-alert-filter="' + (row.filter || '') + '"><span class="notification-event-icon">' + icon(row.icon) + '</span><span><strong>' + esc(row.title) + '</strong><small>' + esc(row.text) + '</small><em>فتح القسم ←</em></span></button>';
+    }).join('') : '<div class="empty-box">' + (connected ? 'لا توجد تنبيهات متابعة في آخر فحص.' : 'تنبيهات المتابعة غير متاحة الآن.') + '</div>';
+    el('notificationFeedStatus').textContent = connected ? 'آخر 7 أيام · ' + (notificationFeed.truncated ? 'أحدث 100 من ' + n(notificationFeed.totalAvailable) + ' حدث' : n(notificationRows.length) + ' حدث') + ' · آخر فحص: ' + formatDate(notificationFeed.generatedAt) + '. يتحدث كل دقيقة أثناء استخدام اللوحة. القراءة محفوظة لهذا المتصفح.' : 'لم يُحمّل سجل الأحداث. أعد تحديث البيانات.';
+    var overdue = connected ? number(live.overdueFollowups) : number((((payload || {}).salesPipeline || {}).followups || {}).overdue);
+    el('navFollowupBadge').hidden = !overdue; el('navFollowupBadge').textContent = n(overdue); el('navFollowupBadge').setAttribute('aria-label',n(overdue)+' متابعة متأخرة');
+  }
+  async function refreshNotifications() {
+    if (!token || document.hidden || notificationPending) return;
+    var auth = token, ticket = ++notificationTicket; notificationPending = true;
+    try {
+      var result = await request({mode:'notification_feed',token:auth});
+      if (auth === token && ticket === notificationTicket) renderNotifications(result);
+    } catch (error) {
+      if (auth !== token || ticket !== notificationTicket) return;
+      if (error.status === 401) logoutNow('انتهت الجلسة. سجّل الدخول من جديد.');
+      else el('notificationFeedStatus').textContent = 'تعذر الفحص الحالي؛ الأحداث المعروضة من آخر فحص ناجح.';
+    } finally { if (ticket === notificationTicket) notificationPending = false; }
   }
 
   function render(data) {
     payload = data;
-    renderExecutive(data);
-    renderFunnel(data);
-    renderSalesPipeline(data);
-    renderStageBoard(data);
-    renderCommercial(data);
-    renderFollowups(data);
-    renderSourceQuality(data);
-    renderTrend(data);
-    renderSources(data);
-    renderSiteTables(data);
-    renderAds(data);
-    renderBusinessProfile(data);
-    renderReferralsAndCalls(data);
-    renderInsights();
-    renderDecisions(data);
-    renderNotifications(data);
+    insights = buildInsights(data);
+    renderCurrentView(); renderAccount(data.adminProfile);
+    renderNotifications(data.notifications || {connected:false,entries:[]});
+    el('headerSyncStatus').textContent = 'آخر تحديث ' + (data.generatedAt ? new Intl.DateTimeFormat('ar-SA',{timeStyle:'short',timeZone:'Asia/Riyadh'}).format(new Date(data.generatedAt)) : '—');
+  }
+  function renderCurrentView() {
+    if (!payload) return;
+    var data = payload;
+    if (activeView === 'executive') { renderExecutive(data); renderSourceQuality(data); }
+    else if (activeView === 'followups') renderFollowups(data);
+    else if (activeView === 'sales-pipeline') { renderSalesPipeline(data); renderStageBoard(data); }
+    else if (activeView === 'commercial') renderCommercial(data);
+    else if (activeView === 'funnel') renderFunnel(data);
+    else if (activeView === 'trend') renderTrend(data);
+    else if (activeView === 'google-ads') renderAds(data);
+    else if (activeView === 'business-profile') renderBusinessProfile(data);
+    else if (activeView === 'acquisition') renderSources(data);
+    else if (activeView === 'performance') renderSiteTables(data);
+    else if (activeView === 'leads') renderReferralsAndCalls(data);
+    else if (activeView === 'decisions') { renderInsights(); renderDecisions(data); }
   }
 
   async function request(body) {
@@ -688,17 +746,20 @@
   async function load(options) {
     options = options || {};
     if (!token) return null;
+    var auth = token, ticket = ++loadTicket;
     if (!options.background) setLoading(true);
     try {
-      var data = await request({ mode: 'admin', token: token, days: number(el('periodSelect').value) || 30 });
+      var data = await request({ mode: 'admin', token: auth, days: number(el('periodSelect').value) || 30 });
+      if (auth !== token || ticket !== loadTicket) return null;
       render(data);
       if (!options.quiet) showToast('تم تحديث البيانات ومطابقة المصادر');
       return data;
     } catch (error) {
+      if (auth !== token || ticket !== loadTicket) return null;
       if (error.status === 401) logoutNow('انتهت الجلسة. سجّل الدخول من جديد.');
       else showToast('تعذر تحميل البيانات الآن', true);
       return null;
-    } finally { if (!options.background) setLoading(false); }
+    } finally { if (ticket === loadTicket) setLoading(false); }
   }
   async function refreshGoogleAds() {
     var button = el('googleAdsSyncButton');
@@ -737,6 +798,7 @@
     try {
       var result = await request({ mode: 'admin_login', username: el('adminUsername').value.trim(), password: el('adminPassword').value });
       token = result.token; sessionStorage.setItem(TOKEN_KEY, token);
+      renderAccount(result.adminProfile);
       el('adminPassword').value = ''; el('adminLogin').hidden = true; el('adminApp').hidden = false;
       document.body.classList.add('is-authenticated'); await load();
     } catch (error) {
@@ -745,9 +807,14 @@
   }
   function logoutNow(message) {
     sessionStorage.removeItem(TOKEN_KEY); token = ''; payload = null;
+    loadTicket++; notificationTicket++; notificationPending = false;
+    notificationFeed = null; notificationRows = []; closeHeaderPanels(); closeNavigation();
+    if (el('accountDialog').open) el('accountDialog').close();
+    resetPipelineForm(); setLoading(false);
     closeDecisionEditor();
     el('adminApp').hidden = true; el('adminLogin').hidden = false; document.body.classList.remove('is-authenticated');
     el('adminLoginError').textContent = message || '';
+    el('adminUsername').focus();
   }
   async function saveCall(button) {
     var row = button.closest('tr[data-call]');
@@ -775,6 +842,7 @@
     el('pipelineReloadButton').hidden = true;
     el('pipelineSaveButton').textContent = 'حفظ في مسار البيع';
     el('pipelineCancelButton').hidden = true;
+    el('opportunity-editor').hidden = true;
     updatePipelineRules();
   }
   function updatePipelineRules() {
@@ -823,10 +891,11 @@
     if (row.sourceRef) el('pipelineForm').dataset.sourceRef = row.sourceRef;
     else delete el('pipelineForm').dataset.sourceRef;
     el('pipelineSaveButton').textContent = row.id ? 'حفظ التعديل' : 'حفظ في مسار البيع';
-    el('pipelineCancelButton').hidden = !row.id && !row.sourceRef;
+    el('pipelineCancelButton').hidden = false;
+    el('opportunity-editor').hidden = false;
     updatePipelineRules();
-    location.hash = '#opportunity-editor';
-    el('pipelineStage').focus();
+    navigateTo('opportunity-editor');
+    el('pipelineStage').focus({preventScroll:true});
   }
   function renderPipelineHistory(history, truncated) {
     var labels = { stage: 'المرحلة', assignee: 'المسؤول', next_follow_up_at: 'موعد المتابعة', next_action: 'الإجراء القادم', last_contact_at: 'آخر تواصل', service_type: 'الخدمة', project_location: 'المنطقة', execution_timing: 'توقيت التنفيذ', service_fit: 'الملاءمة', contact_result: 'نتيجة التواصل', lost_reason: 'سبب الفقد', estimated_value: 'القيمة المتوقعة', contract_value: 'قيمة العقد', notes: 'الملاحظة', campaign_name: 'الحملة' };
@@ -916,7 +985,7 @@
     el('decisionEvidence').innerHTML = row.evidence ? '<span>دليل محفوظ · ' + esc(row.source || 'مراجعة داخلية') + (row.periodDays ? ' · فترة ' + n(row.periodDays) + ' يوم' : '') + '</span><p>' + esc(row.evidence) + '</p>' + (row.observedAt ? '<time>حُفظ في: ' + esc(formatDate(row.observedAt)) + '</time>' : '<small>ستُحفظ هذه النسخة من الدليل عند إنشاء الإجراء.</small>') : '<span>إجراء تشغيلي يضيفه الفريق يدويًا.</span>';
     el('decisionError').textContent = ''; el('decisionReloadButton').hidden = true;
     el('decisionHistory').hidden = true; el('decisionEditor').hidden = false;
-    updateDecisionRules(); location.hash = '#decisionEditor'; el('decisionTitle').focus({ preventScroll:true });
+    updateDecisionRules(); navigateTo('decisionEditor'); el('decisionTitle').focus({ preventScroll:true });
   }
   function renderDecisionHistory(history, truncated) {
     var fields = {title:'العنوان',action:'الإجراء',priority:'الأولوية',status:'الحالة',assignee:'المسؤول',due_at:'الموعد',result:'النتيجة'};
@@ -1023,10 +1092,189 @@
     ];
     navigator.clipboard.writeText(lines.join('\n')).then(function () { showToast('تم نسخ الملخص'); }).catch(function () { showToast('تعذر النسخ'); });
   }
+  function viewFor(id) {
+    var target = el(id), section = target && target.closest('.admin-section');
+    return section || el('executive');
+  }
+  function activateView(id, move) {
+    var section = viewFor(id), target = el(id), previous = activeView;
+    activeView = section.id;
+    document.querySelectorAll('.admin-section').forEach(function (item) { item.hidden = item !== section; });
+    el('adminNav').querySelectorAll('a').forEach(function (link) {
+      var selected = link.hash === '#' + activeView;
+      link.classList.toggle('is-active',selected);
+      if (selected) {
+        link.setAttribute('aria-current','page');
+        var title = link.cloneNode(true); title.querySelectorAll('svg,b').forEach(function (node) { node.remove(); });
+        el('viewTitle').textContent = title.textContent.trim();
+        el('viewGroup').textContent = link.closest('.nav-group').querySelector('span').textContent;
+      } else link.removeAttribute('aria-current');
+    });
+    var quick = ['executive','followups','sales-pipeline'];
+    el('mobileBottomNav').querySelectorAll('a').forEach(function (link) {
+      var selected = link.hash === '#' + activeView;
+      link.classList.toggle('is-active',selected);
+      if (selected) link.setAttribute('aria-current','page'); else link.removeAttribute('aria-current');
+    });
+    el('mobileMoreButton').classList.toggle('is-active',!quick.includes(activeView));
+    document.title = el('viewTitle').textContent + ' | لوحة تعاود';
+    if (previous !== activeView || !section.dataset.rendered) { renderCurrentView(); section.dataset.rendered = payload ? 'true' : ''; }
+    if (id === 'opportunity-editor') { target.hidden = false; el('pipelineCancelButton').hidden = false; }
+    if (move) {
+      if (target && target !== section && !target.hidden) target.scrollIntoView({block:'start',behavior:'instant'});
+      else {
+        window.scrollTo({top:0,behavior:'instant'});
+        var heading = section.querySelector('h2');
+        if (heading) { heading.tabIndex = -1; heading.focus({preventScroll:true}); }
+      }
+    }
+  }
+  function navigateTo(id) {
+    closeHeaderPanels(); closeNavigation(false);
+    if (location.hash !== '#' + id) history.pushState(null,'','#' + id);
+    activateView(id,true);
+  }
+  function openNavigation(trigger) {
+    if (!window.matchMedia('(max-width:900px)').matches) return;
+    closeHeaderPanels(); navTrigger = trigger || el('navigationButton');
+    el('adminSidebar').classList.add('nav-open'); el('navBackdrop').hidden = false;
+    el('adminSidebar').setAttribute('role','dialog'); el('adminSidebar').setAttribute('aria-modal','true');
+    el('adminWorkspace').inert = true; el('mobileBottomNav').inert = true;
+    document.body.classList.add('drawer-open');
+    ['navigationButton','mobileMoreButton'].forEach(function (id) { el(id).setAttribute('aria-expanded','true'); });
+    el('closeNavigation').focus();
+  }
+  function closeNavigation(restore) {
+    var wasOpen = el('adminSidebar').classList.contains('nav-open');
+    el('adminSidebar').classList.remove('nav-open'); el('navBackdrop').hidden = true;
+    el('adminSidebar').removeAttribute('role'); el('adminSidebar').removeAttribute('aria-modal');
+    el('adminWorkspace').inert = false; el('mobileBottomNav').inert = false;
+    document.body.classList.remove('drawer-open');
+    ['navigationButton','mobileMoreButton'].forEach(function (id) { el(id).setAttribute('aria-expanded','false'); });
+    if (wasOpen && restore !== false && navTrigger) navTrigger.focus();
+    navTrigger = null;
+  }
+  function closeHeaderPanels(restore) {
+    [['notificationDrawer','notificationButton'],['accountMenu','accountButton'],['toolsMenu','toolsButton']].forEach(function (pair) {
+      var open = !el(pair[0]).hidden; el(pair[0]).hidden = true; el(pair[1]).setAttribute('aria-expanded','false');
+      if (restore && open) el(pair[1]).focus();
+    });
+  }
+  function toggleHeaderPanel(panel,button) {
+    var open = !el(panel).hidden; closeHeaderPanels();
+    if (!open) { el(panel).hidden = false; el(button).setAttribute('aria-expanded','true'); }
+    if (panel === 'notificationDrawer' && !open) refreshNotifications();
+  }
+  function profileKey() { return PROFILE_KEY + ':' + accountUsername; }
+  function validPhoto(photo) { return typeof photo === 'string' && photo.length < 300000 && /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(photo); }
+  function readProfile() {
+    try {
+      var profile = JSON.parse(localStorage.getItem(profileKey()) || '{}');
+      return {name:typeof profile.name === 'string' ? profile.name.slice(0,80) : '',photo:validPhoto(profile.photo) ? profile.photo : null};
+    } catch (error) { return {name:'',photo:null}; }
+  }
+  function avatarMarkup(photo) { return validPhoto(photo) ? '<img src="' + esc(photo) + '" alt="صورة الحساب">' : icon('user'); }
+  function renderAccount(account) {
+    if (account && account.username) accountUsername = String(account.username);
+    var profile = readProfile(), name = profile.name || 'حساب الإدارة';
+    el('accountDisplayName').textContent = name; el('accountMenuName').textContent = name;
+    el('accountUsername').textContent = accountUsername;
+    el('accountAvatar').innerHTML = avatarMarkup(profile.photo); el('accountMenuAvatar').innerHTML = avatarMarkup(profile.photo);
+    el('accountButton').setAttribute('aria-label','فتح قائمة الحساب · ' + name);
+  }
+  function openProfile() {
+    closeHeaderPanels(); var profile = readProfile(); profilePhotoTicket++;
+    profilePhotoDraft = profile.photo; el('profilePhotoPreview').innerHTML = avatarMarkup(profilePhotoDraft);
+    el('profileDisplayName').value = profile.name; el('profilePhotoInput').value = '';
+    el('profilePhotoError').textContent = ''; el('saveAccountProfile').disabled = false;
+    el('accountDialog').showModal(); el('profileDisplayName').focus();
+  }
+  async function prepareProfilePhoto() {
+    var file = el('profilePhotoInput').files[0], ticket = ++profilePhotoTicket;
+    if (!file) return;
+    el('profilePhotoError').textContent = ''; el('saveAccountProfile').disabled = false;
+    if (!['image/jpeg','image/png','image/webp'].includes(file.type) || file.size>3*1024*1024) {
+      el('profilePhotoError').textContent = 'اختر صورة JPG أو PNG أو WebP بحجم لا يتجاوز 3 ميجابايت.'; return;
+    }
+    var url = URL.createObjectURL(file), image = new Image(); el('saveAccountProfile').disabled = true;
+    try {
+      await new Promise(function (resolve,reject) { image.onload=resolve; image.onerror=reject; image.src=url; });
+      if (ticket !== profilePhotoTicket || !el('accountDialog').open) return;
+      if (!image.width || !image.height || image.width>4096 || image.height>4096 || image.width*image.height>16000000) throw new Error('dimensions');
+      var canvas=document.createElement('canvas'), side=Math.min(image.width,image.height); canvas.width=384; canvas.height=384;
+      canvas.getContext('2d').drawImage(image,(image.width-side)/2,(image.height-side)/2,side,side,0,0,384,384);
+      var photo=canvas.toDataURL('image/webp',0.82); if (!validPhoto(photo)) throw new Error('size');
+      profilePhotoDraft=photo; el('profilePhotoPreview').innerHTML=avatarMarkup(photo);
+    } catch (error) { if (ticket === profilePhotoTicket) el('profilePhotoError').textContent='تعذر قراءة الصورة. جرّب صورة أصغر بأبعاد لا تتجاوز 4096 بكسل.'; }
+    finally { URL.revokeObjectURL(url); if (ticket === profilePhotoTicket) el('saveAccountProfile').disabled=false; }
+  }
   function initNavigation() {
-    el('adminNav').addEventListener('click', function (event) {
-      var link = event.target.closest('a[href^="#"]'); if (!link) return;
-      el('adminNav').querySelectorAll('a').forEach(function (item) { item.classList.toggle('is-active', item === link); });
+    document.querySelectorAll('[data-icon]').forEach(function (node) { node.insertAdjacentHTML('afterbegin',icon(node.dataset.icon)); });
+    activateView(location.hash.slice(1) || 'executive',false);
+    document.addEventListener('click',function (event) {
+      var link=event.target.closest('a[href^="#"]');
+      if (link && el(link.hash.slice(1)) && el(link.hash.slice(1)).closest('.admin-section')) { event.preventDefault(); navigateTo(link.hash.slice(1)); return; }
+      var insidePanel=event.composedPath().some(function (node) { return node instanceof Element && node.matches('.header-menu,.notification-drawer,#notificationButton,#accountButton,#toolsButton'); });
+      if (!insidePanel) closeHeaderPanels();
+    });
+    window.addEventListener('popstate',function () { closeHeaderPanels(); closeNavigation(false); activateView(location.hash.slice(1) || 'executive',true); });
+    window.addEventListener('hashchange',function () { activateView(location.hash.slice(1) || 'executive',true); });
+    el('navigationButton').addEventListener('click',function () { openNavigation(this); });
+    el('mobileMoreButton').addEventListener('click',function () { openNavigation(this); });
+    el('closeNavigation').addEventListener('click',function () { closeNavigation(); });
+    el('navBackdrop').addEventListener('click',function () { closeNavigation(); });
+    window.matchMedia('(max-width:900px)').addEventListener('change',function () { closeNavigation(false); });
+    document.addEventListener('keydown',function (event) {
+      if (el('adminSidebar').classList.contains('nav-open')) {
+        if (event.key === 'Escape') { event.preventDefault(); closeNavigation(); }
+        if (event.key === 'Tab') {
+          var nodes=Array.from(el('adminSidebar').querySelectorAll('a[href],button')).filter(function (node) { return node.getClientRects().length && !node.disabled; });
+          var first=nodes[0],last=nodes[nodes.length-1];
+          if (event.shiftKey && document.activeElement===first) { event.preventDefault(); last.focus(); }
+          else if (!event.shiftKey && document.activeElement===last) { event.preventDefault(); first.focus(); }
+        }
+      } else if (event.key === 'Escape' && !el('accountDialog').open) closeHeaderPanels(true);
+    });
+    el('notificationButton').addEventListener('click',function () { toggleHeaderPanel('notificationDrawer','notificationButton'); });
+    el('accountButton').addEventListener('click',function () { toggleHeaderPanel('accountMenu','accountButton'); });
+    el('toolsButton').addEventListener('click',function () { toggleHeaderPanel('toolsMenu','toolsButton'); });
+    el('closeNotifications').addEventListener('click',function () { closeHeaderPanels(true); });
+    [['notificationEventsTab','notificationEventPanel'],['notificationAlertsTab','notificationAlertPanel']].forEach(function (tab) {
+      el(tab[0]).addEventListener('click',function () {
+        ['notificationEventsTab','notificationAlertsTab'].forEach(function (id) { el(id).classList.toggle('is-active',id===tab[0]); el(id).setAttribute('aria-pressed',String(id===tab[0])); });
+        el('notificationEventPanel').hidden=tab[1]!=='notificationEventPanel'; el('notificationAlertPanel').hidden=tab[1]!=='notificationAlertPanel';
+      });
+    });
+    el('notificationUnreadOnly').addEventListener('change',function () { renderNotifications(); });
+    el('markNotificationsRead').addEventListener('click',function () { markRead(notificationRows.map(function (row) { return row.id; })); });
+    el('notificationList').addEventListener('click',function (event) {
+      var read=event.target.closest('[data-read-event]');
+      if (read) {
+        var eventId=read.dataset.readEvent; markRead([eventId]);
+        var next=Array.from(el('notificationList').querySelectorAll('[data-event]')).find(function (button) { return button.dataset.event===eventId; });
+        (next || el('notificationUnreadOnly')).focus({preventScroll:true}); return;
+      }
+      var button=event.target.closest('[data-event]'), row=button && notificationRows.find(function (item) { return item.id===button.dataset.event; });
+      if (!row) return; markRead([row.id]); closeHeaderPanels();
+      if (row.kind==='sales') openOpportunity(row.outcomeId);
+      else if (row.kind==='decision') openDecision(row.decisionId);
+      else openOpportunity(null,row.id.slice('referral:'.length),{sourceType:row.detail.method,sourceRef:row.id.slice('referral:'.length),acquisitionSource:row.detail.source,notes:'إحالة من الصفحة '+cleanPath(row.detail.path),stage:'new'});
+    });
+    el('notificationAlertList').addEventListener('click',function (event) {
+      var button=event.target.closest('[data-alert-view]'); if (!button) return;
+      if (button.dataset.alertFilter) el(button.dataset.alertView==='decisions'?'decisionFilter':'followupFilter').value=button.dataset.alertFilter;
+      navigateTo(button.dataset.alertView); renderCurrentView(); load({quiet:true,background:true});
+    });
+    el('editAccountButton').addEventListener('click',openProfile);
+    el('closeAccountDialog').addEventListener('click',function () { el('accountDialog').close(); });
+    el('accountDialog').addEventListener('close',function () { profilePhotoTicket++; profilePhotoDraft=null; el('accountButton').focus(); });
+    el('profilePhotoInput').addEventListener('change',prepareProfilePhoto);
+    el('removeProfilePhoto').addEventListener('click',function () { profilePhotoTicket++; profilePhotoDraft=null; el('profilePhotoPreview').innerHTML=avatarMarkup(null); el('profilePhotoInput').value=''; el('profilePhotoError').textContent=''; el('saveAccountProfile').disabled=false; });
+    el('accountProfileForm').addEventListener('submit',function (event) {
+      event.preventDefault();
+      try { localStorage.setItem(profileKey(),JSON.stringify({name:el('profileDisplayName').value.trim(),photo:profilePhotoDraft})); }
+      catch (error) { el('profilePhotoError').textContent='تعذر حفظ المظهر على هذا المتصفح.'; return; }
+      renderAccount(); el('accountDialog').close(); showToast('تم تحديث مظهر الحساب على هذا المتصفح');
     });
   }
 
@@ -1038,11 +1286,12 @@
   el('refreshButton').addEventListener('click', load);
   el('googleAdsSyncButton').addEventListener('click', refreshGoogleAds);
   el('periodSelect').addEventListener('change', load);
-  el('copyButton').addEventListener('click', copySummary);
-  el('printButton').addEventListener('click', function () { window.print(); });
+  el('copyButton').addEventListener('click', function () { closeHeaderPanels(); copySummary(); });
+  el('printButton').addEventListener('click', function () { closeHeaderPanels(); window.print(); });
   el('logoutButton').addEventListener('click', function () { logoutNow(); });
   el('callsBody').addEventListener('click', function (event) { if (event.target.classList.contains('save-call')) saveCall(event.target); });
   el('pipelineForm').addEventListener('submit', savePipeline);
+  el('pipelineNewButton').addEventListener('click',function () { resetPipelineForm(); fillPipelineForm({}); });
   el('pipelineCancelButton').addEventListener('click', resetPipelineForm);
   el('pipelineStage').addEventListener('change', updatePipelineRules);
   el('pipelineContactResult').addEventListener('change', updatePipelineRules);
@@ -1089,6 +1338,14 @@
   window.setInterval(function () {
     if (token && !document.hidden) load({ quiet: true, background: true });
   }, 300000);
+  window.setInterval(refreshNotifications,60000);
+  document.addEventListener('visibilitychange',function () { if (!document.hidden) refreshNotifications(); });
+  var printDetails=[];
+  window.addEventListener('beforeprint',function () {
+    printDetails=Array.from(el(activeView).querySelectorAll('details')).filter(function (detail) { return !detail.open; });
+    printDetails.forEach(function (detail) { detail.open=true; });
+  });
+  window.addEventListener('afterprint',function () { printDetails.forEach(function (detail) { detail.open=false; }); printDetails=[]; });
   if (/\.vercel\.app$/i.test(window.location.hostname)) el('previewNotice').hidden = false;
   initNavigation();
   updatePipelineRules();
