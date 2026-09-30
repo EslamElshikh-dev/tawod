@@ -885,6 +885,7 @@
     if (activeView === 'executive') { renderExecutive(data); renderSourceQuality(data); }
     else if (activeView === 'followups') renderFollowups(data);
     else if (activeView === 'sales-pipeline') { renderSalesPipeline(data); renderStageBoard(data); }
+    else if (activeView === 'customers') loadCustomers();
     else if (activeView === 'commercial') renderCommercial(data);
     else if (activeView === 'funnel') renderFunnel(data);
     else if (activeView === 'trend') renderTrend(data);
@@ -971,6 +972,9 @@
     loadTicket++; notificationTicket++; notificationPending = false;
     notificationFeed = null; notificationRows = []; closeHeaderPanels(); closeNavigation();
     if (el('accountDialog').open) el('accountDialog').close();
+    customerTicket++; customerPickerTicket++; customerDetailTicket++;
+    customerRecord = null; pipelineCustomer = null; el('customerList').innerHTML = ''; el('customerDetail').innerHTML = ''; el('customerPickerList').innerHTML = ''; el('customerForm').reset();
+    if(el('customerDialog').open)el('customerDialog').close();
     resetPipelineForm(); setLoading(false);
     closeDecisionEditor(); resetSocialImport();
     el('socialLinkOutput').value=''; el('socialLinkCopy').disabled=true; el('socialLinkOpen').hidden=true;
@@ -991,7 +995,8 @@
   function resetPipelineForm() {
     editRequest++;
     el('pipelineForm').reset();
-    el('pipelineId').value = '';
+    pipelineCustomer = null;
+    el('pipelineId').value = ''; renderPipelineCustomer();
     el('pipelineEstimatedValue').value = '0';
     el('pipelineContractValue').value = '0';
     delete el('pipelineForm').dataset.sourceRef;
@@ -1025,6 +1030,7 @@
   function fillPipelineForm(row) {
     editRequest++;
     el('pipelineId').value = row.id || '';
+    pipelineCustomer = null; renderPipelineCustomer();
     el('pipelineSourceType').value = row.sourceType || 'whatsapp';
     el('pipelineStage').value = row.stage || 'new';
     el('pipelineServiceType').value = row.serviceType || '';
@@ -1078,7 +1084,7 @@
     try {
       var result = await request({ mode: 'sales_outcome_get', token: token, id: id || null, sourceRef: sourceRef || null });
       if (ticket !== editRequest) return;
-      if (result.outcome) { fillPipelineForm(result.outcome); renderPipelineHistory(result.history || [], result.historyTruncated); }
+      if (result.outcome) { fillPipelineForm(result.outcome); pipelineCustomer = result.contact || null; renderPipelineCustomer(); renderPipelineHistory(result.history || [], result.historyTruncated); }
       else if (fallback) fillPipelineForm(fallback);
       else showToast('لم تعد الفرصة متاحة', true);
     } catch (error) { if (error.status === 401) logoutNow('انتهت الجلسة. سجّل الدخول من جديد.'); else showToast('تعذر فتح الفرصة وسجلها', true); }
@@ -1094,7 +1100,7 @@
     var queuedForSheets = el('pipelineSourceType').value === 'whatsapp' && ['qualified', 'quote_sent', 'site_visit', 'contract_signed'].indexOf(stage) !== -1;
     button.disabled = true; button.textContent = 'حفظ…';
     try {
-      await request({
+      var savedOutcome = await request({
         mode: 'sales_outcome_upsert', token: token, id: el('pipelineId').value || null,
         sourceRef: el('pipelineForm').dataset.sourceRef || null,
         sourceType: el('pipelineSourceType').value, stage: stage,
@@ -1109,6 +1115,7 @@
       });
       showToast(queuedForSheets ? 'تم الحفظ وإضافة العميل إلى طابور Google Sheets' : 'تم حفظ مرحلة البيع وربطها بالإحصائيات', true);
       resetPipelineForm(); await load();
+      if (savedOutcome.outcome) await openOpportunity(savedOutcome.outcome.id);
     } catch (error) {
       var messages = { qualification_required: 'حدد الخدمة المناسبة ونتيجة التواصل الفعلي قبل التأهيل.', followup_required: 'حدد المسؤول والإجراء وموعد المتابعة للفرصة المؤهلة.', lost_reason_required: 'حدد سبب عدم التعاقد.', lost_details_required: 'وضح السبب الآخر في الملاحظة التشغيلية.', contract_value_required: 'أدخل قيمة العقد الموقّع.', invalid_followup_date: 'راجع المواعيد؛ آخر تواصل فعلي لا يمكن أن يكون في المستقبل.', invalid_sales_value: 'راجع قيم الفرصة والعقد.', sales_outcome_conflict: 'تغيّرت هذه الفرصة من جلسة أخرى. حمّل النسخة الأحدث ثم راجع تعديلاتك.', referral_already_linked: 'هذه الإحالة مرتبطة بفرصة بالفعل. افتح الفرصة الموجودة.', source_is_locked: 'المصدر الأصلي للإحالة محفوظ ولا يمكن تغييره.', sales_outcome_not_found: 'الفرصة لم تعد متاحة.' };
       el('pipelineError').textContent = messages[error.message] || 'تعذر الحفظ الآن. البيانات التي أدخلتها محفوظة في النموذج؛ أعد المحاولة.';
@@ -1120,6 +1127,69 @@
       showToast('لم يُحفظ التعديل؛ راجع رسالة النموذج', true);
     }
     finally { button.disabled = false; button.textContent = el('pipelineId').value ? 'حفظ التعديل' : 'حفظ في مسار البيع'; }
+  }
+  var customerPage=1,customerTotal=0,customerTicket=0,customerPickerTicket=0,customerDetailTicket=0;
+  var customerRecord=null,pipelineCustomer=null,customerSearchTimer,customerPickerTimer;
+  var customerBusy=false;
+  function customerRequest(action,body){return request({mode:'customer_api',token:token,action:action,payload:body});}
+  function customerError(error){return {customer_duplicate:'يوجد عميل بنفس رقم الهاتف. ابحث عنه واربط الفرصة بملفه.',customer_conflict:'تغيّر الملف أو الربط من جلسة أخرى. افتح النسخة الأحدث وراجع التعديل.',customer_invalid:'راجع الاسم ورقم الهاتف والعميل المحدد.',customer_not_found:'ملف العميل غير متاح.'}[error.message]||'تعذّر تحميل أو حفظ ملف العميل. أعد المحاولة.';}
+  function renderPipelineCustomer(){
+    var id=el('pipelineId').value;
+    el('pipelineCustomerName').textContent=pipelineCustomer?pipelineCustomer.name:'الفرصة غير مرتبطة بملف عميل';
+    if(!id)el('pipelineCustomerName').textContent='احفظ الفرصة، ثم اربطها بملف العميل';
+    el('pipelineCustomerChoose').hidden=!id;el('pipelineCustomerView').hidden=!pipelineCustomer;el('pipelineCustomerUnlink').hidden=!pipelineCustomer;
+    el('pipelineCustomerChoose').textContent=pipelineCustomer?'تغيير العميل':'ربط بملف عميل';
+  }
+  async function loadCustomers(){
+    var ticket=++customerTicket,auth=token;if(!auth)return;
+    el('customerError').textContent='';el('customerList').innerHTML='<div class="empty-box">جارٍ تحميل العملاء…</div>';
+    try{
+      var data=await customerRequest('list',{page:customerPage,search:el('customerSearch').value.trim(),status:el('customerStatus').value});
+      if(ticket!==customerTicket||auth!==token)return;
+      customerTotal=data.total;el('customerCount').textContent=n(data.total)+' عميل';el('customerPage').textContent=customerPage+' / '+Math.max(1,Math.ceil(data.total/30));
+      el('customerPrevious').disabled=customerPage<=1;el('customerNext').disabled=customerPage*30>=data.total;
+      el('customerList').innerHTML=data.rows.length?data.rows.map(function(c){return '<article class="customer-card"><div class="customer-avatar">'+esc(c.name.slice(0,1))+'</div><div><h3>'+esc(c.name)+'</h3><p>'+esc(c.company||'عميل فردي')+'</p><a dir="ltr" href="tel:'+esc(c.phone)+'">'+esc(c.phone)+'</a></div><div class="customer-card-meta"><span>'+n(c.opportunities)+' فرصة مرتبطة</span><small>'+(c.next_follow_up_at?'المتابعة: '+esc(formatDate(c.next_follow_up_at)):'لا يوجد موعد متابعة مسجل')+'</small></div><button type="button" class="button-secondary" data-customer="'+esc(c.id)+'">فتح الملف</button></article>';}).join(''):'<div class="empty-box">لا توجد نتائج. أضف عميلًا أو غيّر البحث والتصفية.</div>';
+    }catch(error){if(ticket!==customerTicket||auth!==token)return;el('customerList').innerHTML='';el('customerError').textContent=customerError(error);if(error.status===401)logoutNow('انتهت الجلسة. سجّل الدخول من جديد.');}
+  }
+  function showCustomerDialog(title){
+    el('customerDialogTitle').textContent=title;el('customerDialogError').textContent='';el('customerDetail').hidden=true;el('customerForm').hidden=true;el('customerPicker').hidden=true;
+    if(!el('customerDialog').open)el('customerDialog').showModal();
+  }
+  function closeCustomerDialog(){if(customerBusy)return;customerDetailTicket++;customerPickerTicket++;el('customerDialog').close();el('customerDetail').innerHTML='';el('customerPickerList').innerHTML='';el('customerForm').reset();customerRecord=null;}
+  async function openCustomer(id){
+    showCustomerDialog('ملف العميل');el('customerDetail').hidden=false;el('customerDetail').innerHTML='<p>جارٍ تحميل رحلة العميل…</p>';
+    var ticket=++customerDetailTicket,auth=token;
+    try{
+      var data=await customerRequest('detail',{id:id});if(ticket!==customerDetailTicket||auth!==token||!el('customerDialog').open)return;
+      customerRecord=data.contact;renderCustomerDetail(data);
+    }catch(error){if(ticket!==customerDetailTicket||auth!==token)return;el('customerDetail').innerHTML='';el('customerDialogError').textContent=customerError(error);if(error.status===401)logoutNow('انتهت الجلسة. سجّل الدخول من جديد.');}
+  }
+  function renderCustomerDetail(data){
+    var c=data.contact,stats=data.stats,open=(data.outcomes||[]).filter(function(o){return !['lost','contract_signed'].includes(o.stage);});
+    var next=open.filter(function(o){return o.nextFollowUpAt;}).sort(function(a,b){return Date.parse(a.nextFollowUpAt)-Date.parse(b.nextFollowUpAt);})[0];
+    el('customerDetail').innerHTML='<div class="customer-profile-head"><span class="customer-avatar">'+esc(c.name.slice(0,1))+'</span><div><h3>'+esc(c.name)+'</h3><p>'+esc(c.company||'عميل فردي')+' · '+(c.active?'نشط':'مؤرشف')+'</p><a dir="ltr" href="tel:'+esc(c.phone)+'">'+esc(c.phone)+'</a></div></div><div class="customer-profile-actions"><a class="button-secondary" href="tel:'+esc(c.phone)+'">اتصال</a><a class="button-secondary" href="https://wa.me/'+c.phone.replace(/\D/g,'')+'" target="_blank" rel="noreferrer">فتح واتساب</a><button type="button" class="button-ghost" data-customer-edit>تعديل الملف</button></div><div class="customer-profile-stats">'+[['فرص',n(stats.opportunities)],['مفتوحة',n(stats.open)],['عقود',n(stats.contracts)],['قيمة العقود',money(stats.contractValue,'SAR')]].map(function(x){return '<div><strong>'+esc(x[1])+'</strong><span>'+x[0]+'</span></div>';}).join('')+'</div>'+(next?'<button class="customer-next '+(Date.parse(next.nextFollowUpAt)<Date.now()?'is-overdue':'')+'" type="button" data-customer-outcome="'+esc(next.id)+'"><span>الخطوة القادمة'+(Date.parse(next.nextFollowUpAt)<Date.now()?' · متأخرة':'')+'</span><strong>'+esc(next.nextAction||'راجع الفرصة وحدد الإجراء')+'</strong><small>'+esc(formatDate(next.nextFollowUpAt))+' · '+esc(next.assignee||'غير معيّن')+'</small></button>':open.length?'<p class="workspace-notice">'+n(open.length)+' فرصة مفتوحة تحتاج تحديد موعد المتابعة.</p>':'')+(c.note?'<p class="customer-note">'+esc(c.note)+'</p>':'')+'<h3 class="customer-section-title">الفرص والعقود</h3><div class="customer-outcomes">'+(data.outcomes.length?data.outcomes.map(function(o){return '<button type="button" class="customer-outcome" data-customer-outcome="'+esc(o.id)+'"><div><code>'+esc(opportunityId(o))+'</code><strong>'+esc(o.serviceType||'الخدمة غير محددة')+'</strong><small>'+esc(sourceLabel(o.acquisitionSource||'غير مرتبط'))+' · '+esc(o.campaignName||'دون حملة مسجلة')+'</small></div><span class="stage-tag '+esc(o.stage)+'">'+esc(salesStageLabel(o.stage))+'</span><small>'+esc(o.stage==='contract_signed'?money(o.contractValue,'SAR'):formatDate(o.nextFollowUpAt))+'</small></button>';}).join(''):'<div class="empty-box">لا توجد فرص مرتبطة. افتح فرصة من المبيعات واختر «ربط بملف عميل».</div>')+'</div><small>يعرض أحدث 100 فرصة؛ الأعداد تشمل كل الفرص المرتبطة.</small><h3 class="customer-section-title">سجل الرحلة</h3><ol class="customer-timeline">'+(data.timeline.length?data.timeline.map(function(h){var contactEvent=h.id.indexOf('contact-')===0;var title=contactEvent?{created:'إنشاء ملف العميل',updated:'تعديل ملف العميل',linked:'ربط فرصة بالعميل',unlinked:'إزالة ربط فرصة'}[h.event_type]:h.event_type==='stage_changed'?salesStageLabel(h.from_stage)+' ← '+salesStageLabel(h.to_stage):h.event_type==='created'?'إنشاء فرصة':'تحديث متابعة الفرصة';var change=h.changes||{};var action=change.next_action&&change.next_action.to;return '<li><time>'+esc(formatDate(h.occurred_at))+'</time><strong>'+esc(title)+'</strong>'+(h.outcome_id?'<small>'+esc(opportunityId({id:h.outcome_id}))+'</small>':'')+(action?'<p>'+esc(action)+'</p>':'')+'</li>';}).join(''):'<li>لم تُسجل عمليات بعد.</li>')+'</ol><small>أحدث 100 عملية محفوظة بتاريخها الفعلي.</small>';
+  }
+  function editCustomer(record){
+    customerRecord=record||{id:crypto.randomUUID(),version:0};customerDetailTicket++;showCustomerDialog(record?'تعديل ملف العميل':'عميل جديد');
+    el('customerForm').hidden=false;el('customerForm').reset();el('customerName').value=customerRecord.name||'';el('customerPhone').value=customerRecord.phone||'';el('customerCompany').value=customerRecord.company||'';el('customerNote').value=customerRecord.note||'';el('customerActive').value=customerRecord.active===false?'false':'true';el('customerName').focus();
+  }
+  async function saveCustomer(event){
+    event.preventDefault();if(customerBusy)return;customerBusy=true;el('customerSave').disabled=true;el('customerDialogError').textContent='';
+    try{var data=await customerRequest('save',{id:customerRecord.id,version:customerRecord.version,name:el('customerName').value.trim(),phone:el('customerPhone').value,company:el('customerCompany').value.trim(),note:el('customerNote').value,active:el('customerActive').value==='true'});if(!token)return;showToast('تم حفظ ملف العميل');if(pipelineCustomer&&pipelineCustomer.id===data.contact.id){pipelineCustomer=data.contact;renderPipelineCustomer();}if(activeView==='customers')loadCustomers();await openCustomer(data.contact.id);}
+    catch(error){el('customerDialogError').textContent=customerError(error);if(error.status===401)logoutNow('انتهت الجلسة. سجّل الدخول من جديد.');}
+    finally{customerBusy=false;el('customerSave').disabled=false;}
+  }
+  async function loadCustomerPicker(){
+    var ticket=++customerPickerTicket,auth=token;el('customerPickerList').innerHTML='<p>جارٍ البحث…</p>';
+    try{var data=await customerRequest('list',{status:'active',search:el('customerPickerSearch').value.trim()});if(ticket!==customerPickerTicket||auth!==token)return;el('customerPickerList').innerHTML=data.rows.length?data.rows.map(function(c){return '<button type="button" data-link-customer="'+esc(c.id)+'"><span><strong>'+esc(c.name)+'</strong><small dir="ltr">'+esc(c.phone)+'</small></span><span>ربط بهذا العميل</span></button>';}).join(''):'<p>لا توجد نتائج. أضف ملف العميل من قسم ملفات العملاء.</p>';}
+    catch(error){if(ticket!==customerPickerTicket||auth!==token)return;el('customerPickerList').innerHTML='';el('customerDialogError').textContent=customerError(error);if(error.status===401)logoutNow('انتهت الجلسة. سجّل الدخول من جديد.');}
+  }
+  async function linkCustomer(id){
+    if(customerBusy||!el('pipelineId').value)return;customerBusy=true;el('customerDialogError').textContent='';
+    var outcomeId=el('pipelineId').value;
+    try{await customerRequest('link',{outcome_id:outcomeId,contact_id:id||null,expected_contact_id:pipelineCustomer?pipelineCustomer.id:null});customerBusy=false;closeCustomerDialog();showToast(id?'تم ربط الفرصة بملف العميل':'تمت إزالة الربط');await openOpportunity(outcomeId);}
+    catch(error){var msg=customerError(error);if(el('customerDialog').open)el('customerDialogError').textContent=msg;else showToast(msg,true);if(error.status===401)logoutNow('انتهت الجلسة. سجّل الدخول من جديد.');}
+    finally{customerBusy=false;}
   }
   function updateDecisionRules() {
     var status = el('decisionStatus').value;
@@ -1462,6 +1532,22 @@
   el('printButton').addEventListener('click', function () { closeHeaderPanels(); window.print(); });
   el('logoutButton').addEventListener('click', function () { logoutNow(); });
   el('callsBody').addEventListener('click', function (event) { if (event.target.classList.contains('save-call')) saveCall(event.target); });
+  el('customerNew').addEventListener('click',function(){editCustomer(null);});
+  el('customerClose').addEventListener('click',closeCustomerDialog);
+  el('customerDialog').addEventListener('cancel',function(event){if(customerBusy)event.preventDefault();else{customerDetailTicket++;customerPickerTicket++;customerRecord=null;}});
+  el('customerSearch').addEventListener('input',function(){clearTimeout(customerSearchTimer);customerSearchTimer=setTimeout(function(){customerPage=1;loadCustomers();},300);});
+  el('customerStatus').addEventListener('change',function(){customerPage=1;loadCustomers();});
+  el('customerPrevious').addEventListener('click',function(){if(customerPage>1){customerPage--;loadCustomers();}});
+  el('customerNext').addEventListener('click',function(){if(customerPage*30<customerTotal){customerPage++;loadCustomers();}});
+  el('customerList').addEventListener('click',function(event){var b=event.target.closest('[data-customer]');if(b)openCustomer(b.dataset.customer);});
+  el('customerForm').addEventListener('submit',saveCustomer);
+  el('customerCancelEdit').addEventListener('click',function(){if(customerBusy)return;if(customerRecord.version)openCustomer(customerRecord.id);else closeCustomerDialog();});
+  el('customerDetail').addEventListener('click',function(event){if(event.target.closest('[data-customer-edit]'))editCustomer(customerRecord);var b=event.target.closest('[data-customer-outcome]');if(b){closeCustomerDialog();openOpportunity(b.dataset.customerOutcome);}});
+  el('pipelineCustomerChoose').addEventListener('click',function(){showCustomerDialog('ربط فرصة بعميل');el('customerPicker').hidden=false;el('customerPickerSearch').value='';loadCustomerPicker();el('customerPickerSearch').focus();});
+  el('pipelineCustomerView').addEventListener('click',function(){if(pipelineCustomer)openCustomer(pipelineCustomer.id);});
+  el('pipelineCustomerUnlink').addEventListener('click',function(){linkCustomer(null);});
+  el('customerPickerSearch').addEventListener('input',function(){clearTimeout(customerPickerTimer);customerPickerTimer=setTimeout(loadCustomerPicker,250);});
+  el('customerPickerList').addEventListener('click',function(event){var b=event.target.closest('[data-link-customer]');if(b)linkCustomer(b.dataset.linkCustomer);});
   el('pipelineForm').addEventListener('submit', savePipeline);
   el('pipelineNewButton').addEventListener('click',function () { resetPipelineForm(); fillPipelineForm({}); });
   el('pipelineCancelButton').addEventListener('click', resetPipelineForm);

@@ -31,6 +31,8 @@ await db.exec(fs.readFileSync('supabase/migrations/20260930024439_tawod_decision
 await db.exec(fs.readFileSync('supabase/migrations/20260930034625_tawod_notification_feed.sql','utf8'));
 await db.exec(fs.readFileSync('supabase/migrations/20260930051049_tawod_social_measurement_workspace.sql','utf8'));
 await db.exec(fs.readFileSync('supabase/migrations/20260930062353_tawod_meta_attribution_clarity.sql','utf8'));
+await db.exec(fs.readFileSync('supabase/migrations/20260930161904_tawod_customer_records.sql','utf8'));
+await db.exec(fs.readFileSync('supabase/migrations/20260930170548_customer_activity_index.sql','utf8'));
 const legacy = (await db.query('select * from tawod_sales_outcomes where id=$1',[legacyId])).rows[0];
 assert.equal(legacy.acquisition_source,'google-ads');
 assert.equal(legacy.stage_entered_at,null,'do not invent historical stage timestamps');
@@ -57,6 +59,7 @@ async function restFetch(url,init={}) {
     return response((await db.query('select '+identifier(fn)+'('+values.map((_,i)=>'$'+(i+1)).join(',')+') as result',values)).rows[0].result);
   }
   if (['rpc/tawod_google_ads_analytics','rpc/tawod_business_profile_analytics'].includes(path)) return response({connected:false});
+  if (path === 'rpc/tawod_customer_api') { const a=JSON.parse(init.body); return response((await db.query('select tawod_customer_api($1,$2::jsonb) as data',[a.p_action,JSON.stringify(a.p_payload)])).rows[0].data); }
   if (path === 'rpc/tawod_sales_workspace') {
     const rows = await db.query('select tawod_sales_workspace($1) as workspace',[JSON.parse(init.body).p_days]);
     return response(rows.rows[0].workspace);
@@ -410,5 +413,28 @@ assert.equal(actualAdmin.summary.newVisitors,audit.summary.newVisitors,'true fir
 assert.equal(actualAdmin.summary.returningVisitors,audit.summary.returningVisitors);assert.equal(actualAdmin.summary.singleSessionVisitors+actualAdmin.summary.repeatSessionVisitors,audit.summary.visitors);
 await db.exec('reset role');
 
+// Identity is private; customer links never add PII to analytics or Sheets.
+const contactId=randomUUID();
+const customerCall=(action,payload,auth=token)=>call({mode:'customer_api',token:auth,action,payload});
+assert.equal((await customerCall('list',{},'forged')).status,401);
+assert.equal((await customerCall('save',{id:contactId,version:0,name:'اختبار ملف عميل',phone:'٠٥٠٠٠٠٠٠٠٢'})).status,200);
+const customer=(await customerCall('detail',{id:contactId})).contact;
+assert.equal(customer.phone,'+966500000002');
+assert.equal((await customerCall('save',{id:randomUUID(),version:0,name:'تكرار',phone:'+966500000002'})).error,'customer_duplicate');
+assert.equal((await customerCall('save',{...customer,name:'تحديث الملف'})).status,200);
+assert.equal((await customerCall('save',customer)).error,'customer_conflict');
+const linkId=(await db.query('select id from tawod_sales_outcomes order by created_at limit 1')).rows[0].id;
+assert.equal((await customerCall('link',{outcome_id:linkId,contact_id:contactId})).status,200);
+assert.equal((await customerCall('link',{outcome_id:linkId,contact_id:null})).error,'customer_conflict','stale link cannot overwrite another operator');
+let customerDetail=await customerCall('detail',{id:contactId});
+assert.equal(customerDetail.stats.opportunities,1);assert.ok(customerDetail.timeline.some(x=>x.event_type==='linked'));
+assert.equal((await call({mode:'sales_outcome_get',token,id:linkId})).contact.id,contactId);
+assert.equal((await customerCall('list',{search:'تحديث الملف'})).total,1);
+assert.equal((await customerCall('link',{outcome_id:linkId,contact_id:null,expected_contact_id:contactId})).status,200);
+assert.equal((await customerCall('detail',{id:contactId})).stats.opportunities,0);
+assert.equal((await db.query("select has_schema_privilege('anon','tawod_crm','USAGE') as allowed")).rows[0].allowed,false);
+assert.equal((await db.query("select has_table_privilege('authenticated','tawod_crm.contacts','SELECT') as allowed")).rows[0].allowed,false);
+assert.equal((await db.query("select has_function_privilege('anon','tawod_customer_api(text,jsonb)','EXECUTE') as allowed")).rows[0].allowed,false);
+assert.equal((await db.query("select count(*)::int as n from information_schema.columns where table_name in ('tawod_analytics_events','tawod_sales_outcomes') and column_name in ('customer_name','phone','contact_id')")).rows[0].n,0);
 await db.close();
 console.log('Verified private Postgres migrations, uncapped sales/source/stage aggregates, cohort vs closure activity, unknown historical dates, persistent decision review/history/conflicts, follow-ups, social account snapshots/import validation, attribution parity, daily/source reconciliation, and Sheets regression guards.');

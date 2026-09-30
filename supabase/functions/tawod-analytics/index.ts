@@ -640,7 +640,21 @@ async function getSalesOutcome(body: any, origin: string | null) {
   const response = await supabase(`/rest/v1/tawod_sales_history?${query}`);
   if (!response.ok) return json({ error: 'history_query_failed' }, 500, origin);
   const history = await response.json();
-  return json({ outcome: normalizeSalesRow(row), history, historyTruncated: history.length === 100 }, 200, origin);
+  const customerResponse = await supabase('/rest/v1/rpc/tawod_customer_api', { method: 'POST', body: JSON.stringify({ p_action: 'for_outcome', p_payload: { outcome_id: row.id } }) });
+  if (!customerResponse.ok) return json({ error: 'customer_service_unavailable' }, 503, origin);
+  const customer = await customerResponse.json();
+  return json({ outcome: normalizeSalesRow(row), history, historyTruncated: history.length === 100, contact: customer.contact || null }, 200, origin);
+}
+
+async function customerAPI(body: any, origin: string | null) {
+  const action = body?.action, payload = body?.payload;
+  if (!['list','detail','save','link'].includes(action) || !payload || typeof payload !== 'object' || Array.isArray(payload) || JSON.stringify(payload).length > 5000) return json({error:'invalid_customer'},400,origin);
+  const response = await supabase('/rest/v1/rpc/tawod_customer_api', {method:'POST',body:JSON.stringify({p_action:action,p_payload:payload})});
+  if (!response.ok) return json({error:'customer_service_unavailable'},503,origin);
+  const data = await response.json();
+  if (!data.ok) return json({error:'customer_'+data.code},data.code==='conflict'||data.code==='duplicate'?409:data.code==='not_found'?404:400,origin);
+  if (data.outcomes) data.outcomes = data.outcomes.map(normalizeSalesRow);
+  return json(data,200,origin);
 }
 
 function riyadhTimestamp(value: unknown) {
@@ -884,6 +898,13 @@ Deno.serve(async (req) => {
     } catch {
       return json({ error: 'sales_service_unavailable' }, 503, origin);
     }
+  }
+
+  if (body?.mode === 'customer_api') {
+    if (!isAdminOrigin(origin)) return json({error:'origin_not_allowed'},403,origin);
+    if (!await verifyAdminToken(body.token)) return json({error:'unauthorized'},401,origin);
+    try { return await customerAPI(body,origin); }
+    catch { return json({error:'customer_service_unavailable'},503,origin); }
   }
 
   if (body?.mode === 'decision_upsert' || body?.mode === 'decision_get') {

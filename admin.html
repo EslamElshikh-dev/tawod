@@ -10,7 +10,7 @@
 <link rel="icon" href="/images/logo/tawod-logo.png" type="image/png">
 <link rel="stylesheet" href="/assets/css/tawod-admin.css">
 <link rel="stylesheet" href="/assets/css/tawod-admin-ads.css">
-<link rel="stylesheet" href="/assets/css/tawod-command-center.css?v=20260930-4">
+<link rel="stylesheet" href="/assets/css/tawod-command-center.css?v=20260930-customer-1">
 </head>
 <body class="admin-body">
 <svg xmlns="http://www.w3.org/2000/svg" class="cc-icon-sprite" aria-hidden="true" width="0" height="0"><defs>
@@ -70,7 +70,7 @@
     <a class="brand" href="/" aria-label="العودة إلى موقع تعاود"><img src="/images/logo/tawod-logo.png" width="76" height="34" alt="تعاود"><span><b>TAWOD</b><small>Command Center</small></span></a>
     <nav class="side-nav" id="adminNav" aria-label="أقسام لوحة الإدارة">
       <div class="nav-group"><span>مساحة العمل</span><a class="is-active" href="#executive" data-icon="home">نظرة عامة</a><a href="#followups" data-icon="calendar">المتابعات <b id="navFollowupBadge" hidden></b></a><a href="#decisions" data-icon="check">القرارات والتنفيذ</a></div>
-      <div class="nav-group"><span>المبيعات</span><a href="#sales-pipeline" data-icon="board">الفرص والعقود</a><a href="#commercial" data-icon="chart">النتائج التجارية</a><a href="#funnel" data-icon="funnel">مسار التحويل</a><a href="#leads" data-icon="message">سجل التواصل</a></div>
+      <div class="nav-group"><span>المبيعات</span><a href="#customers" data-icon="message">ملفات العملاء</a><a href="#sales-pipeline" data-icon="board">الفرص والعقود</a><a href="#commercial" data-icon="chart">النتائج التجارية</a><a href="#funnel" data-icon="funnel">مسار التحويل</a><a href="#leads" data-icon="message">سجل التواصل</a></div>
       <div class="nav-group"><span>التسويق</span><a href="#google-ads" data-icon="megaphone">Google Ads</a><a href="#business-profile" data-icon="pin">الملف التجاري</a><a href="#social" data-icon="social">السوشيال ميديا</a><a href="#acquisition" data-icon="sources">مصادر الاكتساب</a></div>
       <div class="nav-group"><span>التحليل</span><a href="#trend" data-icon="trend">اتجاه الأداء</a><a href="#performance" data-icon="pages">الصفحات والخدمات</a><a href="#measurement" data-icon="check">دقة القياس</a></div>
     </nav>
@@ -129,16 +129,20 @@
       <div class="two-column compact-top"><article class="panel"><div class="panel-title"><div><span class="micro-label">قنوات الإحالة</span><h3>اتصال أم واتساب؟</h3></div></div><div id="channelSplit" class="channel-list"></div></article><article class="panel"><div class="panel-title"><div><span class="micro-label">وضوح القياس</span><h3>كيف تُحسب الأرقام؟</h3></div></div><div id="reconciliationBox" class="reconciliation-box"></div></article></div>
     </section>
 
+    <section class="admin-section" id="customers">
+      <div class="section-heading"><div><p class="eyebrow">CUSTOMER WORKSPACE</p><h2>كل علاقة في ملف واحد</h2><p>التواصل، الفرص، العقود، والخطوة القادمة للعميل.</p></div><button id="customerNew" type="button">إضافة عميل</button></div>
+      <article class="panel"><div class="workspace-toolbar"><label class="customer-search"><span>ابحث عن عميل</span><input id="customerSearch" type="search" maxlength="100" placeholder="الاسم أو الهاتف أو الشركة"></label><label><span>الحالة</span><select id="customerStatus"><option value="active">نشطون</option><option value="inactive">مؤرشفون</option><option value="">الكل</option></select></label><span id="customerCount"></span></div><p id="customerError" class="form-error" role="alert"></p><div id="customerList" class="customer-list" aria-live="polite"></div><div class="customer-pagination"><button id="customerPrevious" type="button" class="button-secondary">السابق</button><span id="customerPage"></span><button id="customerNext" type="button" class="button-secondary">التالي</button></div></article>
+    </section>
     <section class="admin-section" id="sales-pipeline">
       <div class="section-heading"><div><p class="eyebrow">SALES & CONTRACTS</p><h2>متابعة العروض والعقود</h2></div><p>مرحلة تجارية واحدة لكل فرصة؛ تُحدّث يدويًا بعد مراجعة الاتصال أو محادثة واتساب.</p></div>
       <div class="pipeline-kpi-grid" id="pipelineSummaryMetrics"></div>
       <article class="panel stage-board-panel compact-top"><div class="panel-title"><div><span class="micro-label">PIPELINE AT A GLANCE</span><h3>الفرص أمامك، مرحلة بمرحلة</h3></div><label class="board-scope"><span>نطاق العرض</span><select id="boardScope"><option value="open">كل الفرص المفتوحة</option><option value="period">فرص فترة التقرير · كل المراحل</option></select></label></div><p class="workspace-notice">القيم تقديرية للفرص المفتوحة، ومسجلة للعقود. عمر المرحلة يبدأ من وقت اعتمادها في اللوحة؛ التواريخ القديمة غير المعروفة تظهر بوضوح.</p><div id="salesStageBoard" class="sales-stage-board"></div></article>
       <div class="pipeline-create-row"><button id="pipelineNewButton" type="button" data-icon="plus">إضافة فرصة جديدة</button></div>
       <article class="panel pipeline-entry-panel compact-top" id="opportunity-editor" hidden>
-        <div class="panel-title"><div><span class="micro-label">ADD SALES OUTCOME</span><h3>إضافة فرصة أو تحديث نتيجتها</h3></div><span>لا تكتب اسم العميل أو رقم الجوال</span></div>
+        <div class="panel-title"><div><span class="micro-label">ADD SALES OUTCOME</span><h3>إضافة فرصة أو تحديث نتيجتها</h3></div><span>بيانات التواصل داخل ملف العميل المرتبط</span></div>
         <form id="pipelineForm" class="pipeline-form" autocomplete="off">
           <input id="pipelineId" type="hidden">
-          <div class="pipeline-source-binding" id="pipelineSourceBinding">فرصة يدوية · المصدر غير مرتبط بإحالة مقاسة</div>
+          <div class="pipeline-customer-binding"><div><span>ملف العميل</span><strong id="pipelineCustomerName">سجّل الفرصة أولًا لربطها بعميل</strong></div><button id="pipelineCustomerChoose" type="button" class="button-secondary" hidden>ربط بملف عميل</button><button id="pipelineCustomerView" type="button" class="button-ghost" hidden>فتح الملف</button><button id="pipelineCustomerUnlink" type="button" class="button-ghost" hidden>إزالة الربط</button></div><div class="pipeline-source-binding" id="pipelineSourceBinding">فرصة يدوية · المصدر غير مرتبط بإحالة مقاسة</div>
           <label><span>القناة</span><select id="pipelineSourceType" required><option value="whatsapp">واتساب</option><option value="call">اتصال</option><option value="form">نموذج</option><option value="other">أخرى</option></select></label>
           <label><span>المرحلة</span><select id="pipelineStage" required><option value="new">إحالة جديدة</option><option value="qualified">عميل مؤهل</option><option value="quote_sent">عرض سعر مرسل</option><option value="site_visit">زيارة موقع</option><option value="contract_signed">عقد موقّع</option><option value="lost">لم يتم التعاقد</option></select></label>
           <label><span>الخدمة</span><input id="pipelineServiceType" type="text" maxlength="160" placeholder="مثال: بناء عظم"></label>
@@ -252,8 +256,9 @@
 
 <dialog id="accountDialog" class="account-dialog" aria-labelledby="accountDialogTitle"><div class="drawer-head"><div><span class="micro-label">YOUR ACCOUNT</span><h2 id="accountDialogTitle">الصورة واسم العرض</h2></div><button id="closeAccountDialog" class="icon-button" type="button" aria-label="إغلاق إعدادات الحساب"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-close"></use></svg></button></div><form id="accountProfileForm"><div class="profile-photo-editor"><span class="account-avatar profile-preview" id="profilePhotoPreview"></span><div><label class="profile-photo-pick" for="profilePhotoInput">اختيار صورة</label><input type="file" id="profilePhotoInput" accept="image/png,image/jpeg,image/webp" class="sr-only"><button id="removeProfilePhoto" type="button" class="button-ghost">إزالة الصورة</button><small>JPG أو PNG أو WebP · حتى 3 ميجابايت</small></div></div><label class="profile-name-label" for="profileDisplayName">اسم العرض</label><input id="profileDisplayName" type="text" maxlength="80" placeholder="اسمك أو اسم مسؤول الإدارة"><p class="profile-device-note">تُحفظ الصورة واسم العرض على هذا المتصفح. اسم الدخول والصلاحيات يبقيان كما هما.</p><p class="form-error" id="profilePhotoError" role="alert"></p><button type="submit" id="saveAccountProfile">حفظ المظهر</button></form></dialog>
 
+<dialog id="customerDialog" class="account-dialog customer-dialog" aria-labelledby="customerDialogTitle"><div class="drawer-head"><div><span class="micro-label">CUSTOMER RECORD</span><h2 id="customerDialogTitle">ملف العميل</h2></div><button id="customerClose" type="button" class="icon-button" aria-label="إغلاق ملف العميل">×</button></div><p id="customerDialogError" class="form-error" role="alert"></p><div id="customerDetail"></div><form id="customerForm" class="customer-form" hidden autocomplete="off"><label><span>الاسم *</span><input id="customerName" required minlength="2" maxlength="100"></label><label><span>رقم الهاتف *</span><input id="customerPhone" type="tel" dir="ltr" required maxlength="20" placeholder="05xxxxxxxx"></label><label><span>الشركة · اختياري</span><input id="customerCompany" maxlength="120"></label><label><span>الحالة</span><select id="customerActive"><option value="true">نشط</option><option value="false">مؤرشف</option></select></label><label class="customer-wide"><span>ملاحظات العلاقة</span><textarea id="customerNote" rows="3" maxlength="1000"></textarea></label><div class="customer-wide pipeline-form-actions"><button id="customerSave" type="submit">حفظ العميل</button><button id="customerCancelEdit" type="button" class="button-ghost">إلغاء</button></div></form><div id="customerPicker" hidden><p>اختر ملف العميل الصحيح لربطه بهذه الفرصة.</p><label class="customer-search"><span>البحث بالاسم أو الهاتف</span><input id="customerPickerSearch" type="search" maxlength="100"></label><div id="customerPickerList" class="customer-picker-list"></div><small>يعرض أول 30 نتيجة. استخدم البحث للوصول للعميل المطلوب.</small></div></dialog>
 <div class="loading-layer" id="adminLoading" hidden><div class="loader"></div><p>جاري مطابقة المصادر وترتيب القرارات…</p></div>
 <div class="toast" id="adminToast" aria-live="polite"></div>
-<script src="/assets/js/tawod-command-center.js?v=20260930-4" defer></script>
+<script src="/assets/js/tawod-command-center.js?v=20260930-customer-1" defer></script>
 </body>
 </html>
