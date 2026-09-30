@@ -363,6 +363,89 @@ async function loadSalesPipeline(days: number) {
   };
 }
 
+async function loadCommercial(days: number) {
+  const response = await supabase('/rest/v1/rpc/tawod_sales_commercial', {
+    method: 'POST', body: JSON.stringify({ p_days: days }),
+  });
+  return response.ok ? await response.json() : { connected: false, error: 'commercial_query_failed' };
+}
+function normalizeDecision(row: any) {
+  return { id: row.id, insightKey: row.insight_key, title: row.title, area: row.area, source: row.source,
+    evidence: row.evidence, periodDays: row.period_days, observedAt: row.observed_at, action: row.action,
+    priority: row.priority, status: row.status, assignee: row.assignee, dueAt: row.due_at, result: row.result,
+    completedAt: row.completed_at, createdAt: row.created_at, updatedAt: row.updated_at };
+}
+async function loadDecisions() {
+  const response = await supabase('/rest/v1/rpc/tawod_decision_workspace', { method: 'POST', body: '{}' });
+  if (!response.ok) return { connected: false, error: 'decisions_query_failed', entries: [] };
+  const workspace = await response.json();
+  return { ...workspace, entries: (workspace.entries || []).map(normalizeDecision) };
+}
+async function findDecision(column: 'id' | 'insight_key', value: string) {
+  const query = new URLSearchParams({ select: '*', [column]: `eq.${value}`, limit: '1' });
+  const response = await supabase(`/rest/v1/tawod_decisions?${query.toString()}`);
+  if (!response.ok) throw new Error('decision_lookup_failed');
+  return (await response.json())?.[0] || null;
+}
+async function getDecision(body: any, origin: string | null) {
+  const id = text(body?.id, 50), key = text(body?.insightKey, 100);
+  if ((id && !isUuid(id)) || (!id && (!key || !/^[a-z0-9-]+$/.test(key)))) return json({ error: 'invalid_decision' }, 400, origin);
+  const row = await findDecision(id ? 'id' : 'insight_key', id || key!);
+  if (!row) return json({ decision: null, history: [] }, 200, origin);
+  const query = new URLSearchParams({ select: '*', decision_id: `eq.${row.id}`, order: 'occurred_at.desc,id.desc', limit: '101' });
+  const response = await supabase(`/rest/v1/tawod_decision_history?${query.toString()}`);
+  if (!response.ok) throw new Error('decision_history_failed');
+  const history = await response.json();
+  return json({ decision: normalizeDecision(row), history: history.slice(0,100), historyTruncated: history.length > 100 }, 200, origin);
+}
+async function saveDecision(body: any, origin: string | null) {
+  const id = text(body?.id, 50);
+  if (id && !isUuid(id)) return json({ error: 'invalid_decision' }, 400, origin);
+  const existing = id ? await findDecision('id', id) : null;
+  if (id && !existing) return json({ error: 'decision_not_found' }, 404, origin);
+  const title = text(body?.title, 180), action = text(body?.action, 500);
+  const status = body?.status, priority = body?.priority;
+  const assignee = text(body?.assignee, 80), result = text(body?.result, 500);
+  if (!title || !action || !['planned','in_progress','done','dismissed'].includes(status) || !['high','medium','low'].includes(priority)) {
+    return json({ error: 'invalid_decision' }, 400, origin);
+  }
+  const dueAt = body?.dueAt ? validTimestamp(body.dueAt) : null;
+  if (body?.dueAt && !dueAt) return json({ error: 'invalid_decision_date' }, 400, origin);
+  if (status === 'in_progress' && (!assignee || !dueAt)) return json({ error: 'decision_owner_date_required' }, 400, origin);
+  if (['done','dismissed'].includes(status) && !result) return json({ error: 'decision_result_required' }, 400, origin);
+  if (status === 'done' && !assignee) return json({ error: 'decision_owner_required' }, 400, origin);
+  if (existing && (!body?.expectedUpdatedAt || body.expectedUpdatedAt !== existing.updated_at)) {
+    return json({ error: 'decision_conflict' }, 409, origin);
+  }
+  const key = existing?.insight_key || text(body?.insightKey, 100);
+  if (!existing && key && !/^[a-z0-9-]+$/.test(key)) return json({ error: 'invalid_decision' }, 400, origin);
+  if (!existing && key) {
+    const duplicate = await findDecision('insight_key', key);
+    if (duplicate) return json({ error: 'decision_already_saved', decisionId: duplicate.id }, 409, origin);
+  }
+  const row: Record<string, unknown> = { title, action, priority, status, assignee, due_at: dueAt, result };
+  if (!existing) {
+    const days = Number(body?.periodDays);
+    if (key && (![7,30,90].includes(days) || !text(body?.evidence,1000))) return json({ error: 'decision_evidence_required' }, 400, origin);
+    Object.assign(row, { insight_key: key, area: text(body?.area,80), source: text(body?.source,160),
+      evidence: text(body?.evidence,1000), period_days: [7,30,90].includes(days) ? days : null });
+  }
+  const query = existing ? new URLSearchParams({ id: `eq.${id}`, updated_at: `eq.${existing.updated_at}` }) : null;
+  const response = await supabase('/rest/v1/tawod_decisions' + (query ? `?${query}` : ''), {
+    method: existing ? 'PATCH' : 'POST', headers: { 'Prefer': 'return=representation' }, body: JSON.stringify(row),
+  });
+  if (!response.ok) {
+    if (response.status === 409 && key) {
+      const duplicate = await findDecision('insight_key', key);
+      if (duplicate) return json({ error: 'decision_already_saved', decisionId: duplicate.id }, 409, origin);
+    }
+    throw new Error('decision_save_failed');
+  }
+  const saved = (await response.json())?.[0];
+  if (!saved) return json({ error: 'decision_conflict' }, 409, origin);
+  return json({ ok: true, decision: normalizeDecision(saved) }, 200, origin);
+}
+
 function referralSource(row: any) {
   if (row.click_id) return 'google-ads';
   if (row.utm_source) return row.utm_source;
@@ -663,13 +746,15 @@ Deno.serve(async (req) => {
     if (!authorized && typeof body.password === 'string' && body.password) authorized = await sha256(body.password) === await adminPasswordHash();
     if (!authorized) return json({ error: 'unauthorized' }, 401, origin);
     const days = Math.max(7, Math.min(Number(body.days) || 30, 90));
-    const [siteResponse, adsResponse, profileResponse, salesPipeline, recentReferrals, visitorFrequency] = await Promise.all([
+    const [siteResponse, adsResponse, profileResponse, salesPipeline, recentReferrals, visitorFrequency, commercial, decisions] = await Promise.all([
       supabase('/rest/v1/rpc/tawod_admin_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
       supabase('/rest/v1/rpc/tawod_google_ads_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
       supabase('/rest/v1/rpc/tawod_business_profile_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
       loadSalesPipeline(days),
       loadRecentReferrals(days),
       loadVisitorFrequency(days),
+      loadCommercial(days),
+      loadDecisions(),
     ]);
     if (!siteResponse.ok) return json({ error: 'analytics_query_failed' }, 500, origin);
     const siteRaw = await siteResponse.json();
@@ -684,7 +769,7 @@ Deno.serve(async (req) => {
     const googleAdsRaw = adsResponse.ok ? await adsResponse.json() : { connected: false, error: 'google_ads_query_failed' };
     const googleAds = enrichGoogleAdsWithFirstParty(googleAdsRaw, site);
     const businessProfile = profileResponse.ok ? await profileResponse.json() : { connected: false, error: 'business_profile_query_failed' };
-    return json({ ...site, recentReferrals: recentReferrals || site.recentReferrals || [], googleAds, businessProfile, salesPipeline }, 200, origin);
+    return json({ ...site, recentReferrals: recentReferrals || site.recentReferrals || [], googleAds, businessProfile, salesPipeline, commercial, decisions }, 200, origin);
   }
 
   if (body?.mode === 'call_qualification_update') {
@@ -712,6 +797,16 @@ Deno.serve(async (req) => {
       return body.mode === 'sales_outcome_get' ? await getSalesOutcome(body, origin) : await upsertSalesOutcome(body, origin);
     } catch {
       return json({ error: 'sales_service_unavailable' }, 503, origin);
+    }
+  }
+
+  if (body?.mode === 'decision_upsert' || body?.mode === 'decision_get') {
+    if (!isAdminOrigin(origin)) return json({ error: 'origin_not_allowed' }, 403, origin);
+    if (!await verifyAdminToken(body.token)) return json({ error: 'unauthorized' }, 401, origin);
+    try {
+      return body.mode === 'decision_get' ? await getDecision(body, origin) : await saveDecision(body, origin);
+    } catch {
+      return json({ error: 'decision_service_unavailable' }, 503, origin);
     }
   }
 

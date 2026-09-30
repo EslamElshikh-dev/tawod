@@ -27,6 +27,7 @@ await db.query(`insert into tawod_sales_outcomes(id,source_type,source_ref,stage
   values($1,'whatsapp',$2,'qualified',now()-interval '100 days')`,[legacyId,legacyEvent]);
 await db.exec(fs.readFileSync('supabase/migrations/20260911090000_tawod_google_sheets_qualified_leads.sql','utf8'));
 await db.exec(fs.readFileSync('supabase/migrations/20260930014446_tawod_sales_followup_workspace.sql','utf8'));
+await db.exec(fs.readFileSync('supabase/migrations/20260930024439_tawod_decisions_commercial_workspace.sql','utf8'));
 const legacy = (await db.query('select * from tawod_sales_outcomes where id=$1',[legacyId])).rows[0];
 assert.equal(legacy.acquisition_source,'google-ads');
 assert.equal(legacy.stage_entered_at,null,'do not invent historical stage timestamps');
@@ -37,7 +38,7 @@ assert.equal((await db.query(`select has_function_privilege('authenticated','taw
 const fakePassword = 'isolated-test-password';
 const fakeSyncKey = 'isolated-sync-key-'.repeat(3);
 const hash = v => createHash('sha256').update(v).digest('hex');
-const tables = new Set(['tawod_sales_outcomes','tawod_sales_history','tawod_analytics_events']);
+const tables = new Set(['tawod_sales_outcomes','tawod_sales_history','tawod_analytics_events','tawod_decisions','tawod_decision_history']);
 const identifier = value => { assert.match(value,/^[a-z_][a-z0-9_]*$/); return '"'+value+'"'; };
 const response = (value,status=200) => new Response(JSON.stringify(value),{status,headers:{'Content-Type':'application/json'}});
 let concurrentChange = false;
@@ -51,6 +52,8 @@ async function restFetch(url,init={}) {
     const rows = await db.query('select tawod_sales_workspace($1) as workspace',[JSON.parse(init.body).p_days]);
     return response(rows.rows[0].workspace);
   }
+  if (path === 'rpc/tawod_sales_commercial') return response((await db.query('select tawod_sales_commercial($1) as result',[JSON.parse(init.body).p_days])).rows[0].result);
+  if (path === 'rpc/tawod_decision_workspace') return response((await db.query('select tawod_decision_workspace() as result')).rows[0].result);
   assert.ok(tables.has(path),'unexpected REST table: '+path);
   const params = [], conditions = [];
   for (const [column,filter] of parsed.searchParams) {
@@ -80,7 +83,7 @@ async function restFetch(url,init={}) {
     assert.equal(init.method,'PATCH');
     if (concurrentChange) {
       concurrentChange=false;
-      await db.query('update tawod_sales_outcomes set updated_at=now()+interval \'1 second\' where id=$1',[params[0]]);
+      await db.query(`update ${identifier(path)} set updated_at=now()+interval '1 second' where id=$1`,[params[0]]);
     }
     const values = Object.values(body);
     const assignments = columns.map((column,i)=>identifier(column)+'=$'+(params.length+i+1));
@@ -97,7 +100,7 @@ const context = vm.createContext({
 });
 const source = fs.readFileSync('supabase/functions/tawod-analytics/index.ts','utf8');
 const compiled = ts.transpileModule(source,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.None}}).outputText;
-vm.runInContext(compiled+'\nglobalThis.salesTest={loadSalesPipeline,normalizeSheetLead};',context);
+vm.runInContext(compiled+'\nglobalThis.salesTest={loadSalesPipeline,normalizeSheetLead,loadCommercial,loadDecisions};',context);
 const origin = 'https://tawodco.com';
 const call = async (body,requestOrigin=origin) => {
   const result = await handler(new Request('https://isolated.local/functions/v1/tawod-analytics',{
@@ -181,6 +184,80 @@ assert.equal(lost.status,200);
 assert.equal(lost.outcome.nextFollowUpAt,null);
 pipeline = await context.salesTest.loadSalesPipeline(7);
 assert.equal(pipeline.followups.total,0);
+
+// A contract can close during the period even when its referral cohort is older.
+let commercial = await context.salesTest.loadCommercial(7);
+assert.equal(commercial.activity.contracts,1);
+assert.equal(commercial.activity.lost,1);
+assert.equal(commercial.activity.closedWinRate,50);
+assert.equal(commercial.sources.length,1);
+assert.equal(commercial.sources[0].source_key,'unlinked','manual source labels cannot manufacture measured attribution');
+assert.equal(commercial.sources[0].contracts,1);
+assert.equal(commercial.sources[0].contract_value,10000);
+const oldSigned = await save({...review,id:linked.outcome.id,sourceType:'whatsapp',sourceRef:eventId,stage:'contract_signed',contractValue:60000,expectedUpdatedAt:lost.outcome.updatedAt});
+assert.equal(oldSigned.status,200);
+commercial = await context.salesTest.loadCommercial(7);
+assert.equal(commercial.activity.contracts,2,'closure activity includes old referrals');
+assert.equal(commercial.activity.contractValue,70000);
+assert.equal(commercial.sources[0].contracts,1,'source table is a referral cohort, not closure activity');
+const reopened = await save({...review,id:linked.outcome.id,sourceType:'whatsapp',sourceRef:eventId,stage:'qualified',expectedUpdatedAt:oldSigned.outcome.updatedAt});
+assert.equal(reopened.status,200);
+assert.equal((await context.salesTest.loadCommercial(7)).activity.contracts,1,'reopened deals leave current closed activity');
+await save({...review,id:linked.outcome.id,sourceType:'whatsapp',sourceRef:eventId,stage:'lost',lostReason:'timing',expectedUpdatedAt:reopened.outcome.updatedAt});
+const historicalClosed = randomUUID();
+await db.query(`insert into tawod_sales_outcomes(id,source_type,stage,occurred_at,contract_value) values($1,'other','contract_signed',now()-interval '120 days',888)`,[historicalClosed]);
+await db.query('update tawod_sales_outcomes set stage_entered_at=null where id=$1',[historicalClosed]);
+commercial = await context.salesTest.loadCommercial(7);
+assert.equal(commercial.unknownClosedDates,1);
+assert.equal(commercial.activity.contracts,1,'unknown historical closure dates are never invented');
+const organicEvent = randomUUID();
+await db.query(`insert into tawod_analytics_events(id,event_name,page_path,landing_path,referrer_host) values($1,'call_click','/bone','/bone','www.google.com')`,[organicEvent]);
+const organic = await save({...review,sourceType:'call',sourceRef:organicEvent,stage:'qualified',estimatedValue:20000});
+assert.equal(organic.status,200);
+await db.query(`update tawod_sales_outcomes set stage_entered_at=now()-interval '20 days' where id=$1`,[organic.outcome.id]);
+const organicLoss = await save({...review,sourceType:'call',sourceRef:organicEvent,id:organic.outcome.id,stage:'lost',lostReason:'price',expectedUpdatedAt:organic.outcome.updatedAt});
+assert.equal(organicLoss.status,200);
+commercial = await context.salesTest.loadCommercial(7);
+assert.equal(commercial.sources.find(row=>row.source_key==='google-organic').lost,1);
+assert.equal(commercial.lossReasons.find(row=>row.reason==='price').total,1);
+
+// Persistent actions require review, keep immutable evidence, and reject conflicting edits.
+assert.equal((await call({mode:'decision_get',id:randomUUID()})).status,401);
+assert.equal((await call({mode:'decision_get',token,insightKey:'safe-key'},'https://untrusted.example')).status,403);
+for (const table of ['tawod_decisions','tawod_decision_history']) {
+  assert.equal((await db.query("select has_table_privilege('anon',$1,'SELECT') as allowed",[table])).rows[0].allowed,false);
+}
+for (const rpc of ['tawod_sales_commercial(integer)','tawod_decision_workspace()']) {
+  assert.equal((await db.query("select has_function_privilege('authenticated',$1,'EXECUTE') as allowed",[rpc])).rows[0].allowed,false);
+}
+const decisionSave = body => call({mode:'decision_upsert',token,title:'مراجعة تغطية الرد',action:'توزيع ساعات الرد وتسجيل النتيجة',priority:'high',status:'planned',...body});
+assert.equal((await decisionSave({status:'in_progress'})).error,'decision_owner_date_required');
+assert.equal((await decisionSave({status:'done',assignee:'الفريق أ'})).error,'decision_result_required');
+assert.equal((await decisionSave({status:'dismissed'})).error,'decision_result_required');
+assert.equal((await decisionSave({insightKey:'coverage-rule'})).error,'decision_evidence_required');
+const firstDecision = await decisionSave({insightKey:'coverage-rule',source:'مسار البيع',evidence:'3 متابعات متأخرة وقت المراجعة',periodDays:7});
+assert.equal(firstDecision.status,200);
+const decisionId = firstDecision.decision.id;
+assert.equal((await decisionSave({insightKey:'coverage-rule',evidence:'جديد',periodDays:7})).error,'decision_already_saved');
+assert.equal((await call({mode:'decision_get',token,insightKey:'coverage-rule'})).decision.id,decisionId);
+assert.equal((await call({mode:'decision_get',token,id:decisionId})).history.length,1);
+const underway = await decisionSave({id:decisionId,status:'in_progress',assignee:'الفريق أ',dueAt:new Date(Date.now()-60000).toISOString(),expectedUpdatedAt:firstDecision.decision.updatedAt,evidence:'forged replacement',source:'forged source'});
+assert.equal(underway.status,200);
+assert.equal(underway.decision.evidence,firstDecision.decision.evidence,'evidence stays frozen when data/rules change');
+assert.equal(underway.decision.source,'مسار البيع');
+assert.equal((await decisionSave({id:decisionId,expectedUpdatedAt:firstDecision.decision.updatedAt})).error,'decision_conflict');
+concurrentChange=true;
+assert.equal((await decisionSave({id:decisionId,expectedUpdatedAt:underway.decision.updatedAt})).error,'decision_conflict','atomic conflict prevents overwriting another session');
+const currentDecision = (await call({mode:'decision_get',token,id:decisionId})).decision;
+const doneDecision = await decisionSave({id:decisionId,status:'done',assignee:'الفريق أ',result:'تم توزيع الجدول وتوثيق ساعات التغطية',expectedUpdatedAt:currentDecision.updatedAt});
+assert.equal(doneDecision.status,200);
+assert.ok(doneDecision.decision.completedAt);
+assert.equal((await context.salesTest.loadDecisions()).summary.active,0);
+assert.equal((await context.salesTest.loadDecisions()).summary.done,1);
+assert.equal((await call({mode:'decision_get',token,id:decisionId})).history[0].event_type,'status_changed');
+const again = await decisionSave({id:decisionId,status:'planned',expectedUpdatedAt:doneDecision.decision.updatedAt});
+assert.equal(again.status,200);
+assert.equal(again.decision.completedAt,null,'reopening clears completion timestamp without erasing history');
 // Display limits never truncate the totals. Database queries run with API service privileges.
 await db.exec(`set role service_role;
   insert into tawod_sales_outcomes(source_type,stage,occurred_at)
@@ -189,8 +266,19 @@ pipeline = await context.salesTest.loadSalesPipeline(7);
 assert.equal(pipeline.followups.total,501);
 assert.equal(pipeline.openEntries.length,500);
 assert.equal(pipeline.openEntriesTruncated,true);
-assert.equal(pipeline.summary.opportunities,502);
+assert.equal(pipeline.summary.opportunities,503);
 assert.equal(pipeline.entries.length,500);
 assert.equal(pipeline.entriesTruncated,true);
+commercial = await context.salesTest.loadCommercial(7);
+const openStage = commercial.board.stages.find(row=>row.scope==='open' && row.stage==='new');
+assert.equal(openStage.total,501);
+assert.equal(commercial.board.entries.filter(row=>row.scope==='open' && row.stage==='new').length,40);
+assert.equal(commercial.sources.find(row=>row.source_key==='unlinked').opportunities,502);
+await db.exec(`insert into tawod_decisions(title,action,status) select 'إجراء اختباري','مراجعة','planned' from generate_series(1,501);`);
+const cappedDecisions = await context.salesTest.loadDecisions();
+assert.equal(cappedDecisions.summary.total,502);
+assert.equal(cappedDecisions.entries.length,500);
+assert.equal(cappedDecisions.entriesTruncated,true);
+assert.equal((await call({mode:'decision_get',token,insightKey:'coverage-rule'})).decision.id,decisionId,'exact lookup works outside a capped workspace');
 await db.close();
-console.log('Verified real Postgres migration, private access, full aggregates, all-date follow-ups, exact attribution, qualifications, stage history, conflicts, and Sheets regression guards.');
+console.log('Verified private Postgres migrations, uncapped sales/source/stage aggregates, cohort vs closure activity, unknown historical dates, persistent decision review/history/conflicts, follow-ups, and Sheets regression guards.');

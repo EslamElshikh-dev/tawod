@@ -9,6 +9,9 @@
   var payload = null;
   var insights = [];
   var editRequest = 0;
+  var decisionDraft = null;
+  var decisionEditRequest = 0;
+  var boardExpanded = {};
 
   function el(id) { return document.getElementById(id); }
   function number(value) { return Number(value || 0); }
@@ -18,7 +21,7 @@
   function pct(value) { return n(value, 1) + '%'; }
   function rate(a, b) { return number(b) ? number(a) / number(b) * 100 : 0; }
   function money(value, currency) {
-    return new Intl.NumberFormat('ar-SA', { style: 'currency', currency: currency || 'SAR', maximumFractionDigits: 2 }).format(number(value));
+    return new Intl.NumberFormat('ar-SA', { style: 'currency', currency: currency || 'SAR', minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(number(value));
   }
   function esc(value) {
     return String(value == null ? '—' : value).replace(/[&<>"']/g, function (char) {
@@ -46,7 +49,8 @@
     var labels = {
       direct: 'مباشر', 'google-ads': 'Google Ads', 'google-organic': 'Google Organic',
       google: 'Google', facebook: 'Facebook', instagram: 'Instagram', tiktok: 'TikTok',
-      whatsapp: 'WhatsApp', 'l.wl.co': 'رابط WhatsApp'
+      whatsapp: 'WhatsApp', 'l.wl.co': 'رابط WhatsApp',
+      unlinked: 'غير مرتبط بإحالة مقاسة', unknown: 'مصدر غير معروف'
     };
     return labels[key] || value || 'غير معروف';
   }
@@ -170,8 +174,8 @@
     var label = score >= 80 ? 'إحالات قوية' : score >= 60 ? 'أداء جيد' : score >= 40 ? 'يحتاج تحسين' : 'فجوة إحالة';
     return { score: score, label: label, text: 'مؤشر تقديري لقواعد الإحالة واتجاهها ومطابقة الإجماليات؛ لا يقيس ربحية العقود أو دقة الإسناد.' };
   }
-  function makeInsight(priority, area, title, evidence, action, source) {
-    return { priority: priority, area: area, title: title, evidence: evidence, action: action, source: source };
+  function makeInsight(priority, area, title, evidence, action, source, key) {
+    return { priority: priority, area: area, title: title, evidence: evidence, action: action, source: source, key: key };
   }
   function buildInsights(data) {
     var s = data.summary || {};
@@ -179,46 +183,46 @@
     var bp = data.businessProfile || {};
     var rows = [];
     if (!(data.dataQuality || {}).reconciled) {
-      rows.push(makeInsight('high', 'جودة البيانات', 'يوجد فرق في إجماليات الجلسات', 'مجموع المصادر أو الأجهزة لا يساوي إجمالي الزيارات.', 'أوقف قرارات الميزانية حتى تتم مطابقة المصدر.', 'First-party'));
+      rows.push(makeInsight('high', 'جودة البيانات', 'يوجد فرق في إجماليات الجلسات', 'مجموع المصادر أو الأجهزة لا يساوي إجمالي الزيارات.', 'أوقف قرارات الميزانية حتى تتم مطابقة المصدر.', 'First-party', 'session-reconciliation'));
     }
     if (!ads.connected) {
-      rows.push(makeInsight('high', 'Google Ads', 'الميزانيات ومدة المكالمات غير متصلة', 'بيانات الموقع تثبت وجود إحالات، لكن مصدر Google Ads لم يرسل ميزانية أو Call Reporting بعد.', 'شغّل سكربت المزامنة من حساب Google Ads وجدوله يوميًا.', 'Google Ads API'));
+      rows.push(makeInsight('high', 'Google Ads', 'بيانات الإعلانات غير متصلة', 'لم تصل بيانات الإنفاق والميزانية من Google Ads. قياس مدة المكالمات يحتاج مصدرًا متاحًا مستقلًا.', 'راجع سكربت المزامنة من حساب Google Ads وجدول تشغيله.', 'Google Ads API', 'google-ads-connection'));
     }
     if (!bp.connected) {
-      rows.push(makeInsight('medium', 'الملف التجاري', 'أداء الملف التجاري غير متصل', 'لا يمكن قياس Search وMaps والمكالمات والاتجاهات بدقة بدون Performance API.', 'فعّل Business Profile Performance API وشغّل مزامنة الموقع التجاري.', 'Business Profile API'));
+      rows.push(makeInsight('medium', 'الملف التجاري', 'أداء الملف التجاري غير متصل', 'لا يمكن قياس Search وMaps والمكالمات والاتجاهات بدقة بدون Performance API.', 'فعّل Business Profile Performance API وشغّل مزامنة الموقع التجاري.', 'Business Profile API', 'business-profile-connection'));
     }
     var sales = data.salesPipeline || {};
     var pipeline = sales.summary || {};
     var followups = sales.followups || {};
-    if (sales.connected && number(followups.overdue)) rows.push(makeInsight('high', 'المتابعة', 'متابعات تجاوزت موعدها', n(followups.overdue) + ' فرصة مفتوحة عبر جميع التواريخ.', 'افتح مركز المتابعات وراجع الإجراء القادم مع المسؤول عن كل فرصة.', 'مسار البيع'));
-    if (sales.connected && (number(followups.unassigned) || number(followups.unscheduled))) rows.push(makeInsight('high', 'المتابعة', 'فرص تحتاج توزيعًا وجدولة', n(followups.unassigned) + ' دون مسؤول و' + n(followups.unscheduled) + ' دون موعد؛ قد تتداخل المجموعتان.', 'عيّن مسؤولًا وموعدًا وإجراءً لكل فرصة مفتوحة.', 'مسار البيع'));
+    if (sales.connected && number(followups.overdue)) rows.push(makeInsight('high', 'المتابعة', 'متابعات تجاوزت موعدها', n(followups.overdue) + ' فرصة مفتوحة عبر جميع التواريخ.', 'افتح مركز المتابعات وراجع الإجراء القادم مع المسؤول عن كل فرصة.', 'مسار البيع', 'overdue-sales-followups'));
+    if (sales.connected && (number(followups.unassigned) || number(followups.unscheduled))) rows.push(makeInsight('high', 'المتابعة', 'فرص تحتاج توزيعًا وجدولة', n(followups.unassigned) + ' دون مسؤول و' + n(followups.unscheduled) + ' دون موعد؛ قد تتداخل المجموعتان.', 'عيّن مسؤولًا وموعدًا وإجراءً لكل فرصة مفتوحة.', 'مسار البيع', 'sales-ownership-schedule'));
     if (sales.connected && number(pipeline.opportunities) >= 3 && !number(pipeline.contracts)) {
-      rows.push(makeInsight('high', 'العقود', 'لا توجد عقود مسجلة من الفرص الحالية', n(pipeline.opportunities) + ' فرص في مسار البيع دون عقد موقّع مسجل.', 'راجع العروض المفتوحة وحدد موعد متابعة وقرارًا واضحًا لكل فرصة.', 'مسار البيع'));
+      rows.push(makeInsight('high', 'العقود', 'لا توجد عقود مسجلة من الفرص الحالية', n(pipeline.opportunities) + ' فرص في مسار البيع دون عقد موقّع مسجل.', 'راجع العروض المفتوحة وحدد موعد متابعة وقرارًا واضحًا لكل فرصة.', 'مسار البيع', 'cohort-no-contracts'));
     } else if (sales.connected && number(pipeline.contracts)) {
-      rows.push(makeInsight('good', 'العقود', 'تم تسجيل عقود موقعة', n(pipeline.contracts) + ' عقد بقيمة ' + money(pipeline.contractValue, 'SAR') + '.', 'قارن مصدر العقود بالحملات قبل زيادة الميزانية.', 'مسار البيع'));
+      rows.push(makeInsight('good', 'العقود', 'تم تسجيل عقود موقعة', n(pipeline.contracts) + ' عقد بقيمة ' + money(pipeline.contractValue, 'SAR') + '.', 'قارن مصدر العقود بالحملات قبل زيادة الميزانية.', 'مسار البيع', 'review-contract-sources'));
     }
     if (number(s.sessions) >= 30 && number(s.referralRate) < 5) {
-      rows.push(makeInsight('high', 'التحويل', 'معدل الإحالة أقل من 5%', n(s.referralSessions) + ' إحالة فريدة من ' + n(s.sessions) + ' زيارة.', 'حسّن عرض القيمة وأزرار الاتصال وواتساب في الصفحات الأعلى زيارة.', 'First-party'));
+      rows.push(makeInsight('high', 'التحويل', 'معدل الإحالة أقل من 5%', n(s.referralSessions) + ' إحالة فريدة من ' + n(s.sessions) + ' زيارة.', 'حسّن عرض القيمة وأزرار الاتصال وواتساب في الصفحات الأعلى زيارة.', 'First-party', 'low-referral-rate'));
     }
     var desktop = (data.devices || []).filter(function (row) { return row.device === 'desktop'; })[0];
     var mobile = (data.devices || []).filter(function (row) { return row.device === 'mobile'; })[0];
     if (desktop && mobile && number(desktop.sessions) >= 30 && number(desktop.referralRate) < number(mobile.referralRate) * 0.5) {
-      rows.push(makeInsight('medium', 'الأجهزة', 'تحويل الكمبيوتر أضعف من الجوال', 'معدل الكمبيوتر ' + pct(desktop.referralRate) + ' مقابل ' + pct(mobile.referralRate) + ' للجوال.', 'راجع وضوح أزرار التواصل والعرض أعلى صفحات الكمبيوتر.', 'First-party'));
+      rows.push(makeInsight('medium', 'الأجهزة', 'تحويل الكمبيوتر أضعف من الجوال', 'معدل الكمبيوتر ' + pct(desktop.referralRate) + ' مقابل ' + pct(mobile.referralRate) + ' للجوال.', 'راجع وضوح أزرار التواصل والعرض أعلى صفحات الكمبيوتر.', 'First-party', 'desktop-referral-gap'));
     }
     var paid = (data.sources || []).filter(function (row) { return row.source === 'google-ads'; })[0];
     if (paid && number(paid.sessions) >= 20 && number(paid.referralRate) >= 8) {
-      rows.push(makeInsight('good', 'الاكتساب', 'زيارات Google Ads تُظهر نية تواصل قوية', n(paid.referrals) + ' إحالة من ' + n(paid.sessions) + ' زيارة منسوبة للحملات (' + pct(paid.referralRate) + ').', 'اربط الصرف والميزانية قبل التوسع لتقييم تكلفة الإحالة الحقيقية.', 'First-party attribution'));
+      rows.push(makeInsight('good', 'الاكتساب', 'زيارات Google Ads تُظهر نية تواصل قوية', n(paid.referrals) + ' إحالة من ' + n(paid.sessions) + ' زيارة منسوبة للحملات (' + pct(paid.referralRate) + ').', 'اربط الصرف والميزانية قبل التوسع لتقييم تكلفة الإحالة الحقيقية.', 'First-party attribution', 'review-paid-referrals'));
     }
     if (ads.connected) {
       var a = ads.summary || {};
       if (number(a.receivedCalls) && rate(a.missedCalls, a.trackedCalls) > 20) {
-        rows.push(makeInsight('high', 'المكالمات', 'نسبة مكالمات فائتة مرتفعة', n(a.missedCalls) + ' مكالمة فائتة من ' + n(a.trackedCalls) + ' مكالمة مقاسة.', 'حدد تغطية للرد خلال ساعات الحملات وراجع جدول ظهور الإعلانات.', 'Google Ads Call Reporting'));
+        rows.push(makeInsight('high', 'المكالمات', 'نسبة مكالمات فائتة مرتفعة', n(a.missedCalls) + ' مكالمة فائتة من ' + n(a.trackedCalls) + ' مكالمة مقاسة.', 'حدد تغطية للرد خلال ساعات الحملات وراجع جدول ظهور الإعلانات.', 'Google Ads Call Reporting', 'missed-call-coverage'));
       }
       if (number(a.budgetUseRate) > 110) {
-        rows.push(makeInsight('high', 'الميزانية', 'الصرف أعلى من الميزانية المخططة للفترة', 'نسبة استخدام الميزانية التقديرية ' + pct(a.budgetUseRate) + '.', 'راجع الميزانيات المشتركة وتغييرات الميزانية قبل رفع العطاءات.', 'Google Ads API'));
+        rows.push(makeInsight('high', 'الميزانية', 'الصرف أعلى من الميزانية المخططة للفترة', 'نسبة استخدام الميزانية التقديرية ' + pct(a.budgetUseRate) + '.', 'راجع الميزانيات المشتركة وتغييرات الميزانية قبل رفع العطاءات.', 'Google Ads API', 'budget-period-review'));
       }
     }
-    if (!rows.length) rows.push(makeInsight('info', 'المتابعة', 'لا توجد إشارة حرجة', 'الإجماليات متطابقة ولا توجد مشكلة مدعومة بعينة كافية.', 'استمر بالمراقبة وراجع جودة العملاء أسبوعيًا.', 'المصادر المتصلة'));
+    if (!rows.length) rows.push(makeInsight('info', 'المتابعة', 'لا توجد إشارة حرجة', 'الإجماليات متطابقة ولا توجد مشكلة مدعومة بعينة كافية.', 'استمر بالمراقبة وراجع جودة العملاء أسبوعيًا.', 'المصادر المتصلة', 'weekly-quality-review'));
     var weight = { high: 0, medium: 1, info: 2, good: 3 };
     return rows.sort(function (a, b) { return weight[a.priority] - weight[b.priority]; });
   }
@@ -339,6 +343,59 @@
       var sync = sheetsSyncLabel(row);
       return '<tr data-outcome="' + esc(row.id) + '"><td><code>' + esc(opportunityId(row)) + '</code>' + (row.isTest ? '<small>بيانات اختبار</small>' : '') + '<small>' + esc(formatDate(row.occurredAt)) + '</small></td><td><span class="channel-tag ' + esc(row.sourceType) + '">' + esc(salesSourceLabel(row.sourceType)) + '</span><small>' + esc(sourceLabel(row.acquisitionSource || 'غير مرتبط')) + '</small></td><td>' + esc(row.serviceType) + '<small>' + esc(row.projectLocation) + '</small></td><td>' + esc(row.campaignName) + '</td><td><span class="stage-tag ' + esc(row.stage) + '">' + esc(salesStageLabel(row.stage)) + '</span>' + (row.stage === 'lost' ? '<small>' + esc(lostReasonLabel(row.lostReason)) + '</small>' : '') + '</td><td>' + esc(row.assignee || 'دون مسؤول') + '<small>' + esc(formatDate(row.nextFollowUpAt)) + '</small></td><td><span class="stage-tag ' + esc(sync.cls) + '">' + esc(sync.text) + '</span></td><td>' + esc(money(row.estimatedValue, 'SAR')) + '</td><td><strong>' + esc(money(row.contractValue, 'SAR')) + '</strong></td><td><button class="pipeline-edit" type="button">فتح</button></td></tr>';
     }).join('');
+  }
+
+  function renderStageBoard(data) {
+    var commercial = data.commercial || {}, board = commercial.board || {};
+    if (!commercial.connected) { el('salesStageBoard').innerHTML = '<div class="empty-box">تحليل المراحل غير متاح الآن.</div>'; return; }
+    var scope = el('boardScope').value;
+    var stages = scope === 'open' ? ['new','qualified','quote_sent','site_visit'] : ['new','qualified','quote_sent','site_visit','contract_signed','lost'];
+    el('salesStageBoard').classList.toggle('all-stages', scope === 'period');
+    el('salesStageBoard').innerHTML = stages.map(function (stage) {
+      var summary = (board.stages || []).find(function (row) { return row.scope === scope && row.stage === stage; }) || {};
+      var all = (board.entries || []).filter(function (row) { return row.scope === scope && row.stage === stage; });
+      var expanded = boardExpanded[scope + '-' + stage];
+      var rows = expanded ? all : all.slice(0, 6);
+      var valueLabel = stage === 'contract_signed' ? 'قيمة العقود' : stage === 'lost' ? 'قيمة الفرص المفقودة التقديرية' : 'قيمة تقديرية';
+      return '<article class="board-column ' + esc(stage) + '"><header><span class="stage-tag ' + esc(stage) + '">' + esc(salesStageLabel(stage)) + '</span><strong>' + n(summary.total) + '</strong></header><p class="board-value">' + valueLabel + '<b>' + esc(money(summary.value, 'SAR')) + '</b></p>' +
+        (number(summary.aging) ? '<p class="board-aging">' + n(summary.aging) + ' منذ 14 يومًا أو أكثر في المرحلة</p>' : '') +
+        '<div class="board-cards">' + (rows.length ? rows.map(function (row) {
+          var days = row.stageEnteredAt ? Math.max(0, Math.floor((Date.now() - new Date(row.stageEnteredAt).getTime()) / 86400000)) : null;
+          var open = !['contract_signed','lost'].includes(row.stage);
+          return '<button class="board-card' + (open && days !== null && days >= 14 ? ' is-aging' : '') + '" type="button" data-outcome="' + esc(row.id) + '"><span class="board-card-id">' + esc(opportunityId(row)) + '</span><strong>' + esc(row.serviceType || 'الخدمة غير محددة') + '</strong><span>' + esc(row.assignee || 'دون مسؤول') + ' · ' + esc(sourceLabel(row.source)) + '</span><span class="board-card-age">' + (days === null ? 'عمر المرحلة غير معروف' : n(days) + ' يوم في المرحلة') + '</span>' +
+            (open ? '<span class="board-card-action">' + esc(row.nextAction || 'الإجراء القادم غير محدد') + '</span><time>' + esc(row.nextFollowUpAt ? formatDate(row.nextFollowUpAt) : 'دون موعد متابعة') + '</time>' : '') + '</button>';
+        }).join('') : '<div class="board-empty">لا توجد فرص في هذه المرحلة.</div>') + '</div>' +
+        (all.length > 6 ? '<button type="button" class="board-more" data-stage="' + esc(stage) + '">' + (expanded ? 'عرض مختصر' : 'عرض ' + n(all.length) + ' فرصة') + '</button>' : '') +
+        (number(summary.total) > all.length ? '<small class="board-limit">يعرض أحدث أولويات المتابعة حتى 40 فرصة؛ الإجمالي يشمل ' + n(summary.total) + '.</small>' : '') + '</article>';
+    }).join('');
+  }
+  function commercialGroups() {
+    var commercial = (payload || {}).commercial || {};
+    return el('commercialGroup').value === 'campaign' ? commercial.campaigns || [] : commercial.sources || [];
+  }
+  function renderCommercial(data) {
+    var commercial = data.commercial || {}, activity = commercial.activity || {};
+    el('commercialActivityMetrics').innerHTML = commercial.connected ? [
+      metric('عقود اعتُمدت في الفترة', n(activity.contracts), 'اعتماد المرحلة في اللوحة · أي تاريخ إحالة', 'المبيعات', 'confirmed'),
+      metric('قيمتها المسجلة حاليًا', money(activity.contractValue, 'SAR'), 'قيمة تعاقد، وليست تحصيلًا', 'المبيعات', 'confirmed'),
+      metric('نجاح الفرص المغلقة', activity.closedWinRate == null ? '—' : pct(activity.closedWinRate), n(activity.contracts) + ' عقد و' + n(activity.lost) + ' لم يتم التعاقد', 'اعتماد خلال الفترة', ''),
+      metric('متوسط دورة البيع', activity.avgCycleDays == null ? '—' : n(activity.avgCycleDays,1) + ' يوم', 'من الإحالة إلى اعتماد حالة العقد', 'العقود المؤرخة', '')
+    ].join('') : unavailableMetrics(['عقود اعتُمدت في الفترة','قيمتها المسجلة حاليًا','نجاح الفرص المغلقة','متوسط دورة البيع'], 'تحليل المبيعات');
+    el('commercialWindowNote').textContent = commercial.connected ?
+      'الفترة: ' + formatDate(commercial.startAt) + ' إلى ' + formatDate(commercial.endAt) + '. يُستخدم آخر انتقال للحالة الحالية؛ إعادة فتح الفرصة تُزيلها من نتائج الإغلاق. ' + (number(commercial.unknownClosedDates) ? n(commercial.unknownClosedDates) + ' نتيجة مغلقة قديمة دون تاريخ اعتماد معروف، مستبعدة من مؤشرات الإغلاق.' : 'لا يُفترض تاريخ توقيع فعلي خارج السجل.') : 'تعذر تحميل تحليل النتائج الآن.';
+    var campaign = el('commercialGroup').value === 'campaign';
+    el('commercialGroupHeading').textContent = campaign ? 'المصدر / الحملة' : 'المصدر';
+    el('commercialGroupLimit').hidden = !campaign || !commercial.campaignsTruncated;
+    var rows = commercialGroups();
+    el('commercialSourceEmpty').hidden = !!rows.length;
+    el('commercialSourceEmpty').textContent = commercial.connected ? 'لا توجد فرص فعلية في هذه الفترة.' : 'مصدر التحليل غير متاح الآن.';
+    el('commercialSourceBody').innerHTML = rows.map(function (row) {
+      return '<tr><td><strong>' + esc(sourceLabel(row.source_key)) + '</strong>' + (campaign ? '<small>' + esc(row.campaign) + '</small>' : '') + '<small>' + (number(row.opportunities) < 10 ? 'عينة صغيرة · اقرأ العدد مع النسبة' : 'مصدر إحالة التواصل') + '</small></td><td>' + n(row.opportunities) + '</td><td>' + n(row.qualified) + '</td><td>' + n(row.open) + '</td><td>' + n(row.contracts) + '</td><td>' + n(row.lost) + '</td><td>' + pct(rate(row.contracts,row.opportunities)) + '</td><td><strong>' + esc(money(row.contract_value,'SAR')) + '</strong></td><td>' + esc(money(row.open_value,'SAR')) + '</td></tr>';
+    }).join('');
+    var reasons = commercial.lossReasons || [], total = reasons.reduce(function (sum,row) { return sum+number(row.total); },0);
+    el('commercialLossReasons').innerHTML = reasons.length ? reasons.map(function (row) {
+      return '<div class="loss-reason"><div><strong>' + esc(row.reason === 'unknown' ? 'سبب غير مسجل' : lostReasonLabel(row.reason)) + '</strong><span>' + n(row.total) + ' فرصة · ' + pct(rate(row.total,total)) + '</span></div><div class="source-track"><i style="width:' + Math.min(100,rate(row.total,total)) + '%"></i></div></div>';
+    }).join('') : '<div class="empty-box">' + (commercial.connected ? 'لا توجد فرص مفقودة مسجلة في هذه المجموعة.' : 'لا تتوفر بيانات الأسباب الآن.') + '</div>';
   }
 
   function growth(current, previous) {
@@ -532,8 +589,31 @@
   function renderInsights() {
     var labels = { high: 'أولوية عالية', medium: 'تحسين مهم', good: 'فرصة نمو', info: 'متابعة' };
     el('insightsGrid').innerHTML = insights.map(function (row, index) {
-      return '<article class="decision-item ' + row.priority + '"><div class="decision-meta"><span>أولوية ' + String(index + 1).padStart(2, '0') + '</span><b>' + labels[row.priority] + ' · ' + esc(row.area) + '</b></div><div class="decision-main"><h3>' + esc(row.title) + '</h3><p>' + esc(row.evidence) + '</p></div><div class="decision-next"><span>المصدر: ' + esc(row.source) + '</span><strong>' + esc(row.action) + '</strong></div></article>';
+      var saved = ((((payload || {}).decisions || {}).entries) || []).find(function (item) { return item.insightKey === row.key; });
+      return '<article class="decision-item ' + row.priority + '"><div class="decision-meta"><span>أولوية ' + String(index + 1).padStart(2, '0') + '</span><b>' + labels[row.priority] + ' · ' + esc(row.area) + '</b></div><div class="decision-main"><h3>' + esc(row.title) + '</h3><p>' + esc(row.evidence) + '</p></div><div class="decision-next"><span>المصدر: ' + esc(row.source) + '</span><strong>' + esc(row.action) + '</strong><button type="button" class="insight-adopt" data-insight="' + esc(row.key) + '">' + (saved ? 'فتح الإجراء · ' + decisionStatusLabel(saved.status) : 'اعتماد كإجراء') + '</button></div></article>';
     }).join('');
+  }
+
+  function decisionStatusLabel(value) { return { planned:'مخطط',in_progress:'قيد التنفيذ',done:'تم التنفيذ',dismissed:'مستبعد' }[value] || '—'; }
+  function renderDecisions(data) {
+    var workspace = data.decisions || {}, summary = workspace.summary || {};
+    el('decisionMetrics').innerHTML = workspace.connected ? [
+      metric('إجراءات مفتوحة',n(summary.active),'مخططة أو قيد التنفيذ · كل التواريخ','التنفيذ',''),
+      metric('تجاوزت موعد المراجعة',n(summary.overdue),'إجراءات مفتوحة متأخرة','التنفيذ',''),
+      metric('دون مسؤول',n(summary.unassigned),'إجراءات مفتوحة تحتاج توزيعًا','التنفيذ',''),
+      metric('تم تنفيذها',n(summary.done),'بنتيجة محفوظة ومراجعة يدوية','التنفيذ','confirmed')
+    ].join('') : unavailableMetrics(['إجراءات مفتوحة','تجاوزت موعد المراجعة','دون مسؤول','تم تنفيذها'],'مركز القرارات');
+    el('decisionLimit').hidden = !workspace.entriesTruncated;
+    var filter = el('decisionFilter').value, query = el('decisionSearch').value.trim().toLowerCase();
+    var rows = (workspace.entries || []).filter(function (row) {
+      var active = ['planned','in_progress'].includes(row.status);
+      var matches = filter === 'all' || filter === row.status || (filter === 'active' && active) || (filter === 'overdue' && active && row.dueAt && new Date(row.dueAt).getTime()<Date.now()) || (filter === 'unassigned' && active && !row.assignee);
+      return matches && (!query || [row.title,row.assignee,row.action,row.area].join(' ').toLowerCase().includes(query));
+    });
+    el('decisionList').innerHTML = rows.length ? rows.map(function (row) {
+      var overdue = ['planned','in_progress'].includes(row.status) && row.dueAt && new Date(row.dueAt).getTime()<Date.now();
+      return '<article class="execution-card' + (overdue ? ' is-overdue' : '') + '"><div class="execution-heading"><span class="decision-status ' + esc(row.status) + '">' + esc(decisionStatusLabel(row.status)) + '</span><span>' + ({high:'أولوية عالية',medium:'أولوية متوسطة',low:'أولوية منخفضة'}[row.priority] || '') + (overdue ? ' · متأخر' : '') + '</span></div><h4>' + esc(row.title) + '</h4><p>' + esc(row.action) + '</p><dl><div><dt>المسؤول</dt><dd>' + esc(row.assignee || 'غير معين') + '</dd></div><div><dt>موعد المراجعة</dt><dd>' + esc(formatDate(row.dueAt)) + '</dd></div></dl>' + (row.result ? '<p class="execution-result"><strong>النتيجة:</strong> ' + esc(row.result) + '</p>' : '') + '<button type="button" class="decision-open" data-decision="' + esc(row.id) + '">فتح الإجراء وسجله</button></article>';
+    }).join('') : '<div class="empty-box">' + (workspace.connected ? 'لا توجد إجراءات مطابقة. اعتمد اقتراحًا أو أضف إجراءً جديدًا.' : 'تعذر تحميل الإجراءات المحفوظة.') + '</div>';
   }
 
   function buildNotifications(data) {
@@ -584,6 +664,8 @@
     renderExecutive(data);
     renderFunnel(data);
     renderSalesPipeline(data);
+    renderStageBoard(data);
+    renderCommercial(data);
     renderFollowups(data);
     renderSourceQuality(data);
     renderTrend(data);
@@ -593,13 +675,14 @@
     renderBusinessProfile(data);
     renderReferralsAndCalls(data);
     renderInsights();
+    renderDecisions(data);
     renderNotifications(data);
   }
 
   async function request(body) {
     var response = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), cache: 'no-store', credentials: 'omit' });
     var data = await response.json().catch(function () { return {}; });
-    if (!response.ok) { var failure = new Error(data.error || 'request_failed'); failure.status = response.status; failure.outcomeId = data.outcomeId; throw failure; }
+    if (!response.ok) { var failure = new Error(data.error || 'request_failed'); failure.status = response.status; failure.outcomeId = data.outcomeId; failure.decisionId = data.decisionId; throw failure; }
     return data;
   }
   async function load(options) {
@@ -662,6 +745,7 @@
   }
   function logoutNow(message) {
     sessionStorage.removeItem(TOKEN_KEY); token = ''; payload = null;
+    closeDecisionEditor();
     el('adminApp').hidden = true; el('adminLogin').hidden = false; document.body.classList.remove('is-authenticated');
     el('adminLoginError').textContent = message || '';
   }
@@ -741,7 +825,7 @@
     el('pipelineSaveButton').textContent = row.id ? 'حفظ التعديل' : 'حفظ في مسار البيع';
     el('pipelineCancelButton').hidden = !row.id && !row.sourceRef;
     updatePipelineRules();
-    location.hash = '#sales-pipeline';
+    location.hash = '#opportunity-editor';
     el('pipelineStage').focus();
   }
   function renderPipelineHistory(history, truncated) {
@@ -806,6 +890,104 @@
     }
     finally { button.disabled = false; button.textContent = el('pipelineId').value ? 'حفظ التعديل' : 'حفظ في مسار البيع'; }
   }
+  function updateDecisionRules() {
+    var status = el('decisionStatus').value;
+    el('decisionAssignee').required = status === 'in_progress' || status === 'done';
+    el('decisionDueAt').required = status === 'in_progress';
+    el('decisionResult').required = status === 'done' || status === 'dismissed';
+  }
+  function closeDecisionEditor() {
+    decisionEditRequest++; decisionDraft = null;
+    el('decisionEditor').hidden = true; el('decisionForm').reset(); el('decisionId').value = '';
+    el('decisionHistory').hidden = true; el('decisionError').textContent = '';
+  }
+  function fillDecisionForm(row) {
+    decisionEditRequest++; decisionDraft = Object.assign({}, row);
+    el('decisionForm').reset();
+    el('decisionId').value = row.id || '';
+    el('decisionTitle').value = row.title || '';
+    el('decisionAction').value = row.action || '';
+    el('decisionPriority').value = row.priority || 'medium';
+    el('decisionStatus').value = row.status || 'planned';
+    el('decisionAssignee').value = row.assignee || '';
+    el('decisionDueAt').value = riyadhInput(row.dueAt);
+    el('decisionResult').value = row.result || '';
+    el('decisionEditorTitle').textContent = row.id ? 'تحديث الإجراء ونتيجته' : 'اعتماد إجراء جديد';
+    el('decisionEvidence').innerHTML = row.evidence ? '<span>دليل محفوظ · ' + esc(row.source || 'مراجعة داخلية') + (row.periodDays ? ' · فترة ' + n(row.periodDays) + ' يوم' : '') + '</span><p>' + esc(row.evidence) + '</p>' + (row.observedAt ? '<time>حُفظ في: ' + esc(formatDate(row.observedAt)) + '</time>' : '<small>ستُحفظ هذه النسخة من الدليل عند إنشاء الإجراء.</small>') : '<span>إجراء تشغيلي يضيفه الفريق يدويًا.</span>';
+    el('decisionError').textContent = ''; el('decisionReloadButton').hidden = true;
+    el('decisionHistory').hidden = true; el('decisionEditor').hidden = false;
+    updateDecisionRules(); location.hash = '#decisionEditor'; el('decisionTitle').focus({ preventScroll:true });
+  }
+  function renderDecisionHistory(history, truncated) {
+    var fields = {title:'العنوان',action:'الإجراء',priority:'الأولوية',status:'الحالة',assignee:'المسؤول',due_at:'الموعد',result:'النتيجة'};
+    el('decisionHistory').hidden = false;
+    el('decisionHistoryList').innerHTML = history.length ? history.map(function (row) {
+      var title = row.event_type === 'created' ? 'إنشاء الإجراء' : row.event_type === 'status_changed' ? decisionStatusLabel(row.from_status) + ' ← ' + decisionStatusLabel(row.to_status) : 'تحديث الإجراء';
+      var changes = row.changes || {};
+      var detail = Object.keys(changes).map(function (key) { var value = changes[key].to;
+        if (key === 'status') value = decisionStatusLabel(value);
+        else if (key === 'due_at') value = formatDate(value);
+        else if (key === 'priority') value = {high:'عالية',medium:'متوسطة',low:'منخفضة'}[value] || value;
+        return (fields[key] || key) + ': ' + (value || 'أُزيل');
+      }).join(' · ');
+      return '<li><time>' + esc(formatDate(row.occurred_at)) + '</time><strong>' + esc(title) + '</strong><p>' + esc(detail) + '</p></li>';
+    }).join('') + (truncated ? '<li>يعرض السجل أحدث 100 تغيير.</li>' : '') : '<li>لا توجد تغييرات مسجلة.</li>';
+  }
+  async function openDecision(id, insightKey, fallback) {
+    var ticket = ++decisionEditRequest;
+    try {
+      var data = await request({mode:'decision_get',token:token,id:id || null,insightKey:insightKey || null});
+      if (ticket !== decisionEditRequest) return;
+      if (data.decision) { fillDecisionForm(data.decision); renderDecisionHistory(data.history || [], data.historyTruncated); }
+      else if (fallback) fillDecisionForm(fallback);
+      else showToast('الإجراء غير متاح الآن',true);
+    } catch (error) {
+      if (error.status === 401) logoutNow('انتهت الجلسة. سجّل الدخول من جديد.');
+      else showToast('تعذر فتح الإجراء وسجله',true);
+    }
+  }
+  async function saveDecisionForm(event) {
+    event.preventDefault(); if (!decisionDraft) return;
+    var ticket = decisionEditRequest;
+    var button = el('decisionSaveButton'); button.disabled = true; button.textContent = 'حفظ…';
+    el('decisionError').textContent = '';
+    try {
+      var saved = await request({mode:'decision_upsert',token:token,id:el('decisionId').value || null,
+        insightKey:decisionDraft.insightKey || null,expectedUpdatedAt:decisionDraft.updatedAt || null,
+        evidence:decisionDraft.evidence || null,source:decisionDraft.source || null,area:decisionDraft.area || null,periodDays:decisionDraft.periodDays || null,
+        title:el('decisionTitle').value.trim(),action:el('decisionAction').value.trim(),priority:el('decisionPriority').value,
+        status:el('decisionStatus').value,assignee:el('decisionAssignee').value.trim(),dueAt:inputTimestamp(el('decisionDueAt').value),result:el('decisionResult').value.trim()});
+      showToast('تم حفظ الإجراء ونتيجته');
+      if (ticket === decisionEditRequest) { fillDecisionForm(saved.decision); ticket = decisionEditRequest; }
+      await load({quiet:true}); if (ticket === decisionEditRequest) await openDecision(saved.decision.id);
+    } catch (error) {
+      if (ticket !== decisionEditRequest) return;
+      var messages = {invalid_decision:'راجع عنوان الإجراء وخطوات التنفيذ.',decision_owner_date_required:'بدء التنفيذ يحتاج مسؤولًا وموعد مراجعة.',decision_owner_required:'حدد المسؤول عن الإجراء قبل اعتماد التنفيذ.',decision_result_required:'سجّل نتيجة التنفيذ أو سبب الاستبعاد قبل الإغلاق.',invalid_decision_date:'راجع موعد المراجعة.',decision_conflict:'تغير الإجراء في جلسة أخرى. مدخلاتك باقية؛ حمّل النسخة الأحدث ثم راجعها.',decision_already_saved:'هذا الاقتراح له إجراء محفوظ. افتح النسخة الحالية لمتابعتها.'};
+      el('decisionError').textContent = messages[error.message] || 'تعذر حفظ الإجراء الآن؛ مدخلاتك باقية في النموذج.';
+      if (error.status === 401) logoutNow('انتهت الجلسة. سجّل الدخول من جديد.');
+      if (error.message === 'decision_conflict' || error.message === 'decision_already_saved') {
+        el('decisionReloadButton').hidden = false; el('decisionReloadButton').dataset.decisionId = error.decisionId || el('decisionId').value;
+      }
+    } finally { button.disabled = false; button.textContent = 'حفظ الإجراء'; }
+  }
+  function downloadCsv(rows, filename) {
+    var csv = rows.map(function (row) { return row.map(function (value) {
+      var cell = String(value == null ? '' : value); if (/^[\s]*[=+\-@]/.test(cell)) cell = "'" + cell;
+      return '"' + cell.replace(/"/g, '""') + '"';
+    }).join(','); }).join('\r\n');
+    var link = document.createElement('a'), url = URL.createObjectURL(new Blob(['\ufeff' + csv], {type:'text/csv;charset=utf-8;'}));
+    link.href = url; link.download = filename; document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); },1000);
+  }
+  function exportCommercial() {
+    var commercial = (payload || {}).commercial || {}; if (!commercial.connected) return;
+    var campaign = el('commercialGroup').value === 'campaign';
+    var rows = [['مصدر إحالة التواصل','الحملة','فرص الفترة','سبق تأهيلها','مفتوحة','عقود حالية','لم يتم التعاقد','عقود ÷ فرص %','قيمة العقود الحالية SAR','القيمة المفتوحة التقديرية SAR','بداية الفترة ISO','نهاية الفترة ISO']].concat(commercialGroups().map(function (row) {
+      return [sourceLabel(row.source_key),campaign ? row.campaign : '',row.opportunities,row.qualified,row.open,row.contracts,row.lost,rate(row.contracts,row.opportunities).toFixed(2),row.contract_value,row.open_value,commercial.startAt,commercial.endAt];
+    }));
+    downloadCsv(rows,'tawod-commercial-' + (campaign ? 'campaigns-' : 'sources-') + riyadhInput(payload.generatedAt || new Date().toISOString()).slice(0,10) + '.csv');
+    showToast(campaign && commercial.campaignsTruncated ? 'تم تصدير أكبر 100 مجموعة حملة فقط' : 'تم تصدير نتائج المجموعة الحالية');
+  }
   function exportPipeline() {
     if (!payload || !(payload.salesPipeline || {}).connected) return;
     var sales = payload.salesPipeline;
@@ -813,13 +995,7 @@
     var rows = [['معرف العرض','معرف الفرصة الكامل','تاريخ الإحالة','القناة','المصدر','الحملة','الخدمة','المنطقة','المرحلة','المسؤول','المتابعة القادمة (ISO)','آخر تواصل فعلي (ISO)','قيمة متوقعة SAR','قيمة العقد SAR','سبب عدم التعاقد','مرجع الإحالة']].concat(entries.map(function (row) {
       return [opportunityId(row),row.id,row.occurredAt,salesSourceLabel(row.sourceType),sourceLabel(row.acquisitionSource || 'غير مرتبط'),row.campaignName,row.serviceType,row.projectLocation,salesStageLabel(row.stage),row.assignee,row.nextFollowUpAt,row.lastContactAt,row.estimatedValue,row.contractValue,row.lostReason ? lostReasonLabel(row.lostReason) : '',row.sourceRef];
     }));
-    var csv = rows.map(function (row) { return row.map(function (value) {
-      var cell = String(value == null ? '' : value); if (/^[\s]*[=+\-@]/.test(cell)) cell = "'" + cell;
-      return '"' + cell.replace(/"/g, '""') + '"';
-    }).join(','); }).join('\r\n');
-    var link = document.createElement('a'), url = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }));
-    link.href = url; link.download = 'tawod-opportunities-' + riyadhInput(payload.generatedAt || new Date().toISOString()).slice(0,10) + '.csv';
-    document.body.appendChild(link); link.click(); link.remove(); setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    downloadCsv(rows,'tawod-opportunities-' + riyadhInput(payload.generatedAt || new Date().toISOString()).slice(0,10) + '.csv');
     showToast(sales.entriesTruncated ? 'تم تصدير الفرص المعروضة فقط (حد العرض 500)' : 'تم تصدير الفرص الفعلية في العرض الحالي');
   }
   function copySummary() {
@@ -836,8 +1012,11 @@
       'ضغطات خام: ' + n(number(s.callClicks) + number(s.whatsappClicks)),
       'العميل المحتمل: ' + ((payload.googleAds || {}).callReportingConnected ? n(a.potentialCustomers) : 'المصدر غير متصل'),
       'العميل المؤكد: ' + ((payload.googleAds || {}).callReportingConnected ? n(a.confirmedCustomers) : 'المصدر غير متصل'),
-      'العقود الموقعة: ' + n(((payload.salesPipeline || {}).summary || {}).contracts),
-      'قيمة العقود: ' + money(((payload.salesPipeline || {}).summary || {}).contractValue, 'SAR'),
+      'عقود فرص فترة الإحالة (حالتها الحالية): ' + ((payload.salesPipeline || {}).connected ? n(((payload.salesPipeline || {}).summary || {}).contracts) : 'المصدر غير متصل'),
+      'قيمة عقود هذه الفرص: ' + ((payload.salesPipeline || {}).connected ? money(((payload.salesPipeline || {}).summary || {}).contractValue, 'SAR') : 'المصدر غير متصل'),
+      'عقود اعتُمدت خلال الفترة (أي تاريخ إحالة): ' + ((payload.commercial || {}).connected ? n(((payload.commercial || {}).activity || {}).contracts) : 'المصدر غير متصل'),
+      'قيمة هذه العقود المسجلة حاليًا: ' + ((payload.commercial || {}).connected ? money(((payload.commercial || {}).activity || {}).contractValue,'SAR') : 'المصدر غير متصل'),
+      'إجراءات تحسين مفتوحة: ' + ((payload.decisions || {}).connected ? n(((payload.decisions || {}).summary || {}).active) : 'المصدر غير متصل'),
       'متابعات متأخرة (كل التواريخ): ' + n(((payload.salesPipeline || {}).followups || {}).overdue),
       'فرص دون مسؤول: ' + n(((payload.salesPipeline || {}).followups || {}).unassigned),
       'مطابقة إجماليات الجلسات: ' + ((payload.dataQuality || {}).reconciled ? 'سليمة حسابيًا؛ لا تعني اكتمال الإسناد' : 'تحتاج مراجعة')
@@ -869,6 +1048,26 @@
   el('pipelineContactResult').addEventListener('change', updatePipelineRules);
   el('pipelineStageFilter').addEventListener('change', function () { if (payload) renderSalesPipeline(payload); });
   el('pipelineExportButton').addEventListener('click', exportPipeline);
+  el('boardScope').addEventListener('change', function () { if (payload) renderStageBoard(payload); });
+  el('salesStageBoard').addEventListener('click', function (event) {
+    var card = event.target.closest('[data-outcome]'); if (card) { openOpportunity(card.dataset.outcome); return; }
+    var more = event.target.closest('[data-stage]'); if (more && payload) { var key = el('boardScope').value + '-' + more.dataset.stage; boardExpanded[key] = !boardExpanded[key]; renderStageBoard(payload); }
+  });
+  el('commercialGroup').addEventListener('change', function () { if (payload) renderCommercial(payload); });
+  el('commercialExportButton').addEventListener('click', exportCommercial);
+  el('decisionForm').addEventListener('submit', saveDecisionForm);
+  el('decisionStatus').addEventListener('change', updateDecisionRules);
+  el('decisionNewButton').addEventListener('click', function () { fillDecisionForm({}); });
+  el('decisionCancelButton').addEventListener('click', closeDecisionEditor);
+  el('decisionReloadButton').addEventListener('click', function () { openDecision(this.dataset.decisionId, decisionDraft && decisionDraft.insightKey); });
+  ['decisionFilter','decisionSearch'].forEach(function (id) { el(id).addEventListener(id === 'decisionSearch' ? 'input' : 'change', function () { if (payload) renderDecisions(payload); }); });
+  el('decisionList').addEventListener('click', function (event) { var button = event.target.closest('[data-decision]'); if (button) openDecision(button.dataset.decision); });
+  el('insightsGrid').addEventListener('click', function (event) {
+    var button = event.target.closest('[data-insight]'); if (!button) return;
+    var insight = insights.find(function (row) { return row.key === button.dataset.insight; }); if (!insight) return;
+    openDecision(null,insight.key,{insightKey:insight.key,title:insight.title,action:insight.action,source:insight.source,area:insight.area,
+      evidence:insight.evidence + ' · آخر بيانات: ' + formatDate(payload.generatedAt),periodDays:payload.periodDays,priority:insight.priority === 'high' ? 'high' : 'medium',status:'planned'});
+  });
   el('pipelineReloadButton').addEventListener('click', function () { openOpportunity(this.dataset.outcomeId, el('pipelineForm').dataset.sourceRef); });
   ['followupFilter','followupSearch'].forEach(function (id) { el(id).addEventListener(id === 'followupSearch' ? 'input' : 'change', function () { if (payload) renderFollowups(payload); }); });
   el('followupMetrics').addEventListener('click', function (event) { var button = event.target.closest('[data-filter]'); if (button && payload) { el('followupFilter').value = button.dataset.filter; renderFollowups(payload); } });

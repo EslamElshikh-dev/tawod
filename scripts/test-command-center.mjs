@@ -21,10 +21,10 @@ new Function(adsSync);
 new Function(profileSync);
 new Function(sheetsSync);
 
-const ids = [...html.matchAll(/id="([^"]+)"/g)].map(match => match[1]);
+const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
 assert.equal(new Set(ids).size, ids.length, 'admin IDs must be unique');
 
-for (const match of app.matchAll(/el('([^']+)')/g)) {
+for (const match of app.matchAll(/\bel('([^']+)')/g)) {
   assert.ok(ids.includes(match[1]), `dashboard references missing HTML id: ${match[1]}`);
 }
 
