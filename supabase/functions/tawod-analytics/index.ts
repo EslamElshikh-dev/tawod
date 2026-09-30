@@ -108,7 +108,7 @@ async function adminPasswordHash() {
   })();
   return adminHashPromise;
 }
-async function verifySyncKey(value: unknown, name: 'google_ads' | 'business_profile' | 'google_sheets') {
+async function verifySyncKey(value: unknown, name: 'google_ads' | 'business_profile' | 'google_sheets' | 'social_media') {
   if (typeof value !== 'string' || value.length < 32 || value.length > 200) return false;
   const response = await supabase(`/rest/v1/tawod_sync_keys?name=eq.${name}&select=key_hash,enabled`);
   if (!response.ok) return false;
@@ -450,12 +450,26 @@ async function saveDecision(body: any, origin: string | null) {
   return json({ ok: true, decision: normalizeDecision(saved) }, 200, origin);
 }
 
+// Mirrors the database attribution vocabulary; parity is tested against real PostgreSQL.
 function referralSource(row: any) {
-  if (row.click_id) return 'google-ads';
-  if (row.utm_source) return row.utm_source;
-  const referrer = text(row.referrer_host, 255);
-  if (!referrer) return 'direct';
-  return /(^|\.)google\./i.test(referrer) ? 'google-organic' : referrer;
+  const raw=String(row.utm_source||'').trim().toLowerCase().replaceAll('_','-');
+  const medium=String(row.utm_medium||'').trim().toLowerCase().replaceAll('_','-');
+  const host=String(row.referrer_host||'').trim().toLowerCase();
+  const paid=['cpc','ppc','paid','paid-social','paid-social-media','paidsocial','paidsearch','ads','ad','display','retargeting'].includes(medium)||/-(ads|paid)$/.test(raw);
+  const alias: Record<string,string>={ig:'instagram',insta:'instagram',fb:'facebook',tt:'tiktok','tik-tok':'tiktok',twitter:'x','x.com':'x','twitter.com':'x','t.co':'x',adwords:'google'};
+  let base=raw.replace(/-(ads|paid)$/,''); base=alias[base]||base;
+  const landing=String(row.landing_path||'');
+  const google=!!String(row.click_id||'').trim()||/[?&](gclid|gbraid|wbraid|gad_campaignid)=/i.test(landing)||/[?&]gad_source=1([&#]|$)/i.test(landing);
+  if (google && ['instagram','facebook','tiktok','x'].includes(base)) return 'attribution-conflict';
+  if (google) return 'google-ads';
+  if (base) return base==='google'&&!paid?'google-organic':base+(paid?'-ads':'');
+  if (/[?&]ttclid=/i.test(landing)) return 'tiktok-ads';
+  if (/(^|\.)instagram\.com$/.test(host)) return 'instagram';
+  if (/(^|\.)facebook\.com$/.test(host)||['fb.com','fb.me'].includes(host)) return 'facebook';
+  if (/(^|\.)tiktok\.com$/.test(host)) return 'tiktok';
+  if (/(^|\.)(twitter|x)\.com$/.test(host)||host==='t.co') return 'x';
+  if (/(^|\.)google\./.test(host)) return 'google-organic';
+  return !host||['tawodco.com','www.tawodco.com'].includes(host)?'direct':host;
 }
 async function loadVisitorFrequency(days: number) {
   const response = await supabase('/rest/v1/rpc/tawod_visitor_frequency', {
@@ -469,7 +483,7 @@ async function loadVisitorFrequency(days: number) {
 async function loadRecentReferrals(days: number) {
   const since = new Date(Date.now() - days * 86400000).toISOString();
   const query = new URLSearchParams({
-    select: 'id,occurred_at,event_name,contact_method,page_path,landing_path,referrer_host,utm_source,utm_campaign,device_type,session_id,click_id',
+    select: 'id,occurred_at,event_name,contact_method,page_path,landing_path,referrer_host,utm_source,utm_medium,utm_campaign,device_type,session_id,click_id',
     event_name: 'in.(call_click,whatsapp_click)',
     occurred_at: `gte.${since}`,
     order: 'occurred_at.desc',
@@ -479,6 +493,7 @@ async function loadRecentReferrals(days: number) {
   if (!response.ok) return null;
   const seen = new Set<string>();
   return (await response.json()).flatMap((row: any) => {
+    if (/^(TEST|DUMMY|EXAMPLE|FAKE)(-|_|$)/i.test(row.click_id||'') || Date.parse(row.occurred_at)>Date.now()) return [];
     const method = row.event_name === 'call_click' || row.contact_method === 'call' ? 'call' : 'whatsapp';
     const dedupeKey = `${method}:${row.click_id || row.session_id || row.id}`;
     if (seen.has(dedupeKey)) return [];
@@ -722,11 +737,77 @@ async function acknowledgeQualifiedWhatsAppLeads(body: any, origin: string | nul
   return json({ ok: true, acknowledged: results.reduce((sum, value) => sum + value, 0), syncedAt }, 200, origin);
 }
 
+const SOCIAL_PLATFORMS = new Set(['tiktok','instagram','facebook','x']);
+const SOCIAL_COUNTS = ['reach','views','impressions','interactions','profile_visits','link_clicks','followers_start','followers_end'];
+function normalizeSocialReports(value: unknown, inputKind: 'platform_export' | 'connector') {
+  if (!Array.isArray(value) || value.length < 1 || value.length > 200) throw new Error('social_row_limit');
+  const seen = new Set<string>();
+  const today = new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Riyadh',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+  return value.map((raw: any) => {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw) || !SOCIAL_PLATFORMS.has(raw.platform)) throw new Error('social_platform');
+    const accountId = text(raw.account_id,120), sourceName = text(raw.source_name,180);
+    if (!accountId || !sourceName || String(raw.account_id).trim().length>120 || String(raw.source_name).trim().length>180 || String(raw.account_name||'').trim().length>180 || !['organic','paid','combined'].includes(raw.scope)) throw new Error('social_identity');
+    const date = (v: unknown) => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) && Number.isFinite(Date.parse(v)) && new Date(v).toISOString().slice(0,10) === v;
+    if (!date(raw.period_start) || !date(raw.period_end) || raw.period_end < raw.period_start || raw.period_end > today || Date.parse(raw.period_end)-Date.parse(raw.period_start)>366*86400000) throw new Error('social_period');
+    if (raw.aggregation !== 'account_period') throw new Error('social_aggregation');
+    const zone = text(raw.time_zone,80); if (!zone) throw new Error('social_timezone');
+    try { new Intl.DateTimeFormat('en',{timeZone:zone}); } catch { throw new Error('social_timezone'); }
+    const observed = typeof raw.observed_at === 'string' ? Date.parse(raw.observed_at) : NaN;
+    if (!/T.*(?:Z|[+-]\d{2}:\d{2})$/.test(raw.observed_at||'') || !Number.isFinite(observed) || observed > Date.now()+5*60000 || observed < Date.parse(raw.period_end)) throw new Error('social_observed_at');
+    const row: Record<string,unknown> = {platform:raw.platform,account_id:accountId,account_name:text(raw.account_name,180),source_name:sourceName,
+      scope:raw.scope,period_start:raw.period_start,period_end:raw.period_end,time_zone:zone,input_kind:inputKind,observed_at:new Date(observed).toISOString()};
+    let hasMetric = false;
+    for (const key of SOCIAL_COUNTS) {
+      const v=raw[key];
+      if (v===null || v===undefined || v==='') { row[key]=null; continue; }
+      if ((typeof v!=='number' && (typeof v!=='string' || !/^\d+$/.test(v))) || !Number.isSafeInteger(Number(v)) || Number(v)<0) throw new Error('social_metric');
+      row[key]=Number(v); hasMetric=true;
+    }
+    if (raw.spend===null || raw.spend===undefined || raw.spend==='') row.spend=null;
+    else {
+      if ((typeof raw.spend!=='number' && (typeof raw.spend!=='string' || !/^\d+(\.\d{1,2})?$/.test(raw.spend))) || !Number.isFinite(Number(raw.spend)) || Number(raw.spend)<0 || Number(raw.spend)>99999999999999.99) throw new Error('social_spend');
+      row.spend=Number(raw.spend); hasMetric=true;
+    }
+    row.currency=typeof raw.currency==='string' && /^[A-Z]{3}$/.test(raw.currency) ? raw.currency : null;
+    if (row.spend!==null && !row.currency) throw new Error('social_currency');
+    if (!hasMetric) throw new Error('social_empty_metrics');
+    row.metric_definitions={...cleanMeta(raw.metric_definitions),aggregation:'account_period'};
+    const key=[row.platform,accountId,row.scope,row.period_start,row.period_end].join('\u0000');
+    if (seen.has(key)) throw new Error('social_duplicate'); seen.add(key);
+    return row;
+  });
+}
+async function loadSocialWorkspace(days: number, startAt: string | null = null, endAt: string | null = null) {
+  const response=await supabase('/rest/v1/rpc/tawod_social_workspace',{method:'POST',body:JSON.stringify({p_days:days,p_start_at:startAt,p_end_at:endAt})});
+  if (!response.ok) return {available:false,error:'social_query_failed'};
+  return response.json();
+}
+async function importSocialReports(body: any, origin: string | null, connector: boolean) {
+  if (connector) {
+    if (!await verifySyncKey(body?.syncKey,'social_media')) return json({error:'unauthorized'},401,origin);
+  } else {
+    if (!isAdminOrigin(origin)) return json({error:'origin_not_allowed'},403,origin);
+    if (!await verifyAdminToken(body?.token)) return json({error:'unauthorized'},401,origin);
+  }
+  let rows;
+  try { rows=normalizeSocialReports(body?.rows,connector?'connector':'platform_export'); }
+  catch (error) { return json({error:error instanceof Error?error.message:'invalid_social_report'},400,origin); }
+  try {
+    const response=await supabase('/rest/v1/rpc/tawod_social_import',{method:'POST',body:JSON.stringify({p_rows:rows})});
+    if (!response.ok) return json({error:'social_import_failed'},503,origin);
+    const result=await response.json();
+    if (connector) await supabase('/rest/v1/tawod_sync_keys?name=eq.social_media',{method:'PATCH',body:JSON.stringify({last_used_at:new Date().toISOString()})});
+    return json(result,200,origin);
+  } catch { return json({error:'social_import_failed'},503,origin); }
+}
+
 Deno.serve(async (req) => {
   const origin = req.headers.get('origin');
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors(origin) });
   if (req.method !== 'POST') return json({ error: 'method_not_allowed' }, 405, origin);
   let body: any; try { body = await req.json(); } catch { return json({ error: 'invalid_json' }, 400, origin); }
+
+  if (body?.mode === 'social_reports_import' || body?.mode === 'social_reports_sync') return importSocialReports(body,origin,body.mode==='social_reports_sync');
 
   if (body?.mode === 'google_ads_sync') return syncGoogleAds(body, origin);
   if (body?.mode === 'business_profile_sync') return syncBusinessProfile(body, origin);
@@ -750,31 +831,24 @@ Deno.serve(async (req) => {
     if (!authorized && typeof body.password === 'string' && body.password) authorized = await sha256(body.password) === await adminPasswordHash();
     if (!authorized) return json({ error: 'unauthorized' }, 401, origin);
     const days = Math.max(7, Math.min(Number(body.days) || 30, 90));
-    const [siteResponse, adsResponse, profileResponse, salesPipeline, recentReferrals, visitorFrequency, commercial, decisions, notifications] = await Promise.all([
+    const [siteResponse, adsResponse, profileResponse, salesPipeline, recentReferrals, commercial, decisions, notifications] = await Promise.all([
       supabase('/rest/v1/rpc/tawod_admin_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
       supabase('/rest/v1/rpc/tawod_google_ads_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
       supabase('/rest/v1/rpc/tawod_business_profile_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
       loadSalesPipeline(days),
       loadRecentReferrals(days),
-      loadVisitorFrequency(days),
       loadCommercial(days),
       loadDecisions(),
       loadNotificationFeed(),
     ]);
     if (!siteResponse.ok) return json({ error: 'analytics_query_failed' }, 500, origin);
     const siteRaw = await siteResponse.json();
-    const site = visitorFrequency ? {
-      ...siteRaw,
-      summary: {
-        ...(siteRaw?.summary || {}),
-        newVisitors: Math.max(0, Math.trunc(finite(visitorFrequency.singleSessionVisitors))),
-        returningVisitors: Math.max(0, Math.trunc(finite(visitorFrequency.returningVisitors))),
-      },
-    } : siteRaw;
+    const site=siteRaw;
+    const social=await loadSocialWorkspace(days,site.dataQuality?.startAt||null,site.dataQuality?.endAt||null);
     const googleAdsRaw = adsResponse.ok ? await adsResponse.json() : { connected: false, error: 'google_ads_query_failed' };
     const googleAds = enrichGoogleAdsWithFirstParty(googleAdsRaw, site);
     const businessProfile = profileResponse.ok ? await profileResponse.json() : { connected: false, error: 'business_profile_query_failed' };
-    return json({ ...site, recentReferrals: recentReferrals || site.recentReferrals || [], googleAds, businessProfile, salesPipeline, commercial, decisions, notifications, adminProfile: { username: ADMIN_USERNAME } }, 200, origin);
+    return json({ ...site, recentReferrals: recentReferrals || site.recentReferrals || [], googleAds, businessProfile, salesPipeline, commercial, decisions, notifications, social, adminProfile: { username: ADMIN_USERNAME } }, 200, origin);
   }
 
   if (body?.mode === 'notification_feed') {

@@ -6,7 +6,6 @@
   var VISITOR_KEY = 'tawodVisitorId';
   var SESSION_KEY = 'tawodFirstPartySession';
   var LEAD_KEY = 'tawodFirstPartyLead';
-  var ATTRIBUTION_KEY = 'tawodAdsAttributionV1';
   var SESSION_TIMEOUT = 30 * 60 * 1000;
 
   if (window.__tawodFirstPartyInitialized) return;
@@ -54,15 +53,14 @@
   function campaignFromUrl() {
     var params;
     try { params = new URLSearchParams(window.location.search || ''); } catch (e) { return {}; }
-    var stored = {};
-    try { stored = JSON.parse(read(window.localStorage, ATTRIBUTION_KEY) || '{}'); } catch (e) {}
     return {
-      utm_source: params.get('utm_source') || stored.utm_source || null,
-      utm_medium: params.get('utm_medium') || stored.utm_medium || null,
-      utm_campaign: params.get('utm_campaign') || stored.utm_campaign || null,
-      utm_term: params.get('utm_term') || stored.utm_term || null,
-      utm_content: params.get('utm_content') || stored.utm_content || null,
-      click_id: params.get('gclid') || params.get('gbraid') || params.get('wbraid') || stored.gclid || stored.gbraid || stored.wbraid || null
+      utm_source: params.get('utm_source') || null,
+      utm_medium: params.get('utm_medium') || null,
+      utm_campaign: params.get('utm_campaign') || null,
+      utm_term: params.get('utm_term') || null,
+      utm_content: params.get('utm_content') || null,
+      click_id: params.get('gclid') || params.get('gbraid') || params.get('wbraid') || null,
+      entry_id: params.get('gclid') || params.get('gbraid') || params.get('wbraid') || params.get('ttclid') || params.get('fbclid') || null
     };
   }
 
@@ -71,26 +69,31 @@
     var current = null;
     try { current = JSON.parse(read(window.sessionStorage, SESSION_KEY) || 'null'); } catch (e) {}
 
-    if (!current || !current.id || now - Number(current.lastSeen || 0) > SESSION_TIMEOUT) {
-      var utm = campaignFromUrl();
+    var utm = campaignFromUrl(), external = referrerHost(), renewed = false;
+    var tagged = !!(utm.utm_source || utm.utm_campaign || utm.entry_id);
+    var changed = current && tagged && ['utm_source','utm_medium','utm_campaign','utm_content','click_id','entry_id'].some(function (key) { return (utm[key] || null) !== (current[key] || null); });
+    if (!current || !current.id || now - Number(current.lastSeen || 0) > SESSION_TIMEOUT || changed || (external && external !== current.referrerHost)) {
+      renewed = true;
       current = {
         id: id('s'),
         startedAt: now,
         lastSeen: now,
         landingPath: (window.location.pathname || '/') + (window.location.search || ''),
-        referrerHost: referrerHost(),
+        referrerHost: external,
         utm_source: utm.utm_source,
         utm_medium: utm.utm_medium,
         utm_campaign: utm.utm_campaign,
         utm_term: utm.utm_term,
         utm_content: utm.utm_content,
-        click_id: utm.click_id
+        click_id: utm.click_id,
+        entry_id: utm.entry_id
       };
     } else {
       current.lastSeen = now;
     }
 
     write(window.sessionStorage, SESSION_KEY, JSON.stringify(current));
+    current.renewed = renewed;
     return current;
   }
 
@@ -130,7 +133,7 @@
       fetch(ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ events: [event] }),
+        body: JSON.stringify({ events: current.renewed && eventName !== 'page_view' ? [Object.assign({},event,{event_name:'page_view',contact_method:null,metadata:{session_restart:true}}),event] : [event] }),
         keepalive: true,
         credentials: 'omit'
       }).catch(function () {});

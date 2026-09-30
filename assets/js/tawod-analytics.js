@@ -91,6 +91,12 @@
       try { search = new URLSearchParams(window.location.search || ''); } catch (error) {}
     }
 
+    // A fresh campaign replaces the previous campaign, including its Google click IDs.
+    if (search && ATTRIBUTION_PARAMS.concat(['ttclid','fbclid']).some(function (key) { return !!search.get(key); })) {
+      var originalPage = data.first_landing_page, originalTime = data.first_seen_at;
+      data = {}; if (originalPage) data.first_landing_page = originalPage; if (originalTime) data.first_seen_at = originalTime;
+    }
+
     ATTRIBUTION_PARAMS.forEach(function (key) {
       var value = search ? search.get(key) : null;
       if (value) data[key] = value;

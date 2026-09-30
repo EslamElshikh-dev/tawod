@@ -62,7 +62,7 @@
     var key = String(value || '').toLowerCase();
     var labels = {
       direct: 'مباشر', 'google-ads': 'Google Ads', 'google-organic': 'Google Organic',
-      google: 'Google', facebook: 'Facebook', instagram: 'Instagram', tiktok: 'TikTok',
+      x: 'X', 'x-ads': 'X Ads', 'facebook-ads': 'Facebook Ads', 'instagram-ads': 'Instagram Ads', 'tiktok-ads': 'TikTok Ads', 'attribution-conflict': 'تعارض إسناد يحتاج مراجعة', google: 'Google', facebook: 'Facebook', instagram: 'Instagram', tiktok: 'TikTok',
       whatsapp: 'WhatsApp', 'l.wl.co': 'رابط WhatsApp',
       unlinked: 'غير مرتبط بإحالة مقاسة', unknown: 'مصدر غير معروف'
     };
@@ -283,8 +283,8 @@
     ].join('');
     el('secondaryViews').textContent = n(s.views);
     el('secondaryVisitors').textContent = n(s.visitors);
-    el('secondaryNewVisitors').textContent = n(s.newVisitors);
-    el('secondaryReturningVisitors').textContent = n(s.returningVisitors);
+    el('secondaryNewVisitors').textContent = s.singleSessionVisitors == null ? '—' : n(s.singleSessionVisitors);
+    el('secondaryReturningVisitors').textContent = s.repeatSessionVisitors == null ? '—' : n(s.repeatSessionVisitors);
     el('secondaryCalls').textContent = n(s.callClicks);
     el('secondaryWhatsapp').textContent = n(s.whatsappClicks);
     el('secondaryDuplicates').textContent = n(q.duplicateOrCrossChannelClicks);
@@ -713,6 +713,165 @@
     } finally { if (ticket === notificationTicket) notificationPending = false; }
   }
 
+  var socialPlatform = 'all';
+  var socialImportRows = [];
+  var socialImportTicket = 0;
+  var socialImportPending = false;
+  var SOCIAL_NAMES = {tiktok:'TikTok',instagram:'Instagram',facebook:'Facebook',x:'X'};
+  var SOCIAL_CSV_FIELDS = ['platform','account_id','account_name','period_start','period_end','time_zone','scope','source_name','observed_at','aggregation','reach','views','impressions','interactions','profile_visits','link_clicks','followers_start','followers_end','spend','currency'];
+  function socialValue(value) { return value == null ? '—' : n(value); }
+  function socialScope(scope) { return {organic:'عضوي',paid:'مدفوع',combined:'عضوي + مدفوع'}[scope] || '—'; }
+  function plainDay(value) { return /^\d{4}-\d{2}-\d{2}$/.test(value || '') ? value : '—'; }
+  function reportPeriod(row) { return plainDay(row.period_start) + ' ← ' + plainDay(row.period_end); }
+  function renderSocial(data) {
+    var social = data.social || {}, available = social.available === true;
+    var rows = social.platforms || [], reports = social.reports || [];
+    var windowInfo = social.window || {};
+    el('socialWindow').textContent = available ? 'زيارات الموقع: ' + formatDate(windowInfo.startAt) + ' إلى ' + formatDate(windowInfo.endAt) + ' · بتوقيت الرياض' : 'تعذر تحميل قياس السوشيال حاليًا. المؤشرات غير المتاحة تظهر بشرطة.';
+    el('socialPlatformCards').innerHTML = Object.keys(SOCIAL_NAMES).filter(function (key) { return socialPlatform === 'all' || socialPlatform === key; }).map(function (key) {
+      var row = rows.find(function (item) { return item.platform === key; }) || {};
+      var reported = reports.some(function (item) { return item.platform === key; });
+      return '<article class="social-platform-card brand-' + key + '"><div class="social-card-head"><span class="social-brand">' + icon(key) + '</span><div><h3 dir="ltr">' + SOCIAL_NAMES[key] + '</h3><span>' + (reported ? 'تقرير حساب متاح' : 'لم يصل تقرير حساب') + '</span></div><button type="button" class="icon-button social-card-open" data-platform="' + key + '" aria-label="عرض أداء ' + SOCIAL_NAMES[key] + '">' + icon('arrow') + '</button></div><div class="social-card-main"><span>زيارات للموقع</span><strong>' + (available ? n(row.sessions) : '—') + '</strong><small>' + (available ? n(row.paidSessions) + ' مدفوعة · ' + n(Math.max(0,number(row.sessions)-number(row.paidSessions))) + ' عضوية / إحالة' : 'المصدر غير متاح') + '</small></div><div class="social-card-stats"><div><span>إحالات تواصل</span><b>' + (available ? n(row.referrals) : '—') + '</b></div><div><span>سبق تأهيلها</span><b>' + (available ? n(row.qualified) : '—') + '</b></div><div><span>عقود</span><b>' + (available ? n(row.contracts) : '—') + '</b></div></div><div class="social-card-foot"><span>معدل الإحالة <b>' + (available ? pct(rate(row.referrals,row.sessions)) : '—') + '</b></span><span>' + (available ? n(row.taggedSessions) + ' زيارة بحملة موسومة' : '—') + '</span></div></article>';
+    }).join('');
+    var previous = el('socialReportSelect').value;
+    var selectedReports = reports.filter(function (row) { return socialPlatform === 'all' || row.platform === socialPlatform; });
+    el('socialReportSelect').innerHTML = selectedReports.length ? selectedReports.map(function (row) {
+      return '<option value="' + esc(row.id) + '">' + esc(SOCIAL_NAMES[row.platform] + ' · ' + (row.account_name || row.account_id) + ' · ' + socialScope(row.scope) + ' · ' + reportPeriod(row)) + '</option>';
+    }).join('') : '<option value="">لا يوجد تقرير حساب لهذه المنصة بعد</option>';
+    el('socialReportSelect').disabled = !selectedReports.length;
+    if (selectedReports.some(function (row) { return row.id === previous; })) el('socialReportSelect').value = previous;
+    renderSocialReport();
+    var campaigns = (social.campaigns || []).filter(function (row) { return socialPlatform === 'all' || row.platform === socialPlatform; });
+    el('socialCampaignBody').innerHTML = campaigns.map(function (row) {
+      return '<tr><td>' + esc(SOCIAL_NAMES[row.platform]) + '</td><td dir="auto">' + esc(row.campaign) + '</td><td dir="auto">' + esc(row.content) + '</td><td>' + n(row.sessions) + '</td><td>' + n(row.referrals) + '</td><td>' + pct(rate(row.referrals,row.sessions)) + '</td><td>' + n(row.paid_sessions) + '</td></tr>';
+    }).join('');
+    el('socialCampaignNote').textContent = !available ? 'البيانات غير متاحة حاليًا.' : !campaigns.length ? 'لم تُسجل زيارات من هذه المنصات في الفترة. استخدم رابط الحملة أدناه لتمييز المنشورات القادمة.' : (social.campaignsTruncated ? 'عرض أكبر 100 مجموعة حملة ومحتوى. ' : '') + 'المصدر والمحتوى من وسوم الرابط عند بداية الجلسة. «غير موسومة» تعني إحالة متصفح متاحة بلا اسم حملة.';
+  }
+  function renderSocialReport() {
+    var social = (payload || {}).social || {};
+    var row = (social.reports || []).find(function (item) { return item.id === el('socialReportSelect').value; });
+    var definitions = row && row.metric_definitions || {};
+    var followers = row && row.followers_start != null && row.followers_end != null ? row.followers_end-row.followers_start : null;
+    el('socialReportStatus').textContent = row ? (row.input_kind === 'connector' ? 'وصل عبر موصل' : 'تقرير مستورد') : 'بانتظار تقرير فعلي';
+    el('socialNativeMetrics').innerHTML = [
+      ['الوصول',row && row.reach,'حسابات فريدة وفق المصدر'],['المشاهدات',row && row.views,'المشاهدات خلال فترة التقرير'],
+      ['التفاعلات',row && row.interactions,'إجمالي المصدر لهذه الفترة'],['صافي تغير المتابعين',followers,'نهاية الفترة − بدايتها']
+    ].map(function (metric) { return '<div class="social-native-metric"><span>' + metric[0] + '</span><strong>' + socialValue(metric[1]) + '</strong><small>' + metric[2] + '</small></div>'; }).join('');
+    el('socialReportContext').innerHTML = row ? '<div><span>فترة الحساب</span><strong dir="ltr">' + esc(reportPeriod(row)) + '</strong></div><div><span>المصدر والنطاق</span><strong>' + esc(row.source_name + ' · ' + socialScope(row.scope)) + '</strong></div><div><span>المنطقة الزمنية</span><strong dir="ltr">' + esc(row.time_zone) + '</strong></div><div><span>وقت استخراج التقرير</span><strong>' + esc(formatDate(row.observed_at)) + '</strong></div>' : '<p>الوصول والمشاهدات والمتابعون تحتاج تقريرًا من حساب المنصة. يمكنك استيراده الآن أو توصيل الحساب وإعداد نقل التقارير. زيارات الموقع أعلاه لها مصدر قياس مستقل.</p>';
+    var details = row ? [
+      ['مرات الظهور',socialValue(row.impressions)],['زيارات الملف',socialValue(row.profile_visits)],['نقرات الروابط',socialValue(row.link_clicks)],
+      ['المتابعون في البداية',socialValue(row.followers_start)],['المتابعون في النهاية',socialValue(row.followers_end)],['الصرف',row.spend == null ? '—' : n(row.spend,2) + ' ' + row.currency]
+    ] : [];
+    el('socialReportDetails').innerHTML = details.length ? '<dl class="social-definition-list">' + details.map(function (item) { return '<div><dt>' + esc(item[0]) + '</dt><dd>' + esc(item[1]) + '</dd></div>'; }).join('') + '</dl><p class="workspace-notice">هوية الحساب: ' + esc(row.account_id) + ' · حفظ في اللوحة: ' + esc(formatDate(row.updated_at)) + '</p>' + Object.keys(definitions).filter(function (key) { return key !== 'aggregation'; }).map(function (key) { return '<p class="workspace-notice" dir="auto">' + esc(key) + ': ' + esc(definitions[key]) + '</p>'; }).join('') : '<p class="workspace-notice">لا يوجد تقرير حساب. الشرطة تعني أن الرقم غير متاح، وليست صفرًا.</p>';
+    if (social.reportsTruncated) el('socialReportDetails').insertAdjacentHTML('beforeend','<p class="workspace-notice">حد العرض: 200 تقرير حساب ونطاق. لا تُجمع التقارير أو الفترات المتداخلة.</p>');
+  }
+  function filterSocial(key) {
+    if (key !== 'all' && !Object.prototype.hasOwnProperty.call(SOCIAL_NAMES,key)) return;
+    socialPlatform = key;
+    el('socialFilter').querySelectorAll('button').forEach(function (button) { var selected=button.dataset.platform === key; button.classList.toggle('is-active',selected); button.setAttribute('aria-pressed',String(selected)); });
+    if (payload) renderSocial(payload);
+  }
+  function renderMeasurement(data) {
+    var q=data.dataQuality || {}, summary=data.summary || {};
+    var known=typeof q.dailySessionTotal === 'number' && typeof q.dailyReferralTotal === 'number';
+    var checks=[['جلسات حسب المصدر',q.sourceTotal,summary.sessions],['جلسات حسب الجهاز',q.deviceTotal,summary.sessions],['مجموع الجلسات اليومية',q.dailySessionTotal,summary.sessions],['مجموع الإحالات اليومية',q.dailyReferralTotal,summary.referralSessions]];
+    var matched=known && checks.every(function (row) { return typeof row[1] === 'number' && row[1] === row[2]; });
+    el('measurementHero').className='measurement-hero ' + (matched ? 'is-valid' : 'needs-review');
+    el('measurementHero').innerHTML=icon(matched ? 'check' : 'chart') + '<div><span class="micro-label">' + (matched ? 'TOTALS RECONCILED' : 'REVIEW REQUIRED') + '</span><h3>' + (matched ? 'الإجماليات متطابقة حسابيًا' : known ? 'يوجد فرق يحتاج مراجعة' : 'الفحص الكامل غير متاح الآن') + '</h3><p>نفس الجلسات، ونفس الفترة. هذا الفحص لا يثبت اكتمال الإسناد أو حدوث محادثة أو بيع.</p><small>آخر تحقق: ' + esc(formatDate(q.verifiedAt)) + ' · ' + esc(q.timezone || 'Asia/Riyadh') + '</small></div>';
+    el('measurementChecks').innerHTML=checks.map(function (row) {
+      var valid=typeof row[1] === 'number' && row[1] === row[2];
+      return '<article class="measurement-check"><span>' + row[0] + '</span><strong>' + socialValue(row[1]) + '<small> / ' + socialValue(row[2]) + '</small></strong><b class="' + (valid ? 'is-valid' : 'needs-review') + '">' + (valid ? 'متطابق' : row[1] == null ? 'غير متاح' : 'فرق: ' + n(row[1]-row[2])) + '</b></article>';
+    }).join('');
+    var social=(data.social || {}), socialRows=social.platforms || [];
+    var socialSessions=social.available ? socialRows.reduce(function (sum,row) { return sum+number(row.sessions); },0) : null;
+    var tagged=social.available ? socialRows.reduce(function (sum,row) { return sum+number(row.taggedSessions); },0) : null;
+    var diagnostics=[
+      ['تعارض مصدر السوشيال مع إعلان جوجل',socialValue(q.attributionConflicts),'تُصنّف ضمن «تعارض إسناد» لحين مراجعة الوسوم؛ لا تُنسب تلقائيًا لأي منصة.'],
+      ['جلسات تواصل بلا مشاهدة صفحة في الفترة',socialValue(q.contactSessionsWithoutPage),'قد تبدأ الجلسة قبل بداية الفترة أو لا تصل مشاهدة الصفحة. مستبعدة من إحالات جلسات الموقع.'],
+      ['نقرات تواصل بلا معرّف جلسة',socialValue(q.contactEventsWithoutSession),'لا يمكن ضمها إلى جلسة فريدة بثقة.'],
+      ['أحداث اختبار مستبعدة',socialValue(q.excludedTestEvents),'معرّفات TEST / DUMMY / EXAMPLE / FAKE مستبعدة من مؤشرات الموقع.'],
+      ['نقرات تواصل مكررة أو مشتركة',socialValue(q.duplicateOrCrossChannelClicks),'الضغطات الخام: '+n(q.rawContactClicks)+'؛ إحالات الجلسات الفريدة: '+n(q.uniqueReferralSessions)+'.'],
+      ['زيارات السوشيال بحملة موسومة',socialSessions == null ? '—' : n(tagged)+' / '+n(socialSessions),'الوسم UTM يربط الزيارة بالحملة؛ لا يثبت اكتمال إسناد كل زيارات التطبيق.'],
+      ['آخر حدث موقع مستلم',formatDate(q.lastEventAt),'يخص الأحداث المؤهلة للقياس؛ انقطاع أو حجب التتبع يؤثر على اكتمال البيانات.'],
+      ['زوار جدد / زاروا الموقع سابقًا',n(summary.newVisitors)+' / '+n(summary.returningVisitors),'حسب أول ظهور مسجل للمتصفح، مع الفصل عن عدد الجلسات خلال الفترة.']
+    ];
+    el('measurementDiagnostics').innerHTML=diagnostics.map(function (row) { return '<div><div><strong>'+esc(row[0])+'</strong><p>'+esc(row[2])+'</p></div><b>'+esc(row[1])+'</b></div>'; }).join('');
+  }
+  function buildSocialLink() {
+    var url=new URL(el('socialLinkTarget').value);
+    if (url.protocol !== 'https:' || !['tawodco.com','www.tawodco.com'].includes(url.hostname) || url.username || url.password || (url.port && url.port !== '443')) throw new Error('استخدم رابط HTTPS لصفحة على tawodco.com.');
+    var campaign=el('socialLinkCampaign').value.trim(), content=el('socialLinkContent').value.trim();
+    if (!/^[A-Za-z0-9_-]{1,80}$/.test(campaign) || (content && !/^[A-Za-z0-9_-]{1,80}$/.test(content))) throw new Error('استخدم حروفًا إنجليزية وأرقامًا وشرطة فقط لرموز الحملة والمنشور.');
+    Array.from(url.searchParams.keys()).forEach(function (key) { if (/^utm_/i.test(key) || /^(gclid|gbraid|wbraid|gad_campaignid|gad_source|fbclid|ttclid)$/i.test(key)) url.searchParams.delete(key); });
+    url.searchParams.set('utm_source',el('socialLinkPlatform').value); url.searchParams.set('utm_medium',el('socialLinkMedium').value); url.searchParams.set('utm_campaign',campaign); if(content) url.searchParams.set('utm_content',content);
+    url.hash=''; return url.href;
+  }
+  function parseSocialCsv(raw) {
+    raw=raw.replace(/^\uFEFF/,''); var rows=[],row=[],cell='',quoted=false,closed=false;
+    function field() { row.push(cell); cell=''; closed=false; }
+    function record() { field(); if(row.some(function (value) { return value.trim() !== ''; })) rows.push(row); row=[]; if(rows.length>201) throw new Error('الحد الأقصى 200 تقرير.'); }
+    for(var i=0;i<raw.length;i++) {
+      var char=raw[i];
+      if(quoted) { if(char==='"') { if(raw[i+1]==='"') {cell+='"';i++;} else {quoted=false;closed=true;} } else cell+=char; }
+      else if(char==='"') { if(cell || closed) throw new Error('تنسيق اقتباس CSV غير صالح.'); quoted=true; }
+      else if(char===',') field();
+      else if(char==='\r'||char==='\n') { if(char==='\r'&&raw[i+1]==='\n') i++; record(); }
+      else { if(closed) throw new Error('يوجد نص بعد إغلاق اقتباس CSV.'); cell+=char; }
+    }
+    if(quoted) throw new Error('يوجد اقتباس CSV غير مغلق.'); if(cell||row.length||closed) record();
+    if(rows.length<2) throw new Error('الملف يحتوي على العناوين فقط. أضف تقريرًا فعليًا.');
+    var headers=rows.shift().map(function (h) {return h.trim();});
+    if(new Set(headers).size !== headers.length || headers.some(function(h) {return !SOCIAL_CSV_FIELDS.includes(h);})) throw new Error('العناوين مكررة أو لا تتطابق مع القالب الموحّد.');
+    var required=SOCIAL_CSV_FIELDS.slice(0,10).filter(function(key){return key!=='account_name';});
+    if(required.some(function(key){return !headers.includes(key);})) throw new Error('حقول تعريف التقرير ناقصة. استخدم القالب الموحّد.');
+    return rows.map(function(values,index){
+      if(values.length!==headers.length) throw new Error('عدد الحقول غير صحيح في السطر '+(index+2)+'.');
+      var result={};headers.forEach(function(key,j){result[key]=values[j].trim() || null;});
+      if(!SOCIAL_NAMES[result.platform] || !result.account_id || !result.source_name || !['organic','paid','combined'].includes(result.scope) || result.aggregation!=='account_period') throw new Error('راجع المنصة والحساب والمصدر والنطاق في السطر '+(index+2)+'.');
+      var validDate=function(value){return /^\d{4}-\d{2}-\d{2}$/.test(value || '') && Number.isFinite(Date.parse(value)) && new Date(value).toISOString().slice(0,10)===value;};
+      var today=riyadhInput(new Date().toISOString()).slice(0,10);
+      if(!validDate(result.period_start)||!validDate(result.period_end)||result.period_end<result.period_start||result.period_end>today||Date.parse(result.period_end)-Date.parse(result.period_start)>366*86400000) throw new Error('فترة التقرير غير صحيحة في السطر '+(index+2)+'.');
+      try{if(!result.time_zone)throw new Error();new Intl.DateTimeFormat('en',{timeZone:result.time_zone});}catch(error){throw new Error('المنطقة الزمنية غير صالحة في السطر '+(index+2)+'.');}
+      var observed=Date.parse(result.observed_at);
+      if(!/T.*(?:Z|[+-]\d{2}:\d{2})$/.test(result.observed_at || '') || !Number.isFinite(observed)||observed>Date.now()+300000||observed<Date.parse(result.period_end)) throw new Error('وقت استخراج التقرير غير صالح في السطر '+(index+2)+'.');
+      var metricCount=0;
+      SOCIAL_CSV_FIELDS.slice(10,18).forEach(function(key){var value=result[key];if(value==null)return;if(!/^\d+$/.test(value)||!Number.isSafeInteger(Number(value)))throw new Error('المؤشر '+key+' غير صالح في السطر '+(index+2)+'.');result[key]=Number(value);metricCount++;});
+      if(result.spend!=null){if(!/^\d+(\.\d{1,2})?$/.test(result.spend)||Number(result.spend)>99999999999999.99||!/^[A-Z]{3}$/.test(result.currency || ''))throw new Error('راجع الصرف والعملة في السطر '+(index+2)+'.');result.spend=Number(result.spend);metricCount++;}
+      if(!metricCount) throw new Error('لا توجد مؤشرات فعلية في السطر '+(index+2)+'.');
+      if(result.account_id.length>120||result.source_name.length>180||(result.account_name||'').length>180)throw new Error('هوية الحساب أو المصدر أطول من الحد المسموح.');
+      return result;
+    }).map(function(row,index,all){var key=[row.platform,row.account_id,row.scope,row.period_start,row.period_end].join('\u0000');if(all.slice(0,index).some(function(r){return [r.platform,r.account_id,r.scope,r.period_start,r.period_end].join('\u0000')===key;}))throw new Error('تقرير الحساب والفترة مكرر داخل الملف.');return row;});
+  }
+  function resetSocialImport() {
+    socialImportTicket++; socialImportRows=[];
+    el('socialImportFile').value=''; el('socialImportConfirm').checked=false; el('socialImportSave').disabled=true;
+    el('socialImportPreview').hidden=true; el('socialImportFeedback').textContent='';
+  }
+  async function previewSocialImport() {
+    var ticket=++socialImportTicket, file=el('socialImportFile').files[0]; socialImportRows=[];
+    el('socialImportSave').disabled=true;el('socialImportConfirm').checked=false;el('socialImportFeedback').textContent='';el('socialImportPreview').hidden=true;
+    if(!file)return;
+    try{
+      if(file.size>1024*1024)throw new Error('حجم الملف أكبر من 1 MB.');
+      var rows=parseSocialCsv(await file.text()); if(ticket!==socialImportTicket)return;
+      socialImportRows=rows;
+      el('socialImportPreview').innerHTML='<strong>'+n(rows.length)+' تقرير جاهز للمراجعة</strong><p>سيُحفظ تقرير واحد لكل حساب ونطاق وفترة. التقرير الأحدث في وقت الاستخراج يُحدّث النسخة السابقة؛ لا تتضاعف الأرقام بإعادة الاستيراد.</p><div class="table-wrap"><table><thead><tr><th>المنصة والحساب</th><th>الفترة والنطاق</th><th>الوصول</th><th>المشاهدات</th><th>التفاعلات</th></tr></thead><tbody>'+rows.map(function(row){return '<tr><td>'+esc(SOCIAL_NAMES[row.platform]+' · '+(row.account_name||row.account_id))+'</td><td>'+esc(reportPeriod(row)+' · '+socialScope(row.scope))+'</td><td>'+socialValue(row.reach)+'</td><td>'+socialValue(row.views)+'</td><td>'+socialValue(row.interactions)+'</td></tr>';}).join('')+'</tbody></table></div>';
+      el('socialImportPreview').hidden=false;
+    }catch(error){if(ticket===socialImportTicket)el('socialImportFeedback').textContent=error.message || 'تعذر قراءة الملف.';}
+  }
+  async function saveSocialImport() {
+    if(!token || !socialImportRows.length || !el('socialImportConfirm').checked || socialImportPending)return;
+    var auth=token,ticket=socialImportTicket;socialImportPending=true;el('socialImportSave').disabled=true;el('socialImportFile').disabled=true;el('socialImportConfirm').disabled=true;
+    el('socialImportFeedback').textContent='جارٍ حفظ التقارير…';
+    try{
+      var result=await request({mode:'social_reports_import',token:auth,rows:socialImportRows});
+      if(auth!==token || ticket!==socialImportTicket)return;
+      resetSocialImport();el('socialImportFeedback').textContent='تم حفظ '+n(result.saved)+' من '+n(result.submitted)+' تقرير. '+(result.saved<result.submitted?'التقارير الأقدم من النسخة المحفوظة لم تُستبدل.':'');
+      await load({quiet:true,background:true});showToast('تم حفظ تقارير السوشيال بمصدرها وفترتها');
+    }catch(error){if(auth!==token || ticket!==socialImportTicket)return;if(error.status===401)logoutNow('انتهت الجلسة. سجّل الدخول من جديد.');else el('socialImportFeedback').textContent='لم يتم حفظ الملف. راجع البيانات أو أعد المحاولة. ('+error.message+')';}
+    finally{socialImportPending=false;el('socialImportFile').disabled=false;el('socialImportConfirm').disabled=false;el('socialImportSave').disabled=!socialImportRows.length||!el('socialImportConfirm').checked;}
+  }
+
   function render(data) {
     payload = data;
     insights = buildInsights(data);
@@ -731,6 +890,8 @@
     else if (activeView === 'trend') renderTrend(data);
     else if (activeView === 'google-ads') renderAds(data);
     else if (activeView === 'business-profile') renderBusinessProfile(data);
+    else if (activeView === 'social') renderSocial(data);
+    else if (activeView === 'measurement') renderMeasurement(data);
     else if (activeView === 'acquisition') renderSources(data);
     else if (activeView === 'performance') renderSiteTables(data);
     else if (activeView === 'leads') renderReferralsAndCalls(data);
@@ -752,7 +913,7 @@
       var data = await request({ mode: 'admin', token: auth, days: number(el('periodSelect').value) || 30 });
       if (auth !== token || ticket !== loadTicket) return null;
       render(data);
-      if (!options.quiet) showToast('تم تحديث البيانات ومطابقة المصادر');
+      if (!options.quiet) showToast('تم تحديث البيانات وفحص الإجماليات');
       return data;
     } catch (error) {
       if (auth !== token || ticket !== loadTicket) return null;
@@ -811,7 +972,8 @@
     notificationFeed = null; notificationRows = []; closeHeaderPanels(); closeNavigation();
     if (el('accountDialog').open) el('accountDialog').close();
     resetPipelineForm(); setLoading(false);
-    closeDecisionEditor();
+    closeDecisionEditor(); resetSocialImport();
+    el('socialLinkOutput').value=''; el('socialLinkCopy').disabled=true; el('socialLinkOpen').hidden=true;
     el('adminApp').hidden = true; el('adminLogin').hidden = false; document.body.classList.remove('is-authenticated');
     el('adminLoginError').textContent = message || '';
     el('adminUsername').focus();
@@ -1284,6 +1446,16 @@
     this.textContent = visible ? 'إظهار' : 'إخفاء'; this.setAttribute('aria-pressed', String(!visible));
   });
   el('refreshButton').addEventListener('click', load);
+  el('socialFilter').addEventListener('click',function(event){var button=event.target.closest('[data-platform]');if(button)filterSocial(button.dataset.platform);});
+  el('socialPlatformCards').addEventListener('click',function(event){var button=event.target.closest('[data-platform]');if(button)filterSocial(button.dataset.platform);});
+  el('socialReportSelect').addEventListener('change',renderSocialReport);
+  el('socialLinkForm').addEventListener('submit',function(event){event.preventDefault();el('socialLinkError').textContent='';el('socialLinkOutput').value='';el('socialLinkCopy').disabled=true;el('socialLinkOpen').hidden=true;try{var link=buildSocialLink();el('socialLinkOutput').value=link;el('socialLinkCopy').disabled=false;el('socialLinkOpen').href=link;el('socialLinkOpen').hidden=false;}catch(error){el('socialLinkError').textContent=error.message || 'راجع رابط الصفحة.';}});
+  el('socialLinkForm').addEventListener('input',function(event){if(event.target===el('socialLinkOutput'))return;el('socialLinkOutput').value='';el('socialLinkCopy').disabled=true;el('socialLinkOpen').hidden=true;});
+  el('socialLinkCopy').addEventListener('click',function(){if(!el('socialLinkOutput').value)return;navigator.clipboard.writeText(el('socialLinkOutput').value).then(function(){showToast('تم نسخ رابط الحملة');}).catch(function(){showToast('تعذر النسخ؛ يمكنك نسخ الرابط من الحقل',true);});});
+  el('socialTemplateButton').addEventListener('click',function(){downloadCsv([SOCIAL_CSV_FIELDS],'tawod-social-account-period-template.csv');});
+  el('socialImportFile').addEventListener('change',previewSocialImport);
+  el('socialImportConfirm').addEventListener('change',function(){el('socialImportSave').disabled=socialImportPending||!socialImportRows.length||!this.checked;});
+  el('socialImportSave').addEventListener('click',saveSocialImport);
   el('googleAdsSyncButton').addEventListener('click', refreshGoogleAds);
   el('periodSelect').addEventListener('change', load);
   el('copyButton').addEventListener('click', function () { closeHeaderPanels(); copySummary(); });

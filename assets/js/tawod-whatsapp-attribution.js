@@ -18,13 +18,20 @@
   function currentIdentifier() {
     var search = null;
     try { search = new URLSearchParams(window.location.search || ''); } catch (error) {}
-    var stored = readStoredAttribution();
-
+    var freshCampaign = search && ['utm_source','utm_medium','utm_campaign','utm_content','ttclid','fbclid'].some(function (key) { return !!search.get(key); });
     for (var i = 0; i < IDENTIFIERS.length; i += 1) {
-      var key = IDENTIFIERS[i];
-      var value = search ? search.get(key) : null;
-      if (!value && stored) value = stored[key];
+      var key = IDENTIFIERS[i], value = search ? search.get(key) : null;
       if (value) return { type: key.toUpperCase(), value: value };
+    }
+    if (freshCampaign) return null;
+    var current = null;
+    try { current = JSON.parse(window.sessionStorage.getItem('tawodFirstPartySession') || 'null'); } catch (error) {}
+    if (!current || !current.click_id || !Number.isFinite(Number(current.lastSeen)) || Date.now() - Number(current.lastSeen) > 30 * 60000) return null;
+    var stored = readStoredAttribution(), landing = null;
+    try { landing = new URL(current.landingPath,window.location.href).searchParams; } catch (error) {}
+    for (var j = 0; j < IDENTIFIERS.length; j += 1) {
+      var identifier = IDENTIFIERS[j];
+      if ((landing && landing.get(identifier) === current.click_id) || stored[identifier] === current.click_id) return {type:identifier.toUpperCase(),value:current.click_id};
     }
     return null;
   }

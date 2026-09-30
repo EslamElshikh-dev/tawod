@@ -14,7 +14,7 @@ await db.exec(`
     id uuid primary key default gen_random_uuid(), occurred_at timestamptz default now(),
     event_name text, contact_method text, page_path text, landing_path text,
     referrer_host text, utm_source text, utm_medium text, utm_campaign text,
-    click_id text, session_id text
+    click_id text, session_id text, visitor_id text, device_type text, utm_content text, service_type text
   );
   grant select on public.tawod_analytics_events to service_role;
   create table public.tawod_sync_keys(name text primary key,key_hash text,enabled boolean);
@@ -29,6 +29,8 @@ await db.exec(fs.readFileSync('supabase/migrations/20260911090000_tawod_google_s
 await db.exec(fs.readFileSync('supabase/migrations/20260930014446_tawod_sales_followup_workspace.sql','utf8'));
 await db.exec(fs.readFileSync('supabase/migrations/20260930024439_tawod_decisions_commercial_workspace.sql','utf8'));
 await db.exec(fs.readFileSync('supabase/migrations/20260930034625_tawod_notification_feed.sql','utf8'));
+await db.exec(fs.readFileSync('supabase/migrations/20260930051049_tawod_social_measurement_workspace.sql','utf8'));
+await db.exec(fs.readFileSync('supabase/migrations/20260930062353_tawod_meta_attribution_clarity.sql','utf8'));
 const legacy = (await db.query('select * from tawod_sales_outcomes where id=$1',[legacyId])).rows[0];
 assert.equal(legacy.acquisition_source,'google-ads');
 assert.equal(legacy.stage_entered_at,null,'do not invent historical stage timestamps');
@@ -49,6 +51,12 @@ async function restFetch(url,init={}) {
   const path = parsed.pathname.replace('/rest/v1/','');
   if (path === 'tawod_admin_config') return response([{value_hash:hash(fakePassword)}]);
   if (path === 'tawod_sync_keys') return response([{key_hash:hash(fakeSyncKey),enabled:true}]);
+  if (['rpc/tawod_social_import','rpc/tawod_social_workspace','rpc/tawod_admin_analytics','rpc/tawod_visitor_frequency','rpc/tawod_attribution_source'].includes(path)) {
+    const args=JSON.parse(init.body), fn=path.slice(4);
+    const values=fn==='tawod_social_import'?[JSON.stringify(args.p_rows)]:fn==='tawod_social_workspace'?[args.p_days,args.p_start_at||null,args.p_end_at||null]:fn==='tawod_attribution_source'?[args.p_source,args.p_medium,args.p_referrer,args.p_click_id,args.p_landing]:[args.p_days];
+    return response((await db.query('select '+identifier(fn)+'('+values.map((_,i)=>'$'+(i+1)).join(',')+') as result',values)).rows[0].result);
+  }
+  if (['rpc/tawod_google_ads_analytics','rpc/tawod_business_profile_analytics'].includes(path)) return response({connected:false});
   if (path === 'rpc/tawod_sales_workspace') {
     const rows = await db.query('select tawod_sales_workspace($1) as workspace',[JSON.parse(init.body).p_days]);
     return response(rows.rows[0].workspace);
@@ -102,7 +110,7 @@ const context = vm.createContext({
 });
 const source = fs.readFileSync('supabase/functions/tawod-analytics/index.ts','utf8');
 const compiled = ts.transpileModule(source,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.None}}).outputText;
-vm.runInContext(compiled+'\nglobalThis.salesTest={loadSalesPipeline,normalizeSheetLead,loadCommercial,loadDecisions,loadNotificationFeed};',context);
+vm.runInContext(compiled+'\nglobalThis.salesTest={loadSalesPipeline,normalizeSheetLead,loadCommercial,loadDecisions,loadNotificationFeed,referralSource,normalizeSocialReports};',context);
 const origin = 'https://tawodco.com';
 const call = async (body,requestOrigin=origin) => {
   const result = await handler(new Request('https://isolated.local/functions/v1/tawod-analytics',{
@@ -310,5 +318,97 @@ feed = await context.salesTest.loadNotificationFeed();
 assert.equal(feed.entries.length,100); assert.equal(feed.truncated,true); assert.ok(feed.totalAvailable>100);
 assert.equal(feed.alerts.unassignedOpportunities,501,'alert counts are not limited by displayed events');
 assert.ok(feed.entries.every((row,i,all)=>!i || new Date(all[i-1].at)>=new Date(row.at)),'newest real events appear first');
+// Social reports and acquisition parity run against real Postgres and the actual authenticated handler.
+await db.exec('reset role');
+const attributionCases=[
+  ['meta','paid_social',null,null,'/'],
+  ['instagram','organic_social',null,null,'/'],['ig','paid_social',null,null,'/'],['fb','unpaid',null,null,'/'],['facebook_ads',null,null,null,'/'],
+  ['tiktok','cpc',null,null,'/'],['tt','social',null,null,'/'],['Twitter','paid_social',null,null,'/'],['x','organic_social',null,null,'/'],
+  [null,null,'l.instagram.com',null,'/'],[null,null,'www.facebook.com',null,'/'],[null,null,'m.tiktok.com',null,'/'],[null,null,'t.co',null,'/'],
+  [null,null,'chatgpt.com',null,'/'],[null,null,'t.co.attacker.example',null,'/'],['instagram',null,null,'real-gclid','/'],
+  ['facebook',null,null,null,'/?gclid=real'],['x',null,null,null,'/?gad_source=1'],[null,null,null,null,'/?ttclid=real'],
+  [null,null,'www.google.com',null,'/'],['google_ads',null,null,null,'/'],['google','organic',null,null,'/'],[null,null,'tawodco.com',null,'/']
+];
+for(const params of attributionCases){
+  const sql=(await db.query('select tawod_attribution_source($1,$2,$3,$4,$5) as source',params)).rows[0].source;
+  const js=context.salesTest.referralSource(Object.fromEntries(['utm_source','utm_medium','referrer_host','click_id','landing_path'].map((key,i)=>[key,params[i]])));
+  assert.equal(js,sql,'Edge and PostgreSQL must classify identically: '+JSON.stringify(params));
+}
+assert.equal(context.salesTest.referralSource({referrer_host:'chatgpt.com'}),'chatgpt.com');
+assert.equal(context.salesTest.referralSource({utm_source:'meta',utm_medium:'paid_social'}),'meta-ads','Meta without placement is not falsely assigned to Facebook');
+assert.equal(context.salesTest.referralSource({utm_source:'facebook',utm_medium:'unpaid'}),'facebook');
+const snapshot={platform:'instagram',account_id:'isolated-account',account_name:'حساب معزول',period_start:new Date(Date.now()-6*86400000).toISOString().slice(0,10),
+  period_end:new Date(Date.now()-86400000).toISOString().slice(0,10),scope:'organic',time_zone:'Asia/Riyadh',source_name:'Instagram account-period export',
+  aggregation:'account_period',observed_at:new Date().toISOString(),reach:12,views:null,interactions:0,followers_start:100,followers_end:95};
+assert.equal((await call({mode:'social_reports_import',rows:[snapshot]})).status,401);
+assert.equal((await call({mode:'social_reports_import',token,rows:[snapshot]},'https://untrusted.example')).status,403);
+let importResult=await call({mode:'social_reports_import',token,rows:[snapshot]}); assert.equal(importResult.status,200);assert.equal(importResult.saved,1);
+importResult=await call({mode:'social_reports_import',token,rows:[snapshot]});assert.equal(importResult.saved,1);
+assert.equal((await db.query('select count(*)::int as n from tawod_social_reports')).rows[0].n,1,'idempotent account/scope/period snapshots');
+let native=(await db.query('select * from tawod_social_reports')).rows[0];assert.equal(Number(native.reach),12);assert.equal(native.views,null);assert.equal(Number(native.interactions),0);
+const older={...snapshot,reach:999,observed_at:new Date(Date.now()-3600000).toISOString()};
+assert.equal((await call({mode:'social_reports_import',token,rows:[older]})).saved,0,'older extraction must not overwrite newer report');
+for(const invalid of [
+  {...snapshot,reach:-1},{...snapshot,reach:1.5},{...snapshot,reach:'1,000'},{...snapshot,reach:'99999999999999999'},
+  {...snapshot,aggregation:'daily_sum'},{...snapshot,period_end:'2099-01-01'},{...snapshot,period_start:'2026-02-30'},
+  {...snapshot,time_zone:'Not/AZone'},{...snapshot,spend:10,currency:null},{...snapshot,observed_at:'2099-01-01T00:00:00Z'},
+  {...snapshot,reach:null,interactions:null,followers_start:null,followers_end:null}
+]) assert.equal((await call({mode:'social_reports_import',token,rows:[invalid]})).status,400,JSON.stringify(invalid));
+assert.equal((await call({mode:'social_reports_import',token,rows:[snapshot,snapshot]})).status,400);
+assert.equal((await call({mode:'social_reports_import',token,rows:[{...snapshot,account_id:'new'}, {...snapshot,platform:'invalid'}]})).status,400);
+assert.equal((await db.query('select count(*)::int as n from tawod_social_reports')).rows[0].n,1,'bad batch makes no partial writes');
+assert.equal((await call({mode:'social_reports_sync',syncKey:'wrong',rows:[snapshot]},'')).status,401);
+assert.equal((await call({mode:'social_reports_sync',syncKey:fakeSyncKey,rows:[{...snapshot,platform:'x'}]},'')).status,200);
+assert.equal((await db.query("select input_kind from tawod_social_reports where platform='x'")).rows[0].input_kind,'connector');
+for(const role of ['anon','authenticated']){
+  assert.equal((await db.query("select has_table_privilege($1,'tawod_social_reports','SELECT') as allowed",[role])).rows[0].allowed,false);
+  assert.equal((await db.query("select has_function_privilege($1,'tawod_social_workspace(integer,timestamptz,timestamptz)','EXECUTE') as allowed",[role])).rows[0].allowed,false);
+  assert.equal((await db.query("select has_function_privilege($1,'tawod_social_import(jsonb)','EXECUTE') as allowed",[role])).rows[0].allowed,false);
+}
+const beforeSocialAudit=(await db.query('select tawod_admin_analytics(30) as data')).rows[0].data;
+await db.exec(`insert into tawod_analytics_events(event_name,visitor_id,session_id,device_type,utm_source,occurred_at)
+  select 'page_view','visitor-extra-'||i,'session-extra-'||i,'mobile','source-extra-'||i,now()-interval '1 hour' from generate_series(1,20) i;
+  insert into tawod_analytics_events(event_name,visitor_id,session_id,device_type,utm_source,utm_medium,utm_campaign,utm_content,occurred_at)
+  values ('page_view','social-v','social-s','mobile','ig','organic_social','isolated-campaign','reel-01',now()-interval '1 hour'),
+    ('whatsapp_click','social-v','social-s','mobile','ig','organic_social','isolated-campaign','reel-01',now()-interval '59 minutes'),
+    ('call_click','social-v','social-s','mobile','ig','organic_social','isolated-campaign','reel-01',now()-interval '58 minutes');
+  insert into tawod_analytics_events(event_name,session_id,visitor_id,occurred_at)
+  values ('page_view','cross-midnight','cross-v',(date_trunc('day',now() at time zone 'Asia/Riyadh')-interval '1 day'-interval '2 minutes') at time zone 'Asia/Riyadh'),
+    ('page_view','cross-midnight','cross-v',(date_trunc('day',now() at time zone 'Asia/Riyadh')-interval '1 day'+interval '2 minutes') at time zone 'Asia/Riyadh'),
+    ('whatsapp_click','cross-midnight','cross-v',(date_trunc('day',now() at time zone 'Asia/Riyadh')-interval '1 day'+interval '3 minutes') at time zone 'Asia/Riyadh'),
+    ('page_view','earlier-session','social-v',now()-interval '60 days'),
+    ('page_view','boundary-before','boundary-v',now()-interval '30 days 2 minutes'),
+    ('page_view','boundary-inside','boundary-v',now()-interval '29 days 23 hours 58 minutes'),
+    ('call_click','orphan-session',null,now()-interval '1 hour'),('whatsapp_click',null,null,now()-interval '1 hour');
+  insert into tawod_analytics_events(event_name,session_id,visitor_id,click_id,utm_source,occurred_at)
+  values ('page_view','excluded-test','excluded-v','TEST-isolated','tiktok',now()-interval '1 hour'),
+    ('page_view','future-event','future-v',null,'x',now()+interval '2 days'),
+    ('page_view','conflict-session','conflict-v','real-google-id','instagram',now()-interval '1 hour');`);
+const socialEvent=(await db.query("select id from tawod_analytics_events where session_id='social-s' and event_name='whatsapp_click'")).rows[0].id;
+const socialSale=await save({sourceType:'whatsapp',sourceRef:socialEvent,stage:'qualified',...review,assignee:'الفريق',nextAction:'متابعة',nextFollowUpAt:new Date(Date.now()+86400000).toISOString()});
+assert.equal(socialSale.status,200);assert.equal(socialSale.outcome.acquisitionSource,'instagram');
+await db.exec('set role service_role');
+const audit=(await db.query('select tawod_admin_analytics(30) as data')).rows[0].data;
+assert.ok(audit.sources.length>15);assert.equal(audit.dataQuality.reconciled,true);
+assert.equal(audit.sources.reduce((sum,r)=>sum+r.sessions,0),audit.summary.sessions);
+assert.equal(audit.daily.reduce((sum,r)=>sum+r.sessions,0),audit.summary.sessions,'one session crossing midnight must not double count');
+assert.equal(audit.daily.reduce((sum,r)=>sum+r.referrals,0),audit.summary.referralSessions);
+assert.equal(audit.daily.reduce((sum,r)=>sum+r.newVisitors,0),audit.summary.newVisitors,'new visitor day buckets honor the exact period start');
+assert.equal(audit.dataQuality.attributionConflicts,1);assert.equal(audit.dataQuality.contactEventsWithoutSession,beforeSocialAudit.dataQuality.contactEventsWithoutSession+1);assert.equal(audit.dataQuality.contactSessionsWithoutPage,beforeSocialAudit.dataQuality.contactSessionsWithoutPage+1);
+assert.ok(audit.dataQuality.excludedTestEvents>=1);assert.equal(audit.summary.returningVisitors,2,'first seen before period is a returning visitor');
+let workspace=(await db.query('select tawod_social_workspace(30) as data')).rows[0].data;
+const ig=workspace.platforms.find(row=>row.platform==='instagram');
+assert.equal(ig.sessions,1);assert.equal(ig.referrals,1,'call and WhatsApp in same session are one referral');assert.equal(ig.calls,1);assert.equal(ig.whatsapp,1);assert.equal(ig.qualified,1);
+assert.equal(workspace.platforms.find(r=>r.platform==='x').sessions,0,'future events excluded');
+assert.equal(workspace.platforms.find(r=>r.platform==='tiktok').sessions,0,'fixtures excluded');
+assert.equal(workspace.campaigns.find(r=>r.platform==='instagram').content,'reel-01');
+assert.equal(workspace.reports.find(r=>r.platform==='instagram').views,null);assert.equal(workspace.reports.find(r=>r.platform==='instagram').reach,12);
+const actualAdmin=await call({mode:'admin',token,days:30});assert.equal(actualAdmin.status,200);assert.equal(actualAdmin.social.available,true);
+assert.equal(actualAdmin.social.window.startAt,actualAdmin.dataQuality.startAt,'website and social use identical bounds');
+assert.equal(actualAdmin.social.window.endAt,actualAdmin.dataQuality.endAt);
+assert.equal(actualAdmin.summary.newVisitors,audit.summary.newVisitors,'true first-seen metric must not be overwritten by frequency');
+assert.equal(actualAdmin.summary.returningVisitors,audit.summary.returningVisitors);assert.equal(actualAdmin.summary.singleSessionVisitors+actualAdmin.summary.repeatSessionVisitors,audit.summary.visitors);
+await db.exec('reset role');
+
 await db.close();
-console.log('Verified private Postgres migrations, uncapped sales/source/stage aggregates, cohort vs closure activity, unknown historical dates, persistent decision review/history/conflicts, follow-ups, and Sheets regression guards.');
+console.log('Verified private Postgres migrations, uncapped sales/source/stage aggregates, cohort vs closure activity, unknown historical dates, persistent decision review/history/conflicts, follow-ups, social account snapshots/import validation, attribution parity, daily/source reconciliation, and Sheets regression guards.');
