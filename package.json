@@ -15,6 +15,7 @@
     "check:analytics": "node scripts/install-site-analytics.mjs --check",
     "test:analytics": "node scripts/test-analytics.mjs",
     "test:command-center": "node scripts/test-command-center.mjs",
+    "test:sales-workspace": "node scripts/test-sales-workspace.mjs",
     "build:static": "node scripts/build-static-pages.mjs && node scripts/install-site-analytics.mjs",
     "check:static": "node scripts/build-static-pages.mjs --check",
     "build:home": "node scripts/build-home-performance.mjs && node scripts/install-site-analytics.mjs",
@@ -39,7 +40,7 @@
     "generate:bone-series": "node scripts/generate-seo-cluster-2026-08-23.mjs && node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/install-site-analytics.mjs && node scripts/build-static-pages.mjs && node scripts/install-site-analytics.mjs",
     "check:bone-series": "node scripts/validate-bone-construction-series.mjs && node scripts/validate-bone-construction-decision-guides.mjs",
     "validate:site": "node scripts/validate-site.mjs",
-    "check": "npm run prepare:assets && npm run typecheck && npm run check:analytics && npm run test:analytics && npm run test:command-center && npm run check:static && npm run check:home && npm run check:mobile-performance && npm run check:blog && npm run check:blogger-redirects && npm run check:blog-architecture && npm run check:bone-series && npm run check:seo-ownership && npm run check:branches && npm run check:dammam && npm run check:khobar && npm run check:dhahran && npm run check:city-distinctness && npm run validate:site && npm run build",
+    "check": "npm run prepare:assets && npm run typecheck && npm run check:analytics && npm run test:analytics && npm run test:command-center && npm run test:sales-workspace && npm run check:static && npm run check:home && npm run check:mobile-performance && npm run check:blog && npm run check:blogger-redirects && npm run check:blog-architecture && npm run check:bone-series && npm run check:seo-ownership && npm run check:branches && npm run check:dammam && npm run check:khobar && npm run check:dhahran && npm run check:city-distinctness && npm run validate:site && npm run build",
     "sync:branches": "node scripts/business-branches.mjs",
     "check:branches": "node scripts/business-branches.mjs --check && node scripts/test-business-branches.mjs"
   },
@@ -49,6 +50,7 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
     "@types/node": "^24.0.0",
     "@types/react": "19.2.18",
     "@types/react-dom": "^19.2.3",

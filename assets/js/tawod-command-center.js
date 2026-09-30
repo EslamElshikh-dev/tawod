@@ -8,6 +8,7 @@
   var token = '';
   var payload = null;
   var insights = [];
+  var editRequest = 0;
 
   function el(id) { return document.getElementById(id); }
   function number(value) { return Number(value || 0); }
@@ -58,6 +59,60 @@
   function salesStageLabel(value) {
     return { new: 'إحالة جديدة', qualified: 'عميل مؤهل', quote_sent: 'عرض سعر مرسل', site_visit: 'زيارة موقع', contract_signed: 'عقد موقّع', lost: 'لم يتم التعاقد' }[value] || value || '—';
   }
+  function lostReasonLabel(value) {
+    return { price: 'السعر', timing: 'تأجيل المشروع', outside_scope: 'خارج نطاق الخدمة', no_response: 'انقطاع الرد', competitor: 'منافس', other: 'سبب آخر' }[value] || '—';
+  }
+  function riyadhInput(value) {
+    if (!value || isNaN(new Date(value).getTime())) return '';
+    return new Date(new Date(value).getTime() + 3 * 3600000).toISOString().slice(0, 16);
+  }
+  function inputTimestamp(value) { return value ? new Date(value + '+03:00').toISOString() : null; }
+  function opportunityId(row) { return 'TW-' + String(row.id || '').slice(0, 8).toUpperCase(); }
+  function matchesFollowup(row, filter) {
+    var now = Date.now();
+    var due = row.nextFollowUpAt ? new Date(row.nextFollowUpAt).getTime() : null;
+    var dayEnd = new Date(riyadhInput(new Date(now).toISOString()).slice(0, 10) + 'T00:00:00+03:00').getTime() + 86400000;
+    return { all: true, overdue: due !== null && due < now, today: due !== null && due >= now && due < dayEnd,
+      unassigned: !row.assignee, unscheduled: due === null,
+      stale: new Date(row.lastContactAt || row.firstContactAt || row.occurredAt).getTime() < now - 7 * 86400000,
+      unqualified: !row.qualifiedAt }[filter] || false;
+  }
+  function renderFollowups(data) {
+    var sales = data.salesPipeline || {}, f = sales.followups || {};
+    el('followupMetrics').innerHTML = sales.connected ? [
+      ['overdue','متابعات متأخرة', f.overdue, 'تجاوزت موعد المتابعة'],
+      ['today','باقي متابعات اليوم', f.today, 'قبل نهاية اليوم في الرياض'],
+      ['unassigned','دون مسؤول', f.unassigned, 'تحتاج توزيعًا على الفريق'],
+      ['unscheduled','دون موعد متابعة', f.unscheduled, 'حدد إجراءً وموعدًا واضحًا']
+    ].map(function (item) {
+      return '<button type="button" class="followup-stat ' + item[0] + '" data-filter="' + item[0] + '"><span>' + item[1] + '</span><strong>' + n(item[2]) + '</strong><small>' + item[3] + '</small></button>';
+    }).join('') : '<div class="empty-box">تعذر تحميل مسار البيع؛ لا تتوفر أعداد المتابعات.</div>';
+    el('followupLimit').hidden = !sales.openEntriesTruncated;
+    var filter = el('followupFilter').value, query = el('followupSearch').value.trim().toLowerCase();
+    var rows = (sales.openEntries || []).filter(function (row) {
+      return matchesFollowup(row, filter) && (!query || [opportunityId(row),row.id,row.serviceType,row.assignee,row.campaignName,row.acquisitionSource,row.projectLocation].join(' ').toLowerCase().includes(query));
+    });
+    el('followupCount').textContent = n(rows.length) + ' معروضة · ' + n(f.total) + ' مفتوحة';
+    el('followupList').innerHTML = rows.length ? rows.map(function (row) {
+      var overdue = matchesFollowup(row, 'overdue');
+      return '<article class="followup-card ' + (overdue ? 'is-overdue' : '') + '"><div class="followup-card-title"><code>' + esc(opportunityId(row)) + '</code><span class="stage-tag ' + esc(row.stage) + '">' + esc(salesStageLabel(row.stage)) + '</span>' +
+        (overdue ? '<span class="followup-urgency">متأخرة</span>' : '') + '</div><h3>' + esc(row.serviceType || 'الخدمة تحتاج تحديدًا') + '</h3><p>' + esc(row.projectLocation || 'المنطقة غير محددة') + ' · ' + esc(sourceLabel(row.acquisitionSource || 'غير مرتبط')) + '</p>' +
+        '<dl><div><dt>المسؤول</dt><dd>' + esc(row.assignee || 'لم يُعيّن') + '</dd></div><div><dt>المتابعة القادمة</dt><dd>' + esc(row.nextFollowUpAt ? formatDate(row.nextFollowUpAt) : 'لم تُجدول') + '</dd></div><div><dt>آخر تواصل فعلي</dt><dd>' + esc(formatDate(row.lastContactAt)) + '</dd></div></dl>' +
+        '<div class="followup-next"><span>الإجراء القادم</span><strong>' + esc(row.nextAction || 'يحتاج تحديدًا') + '</strong></div><button type="button" class="followup-open" data-outcome="' + esc(row.id) + '">فتح الفرصة والمتابعة</button></article>';
+    }).join('') : '<div class="empty-box">' + (sales.connected ? 'لا توجد فرص مطابقة لهذا العرض.' : 'مصدر مسار البيع غير متاح الآن.') + '</div>';
+  }
+  function renderSourceQuality(data) {
+    var q = data.dataQuality || {}, sales = data.salesPipeline || {}, s = sales.summary || {};
+    var cards = [
+      { title: 'الموقع', connected: !!q.lastEventAt, at: q.lastEventAt, hours: 26, detail: 'آخر حدث مقاس؛ هدوء الزيارات لا يعني تعطل التتبع.' },
+      { title: 'Google Ads', connected: !!(data.googleAds || {}).connected, at: (data.googleAds || {}).lastSyncAt, hours: 2, detail: 'الإنفاق والتحويلات · قياس المكالمات له اتصال مستقل.' },
+      { title: 'الملف التجاري', connected: !!(data.businessProfile || {}).connected, at: (data.businessProfile || {}).lastSyncAt, hours: 26, detail: 'اكتمال الأيام يتطلب مراجعة دفعات Performance API.' }
+    ];
+    el('sourceQualityGrid').innerHTML = cards.map(function (row) {
+      var stale = row.connected && (!row.at || Date.now() - new Date(row.at).getTime() > row.hours * 3600000);
+      return '<article class="source-quality-card"><header><strong>' + row.title + '</strong><span class="quality-state ' + (!row.connected || stale ? 'watch' : 'good') + '">' + (!row.connected ? 'لا توجد بيانات' : stale ? 'آخر بيانات قديمة' : 'بيانات حديثة') + '</span></header><time>' + esc(formatDate(row.at)) + '</time><p>' + row.detail + '</p></article>';
+    }).join('') + '<article class="source-quality-card"><header><strong>اكتمال الفرص في الفترة</strong><span class="quality-state ' + (sales.connected ? 'good' : 'watch') + '">' + (sales.connected ? n(s.opportunities) + ' فرصة فعلية' : 'غير متاح') + '</span></header><p>مرتبط بإحالة مقاسة: <b>' + (sales.connected && number(s.opportunities) ? pct(rate(s.linked,s.opportunities)) : '—') + '</b> · ' + n(s.linked) + ' من ' + n(s.opportunities) + '</p><p>بيانات التأهيل مكتملة: <b>' + (sales.connected && number(s.opportunities) ? pct(rate(s.qualificationComplete,s.opportunities)) : '—') + '</b></p><small>الخدمة، المنطقة، التوقيت، الملاءمة ونتيجة المراجعة. بيانات الاختبار مستبعدة.</small></article>';
+  }
   function sheetsSyncLabel(row) {
     if (row.sourceType !== 'whatsapp' || !row.qualifiedAt) return { text: 'غير مشمول', cls: '' };
     var test = /^TEST(?:-|_|$)/i.test(row.clickId || '');
@@ -99,10 +154,10 @@
   }
 
   function confidence(sessions) {
-    if (number(sessions) < 10) return 'غير كافية';
-    if (number(sessions) < 50) return 'أولية';
+    if (number(sessions) < 10) return 'صغيرة جدًا';
+    if (number(sessions) < 50) return 'صغيرة';
     if (number(sessions) < 150) return 'متوسطة';
-    return 'قوية';
+    return 'كبيرة';
   }
   function health(data) {
     var s = data.summary || {};
@@ -113,7 +168,7 @@
     var momentum = number(((data.comparison7d || {}).current || {}).referrals) >= number(((data.comparison7d || {}).previous || {}).referrals) ? 10 : 3;
     var score = Math.round(referralScore + qualityScore + momentum);
     var label = score >= 80 ? 'إحالات قوية' : score >= 60 ? 'أداء جيد' : score >= 40 ? 'يحتاج تحسين' : 'فجوة إحالة';
-    return { score: score, label: label, text: 'الحكم مبني على معدل الإحالة، اتجاهها، ومطابقة إجماليات المصادر والأجهزة.' };
+    return { score: score, label: label, text: 'مؤشر تقديري لقواعد الإحالة واتجاهها ومطابقة الإجماليات؛ لا يقيس ربحية العقود أو دقة الإسناد.' };
   }
   function makeInsight(priority, area, title, evidence, action, source) {
     return { priority: priority, area: area, title: title, evidence: evidence, action: action, source: source };
@@ -134,6 +189,9 @@
     }
     var sales = data.salesPipeline || {};
     var pipeline = sales.summary || {};
+    var followups = sales.followups || {};
+    if (sales.connected && number(followups.overdue)) rows.push(makeInsight('high', 'المتابعة', 'متابعات تجاوزت موعدها', n(followups.overdue) + ' فرصة مفتوحة عبر جميع التواريخ.', 'افتح مركز المتابعات وراجع الإجراء القادم مع المسؤول عن كل فرصة.', 'مسار البيع'));
+    if (sales.connected && (number(followups.unassigned) || number(followups.unscheduled))) rows.push(makeInsight('high', 'المتابعة', 'فرص تحتاج توزيعًا وجدولة', n(followups.unassigned) + ' دون مسؤول و' + n(followups.unscheduled) + ' دون موعد؛ قد تتداخل المجموعتان.', 'عيّن مسؤولًا وموعدًا وإجراءً لكل فرصة مفتوحة.', 'مسار البيع'));
     if (sales.connected && number(pipeline.opportunities) >= 3 && !number(pipeline.contracts)) {
       rows.push(makeInsight('high', 'العقود', 'لا توجد عقود مسجلة من الفرص الحالية', n(pipeline.opportunities) + ' فرص في مسار البيع دون عقد موقّع مسجل.', 'راجع العروض المفتوحة وحدد موعد متابعة وقرارًا واضحًا لكل فرصة.', 'مسار البيع'));
     } else if (sales.connected && number(pipeline.contracts)) {
@@ -213,14 +271,14 @@
 
     var quality = el('dataQualityBar');
     quality.className = 'quality-bar ' + (q.reconciled ? 'is-valid' : 'is-invalid');
-    quality.innerHTML = '<span class="quality-dot"></span><strong>' + (q.reconciled ? 'الإجماليات متطابقة 100%' : 'يوجد فرق يحتاج مراجعة') +
+    quality.innerHTML = '<span class="quality-dot"></span><strong>' + (q.reconciled ? 'إجماليات الجلسات متطابقة' : 'يوجد فرق يحتاج مراجعة') +
       '</strong><small>الزيارات ' + n(q.sessionTotal) + ' = المصادر ' + n(q.sourceTotal) + ' = الأجهزة ' + n(q.deviceTotal) +
-      ' · آخر حدث ' + formatDate(q.lastEventAt) + '</small>';
+      ' · مطابقة حسابية؛ لا تثبت اكتمال الإسناد أو وصول التواصل الفعلي</small>';
 
     var defs = data.definitions || {};
     el('definitionStrip').innerHTML = [
       ['الزيارة', defs.visit], ['الإحالة الناجحة', defs.successfulReferral],
-      ['العميل المحتمل', defs.potentialCustomer], ['العميل المؤكد', defs.confirmedCustomer]
+      ['الفرصة المؤهلة', 'فرصة راجع الفريق تواصلها وملاءمة الخدمة ثم اعتمد تأهيلها؛ مؤشرات مدة المكالمات تُعرض منفصلة.'], ['فترة المبيعات', 'الفرص التي بدأت إحالتها في الفترة المختارة، بما يشمل حالتها الحالية. المتابعات المفتوحة تشمل كل التواريخ.']
     ].map(function (item) { return '<div><strong>' + esc(item[0]) + '</strong><span>' + esc(item[1]) + '</span></div>'; }).join('');
   }
 
@@ -233,9 +291,9 @@
     var stages = [
       { label: 'زيارة', value: n(s.sessions), note: 'جلسة فريدة', source: 'الموقع', cls: '' },
       { label: 'إحالة ناجحة', value: n(s.referralSessions), note: pct(s.referralRate) + ' من الزيارات', source: 'الموقع', cls: 'referral' },
-      { label: 'مكالمة مقاسة', value: ads.callReportingConnected ? n(a.trackedCalls) : '—', note: ads.callReportingConnected ? 'سجل Call Reporting' : 'المصدر غير متصل', source: 'Google Ads', cls: ads.callReportingConnected ? '' : 'muted' },
-      { label: 'عميل محتمل', value: ads.callReportingConnected ? n(a.potentialCustomers) : '—', note: 'مكالمة > 60 ثانية', source: 'Google Ads', cls: ads.callReportingConnected ? 'potential' : 'muted' },
-      { label: 'عميل مؤكد', value: ads.callReportingConnected ? n(a.confirmedCustomers) : '—', note: '>60ث + تكرار أو زيارة', source: 'تأهيل', cls: ads.callReportingConnected ? 'confirmed' : 'muted' },
+      { label: 'فرصة مسجلة', value: sales.connected ? n(pipeline.opportunities) : '—', note: 'بدأت في فترة التقرير', source: 'المبيعات', cls: sales.connected ? '' : 'muted' },
+      { label: 'سبق تأهيلها', value: sales.connected ? n(pipeline.qualified) : '—', note: 'مراجعة تجارية مسجلة', source: 'المبيعات', cls: sales.connected ? 'potential' : 'muted' },
+      { label: 'عرض أو مرحلة تالية', value: sales.connected ? n(pipeline.quotes) : '—', note: 'الحالة الحالية للفرص', source: 'المبيعات', cls: sales.connected ? 'confirmed' : 'muted' },
       { label: 'عقد موقّع', value: sales.connected ? n(pipeline.contracts) : '—', note: sales.connected ? pct(pipeline.contractRate) + ' من الفرص المسجلة' : 'المصدر غير متصل', source: 'المبيعات', cls: sales.connected ? 'confirmed' : 'muted' }
     ];
     el('funnelGrid').innerHTML = stages.map(function (stage, index) {
@@ -267,18 +325,19 @@
     var s = sales.summary || {};
     el('pipelineSummaryMetrics').innerHTML = sales.connected ? [
       metric('كل الفرص', n(s.opportunities), 'فرص مسجلة في الفترة', 'المبيعات', ''),
-      metric('عملاء مؤهلون', n(s.qualified), 'يشمل المراحل التالية', 'المبيعات', 'potential'),
+      metric('فرص سبق تأهيلها', n(s.qualified), 'يشمل الفرص المفقودة بعد التأهيل', 'المبيعات', 'potential'),
       metric('عروض مرسلة', n(s.quotes), 'يشمل الزيارات والعقود', 'المبيعات', ''),
       metric('زيارات موقع', n(s.visits), 'يشمل العقود اللاحقة', 'المبيعات', 'calls'),
       metric('عقود موقّعة', n(s.contracts), pct(s.contractRate) + ' من كل الفرص', 'المبيعات', 'confirmed'),
       metric('قيمة العقود', money(s.contractValue, 'SAR'), 'المسجل للعقود الموقعة', 'المبيعات', 'confirmed')
     ].join('') : unavailableMetrics(['كل الفرص', 'عملاء مؤهلون', 'عروض مرسلة', 'زيارات موقع', 'عقود موقّعة', 'قيمة العقود'], 'مسار البيع');
-    var entries = sales.entries || [];
+    var entries = (sales.entries || []).filter(function (row) { return el('pipelineStageFilter').value === 'all' || row.stage === el('pipelineStageFilter').value; });
+    el('pipelineLimit').hidden = !sales.entriesTruncated;
     el('pipelineEmpty').hidden = !!entries.length;
     el('pipelineLastUpdate').textContent = sales.lastUpdatedAt ? 'آخر تحديث: ' + formatDate(sales.lastUpdatedAt) : 'لم تُسجل نتائج بعد';
     el('pipelineBody').innerHTML = entries.map(function (row) {
       var sync = sheetsSyncLabel(row);
-      return '<tr data-outcome="' + esc(row.id) + '"><td>' + esc(formatDate(row.occurredAt)) + '</td><td><span class="channel-tag ' + esc(row.sourceType) + '">' + esc(salesSourceLabel(row.sourceType)) + '</span></td><td>' + esc(row.serviceType) + '</td><td>' + esc(row.campaignName) + '</td><td><span class="stage-tag ' + esc(row.stage) + '">' + esc(salesStageLabel(row.stage)) + '</span></td><td><span class="stage-tag ' + esc(sync.cls) + '">' + esc(sync.text) + '</span></td><td>' + esc(money(row.estimatedValue, 'SAR')) + '</td><td><strong>' + esc(money(row.contractValue, 'SAR')) + '</strong></td><td>' + esc(row.notes) + '</td><td><button class="pipeline-edit" type="button">تعديل</button></td></tr>';
+      return '<tr data-outcome="' + esc(row.id) + '"><td><code>' + esc(opportunityId(row)) + '</code>' + (row.isTest ? '<small>بيانات اختبار</small>' : '') + '<small>' + esc(formatDate(row.occurredAt)) + '</small></td><td><span class="channel-tag ' + esc(row.sourceType) + '">' + esc(salesSourceLabel(row.sourceType)) + '</span><small>' + esc(sourceLabel(row.acquisitionSource || 'غير مرتبط')) + '</small></td><td>' + esc(row.serviceType) + '<small>' + esc(row.projectLocation) + '</small></td><td>' + esc(row.campaignName) + '</td><td><span class="stage-tag ' + esc(row.stage) + '">' + esc(salesStageLabel(row.stage)) + '</span>' + (row.stage === 'lost' ? '<small>' + esc(lostReasonLabel(row.lostReason)) + '</small>' : '') + '</td><td>' + esc(row.assignee || 'دون مسؤول') + '<small>' + esc(formatDate(row.nextFollowUpAt)) + '</small></td><td><span class="stage-tag ' + esc(sync.cls) + '">' + esc(sync.text) + '</span></td><td>' + esc(money(row.estimatedValue, 'SAR')) + '</td><td><strong>' + esc(money(row.contractValue, 'SAR')) + '</strong></td><td><button class="pipeline-edit" type="button">فتح</button></td></tr>';
     }).join('');
   }
 
@@ -525,6 +584,8 @@
     renderExecutive(data);
     renderFunnel(data);
     renderSalesPipeline(data);
+    renderFollowups(data);
+    renderSourceQuality(data);
     renderTrend(data);
     renderSources(data);
     renderSiteTables(data);
@@ -538,7 +599,7 @@
   async function request(body) {
     var response = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), cache: 'no-store', credentials: 'omit' });
     var data = await response.json().catch(function () { return {}; });
-    if (!response.ok) { var failure = new Error(data.error || 'request_failed'); failure.status = response.status; throw failure; }
+    if (!response.ok) { var failure = new Error(data.error || 'request_failed'); failure.status = response.status; failure.outcomeId = data.outcomeId; throw failure; }
     return data;
   }
   async function load(options) {
@@ -615,15 +676,40 @@
     finally { button.disabled = false; button.textContent = 'حفظ'; }
   }
   function resetPipelineForm() {
+    editRequest++;
     el('pipelineForm').reset();
     el('pipelineId').value = '';
     el('pipelineEstimatedValue').value = '0';
     el('pipelineContractValue').value = '0';
     delete el('pipelineForm').dataset.sourceRef;
+    delete el('pipelineForm').dataset.updatedAt;
+    el('pipelineSourceType').disabled = false;
+    el('pipelineCampaign').readOnly = false;
+    el('pipelineSourceBinding').textContent = 'فرصة يدوية · المصدر غير مرتبط بإحالة مقاسة';
+    el('pipelineHistory').hidden = true;
+    el('pipelineError').textContent = '';
+    el('pipelineReloadButton').hidden = true;
     el('pipelineSaveButton').textContent = 'حفظ في مسار البيع';
     el('pipelineCancelButton').hidden = true;
+    updatePipelineRules();
+  }
+  function updatePipelineRules() {
+    var stage = el('pipelineStage').value;
+    var qualified = ['qualified','quote_sent','site_visit','contract_signed'].includes(stage);
+    var terminal = ['contract_signed','lost'].includes(stage);
+    ['pipelineAssignee','pipelineNextAction','pipelineFollowupAt'].forEach(function (id) {
+      el(id).required = qualified && !terminal;
+      el(id).disabled = terminal;
+    });
+    el('pipelineServiceType').required = qualified;
+    el('pipelineLastContactAt').required = qualified || el('pipelineContactResult').value === 'contacted';
+    el('pipelineLastContactAt').max = riyadhInput(new Date().toISOString());
+    el('pipelineLostReasonLabel').hidden = stage !== 'lost';
+    el('pipelineLostReason').required = stage === 'lost';
+    el('pipelineContractValue').min = stage === 'contract_signed' ? '0.01' : '0';
   }
   function fillPipelineForm(row) {
+    editRequest++;
     el('pipelineId').value = row.id || '';
     el('pipelineSourceType').value = row.sourceType || 'whatsapp';
     el('pipelineStage').value = row.stage || 'new';
@@ -632,17 +718,64 @@
     el('pipelineEstimatedValue').value = number(row.estimatedValue);
     el('pipelineContractValue').value = number(row.contractValue);
     el('pipelineNotes').value = row.notes || '';
+    el('pipelineLocation').value = row.projectLocation || '';
+    el('pipelineTiming').value = row.executionTiming || 'unknown';
+    el('pipelineFit').value = row.serviceFit || 'unknown';
+    el('pipelineContactResult').value = row.contactResult || 'not_contacted';
+    el('pipelineAssignee').value = row.assignee || '';
+    el('pipelineNextAction').value = row.nextAction || '';
+    el('pipelineFollowupAt').value = riyadhInput(row.nextFollowUpAt);
+    el('pipelineLastContactAt').value = riyadhInput(row.lastContactAt);
+    el('pipelineLostReason').value = row.lostReason || '';
+    el('pipelineError').textContent = '';
+    el('pipelineHistory').hidden = true;
+    el('pipelineReloadButton').hidden = true;
+    if (row.updatedAt) el('pipelineForm').dataset.updatedAt = row.updatedAt;
+    else delete el('pipelineForm').dataset.updatedAt;
+    var bound = !!row.sourceEventId || (!!row.sourceRef && !row.id);
+    el('pipelineSourceType').disabled = bound;
+    el('pipelineCampaign').readOnly = bound;
+    el('pipelineSourceBinding').textContent = row.sourceRef ? 'إحالة ' + row.sourceRef + ' · ' + sourceLabel(row.acquisitionSource || 'يُتحقق من المصدر عند الحفظ') + (row.landingPath ? ' · صفحة الدخول: ' + cleanPath(row.landingPath) : '') : 'فرصة يدوية · المصدر غير مرتبط بإحالة مقاسة';
     if (row.sourceRef) el('pipelineForm').dataset.sourceRef = row.sourceRef;
     else delete el('pipelineForm').dataset.sourceRef;
     el('pipelineSaveButton').textContent = row.id ? 'حفظ التعديل' : 'حفظ في مسار البيع';
     el('pipelineCancelButton').hidden = !row.id && !row.sourceRef;
+    updatePipelineRules();
     location.hash = '#sales-pipeline';
     el('pipelineStage').focus();
+  }
+  function renderPipelineHistory(history, truncated) {
+    var labels = { stage: 'المرحلة', assignee: 'المسؤول', next_follow_up_at: 'موعد المتابعة', next_action: 'الإجراء القادم', last_contact_at: 'آخر تواصل', service_type: 'الخدمة', project_location: 'المنطقة', execution_timing: 'توقيت التنفيذ', service_fit: 'الملاءمة', contact_result: 'نتيجة التواصل', lost_reason: 'سبب الفقد', estimated_value: 'القيمة المتوقعة', contract_value: 'قيمة العقد', notes: 'الملاحظة', campaign_name: 'الحملة' };
+    el('pipelineHistory').hidden = false;
+    el('pipelineHistoryList').innerHTML = history.length ? history.map(function (item) {
+      var title = item.event_type === 'created' ? 'إنشاء الفرصة' : item.event_type === 'stage_changed' ? salesStageLabel(item.from_stage) + ' ← ' + salesStageLabel(item.to_stage) : 'تحديث بيانات الفرصة';
+      var fields = Object.keys(item.changes || {}).map(function (key) { return labels[key] || key; }).join('، ');
+      var change = item.changes || {};
+      var detail = ['assignee','next_action','next_follow_up_at','lost_reason'].filter(function (key) { return change[key]; }).map(function (key) {
+        var value = change[key].to;
+        return labels[key] + ': ' + (key === 'next_follow_up_at' ? formatDate(value) : key === 'lost_reason' ? lostReasonLabel(value) : value || 'أُزيل');
+      }).join(' · ');
+      return '<li><time>' + esc(formatDate(item.occurred_at)) + '</time><strong>' + esc(title) + '</strong><span>' + esc(fields) + '</span>' + (detail ? '<p>' + esc(detail) + '</p>' : '') + '</li>';
+    }).join('') + (truncated ? '<li>يعرض السجل أحدث 100 تغيير.</li>' : '') : '<li>لا توجد تغييرات مسجلة منذ تفعيل نظام المتابعة.</li>';
+  }
+  async function openOpportunity(id, sourceRef, fallback) {
+    var ticket = ++editRequest;
+    try {
+      var result = await request({ mode: 'sales_outcome_get', token: token, id: id || null, sourceRef: sourceRef || null });
+      if (ticket !== editRequest) return;
+      if (result.outcome) { fillPipelineForm(result.outcome); renderPipelineHistory(result.history || [], result.historyTruncated); }
+      else if (fallback) fillPipelineForm(fallback);
+      else showToast('لم تعد الفرصة متاحة', true);
+    } catch (error) { if (error.status === 401) logoutNow('انتهت الجلسة. سجّل الدخول من جديد.'); else showToast('تعذر فتح الفرصة وسجلها', true); }
   }
   async function savePipeline(event) {
     event.preventDefault();
     var button = el('pipelineSaveButton');
     var stage = el('pipelineStage').value;
+    el('pipelineError').textContent = '';
+    if (['qualified','quote_sent','site_visit','contract_signed'].includes(stage) && (el('pipelineFit').value !== 'suitable' || el('pipelineContactResult').value !== 'contacted')) {
+      el('pipelineError').textContent = 'راجع التواصل واختر خدمة مناسبة قبل اعتماد التأهيل.'; return;
+    }
     var queuedForSheets = el('pipelineSourceType').value === 'whatsapp' && ['qualified', 'quote_sent', 'site_visit', 'contract_signed'].indexOf(stage) !== -1;
     button.disabled = true; button.textContent = 'حفظ…';
     try {
@@ -652,12 +785,42 @@
         sourceType: el('pipelineSourceType').value, stage: stage,
         serviceType: el('pipelineServiceType').value.trim(), campaignName: el('pipelineCampaign').value.trim(),
         estimatedValue: number(el('pipelineEstimatedValue').value), contractValue: number(el('pipelineContractValue').value),
-        notes: el('pipelineNotes').value.trim()
+        notes: el('pipelineNotes').value.trim(),
+        expectedUpdatedAt: el('pipelineForm').dataset.updatedAt || null,
+        assignee: el('pipelineAssignee').value.trim(), nextAction: el('pipelineNextAction').value.trim(),
+        nextFollowUpAt: inputTimestamp(el('pipelineFollowupAt').value), lastContactAt: inputTimestamp(el('pipelineLastContactAt').value),
+        projectLocation: el('pipelineLocation').value.trim(), executionTiming: el('pipelineTiming').value,
+        serviceFit: el('pipelineFit').value, contactResult: el('pipelineContactResult').value, lostReason: el('pipelineLostReason').value || null
       });
       showToast(queuedForSheets ? 'تم الحفظ وإضافة العميل إلى طابور Google Sheets' : 'تم حفظ مرحلة البيع وربطها بالإحصائيات', true);
       resetPipelineForm(); await load();
-    } catch (error) { showToast('تعذر حفظ نتيجة البيع', true); }
-    finally { button.disabled = false; if (!el('pipelineId').value) button.textContent = 'حفظ في مسار البيع'; }
+    } catch (error) {
+      var messages = { qualification_required: 'حدد الخدمة المناسبة ونتيجة التواصل الفعلي قبل التأهيل.', followup_required: 'حدد المسؤول والإجراء وموعد المتابعة للفرصة المؤهلة.', lost_reason_required: 'حدد سبب عدم التعاقد.', lost_details_required: 'وضح السبب الآخر في الملاحظة التشغيلية.', contract_value_required: 'أدخل قيمة العقد الموقّع.', invalid_followup_date: 'راجع المواعيد؛ آخر تواصل فعلي لا يمكن أن يكون في المستقبل.', invalid_sales_value: 'راجع قيم الفرصة والعقد.', sales_outcome_conflict: 'تغيّرت هذه الفرصة من جلسة أخرى. حمّل النسخة الأحدث ثم راجع تعديلاتك.', referral_already_linked: 'هذه الإحالة مرتبطة بفرصة بالفعل. افتح الفرصة الموجودة.', source_is_locked: 'المصدر الأصلي للإحالة محفوظ ولا يمكن تغييره.', sales_outcome_not_found: 'الفرصة لم تعد متاحة.' };
+      el('pipelineError').textContent = messages[error.message] || 'تعذر الحفظ الآن. البيانات التي أدخلتها محفوظة في النموذج؛ أعد المحاولة.';
+      if (error.status === 401) logoutNow('انتهت الجلسة. سجّل الدخول من جديد.');
+      if (error.message === 'sales_outcome_conflict' || error.message === 'referral_already_linked') {
+        el('pipelineReloadButton').hidden = false;
+        el('pipelineReloadButton').dataset.outcomeId = error.outcomeId || el('pipelineId').value;
+      }
+      showToast('لم يُحفظ التعديل؛ راجع رسالة النموذج', true);
+    }
+    finally { button.disabled = false; button.textContent = el('pipelineId').value ? 'حفظ التعديل' : 'حفظ في مسار البيع'; }
+  }
+  function exportPipeline() {
+    if (!payload || !(payload.salesPipeline || {}).connected) return;
+    var sales = payload.salesPipeline;
+    var entries = (sales.entries || []).filter(function (row) { return !row.isTest && (el('pipelineStageFilter').value === 'all' || el('pipelineStageFilter').value === row.stage); });
+    var rows = [['معرف العرض','معرف الفرصة الكامل','تاريخ الإحالة','القناة','المصدر','الحملة','الخدمة','المنطقة','المرحلة','المسؤول','المتابعة القادمة (ISO)','آخر تواصل فعلي (ISO)','قيمة متوقعة SAR','قيمة العقد SAR','سبب عدم التعاقد','مرجع الإحالة']].concat(entries.map(function (row) {
+      return [opportunityId(row),row.id,row.occurredAt,salesSourceLabel(row.sourceType),sourceLabel(row.acquisitionSource || 'غير مرتبط'),row.campaignName,row.serviceType,row.projectLocation,salesStageLabel(row.stage),row.assignee,row.nextFollowUpAt,row.lastContactAt,row.estimatedValue,row.contractValue,row.lostReason ? lostReasonLabel(row.lostReason) : '',row.sourceRef];
+    }));
+    var csv = rows.map(function (row) { return row.map(function (value) {
+      var cell = String(value == null ? '' : value); if (/^[\s]*[=+\-@]/.test(cell)) cell = "'" + cell;
+      return '"' + cell.replace(/"/g, '""') + '"';
+    }).join(','); }).join('\r\n');
+    var link = document.createElement('a'), url = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }));
+    link.href = url; link.download = 'tawod-opportunities-' + riyadhInput(payload.generatedAt || new Date().toISOString()).slice(0,10) + '.csv';
+    document.body.appendChild(link); link.click(); link.remove(); setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    showToast(sales.entriesTruncated ? 'تم تصدير الفرص المعروضة فقط (حد العرض 500)' : 'تم تصدير الفرص الفعلية في العرض الحالي');
   }
   function copySummary() {
     if (!payload) return;
@@ -675,7 +838,9 @@
       'العميل المؤكد: ' + ((payload.googleAds || {}).callReportingConnected ? n(a.confirmedCustomers) : 'المصدر غير متصل'),
       'العقود الموقعة: ' + n(((payload.salesPipeline || {}).summary || {}).contracts),
       'قيمة العقود: ' + money(((payload.salesPipeline || {}).summary || {}).contractValue, 'SAR'),
-      'مطابقة البيانات: ' + ((payload.dataQuality || {}).reconciled ? 'سليمة' : 'تحتاج مراجعة')
+      'متابعات متأخرة (كل التواريخ): ' + n(((payload.salesPipeline || {}).followups || {}).overdue),
+      'فرص دون مسؤول: ' + n(((payload.salesPipeline || {}).followups || {}).unassigned),
+      'مطابقة إجماليات الجلسات: ' + ((payload.dataQuality || {}).reconciled ? 'سليمة حسابيًا؛ لا تعني اكتمال الإسناد' : 'تحتاج مراجعة')
     ];
     navigator.clipboard.writeText(lines.join('\n')).then(function () { showToast('تم نسخ الملخص'); }).catch(function () { showToast('تعذر النسخ'); });
   }
@@ -700,17 +865,26 @@
   el('callsBody').addEventListener('click', function (event) { if (event.target.classList.contains('save-call')) saveCall(event.target); });
   el('pipelineForm').addEventListener('submit', savePipeline);
   el('pipelineCancelButton').addEventListener('click', resetPipelineForm);
+  el('pipelineStage').addEventListener('change', updatePipelineRules);
+  el('pipelineContactResult').addEventListener('change', updatePipelineRules);
+  el('pipelineStageFilter').addEventListener('change', function () { if (payload) renderSalesPipeline(payload); });
+  el('pipelineExportButton').addEventListener('click', exportPipeline);
+  el('pipelineReloadButton').addEventListener('click', function () { openOpportunity(this.dataset.outcomeId, el('pipelineForm').dataset.sourceRef); });
+  ['followupFilter','followupSearch'].forEach(function (id) { el(id).addEventListener(id === 'followupSearch' ? 'input' : 'change', function () { if (payload) renderFollowups(payload); }); });
+  el('followupMetrics').addEventListener('click', function (event) { var button = event.target.closest('[data-filter]'); if (button && payload) { el('followupFilter').value = button.dataset.filter; renderFollowups(payload); } });
+  el('followupList').addEventListener('click', function (event) { var button = event.target.closest('.followup-open'); if (button) openOpportunity(button.dataset.outcome); });
   el('pipelineBody').addEventListener('click', function (event) {
     var button = event.target.closest('.pipeline-edit'); if (!button || !payload) return;
     var id = button.closest('tr[data-outcome]').getAttribute('data-outcome');
-    var row = ((payload.salesPipeline || {}).entries || []).filter(function (item) { return item.id === id; })[0];
-    if (row) fillPipelineForm(row);
+    openOpportunity(id);
   });
   el('recentLeadsBody').addEventListener('click', function (event) {
     var button = event.target.closest('.promote-referral'); if (!button) return;
-    fillPipelineForm({
+    var referral = ((payload || {}).recentReferrals || []).find(function (row) { return row.sourceRef === button.dataset.sourceRef; }) || {};
+    openOpportunity(null, button.dataset.sourceRef, {
       sourceType: button.dataset.sourceType === 'call' ? 'call' : 'whatsapp', sourceRef: button.dataset.sourceRef,
-      campaignName: button.dataset.campaign, notes: 'إحالة من الصفحة ' + button.dataset.sourcePath, stage: 'new'
+      campaignName: button.dataset.campaign, acquisitionSource: referral.source, landingPath: referral.landingPath,
+      notes: 'إحالة من الصفحة ' + button.dataset.sourcePath, stage: 'new'
     });
   });
   window.setInterval(function () {
@@ -718,6 +892,7 @@
   }, 300000);
   if (/\.vercel\.app$/i.test(window.location.hostname)) el('previewNotice').hidden = false;
   initNavigation();
+  updatePipelineRules();
   token = sessionStorage.getItem(TOKEN_KEY) || '';
   if (token) {
     el('adminLogin').hidden = true; el('adminApp').hidden = false; document.body.classList.add('is-authenticated'); load();

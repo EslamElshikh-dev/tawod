@@ -227,7 +227,7 @@ export const legacyHtmlFiles = [
 export const legacyHtmlHashes = {
   "404.html": "5029104381a14e769dc854a0ecfcd8980bef8b927151ff3a4174a3e2c8ddca01",
   "about.html": "1ac5d8dfb100008c1e007d152f0f0e8b41f000c05fe84d03bc9b2aa1795961b2",
-  "admin.html": "e6cf560e133782f7f3aa52ede2204e61bfa12440c81b46b801cba6157423b1d5",
+  "admin.html": "1d9a34943abbf26ae2e4da8cf29a6fb3382421bea527d05877237ec665ab285f",
   "blog/best-bone-construction-company-riyadh/index.html": "a4bd9ffd7a3d11b8d6bf59f15a481da24f620d50137e05fade157ff14acf397c",
   "blog/best-bone-contractor-riyadh/index.html": "e54e8bf76ccc74858e10bf8cb9fbb8ac845b34aa11fd0b069b970caf9aa6bcf6",
   "blog/best-construction-company-riyadh/index.html": "d7967665a25e4216d5f03e9f7c99e0866b76cbd5faec0587e7129df329dfe795",

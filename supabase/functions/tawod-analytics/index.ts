@@ -13,6 +13,10 @@ const EVENT_NAMES = new Set([
 const SALES_SOURCES = new Set(['call', 'whatsapp', 'form', 'other']);
 const SALES_STAGES = new Set(['new', 'qualified', 'quote_sent', 'site_visit', 'contract_signed', 'lost']);
 const QUALIFIED_SALES_STAGES = new Set(['qualified', 'quote_sent', 'site_visit', 'contract_signed']);
+const EXECUTION_TIMINGS = new Set(['unknown','immediate','1_3_months','3_6_months','later']);
+const SERVICE_FITS = new Set(['unknown','suitable','unsuitable']);
+const CONTACT_RESULTS = new Set(['not_contacted','no_response','contacted','invalid']);
+const LOST_REASONS = new Set(['price','timing','outside_scope','no_response','competitor','other']);
 const ADMIN_TTL_MS = 4 * 60 * 60 * 1000;
 
 function isPreviewOrigin(origin: string | null) {
@@ -47,7 +51,8 @@ function cleanMeta(value: unknown) {
   const safe: Record<string, string | number | boolean | null> = {};
   for (const [key, raw] of Object.entries(value as Record<string, unknown>).slice(0, 20)) {
     if (!/^[a-zA-Z0-9_-]{1,40}$/.test(key)) continue;
-    if (raw === null || typeof raw === 'number' || typeof raw === 'boolean') safe[key] = raw;
+    if (raw === null) safe[key] = null;
+    else if (typeof raw === 'number' || typeof raw === 'boolean') safe[key] = raw;
     else if (typeof raw === 'string') safe[key] = raw.slice(0, 240);
   }
   return safe;
@@ -324,42 +329,37 @@ function normalizeSalesRow(row: any) {
     contractValue: finite(row.contract_value),
     notes: row.notes,
     updatedAt: row.updated_at,
+    assignee: row.assignee,
+    nextFollowUpAt: row.next_follow_up_at,
+    nextAction: row.next_action,
+    lastContactAt: row.last_contact_at,
+    projectLocation: row.project_location,
+    executionTiming: row.execution_timing || 'unknown',
+    serviceFit: row.service_fit || 'unknown',
+    contactResult: row.contact_result || 'not_contacted',
+    lostReason: row.lost_reason,
+    acquisitionSource: row.acquisition_source,
+    sourceMedium: row.source_medium,
+    landingPath: row.landing_path,
+    sourcePath: row.source_path,
+    stageEnteredAt: row.stage_entered_at,
+    quoteSentAt: row.quote_sent_at,
+    siteVisitAt: row.site_visit_at,
+    contractSignedAt: row.contract_signed_at,
+    isTest: isTestSalesRow(row),
   };
 }
 async function loadSalesPipeline(days: number) {
-  const since = new Date(Date.now() - days * 86400000).toISOString();
-  const query = new URLSearchParams({
-    select: 'id,occurred_at,source_type,source_ref,source_event_id,click_id,first_contact_at,qualified_at,sheets_synced_at,stage,service_type,campaign_name,estimated_value,contract_value,notes,updated_at',
-    occurred_at: `gte.${since}`,
-    order: 'occurred_at.desc',
-    limit: '500',
+  const response = await supabase('/rest/v1/rpc/tawod_sales_workspace', {
+    method: 'POST', body: JSON.stringify({ p_days: days }),
   });
-  const response = await supabase(`/rest/v1/tawod_sales_outcomes?${query.toString()}`);
   if (!response.ok) return { connected: false, error: 'sales_pipeline_query_failed', entries: [] };
-  const entries = (await response.json()).map(normalizeSalesRow);
-  const progressiveStages = {
-    qualified: new Set(['qualified', 'quote_sent', 'site_visit', 'contract_signed']),
-    quotes: new Set(['quote_sent', 'site_visit', 'contract_signed']),
-    visits: new Set(['site_visit', 'contract_signed']),
-  };
-  const sum = (key: 'estimatedValue' | 'contractValue', filter: (row: any) => boolean) =>
-    entries.filter(filter).reduce((total: number, row: any) => total + finite(row[key]), 0);
-  const contracts = entries.filter((row: any) => row.stage === 'contract_signed');
+  const workspace = await response.json();
   return {
-    connected: true,
-    lastUpdatedAt: entries.reduce((latest: string | null, row: any) => !latest || row.updatedAt > latest ? row.updatedAt : latest, null),
-    summary: {
-      opportunities: entries.length,
-      qualified: entries.filter((row: any) => progressiveStages.qualified.has(row.stage)).length,
-      quotes: entries.filter((row: any) => progressiveStages.quotes.has(row.stage)).length,
-      visits: entries.filter((row: any) => progressiveStages.visits.has(row.stage)).length,
-      contracts: contracts.length,
-      lost: entries.filter((row: any) => row.stage === 'lost').length,
-      openPipelineValue: sum('estimatedValue', (row: any) => row.stage !== 'lost' && row.stage !== 'contract_signed'),
-      contractValue: sum('contractValue', (row: any) => row.stage === 'contract_signed'),
-      contractRate: entries.length ? contracts.length / entries.length * 100 : 0,
-    },
-    entries,
+    ...workspace,
+    entries: (workspace.entries || []).map(normalizeSalesRow),
+    openEntries: (workspace.open_entries || []).map(normalizeSalesRow),
+    open_entries: undefined,
   };
 }
 
@@ -416,37 +416,25 @@ function isUuid(value: unknown) {
 }
 async function findSalesOutcome(column: 'id' | 'source_event_id' | 'source_ref', value: string) {
   const query = new URLSearchParams({
-    select: 'id,source_type,source_ref,source_event_id,click_id,first_contact_at,qualified_at,sheets_synced_at,campaign_name,updated_at',
+    select: '*',
     [column]: `eq.${value}`,
     order: 'updated_at.desc',
     limit: '1',
   });
   const response = await supabase(`/rest/v1/tawod_sales_outcomes?${query.toString()}`);
-  if (!response.ok) return null;
+  if (!response.ok) throw new Error('sales_lookup_failed');
   return (await response.json())?.[0] || null;
 }
 async function resolveReferralEvent(sourceRef: string | null) {
-  if (!sourceRef) return null;
-  const select = 'id,occurred_at,event_name,contact_method,page_path,utm_campaign,click_id';
+  if (!isUuid(sourceRef)) return null;
+  const select = 'id,occurred_at,event_name,contact_method,page_path,landing_path,referrer_host,utm_source,utm_medium,utm_campaign,click_id';
   if (isUuid(sourceRef)) {
     const query = new URLSearchParams({ id: `eq.${sourceRef}`, event_name: 'in.(call_click,whatsapp_click)', select, limit: '1' });
     const response = await supabase(`/rest/v1/tawod_analytics_events?${query.toString()}`);
-    if (response.ok) {
-      const row = (await response.json())?.[0];
-      if (row) return row;
-    }
+    if (!response.ok) throw new Error('referral_lookup_failed');
+    return (await response.json())?.[0] || null;
   }
-  if (!/^[a-zA-Z0-9_-]{4,80}$/.test(sourceRef)) return null;
-  const legacy = new URLSearchParams({
-    session_id: `like.*${sourceRef}`,
-    event_name: 'in.(call_click,whatsapp_click)',
-    select,
-    order: 'occurred_at.desc',
-    limit: '1',
-  });
-  const response = await supabase(`/rest/v1/tawod_analytics_events?${legacy.toString()}`);
-  if (!response.ok) return null;
-  return (await response.json())?.[0] || null;
+  return null;
 }
 
 async function upsertSalesOutcome(body: any, origin: string | null) {
@@ -458,37 +446,99 @@ async function upsertSalesOutcome(body: any, origin: string | null) {
     return json({ error: 'invalid_sales_outcome' }, 400, origin);
   }
   const sourceRef = text(body?.sourceRef, 300);
-  const referral = sourceType === 'whatsapp' || sourceType === 'call' ? await resolveReferralEvent(sourceRef) : null;
-  let existing = id ? await findSalesOutcome('id', id) : null;
-  if (!existing && referral?.id) existing = await findSalesOutcome('source_event_id', referral.id);
-  if (!existing && sourceRef) existing = await findSalesOutcome('source_ref', sourceRef);
+  const existing = id ? await findSalesOutcome('id', id) : null;
+  if (id && !existing) return json({ error: 'sales_outcome_not_found' }, 404, origin);
+  if (existing?.source_event_id && (sourceType !== existing.source_type || sourceRef !== existing.source_ref)) {
+    return json({ error: 'source_is_locked' }, 409, origin);
+  }
+  // New links require an exact event ID; a short session suffix is not a reliable identity.
+  if (!existing && sourceRef && !isUuid(sourceRef)) return json({ error: 'invalid_referral_id' }, 400, origin);
+  const referral = isUuid(sourceRef) ? await resolveReferralEvent(sourceRef) : null;
+  if (!existing && sourceRef && !referral) return json({ error: 'referral_not_found' }, 400, origin);
+  if (referral) {
+    const method = referral.event_name === 'call_click' ? 'call' : 'whatsapp';
+    if (method !== sourceType) return json({ error: 'referral_channel_mismatch' }, 400, origin);
+    if (!existing) {
+      const duplicate = await findSalesOutcome('source_event_id', referral.id);
+      if (duplicate) return json({ error: 'referral_already_linked', outcomeId: duplicate.id }, 409, origin);
+    }
+  }
   const now = new Date().toISOString();
+  const field = (key: string, fallback: unknown = null) => Object.hasOwn(body, key) ? body[key] : fallback;
+  const assignee = text(field('assignee', existing?.assignee), 80);
+  const nextAction = text(field('nextAction', existing?.next_action), 160);
+  const nextRaw = field('nextFollowUpAt', existing?.next_follow_up_at);
+  const lastRaw = field('lastContactAt', existing?.last_contact_at);
+  const nextFollowUpAt = nextRaw ? validTimestamp(nextRaw) : null;
+  const lastContactAt = lastRaw ? validTimestamp(lastRaw) : null;
+  if ((nextRaw && !nextFollowUpAt) || (lastRaw && !lastContactAt) ||
+    (lastContactAt && new Date(lastContactAt).getTime() > Date.now() + 60000)) return json({ error: 'invalid_followup_date' }, 400, origin);
+  const executionTiming = field('executionTiming', existing?.execution_timing || 'unknown');
+  const serviceFit = field('serviceFit', existing?.service_fit || 'unknown');
+  const contactResult = field('contactResult', existing?.contact_result || 'not_contacted');
+  const lostReason = stage === 'lost' ? field('lostReason', existing?.lost_reason) : null;
+  if (!EXECUTION_TIMINGS.has(executionTiming) || !SERVICE_FITS.has(serviceFit) || !CONTACT_RESULTS.has(contactResult) ||
+    (lostReason && !LOST_REASONS.has(lostReason))) return json({ error: 'invalid_qualification' }, 400, origin);
+  const serviceType = text(body?.serviceType, 160);
+  if (QUALIFIED_SALES_STAGES.has(stage) && (!serviceType || serviceFit !== 'suitable' || contactResult !== 'contacted')) {
+    return json({ error: 'qualification_required' }, 400, origin);
+  }
+  if (contactResult === 'contacted' && !lastContactAt) return json({ error: 'invalid_followup_date' }, 400, origin);
+  if (QUALIFIED_SALES_STAGES.has(stage) && stage !== 'contract_signed' && (!assignee || !nextAction || !nextFollowUpAt)) {
+    return json({ error: 'followup_required' }, 400, origin);
+  }
+  if (stage === 'lost' && !lostReason) return json({ error: 'lost_reason_required' }, 400, origin);
+  if (lostReason === 'other' && !text(body?.notes, 500)) return json({ error: 'lost_details_required' }, 400, origin);
+  const estimatedValue = Number(body?.estimatedValue ?? 0), contractValue = Number(body?.contractValue ?? 0);
+  if (![estimatedValue,contractValue].every(v => Number.isFinite(v) && v >= 0 && v <= 999999999)) return json({ error: 'invalid_sales_value' }, 400, origin);
+  if (stage === 'contract_signed' && contractValue <= 0) return json({ error: 'contract_value_required' }, 400, origin);
+  if (body?.expectedUpdatedAt && body.expectedUpdatedAt !== existing?.updated_at) return json({ error: 'sales_outcome_conflict' }, 409, origin);
   const qualifiedAt = existing?.qualified_at || (QUALIFIED_SALES_STAGES.has(stage) ? now : null);
   const payload: Record<string, unknown> = {
     source_type: sourceType,
     source_ref: referral?.id || sourceRef,
     stage,
-    service_type: text(body?.serviceType, 160),
-    campaign_name: text(body?.campaignName, 180) || referral?.utm_campaign || existing?.campaign_name || null,
-    estimated_value: Math.max(0, Math.min(999999999, finite(body?.estimatedValue))),
-    contract_value: Math.max(0, Math.min(999999999, finite(body?.contractValue))),
+    service_type: serviceType,
+    campaign_name: referral?.utm_campaign || (existing?.source_event_id ? existing.campaign_name : text(body?.campaignName, 180)) || null,
+    estimated_value: estimatedValue,
+    contract_value: contractValue,
     notes: text(body?.notes, 500),
     updated_at: now,
+    assignee, next_action: nextAction, next_follow_up_at: nextFollowUpAt, last_contact_at: lastContactAt,
+    project_location: text(field('projectLocation', existing?.project_location), 120),
+    execution_timing: executionTiming, service_fit: serviceFit, contact_result: contactResult, lost_reason: lostReason,
   };
   if (referral?.id) {
     payload.source_event_id = referral.id;
     payload.click_id = referral.click_id || null;
     payload.first_contact_at = referral.occurred_at || null;
+    payload.acquisition_source = referralSource(referral);
+    payload.source_medium = referral.utm_medium || null;
+    payload.landing_path = referral.landing_path || null;
+    payload.source_path = referral.page_path || null;
   }
   if (qualifiedAt) payload.qualified_at = qualifiedAt;
   if (sourceType === 'whatsapp' && qualifiedAt) payload.sheets_synced_at = null;
+  const updateQuery = existing ? new URLSearchParams({ id: `eq.${existing.id}`, updated_at: `eq.${existing.updated_at}` }) : null;
   const response = existing?.id ?
-    await supabase(`/rest/v1/tawod_sales_outcomes?id=eq.${existing.id}`, { method: 'PATCH', headers: { 'Prefer': 'return=representation' }, body: JSON.stringify(payload) }) :
+    await supabase(`/rest/v1/tawod_sales_outcomes?${updateQuery}`, { method: 'PATCH', headers: { 'Prefer': 'return=representation' }, body: JSON.stringify(payload) }) :
     await supabase('/rest/v1/tawod_sales_outcomes', { method: 'POST', headers: { 'Prefer': 'return=representation' }, body: JSON.stringify({ ...payload, occurred_at: validTimestamp(body?.occurredAt) || referral?.occurred_at || now }) });
-  if (!response.ok) return json({ error: 'sales_outcome_save_failed' }, 500, origin);
+  if (!response.ok) return json({ error: response.status === 409 ? 'referral_already_linked' : 'sales_outcome_save_failed' }, response.status === 409 ? 409 : 500, origin);
   const rows = await response.json();
-  if (!rows.length) return json({ error: 'sales_outcome_not_found' }, 404, origin);
+  if (!rows.length) return json({ error: 'sales_outcome_conflict' }, 409, origin);
   return json({ ok: true, outcome: normalizeSalesRow(rows[0]) }, 200, origin);
+}
+
+async function getSalesOutcome(body: any, origin: string | null) {
+  const id = text(body?.id, 50), sourceRef = text(body?.sourceRef, 300);
+  if (!isUuid(id || sourceRef)) return json({ error: 'invalid_sales_outcome' }, 400, origin);
+  const row = await findSalesOutcome(id ? 'id' : 'source_event_id', (id || sourceRef)!);
+  if (!row) return json({ outcome: null, history: [] }, 200, origin);
+  const query = new URLSearchParams({ outcome_id: `eq.${row.id}`, select: 'id,occurred_at,event_type,from_stage,to_stage,actor,changes', order: 'occurred_at.desc,id.desc', limit: '100' });
+  const response = await supabase(`/rest/v1/tawod_sales_history?${query}`);
+  if (!response.ok) return json({ error: 'history_query_failed' }, 500, origin);
+  const history = await response.json();
+  return json({ outcome: normalizeSalesRow(row), history, historyTruncated: history.length === 100 }, 200, origin);
 }
 
 function riyadhTimestamp(value: unknown) {
@@ -497,41 +547,48 @@ function riyadhTimestamp(value: unknown) {
   return new Date(new Date(iso).getTime() + 3 * 3600000).toISOString().slice(0, 19).replace('T', ' ') + '+03:00';
 }
 function sheetQualificationStatus(row: any, clickId: string | null) {
-  if (clickId && /^TEST(?:-|_|$)/i.test(clickId)) return 'TEST_ONLY';
+  if (isTestSalesRow(row)) return 'TEST_ONLY';
   if (!clickId || !/^[a-zA-Z0-9._~-]{10,300}$/.test(clickId)) return 'QUALIFIED_NO_AD_CLICK_ID';
   return {
     qualified: 'QUALIFIED', quote_sent: 'QUOTE_SENT', site_visit: 'SITE_VISIT',
     contract_signed: 'CONTRACT_SIGNED', lost: 'LOST_AFTER_QUALIFICATION', new: 'REVIEWED_AFTER_QUALIFICATION',
   }[row.stage as string] || 'QUALIFIED';
 }
+function isTestSalesRow(row: any) {
+  return /^(?:TEST|DUMMY|EXAMPLE|FAKE)(?:-|_|$)/i.test(row.click_id || row.clickId || '') ||
+    /\bTEST_ONLY\b/i.test(row.notes || '');
+}
 function normalizeSheetLead(row: any) {
-  const clickId = text(row.click_id, 300);
+  // A click ID is opaque. Never trim or truncate it into an apparently valid ID.
+  const clickId = typeof row.click_id === 'string' ? row.click_id : null;
   const disposition = sheetQualificationStatus(row, clickId);
-  const importable = disposition !== 'TEST_ONLY' && disposition !== 'QUALIFIED_NO_AD_CLICK_ID';
+  const qualificationTime = riyadhTimestamp(row.qualified_at);
+  const importable = disposition !== 'TEST_ONLY' && disposition !== 'QUALIFIED_NO_AD_CLICK_ID' && !!qualificationTime;
   const testPrefix = disposition === 'TEST_ONLY' ? 'TEST_ONLY — ' : '';
   return {
     outcomeId: row.id,
     updatedAt: row.updated_at,
     leadId: `TAWOD-${row.id}`,
-    qualificationStatus: 'Qualified',
-    qualificationTime: riyadhTimestamp(row.qualified_at),
-    googleClickId: clickId || '',
+    // Data Manager filters Qualification Status; Conversion Name alone cannot exclude a row.
+    qualificationStatus: importable ? 'Qualified' : disposition === 'TEST_ONLY' ? 'Unqualified' : 'Pending',
+    qualificationTime,
+    googleClickId: importable ? clickId : '',
     email: '',
     phoneNumber: '',
     conversionName: importable ? 'Qualified WhatsApp Conversation' : 'DO_NOT_IMPORT',
-    conversionTime: riyadhTimestamp(row.qualified_at),
+    conversionTime: importable ? qualificationTime : '',
     conversionValue: Math.max(0, finite(row.estimated_value)),
     conversionCurrency: 'SAR',
     adUserDataConsent: 'DENIED',
     adPersonalizationConsent: 'DENIED',
     projectType: row.service_type || '',
-    projectLocation: '',
+    projectLocation: row.project_location || '',
     estimatedBudget: Math.max(0, finite(row.estimated_value)),
     notes: testPrefix + (row.notes || ''),
     projectStage: 'غير محدد',
     inspectionRequested: 'غير محدد',
     quotationRequested: 'غير محدد',
-    firstContactTime: '',
+    firstContactTime: '', // A referral click or latest contact is not a verified first conversation time.
     reviewedBy: 'Tawod Command Center',
     evidence: `${testPrefix}Supabase referral ${row.source_event_id || row.source_ref || row.id}`,
   };
@@ -542,7 +599,7 @@ async function exportQualifiedWhatsAppLeads(body: any, origin: string | null) {
     return json({ error: 'unauthorized' }, 401, origin);
   }
   const query = new URLSearchParams({
-    select: 'id,occurred_at,source_ref,source_event_id,click_id,first_contact_at,qualified_at,stage,service_type,estimated_value,notes,updated_at',
+    select: 'id,occurred_at,source_ref,source_event_id,click_id,first_contact_at,qualified_at,stage,service_type,project_location,execution_timing,last_contact_at,estimated_value,notes,updated_at',
     source_type: 'eq.whatsapp',
     qualified_at: 'not.is.null',
     sheets_synced_at: 'is.null',
@@ -648,10 +705,14 @@ Deno.serve(async (req) => {
     return json({ ok: true }, 200, origin);
   }
 
-  if (body?.mode === 'sales_outcome_upsert') {
+  if (body?.mode === 'sales_outcome_upsert' || body?.mode === 'sales_outcome_get') {
     if (!isAdminOrigin(origin)) return json({ error: 'origin_not_allowed' }, 403, origin);
     if (!await verifyAdminToken(body.token)) return json({ error: 'unauthorized' }, 401, origin);
-    return upsertSalesOutcome(body, origin);
+    try {
+      return body.mode === 'sales_outcome_get' ? await getSalesOutcome(body, origin) : await upsertSalesOutcome(body, origin);
+    } catch {
+      return json({ error: 'sales_service_unavailable' }, 503, origin);
+    }
   }
 
   if (!origin || !ALLOWED_ORIGINS.has(origin)) return json({ error: 'origin_not_allowed' }, 403, origin);

@@ -10,7 +10,7 @@
 <link rel="icon" href="/images/logo/tawod-logo.png" type="image/png">
 <link rel="stylesheet" href="/assets/css/tawod-admin.css">
 <link rel="stylesheet" href="/assets/css/tawod-admin-ads.css">
-<link rel="stylesheet" href="/assets/css/tawod-command-center.css?v=20260913-1">
+<link rel="stylesheet" href="/assets/css/tawod-command-center.css?v=20260930-1">
 </head>
 <body class="admin-body">
 <div class="login-screen" id="adminLogin">
@@ -35,9 +35,9 @@
   <aside class="sidebar">
     <a class="brand" href="/" aria-label="العودة إلى موقع تعاود"><img src="/images/logo/tawod-logo.png" width="76" height="34" alt="تعاود"><span><b>TAWOD</b><small>Command Center</small></span></a>
     <nav class="side-nav" id="adminNav" aria-label="أقسام لوحة الإدارة">
-      <div class="nav-group"><span>القيادة</span><a class="is-active" href="#executive"><i>01</i> النظرة التنفيذية</a><a href="#funnel"><i>02</i> الإحالات والتأهيل</a><a href="#sales-pipeline"><i>03</i> العروض والعقود</a><a href="#trend"><i>04</i> الاتجاه والنمو</a></div>
-      <div class="nav-group"><span>التسويق</span><a href="#google-ads"><i>05</i> الميزانيات والإعلانات</a><a href="#business-profile"><i>06</i> الملف التجاري</a><a href="#acquisition"><i>07</i> المصادر والحملات</a></div>
-      <div class="nav-group"><span>التشغيل</span><a href="#performance"><i>08</i> الصفحات والخدمات</a><a href="#leads"><i>09</i> سجل الإحالات</a><a href="#decisions"><i>10</i> مركز القرارات</a></div>
+      <div class="nav-group"><span>القيادة</span><a class="is-active" href="#executive"><i>01</i> النظرة التنفيذية</a><a href="#followups"><i>02</i> المتابعات المستحقة</a><a href="#funnel"><i>03</i> الإحالات والتأهيل</a><a href="#sales-pipeline"><i>04</i> العروض والعقود</a><a href="#trend"><i>05</i> الاتجاه والنمو</a></div>
+      <div class="nav-group"><span>التسويق</span><a href="#google-ads"><i>06</i> الميزانيات والإعلانات</a><a href="#business-profile"><i>07</i> الملف التجاري</a><a href="#acquisition"><i>08</i> المصادر والحملات</a></div>
+      <div class="nav-group"><span>التشغيل</span><a href="#performance"><i>09</i> الصفحات والخدمات</a><a href="#leads"><i>10</i> سجل الإحالات</a><a href="#decisions"><i>11</i> مركز القرارات</a></div>
     </nav>
     <div class="sidebar-status"><div><i class="live-dot"></i><span>First-party Analytics</span></div><small>بيانات مجهولة الهوية؛ لا نخزن الاسم أو الجوال أو نص الرسائل.</small></div>
   </aside>
@@ -63,7 +63,7 @@
       <div class="section-heading"><div><p class="eyebrow">EXECUTIVE OVERVIEW</p><h2>الصورة التنفيذية الآن</h2></div><div class="freshness" id="generatedAt">—</div></div>
       <div class="quality-bar" id="dataQualityBar"><span class="quality-dot"></span><strong>جاري فحص مطابقة البيانات</strong><small>—</small></div>
       <div class="executive-grid">
-        <article class="panel health-panel"><div class="health-ring" id="healthRing"><strong id="healthScore">—</strong><small>/100</small></div><div class="health-copy"><span class="micro-label">صحة الإحالات</span><h3 id="healthLabel">جاري التحليل</h3><p id="healthText">يظهر الحكم بعد تحميل البيانات.</p><div class="confidence-row"><span>ثقة القراءة</span><b id="confidenceLabel">—</b></div></div></article>
+        <article class="panel health-panel"><div class="health-ring" id="healthRing"><strong id="healthScore">—</strong><small>/100</small></div><div class="health-copy"><span class="micro-label">مؤشر الإحالات التقديري</span><h3 id="healthLabel">جاري التحليل</h3><p id="healthText">يظهر الحكم بعد تحميل البيانات.</p><div class="confidence-row"><span>حجم العينة</span><b id="confidenceLabel">—</b></div></div></article>
         <article class="panel decision-panel"><div class="panel-title"><div><span class="micro-label">أهم قرار الآن</span><h3 id="primaryDecisionTitle">جاري ترتيب الأولويات</h3></div><span class="priority-badge" id="primaryDecisionPriority">—</span></div><p id="primaryDecisionEvidence">—</p><div class="decision-action"><span>الإجراء المقترح</span><strong id="primaryDecisionAction">—</strong></div></article>
         <article class="panel today-panel"><div class="panel-title"><div><span class="micro-label">آخر 24 ساعة</span><h3>نبض الإحالات</h3></div><span class="live-badge"><i class="live-dot"></i> مباشر</span></div><div class="today-grid" id="todayPulse"></div></article>
       </div>
@@ -72,10 +72,25 @@
         <div><span>مشاهدات الصفحات</span><strong id="secondaryViews">—</strong></div><div><span>الزوار الفريدون</span><strong id="secondaryVisitors">—</strong></div><div><span title="زائر ظهر في جلسة واحدة خلال الفترة">زوار بجلسة واحدة</span><strong id="secondaryNewVisitors">—</strong></div><div><span title="زائر ظهر في أكثر من جلسة خلال الفترة">زوار متكررون</span><strong id="secondaryReturningVisitors">—</strong></div><div><span>ضغطات الاتصال الخام</span><strong id="secondaryCalls">—</strong></div><div><span>ضغطات واتساب الخام</span><strong id="secondaryWhatsapp">—</strong></div><div><span>ضغطات مكررة/مشتركة</span><strong id="secondaryDuplicates">—</strong></div><div><span>مشاهدات المقالات</span><strong id="secondaryArticles">—</strong></div>
       </div>
       <div class="definition-strip" id="definitionStrip"></div>
+      <div class="source-quality-grid compact-top" id="sourceQualityGrid" aria-label="اكتمال البيانات وحالة المصادر"></div>
+    </section>
+
+    <section class="admin-section" id="followups">
+      <div class="section-heading"><div><p class="eyebrow">TODAY'S WORKSPACE</p><h2>مركز المتابعات والفرص المعلّقة</h2></div><p>كل الفرص المفتوحة عبر جميع التواريخ · المواعيد بتوقيت الرياض.</p></div>
+      <div class="followup-metrics" id="followupMetrics" aria-live="polite"></div>
+      <article class="panel followup-panel compact-top">
+        <div class="workspace-toolbar">
+          <label><span>عرض المتابعات</span><select id="followupFilter"><option value="all">كل الفرص المفتوحة</option><option value="overdue">متأخرة</option><option value="today">مستحقة اليوم</option><option value="unassigned">دون مسؤول</option><option value="unscheduled">دون موعد</option><option value="stale">دون تواصل منذ 7 أيام</option><option value="unqualified">تحتاج تأهيلًا</option></select></label>
+          <label class="workspace-search"><span>بحث في الفرص</span><input id="followupSearch" type="search" maxlength="160" placeholder="الخدمة، المسؤول، الحملة أو معرف الفرصة"></label>
+          <span id="followupCount">—</span>
+        </div>
+        <p class="workspace-notice" id="followupLimit" hidden>يعرض المركز أول 500 فرصة حسب موعد المتابعة؛ الأعداد والقيم تشمل كل الفرص.</p>
+        <div class="followup-list" id="followupList"></div>
+      </article>
     </section>
 
     <section class="admin-section" id="funnel">
-      <div class="section-heading"><div><p class="eyebrow">REFERRAL & QUALIFICATION</p><h2>من الزيارة إلى العميل المؤكد</h2></div><p>الإحالة من الموقع؛ جودة المكالمة من Call Reporting فقط.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">REFERRAL & QUALIFICATION</p><h2>من الزيارة إلى الفرصة والعقد</h2></div><p>الإحالة من الموقع؛ التأهيل من مراجعة الفريق. أعداد المبيعات تخص الفرص المسجلة التي بدأت في الفترة.</p></div>
       <div class="funnel-board panel" id="funnelGrid"></div>
       <div class="qualification-grid" id="qualificationMetrics"></div>
       <div class="two-column compact-top"><article class="panel"><div class="panel-title"><div><span class="micro-label">قنوات الإحالة</span><h3>اتصال أم واتساب؟</h3></div></div><div id="channelSplit" class="channel-list"></div></article><article class="panel"><div class="panel-title"><div><span class="micro-label">وضوح القياس</span><h3>كيف تُحسب الأرقام؟</h3></div></div><div id="reconciliationBox" class="reconciliation-box"></div></article></div>
@@ -88,17 +103,30 @@
         <div class="panel-title"><div><span class="micro-label">ADD SALES OUTCOME</span><h3>إضافة فرصة أو تحديث نتيجتها</h3></div><span>لا تكتب اسم العميل أو رقم الجوال</span></div>
         <form id="pipelineForm" class="pipeline-form" autocomplete="off">
           <input id="pipelineId" type="hidden">
+          <div class="pipeline-source-binding" id="pipelineSourceBinding">فرصة يدوية · المصدر غير مرتبط بإحالة مقاسة</div>
           <label><span>القناة</span><select id="pipelineSourceType" required><option value="whatsapp">واتساب</option><option value="call">اتصال</option><option value="form">نموذج</option><option value="other">أخرى</option></select></label>
           <label><span>المرحلة</span><select id="pipelineStage" required><option value="new">إحالة جديدة</option><option value="qualified">عميل مؤهل</option><option value="quote_sent">عرض سعر مرسل</option><option value="site_visit">زيارة موقع</option><option value="contract_signed">عقد موقّع</option><option value="lost">لم يتم التعاقد</option></select></label>
           <label><span>الخدمة</span><input id="pipelineServiceType" type="text" maxlength="160" placeholder="مثال: بناء عظم"></label>
           <label><span>الحملة</span><input id="pipelineCampaign" type="text" maxlength="180" placeholder="اسم الحملة إن وُجد"></label>
+          <label><span>المنطقة / المدينة</span><input id="pipelineLocation" type="text" maxlength="120" placeholder="مثال: الرياض · حي النرجس"></label>
+          <label><span>موعد التنفيذ المتوقع</span><select id="pipelineTiming"><option value="unknown">غير محدد</option><option value="immediate">جاهز للبدء</option><option value="1_3_months">خلال 1–3 أشهر</option><option value="3_6_months">خلال 3–6 أشهر</option><option value="later">لاحقًا</option></select></label>
+          <label><span>ملاءمة الخدمة</span><select id="pipelineFit"><option value="unknown">تحتاج مراجعة</option><option value="suitable">مناسبة لخدماتنا</option><option value="unsuitable">خارج نطاق خدماتنا</option></select></label>
+          <label><span>نتيجة التواصل الفعلي</span><select id="pipelineContactResult"><option value="not_contacted">لم يُراجع التواصل</option><option value="no_response">لم يتم الرد</option><option value="contacted">تم التواصل والمراجعة</option><option value="invalid">طلب غير صالح</option></select></label>
+          <label><span>مسؤول المتابعة (عضو الفريق)</span><input id="pipelineAssignee" type="text" maxlength="80" placeholder="اسم أو رمز المسؤول الداخلي"></label>
+          <label><span>المتابعة القادمة · توقيت الرياض</span><input id="pipelineFollowupAt" type="datetime-local"></label>
+          <label><span>آخر تواصل فعلي · توقيت الرياض</span><input id="pipelineLastContactAt" type="datetime-local"></label>
+          <label><span>الإجراء القادم</span><input id="pipelineNextAction" type="text" maxlength="160" placeholder="مثال: مراجعة العرض مع فريق التنفيذ"></label>
+          <label id="pipelineLostReasonLabel" hidden><span>سبب عدم التعاقد</span><select id="pipelineLostReason"><option value="">اختر السبب</option><option value="price">السعر</option><option value="timing">تأجيل المشروع</option><option value="outside_scope">خارج نطاق الخدمة</option><option value="no_response">انقطاع الرد</option><option value="competitor">التعاقد مع منافس</option><option value="other">سبب آخر موضح بالملاحظة</option></select></label>
           <label><span>قيمة متوقعة (ر.س)</span><input id="pipelineEstimatedValue" type="number" min="0" max="999999999" step="0.01" inputmode="decimal" value="0"></label>
           <label><span>قيمة العقد (ر.س)</span><input id="pipelineContractValue" type="number" min="0" max="999999999" step="0.01" inputmode="decimal" value="0"></label>
           <label class="pipeline-notes"><span>ملاحظة تشغيلية قصيرة</span><input id="pipelineNotes" type="text" maxlength="500" placeholder="مثال: أُرسل العرض وينتظر اعتماد المخططات"></label>
-          <div class="pipeline-form-actions"><button id="pipelineSaveButton" type="submit">حفظ في مسار البيع</button><button id="pipelineCancelButton" class="button-ghost" type="button" hidden>إلغاء التعديل</button></div>
+          <p class="pipeline-guidance">التأهيل يتطلب خدمة مناسبة وتواصلًا مُراجعًا. الفرصة المؤهلة المفتوحة تحتاج مسؤولًا وإجراءً وموعد متابعة. لا تُحتسب نقرة التواصل مراجعةً فعلية.</p>
+          <p id="pipelineError" class="form-error" role="alert"></p>
+          <div class="pipeline-form-actions"><button id="pipelineSaveButton" type="submit">حفظ في مسار البيع</button><button id="pipelineReloadButton" class="button-secondary" type="button" hidden>تحميل النسخة الأحدث</button><button id="pipelineCancelButton" class="button-ghost" type="button" hidden>إلغاء التعديل</button></div>
         </form>
+        <div class="pipeline-history" id="pipelineHistory" hidden><h4>سجل التغييرات</h4><p>السجل يبدأ من تفعيل نظام المتابعة؛ المراحل السابقة لا تحمل تواريخ مفترضة.</p><ol id="pipelineHistoryList"></ol></div>
       </article>
-      <article class="panel table-panel compact-top"><div class="table-header"><div><span class="micro-label">ACTIVE PIPELINE</span><h3>الفرص والعقود حسب المصدر والحملة</h3></div><span id="pipelineLastUpdate">—</span></div><div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>القناة</th><th>الخدمة</th><th>الحملة</th><th>المرحلة</th><th>Google Sheets</th><th>متوقع</th><th>قيمة العقد</th><th>ملاحظة</th><th>تعديل</th></tr></thead><tbody id="pipelineBody"></tbody></table></div><div class="table-empty" id="pipelineEmpty" hidden>لا توجد فرص مسجلة بعد. انقل إحالة حديثة أو أضف أول فرصة أعلاه.</div></article>
+      <article class="panel table-panel compact-top"><div class="table-header"><div><span class="micro-label">SALES COHORT</span><h3>الفرص التي بدأت في فترة التقرير</h3></div><span id="pipelineLastUpdate">—</span></div><div class="workspace-toolbar"><label><span>المرحلة</span><select id="pipelineStageFilter"><option value="all">كل المراحل</option><option value="new">إحالة جديدة</option><option value="qualified">عميل مؤهل</option><option value="quote_sent">عرض مرسل</option><option value="site_visit">زيارة موقع</option><option value="contract_signed">عقد موقّع</option><option value="lost">لم يتم التعاقد</option></select></label><button id="pipelineExportButton" class="button-secondary" type="button">تصدير الفرص CSV</button></div><p class="workspace-notice" id="pipelineLimit" hidden>عرض أول 500 فرصة في الفترة؛ مؤشرات المسار تشمل جميع الفرص.</p><div class="table-wrap"><table><thead><tr><th>الفرصة / التاريخ</th><th>القناة / المصدر</th><th>الخدمة / المنطقة</th><th>الحملة</th><th>المرحلة</th><th>المسؤول / المتابعة</th><th>Google Sheets</th><th>متوقع</th><th>قيمة العقد</th><th>تعديل</th></tr></thead><tbody id="pipelineBody"></tbody></table></div><div class="table-empty" id="pipelineEmpty" hidden>لا توجد فرص مطابقة. الفرص المفتوحة القديمة تظهر في مركز المتابعات.</div></article>
     </section>
 
     <section class="admin-section" id="trend">
@@ -151,6 +179,6 @@
 
 <div class="loading-layer" id="adminLoading" hidden><div class="loader"></div><p>جاري مطابقة المصادر وترتيب القرارات…</p></div>
 <div class="toast" id="adminToast" aria-live="polite"></div>
-<script src="/assets/js/tawod-command-center.js?v=20260913-1" defer></script>
+<script src="/assets/js/tawod-command-center.js?v=20260930-1" defer></script>
 </body>
 </html>
