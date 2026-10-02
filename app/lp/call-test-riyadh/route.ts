@@ -5,63 +5,192 @@ const html = `<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#1d1e26">
+<meta name="theme-color" content="#1d2929">
 <meta name="robots" content="noindex, follow">
 <link rel="canonical" href="https://tawodco.com/lp/call-test-riyadh/">
-<title>شركة مقاولات بالرياض | بناء وتشطيب وتسليم مفتاح | تعاود</title>
-<meta name="description" content="تعاود للمقاولات العامة في الرياض: بناء عظم، تشطيبات، تسليم مفتاح وديكور للفلل والمشاريع. ناقش نطاق مشروعك مباشرة بالاتصال على 0501047331.">
-<meta property="og:title" content="بناء وتشطيب وتسليم مفتاح بالرياض | تعاود للمقاولات">
-<meta property="og:description" content="خدمات مقاولات للفلل والمشاريع في الرياض. اتصل بفريق تعاود لمناقشة متطلبات مشروعك.">
+<title>شركة مقاولات بالرياض | بناء عظم وتشطيبات وتسليم مفتاح | تعاود</title>
+<meta name="description" content="تعاود للمقاولات العامة في الرياض: بناء عظم، تشطيبات، تسليم مفتاح وديكور للفلل والمشاريع. ناقش مشروعك مباشرة بالاتصال على 0501047331.">
+<meta property="og:title" content="شركة مقاولات بالرياض | تعاود للمقاولات العامة">
+<meta property="og:description" content="من بناء العظم إلى التشطيب والتسليم. اتصل بتعاود لمناقشة مشروعك في الرياض.">
 <link rel="icon" href="/images/logo/tawod-logo.png" type="image/png">
+<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/alexandria-arabic-variable.woff2" crossorigin>
 <style>
 @font-face{font-family:Alexandria;src:url('/assets/fonts/alexandria-arabic-variable.woff2') format('woff2');font-display:swap}
-:root{font-family:Alexandria,Tahoma,Arial,sans-serif;color:#24252a;background:#f7f6f3;line-height:1.8}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0}a{color:inherit}.container{width:min(1160px,calc(100% - 40px));margin-inline:auto}
-.top{background:#1d1e26;color:#fff;border-bottom:1px solid #ffffff24}.top .container{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{display:flex;align-items:center;gap:12px;font-weight:800;line-height:1.45}.brand img{width:58px;height:44px;object-fit:contain}.top-phone{text-decoration:none;font-weight:800;color:#f5d3a3;white-space:nowrap}
-.hero{background:radial-gradient(circle at 18% 12%,#39362f 0,transparent 35%),#1d1e26;color:#fff;padding:clamp(46px,6vw,84px) 0 clamp(60px,7vw,92px)}.grid{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(30px,5vw,72px);align-items:center}.eyebrow,.label{display:inline-flex;align-items:center;gap:10px;color:#eac28c;font-size:.88rem;font-weight:800;margin-bottom:16px}.eyebrow:before,.label:before{content:"";width:25px;height:2px;background:currentColor}
-h1,h2,h3,p{margin-top:0}h1{font-size:clamp(2.15rem,4.3vw,3.75rem);line-height:1.45;letter-spacing:-.025em;margin-bottom:18px}h1 span{color:#e6bb81}h2{font-size:clamp(1.6rem,2.7vw,2.35rem);line-height:1.55;margin-bottom:13px}h3{font-size:1.18rem;line-height:1.6;margin-bottom:9px}p{margin-bottom:18px}.lead{max-width:58ch;color:#e4e2df;font-size:1.08rem;line-height:1.95}
-.hero-tags{display:flex;flex-wrap:wrap;gap:9px;margin:25px 0 28px;padding:0;list-style:none}.hero-tags li{border:1px solid #d8b27e66;border-radius:999px;padding:5px 13px;color:#f4e8d8;font-size:.88rem}
-.call{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:13px 25px;border-radius:12px;background:#e4b779;color:#1d1e26;text-decoration:none;font-weight:850;line-height:1.5;box-shadow:0 10px 26px #0002;transition:background .2s,transform .2s}.call:hover{background:#f3cc94;transform:translateY(-2px)}a:focus-visible{outline:3px solid #e1a04a;outline-offset:4px}.hero .call:focus-visible,.end .call:focus-visible{outline-color:#fff}
-.hero-photo{position:relative;padding:0 38px 32px 0}.hero-photo img{display:block;width:100%;height:440px;object-fit:cover;border-radius:19px;box-shadow:0 22px 50px #0005}.hero-photo .inset{position:absolute;bottom:0;right:0;width:48%;height:183px;border:6px solid #1d1e26;box-shadow:0 15px 30px #0005}.media-caption{position:absolute;top:18px;left:18px;background:#1d1e26e6;border:1px solid #d9ab6e88;border-radius:9px;padding:7px 12px;font-size:.8rem;font-weight:700}.note{font-size:.86rem;color:#d1cbc2;margin:13px 0 0}
-.section{padding:clamp(55px,7vw,94px) 0}.section-heading{max-width:790px;margin-bottom:28px}.section .label{color:#94632f;margin-bottom:11px}.muted{color:#555a62}.services{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.service{background:#fff;border:1px solid #e8e1d7;border-radius:17px;padding:24px 20px;box-shadow:0 10px 35px #24252a08}.service .number{display:inline-block;color:#a46d31;font-weight:800;font-size:.84rem;margin-bottom:20px}.service p{font-size:.92rem;color:#555a62;margin:0}.section-action{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:24px;padding:24px 27px;background:#ede7dc;border-radius:16px}.section-action p{margin:0;font-weight:700}.section-action .call{min-height:48px;padding:10px 18px;white-space:nowrap}
-.proof{background:#f0eee9}.projects{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.project{background:#fff;border-radius:17px;overflow:hidden;border:1px solid #e1ddd5}.project img{display:block;width:100%;height:230px;object-fit:cover}.project-copy{padding:18px 22px 22px}.project-copy .overline{font-size:.8rem;font-weight:800;color:#966332}.project-copy h3{margin:6px 0 5px}.project-copy p{color:#5c6067;font-size:.9rem;margin:0}.proof-note{margin:19px 0 0;color:#5b5d61;font-size:.85rem}
-.prepare{background:#fff}.prep-grid{display:grid;grid-template-columns:.88fr 1.12fr;gap:50px;align-items:start}.prep-intro p{color:#555a62}.prep-list{list-style:none;padding:0;margin:0;display:grid;gap:13px}.prep-list li{display:flex;align-items:start;gap:16px;background:#f7f6f3;border:1px solid #e7e1d9;border-radius:13px;padding:17px 19px}.prep-list b{color:#986631;white-space:nowrap}.prep-list span{display:block;color:#5b5d62;font-size:.9rem}
-.end{background:#27252a;color:#fff;padding:clamp(45px,6vw,70px) 0 85px}.end-inner{display:flex;align-items:center;justify-content:space-between;gap:30px}.end h2{max-width:680px}.end p{color:#ddd7cf;margin-bottom:0}.end .call{white-space:nowrap}.footer{background:#1d1e26;color:#d8d9de;padding:20px 0;font-size:.82rem}.footer .container{display:flex;align-items:center;justify-content:space-between;gap:15px}.footer a{text-underline-offset:3px}.mobile-call{display:none}
-@media(max-width:940px){.grid{grid-template-columns:1fr 1fr;gap:26px}.hero-photo img{height:370px}.services{grid-template-columns:repeat(2,1fr)}.prep-grid{gap:28px}}
-@media(max-width:700px){.container{width:min(100% - 32px,560px)}.top .container{min-height:64px}.brand{font-size:.8rem;gap:6px}.brand img{width:43px;height:34px}.top-phone{font-size:.8rem}.hero{padding:38px 0 50px}.grid,.prep-grid,.projects{grid-template-columns:1fr}.grid{gap:30px}.hero-photo{padding:0 27px 24px 0}.hero-photo img{height:290px}.hero-photo .inset{height:125px;border-width:4px}.media-caption{font-size:.7rem;top:11px;left:11px}.hero-tags{margin:21px 0 24px}.section{padding:50px 0}.section-heading{margin-bottom:23px}.services{gap:12px}.service{padding:18px 15px}.service .number{margin-bottom:9px}.service p{font-size:.86rem}.section-action,.end-inner{display:block}.section-action .call{margin-top:15px}.project img{height:200px}.end{padding:47px 0 100px}.end .call{margin-top:22px}.footer{padding:20px 0 90px}.footer .container{display:block}.footer a{display:inline-block;margin-top:6px}.mobile-call{display:block;position:fixed;bottom:0;left:0;right:0;z-index:20;background:#1d1e26;padding:9px 16px max(9px,env(safe-area-inset-bottom));box-shadow:0 -8px 24px #0004}.mobile-call .call{width:100%;min-height:49px}}
-@media(max-width:410px){.services{grid-template-columns:1fr}.brand span{max-width:135px}.hero-photo img{height:245px}.hero-photo .inset{height:108px}.top-phone{font-size:.75rem}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.call{transition:none}.call:hover{transform:none}}
-.top-phone{display:inline-flex;align-items:center;gap:8px}.top-phone svg,.call svg{width:18px;height:18px;fill:currentColor;flex:none}.mobile-label{display:none}
-.hero-photo img{object-position:center}.hero-photo .inset{object-position:center}.hero .call{min-width:246px}.hero-tags{margin:22px 0 0}.note{margin-top:10px}.service{position:relative;border-top:3px solid #d3a56b}.service .number{letter-spacing:.02em}.project img{object-position:center 47%}
-@media(max-width:700px){
-  .container{width:calc(100% - 36px)}
-  .top .container{min-height:66px}.brand{font-size:.79rem;gap:7px}.brand img{width:43px;height:36px}.brand span{max-width:170px}
-  .top-phone{border:1px solid #d6b17b88;border-radius:999px;padding:7px 11px;color:#f4d5a9;font-size:.84rem;min-height:40px}.top-phone .desktop-number{display:none}.top-phone .mobile-label{display:inline}
-  .hero{padding:32px 0 40px}.grid{gap:26px}h1{font-size:clamp(1.9rem,8vw,2.55rem);line-height:1.43;margin-bottom:12px}.lead{font-size:.96rem;line-height:1.88;margin-bottom:17px}.eyebrow{font-size:.79rem;margin-bottom:10px}.hero .call{width:100%;min-height:54px}.hero-tags{margin:18px 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.hero-tags li{text-align:center;font-size:.79rem;padding:5px 6px}.note{font-size:.76rem;text-align:center;margin:9px 0 0}
-  .hero-photo{display:grid;grid-template-columns:1.15fr .85fr;gap:8px;padding:0}.hero-photo img{width:100%;height:208px;border-radius:14px}.hero-photo .inset{position:static;width:100%;height:208px;border:0;border-radius:14px}.media-caption{top:auto;bottom:9px;left:9px;font-size:.66rem;padding:4px 8px}
-  .section{padding:46px 0}.section-heading{margin-bottom:21px}h2{font-size:clamp(1.48rem,6.2vw,1.9rem);line-height:1.5}.section-heading p{font-size:.91rem;line-height:1.8}
-  .services{grid-template-columns:1fr;gap:9px}.service{display:grid;grid-template-columns:76px minmax(0,1fr);column-gap:12px;align-content:center;padding:15px 17px;min-height:98px;border-top:0;border-right:3px solid #d3a56b}.service .number{grid-row:1/3;margin:0;align-self:center;font-size:.71rem;line-height:1.6}.service h3{grid-column:2;font-size:1.02rem;margin:0 0 3px}.service p{grid-column:2;font-size:.8rem;line-height:1.7}
-  .section-action{padding:20px 18px;text-align:center;margin-top:17px}.section-action p{font-size:.9rem}.section-action .call{width:100%;margin-top:14px;white-space:normal}
-  .projects{gap:12px}.project img{height:200px}.project-copy{padding:15px 18px 18px}.project-copy h3{font-size:1.04rem}.project-copy p{font-size:.82rem}.proof-note{font-size:.78rem}
-  .prep-grid{gap:16px}.prep-intro p{font-size:.91rem}.prep-list{gap:8px}.prep-list li{padding:13px 15px;gap:12px}.prep-list span{font-size:.81rem}
-  .end{padding:46px 0 44px}.end h2{font-size:1.65rem}.end p{font-size:.91rem}.end .call{width:100%;white-space:normal}
-  .footer{padding:22px 0 calc(88px + env(safe-area-inset-bottom))}.mobile-call{padding:9px 16px max(9px,env(safe-area-inset-bottom))}.mobile-call .call{font-size:.92rem;box-shadow:none}
+:root{font-family:Alexandria,Tahoma,Arial,sans-serif;color:#1d2929;background:#f7f4ee;line-height:1.8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0}a{color:inherit}img{max-width:100%}h1,h2,h3,p{margin:0}p{line-height:1.9}
+.container{width:min(1190px,calc(100% - 64px));margin-inline:auto}
+.top{background:#fffdf9;border-top:4px solid #b47640;border-bottom:1px solid #e8e2d9}
+.top .container{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:13px;font-size:.97rem;font-weight:800;line-height:1.45}
+.brand img{display:block;width:65px;height:43px;object-fit:contain}
+.top-phone{display:inline-flex;align-items:center;gap:10px;text-decoration:none;border:1px solid #cfc8bc;padding:9px 17px;font-weight:800;font-size:.87rem;white-space:nowrap;transition:background .2s,border-color .2s}
+.top-phone:hover{background:#f4eee5;border-color:#b47640}.top-phone svg,.call svg,.mobile-call svg{width:19px;height:19px;fill:currentColor;flex:none}
+.mobile-label{display:none}
+.hero{position:relative;overflow:hidden;background:#f7f4ee}
+.hero:before{content:"";position:absolute;inset:0 auto auto 0;width:42%;height:100%;background:#efebe2;pointer-events:none}
+.hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,1.03fr) minmax(0,.97fr);align-items:center;gap:clamp(35px,6vw,86px);padding-block:clamp(52px,6vw,88px) clamp(54px,6vw,82px)}
+.hero-copy{padding-block:18px}.eyebrow,.label{display:flex;align-items:center;gap:11px;color:#9c6335;font-size:.79rem;font-weight:800;letter-spacing:.01em}
+.eyebrow:before,.label:before{content:"";display:block;width:31px;height:2px;background:currentColor}
+.hero h1{max-width:650px;font-size:clamp(2.55rem,4.5vw,4.45rem);line-height:1.38;letter-spacing:-.034em;margin:22px 0}
+.hero h1 em{display:block;font-style:normal;color:#a56b3d}
+.lead{max-width:580px;color:#4f5a58;font-size:1.04rem;line-height:2}
+.hero-action{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:29px}
+.call{display:inline-flex;align-items:center;justify-content:center;gap:11px;min-height:58px;padding:13px 24px;background:#b57640;color:#fff;text-decoration:none;font-size:.94rem;font-weight:800;line-height:1.45;white-space:nowrap;transition:background .2s,transform .2s}
+.call:hover{background:#8d562e;transform:translateY(-2px)}
+.hero-action .call{background:#1d2929;box-shadow:0 13px 28px #1d292926}
+.hero-action .call:hover{background:#34433f}.action-note{font-size:.79rem;color:#69716b;line-height:1.6}
+.hero-media{position:relative;min-height:600px}
+.hero-media:before{content:"";position:absolute;inset:28px 0 18px 75px;border:1px solid #b47640;transform:translate(-13px,12px)}
+.hero-main{position:absolute;inset:0 0 38px 48px;width:calc(100% - 48px);height:calc(100% - 38px);object-fit:cover;object-position:52% 67%;box-shadow:0 24px 45px #1d29291c}
+.hero-detail{position:absolute;bottom:0;left:0;width:42%;height:190px;object-fit:cover;object-position:center;border:8px solid #f7f4ee;box-shadow:0 10px 25px #1d29292b}
+.media-caption{position:absolute;right:19px;bottom:58px;color:#fff;background:#1d2929e8;border-right:3px solid #ca905a;padding:11px 15px;font-size:.75rem;font-weight:700}
+.scope{background:#1d2929;color:#f5eee2}
+.scope .container{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.scope span{position:relative;display:flex;align-items:center;justify-content:center;gap:11px;min-height:78px;font-size:.89rem;font-weight:700;text-align:center}
+.scope span+span:before{content:"";position:absolute;right:0;height:24px;width:1px;background:#fff3}
+.scope i{width:5px;height:5px;background:#c78d59;transform:rotate(45deg)}
+.section{padding:clamp(72px,8vw,114px) 0}
+.section-heading{display:flex;align-items:end;justify-content:space-between;gap:40px;margin-bottom:37px}
+.section-heading h2,.process h2,.final h2{font-size:clamp(1.9rem,3vw,2.7rem);line-height:1.55;letter-spacing:-.025em}
+.section-heading h2{max-width:690px;margin-top:14px}
+.section-heading p{max-width:390px;color:#62706a;font-size:.91rem}
+.services-section{background:#fffdf9}
+.services{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.service{position:relative;min-height:254px;padding:32px 35px;background:#f7f4ee;border:1px solid #e9e3da;overflow:hidden}
+.service:after{content:"";position:absolute;left:0;bottom:0;width:0;height:3px;background:#b57640;transition:width .3s}
+.service:hover:after{width:100%}
+.service-top{display:flex;align-items:center;justify-content:space-between;color:#9b6336;margin-bottom:27px}
+.service-number{font-weight:800;font-size:1.5rem;line-height:1}.service-rule{width:47px;height:1px;background:#b9a48e}
+.service h3{font-size:1.25rem;line-height:1.6;margin-bottom:9px}.service p{max-width:45ch;color:#61706a;font-size:.89rem}
+.section-cta{margin-top:19px;padding:22px 27px;background:#eae0d2;display:flex;align-items:center;justify-content:space-between;gap:22px}
+.section-cta p{font-size:.94rem;font-weight:700}.section-cta a{font-size:.9rem;font-weight:800;text-decoration:none;color:#804d29;border-bottom:2px solid #b57640;padding-bottom:3px;white-space:nowrap}
+.proof{background:#1d2929;color:#fff}
+.proof .label{color:#dda977}.proof .section-heading p{color:#c7d0ca}
+.projects{display:grid;grid-template-columns:1.14fr .86fr;gap:20px}
+.project{background:#f6f3ed;color:#1d2929;overflow:hidden}
+.project-photo{position:relative;height:320px;overflow:hidden}.project-photo img{display:block;width:100%;height:100%;object-fit:cover}
+.project:first-child .project-photo img{object-position:center 44%}.project:nth-child(2) .project-photo img{object-position:center 56%}
+.project-index{position:absolute;top:0;right:0;background:#b57640;color:#fff;padding:8px 15px;font-size:.76rem;font-weight:800}
+.project-copy{padding:24px 27px 27px}.project-copy small{display:block;color:#9a6238;font-size:.76rem;font-weight:800;margin-bottom:8px}
+.project-copy h3{font-size:1.2rem;line-height:1.55;margin-bottom:5px}.project-copy p{font-size:.85rem;color:#63706a}
+.proof-note{color:#bbc9c1;margin-top:21px;font-size:.76rem}
+.process{background:#f7f4ee}.process-grid{display:grid;grid-template-columns:.77fr 1.23fr;gap:clamp(40px,7vw,110px)}
+.process h2{margin:14px 0 15px}.process-intro p{font-size:.95rem;color:#62706a;max-width:37ch}
+.process-steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 27px}
+.step{border-top:1px solid #d7cfc3;padding:20px 0 28px}
+.step span{display:block;color:#a56b3d;font-size:.78rem;font-weight:800;margin-bottom:9px}.step h3{font-size:1rem;line-height:1.55;margin-bottom:6px}
+.step p{color:#66716a;font-size:.82rem}
+.final{background:#b57640;color:#fff;padding:clamp(55px,7vw,86px) 0}
+.final-grid{display:flex;align-items:center;justify-content:space-between;gap:40px}.final .eyebrow{color:#fff6e9}.final .eyebrow:before{background:#fff6e9}
+.final h2{max-width:720px;margin:14px 0 10px}.final p{color:#fff4e9;font-size:.94rem}
+.final .call{background:#1d2929;min-width:235px}.final .call:hover{background:#354541}
+.footer{background:#172222;color:#d9dfd8;padding:25px 0;font-size:.78rem}
+.footer .container{display:flex;align-items:center;justify-content:space-between;gap:18px}
+.footer a{text-underline-offset:4px}.mobile-call{display:none}
+a:focus-visible{outline:3px solid #f1ae5e;outline-offset:4px}
+@media(max-width:1050px){
+ .container{width:min(100% - 48px,1190px)}
+ .hero-grid{gap:35px}.hero-media{min-height:510px}.hero h1{font-size:clamp(2.3rem,4.8vw,3.8rem)}
+ .section-heading{align-items:start}.project-photo{height:270px}
 }
-@media(max-width:360px){.brand span{max-width:125px}.top-phone{padding:7px 9px}.hero-photo img,.hero-photo .inset{height:175px}.service{grid-template-columns:65px minmax(0,1fr)}}
+@media(max-width:760px){
+ .container{width:calc(100% - 36px)}
+ .top .container{min-height:66px}.brand{gap:7px;font-size:.79rem}.brand img{width:48px;height:34px}
+ .top-phone{min-height:39px;padding:7px 11px;font-size:.8rem;gap:6px}.top-phone svg{width:16px;height:16px}
+ .desktop-number{display:none}.mobile-label{display:inline}
+ .hero:before{width:33%;height:100%;opacity:.8}
+ .hero-grid{display:flex;flex-direction:column;align-items:stretch;gap:27px;padding-block:39px 42px}
+ .hero-copy{padding:0}.eyebrow,.label{font-size:.73rem;gap:8px}.eyebrow:before,.label:before{width:23px}
+ .hero h1{font-size:clamp(2.1rem,8vw,3rem);line-height:1.42;margin:14px 0 12px}
+ .lead{font-size:.91rem;line-height:1.9}.hero-action{margin-top:20px;gap:8px}
+ .hero-action .call{width:100%;min-height:53px;font-size:.91rem}.action-note{display:block;width:100%;text-align:center;font-size:.73rem}
+ .hero-media{min-height:330px}.hero-media:before{inset:16px 0 20px 35px;transform:translate(-8px,8px)}
+ .hero-main{inset:0 0 26px 22px;width:calc(100% - 22px);height:calc(100% - 26px);object-position:50% 67%}
+ .hero-detail{height:119px;width:39%;border-width:5px}.media-caption{right:10px;bottom:42px;font-size:.65rem;padding:6px 9px}
+ .scope .container{grid-template-columns:repeat(2,minmax(0,1fr))}.scope span{min-height:53px;font-size:.76rem;gap:7px}
+ .scope span:nth-child(3),.scope span:nth-child(4){border-top:1px solid #ffffff20}.scope span:nth-child(3):before{display:none}
+ .section{padding:57px 0}.section-heading{display:block;margin-bottom:23px}
+ .section-heading h2,.process h2,.final h2{font-size:clamp(1.7rem,6vw,2.15rem);line-height:1.52}
+ .section-heading h2{margin:10px 0}.section-heading p{font-size:.85rem}
+ .services{grid-template-columns:1fr;gap:10px}.service{min-height:auto;padding:20px 21px}
+ .service-top{margin-bottom:11px}.service-number{font-size:1.15rem}.service-rule{width:30px}
+ .service h3{font-size:1.06rem;margin-bottom:4px}.service p{font-size:.81rem}
+ .section-cta{padding:18px 20px;display:block;margin-top:12px}.section-cta p{font-size:.85rem}
+ .section-cta a{display:inline-block;margin-top:9px;font-size:.83rem}
+ .projects{grid-template-columns:1fr;gap:13px}.project-photo{height:240px}
+ .project-copy{padding:17px 20px 20px}.project-copy h3{font-size:1.04rem}.project-copy p{font-size:.8rem}
+ .proof-note{font-size:.72rem;margin-top:16px}
+ .process-grid{grid-template-columns:1fr;gap:25px}.process h2{margin:9px 0}.process-intro p{font-size:.85rem}
+ .process-steps{gap:0 17px}.step{padding:15px 0 20px}.step h3{font-size:.9rem}.step p{font-size:.75rem}
+ .final{padding:55px 0 58px}.final-grid{display:block}.final h2{margin:11px 0 9px}.final p{font-size:.85rem}
+ .final .call{width:100%;margin-top:23px;min-height:53px}
+ .footer{padding:22px 0 calc(91px + env(safe-area-inset-bottom))}.footer .container{display:block}.footer a{display:inline-block;margin-top:6px}
+ .mobile-call{display:block;position:fixed;inset:auto 0 0;z-index:50;background:#fffdf9;padding:9px 15px max(9px,env(safe-area-inset-bottom));box-shadow:0 -8px 26px #17222227;border-top:1px solid #dfd4c5}
+ .mobile-call .call{width:100%;min-height:51px;background:#1d2929;font-size:.88rem;box-shadow:none}
+}
+@media(max-width:390px){
+ .brand span{max-width:122px}.top-phone{padding:6px 9px}
+ .hero h1{font-size:1.92rem}.hero-media{min-height:280px}.hero-detail{height:100px}
+ .process-steps{grid-template-columns:1fr}.step{padding:13px 0}.scope span{font-size:.71rem}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.call,.top-phone,.service:after{transition:none}.call:hover{transform:none}}
 </style>
 <script src="/assets/js/tawod-analytics.js" defer></script>
 </head>
 <body>
-<header class="top"><div class="container"><div class="brand"><img src="/images/logo/tawod-logo.png" width="917" height="408" alt="شعار تعاود للمقاولات"><span>تعاود للمقاولات العامة</span></div><a class="top-phone" href="tel:+966501047331" data-contact-channel="phone" data-contact-service="مقاولات عامة" data-contact-position="header" aria-label="الاتصال بتعاود على 0501047331"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.4 15.4 0 006.6 6.6l2.2-2.2a1 1 0 011-.24c1.1.36 2.3.54 3.6.54a1 1 0 011 1V20a1 1 0 01-1 1C10.6 21 3 13.4 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.3.18 2.5.54 3.6a1 1 0 01-.24 1z"/></svg><b class="desktop-number" dir="ltr">0501047331</b><span class="mobile-label">اتصل</span></a></div></header>
+<header class="top"><div class="container">
+  <div class="brand"><img src="/images/logo/tawod-logo.png" width="917" height="408" alt="شعار تعاود للمقاولات"><span>تعاود للمقاولات العامة</span></div>
+  <a class="top-phone" href="tel:+966501047331" data-contact-channel="phone" data-contact-service="مقاولات عامة" data-contact-position="header" aria-label="الاتصال بتعاود على 0501047331"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.4 15.4 0 006.6 6.6l2.2-2.2a1 1 0 011-.24c1.1.36 2.3.54 3.6.54a1 1 0 011 1V20a1 1 0 01-1 1C10.6 21 3 13.4 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.3.18 2.5.54 3.6a1 1 0 01-.24 1z"/></svg><b class="desktop-number" dir="ltr">0501047331</b><span class="mobile-label">اتصل الآن</span></a>
+</div></header>
 <main>
-<section class="hero" aria-labelledby="hero-title"><div class="container grid"><div><span class="eyebrow">شركة تعاود للمقاولات العامة · الرياض</span><h1 id="hero-title">شركة مقاولات بالرياض <span>لبناء مشروعك وتشطيبه</span></h1><p class="lead">بناء عظم وتشطيبات وتسليم مفتاح للفلل والمشاريع في الرياض. اشرح لنا مرحلة مشروعك وموقعه، ونناقش معك نطاق العمل والخطوة التالية بوضوح.</p><a class="call" href="tel:+966501047331" data-contact-channel="phone" data-contact-service="مقاولات عامة" data-contact-position="hero"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.4 15.4 0 006.6 6.6l2.2-2.2a1 1 0 011-.24c1.1.36 2.3.54 3.6.54a1 1 0 011 1V20a1 1 0 01-1 1C10.6 21 3 13.4 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.3.18 2.5.54 3.6a1 1 0 01-.24 1z"/></svg>اتصل الآن: <b dir="ltr">0501047331</b></a><ul class="hero-tags" aria-label="خدمات تعاود"><li>بناء عظم</li><li>تشطيبات</li><li>تسليم مفتاح</li><li>ديكور</li></ul><p class="note">اتصال مباشر لمناقشة مشروعك داخل الرياض.</p></div><div class="hero-photo"><img src="/images/projects/project-villa-facade-marble-ceramic-manar.webp" width="1536" height="1024" alt="واجهات فلل من أعمال شركة تعاود" fetchpriority="high" decoding="async"><img class="inset" src="/images/projects/project-skylight-villa-manar.webp" width="1536" height="1024" alt="أعمال داخلية من مشاريع تعاود" loading="lazy" decoding="async"><span class="media-caption">صور من أعمال تعاود</span></div></div></section>
-<section class="section" id="services" aria-labelledby="services-title"><div class="container"><div class="section-heading"><span class="label">خدمات تناسب مرحلة مشروعك</span><h2 id="services-title">من الهيكل الإنشائي إلى التفاصيل النهائية</h2><p class="muted">اذكر الخدمة التي تحتاجها عند الاتصال، سواء كنت تبدأ من الأرض أو لديك مشروع قائم يحتاج إلى تشطيب.</p></div><div class="services"><article class="service"><span class="number">01 / البناء</span><h3>بناء العظم والإنشاءات</h3><p>تنفيذ أعمال الهيكل الإنشائي للفلل والملاحق والمباني، وفق المخططات ونطاق المشروع.</p></article><article class="service"><span class="number">02 / التشطيب</span><h3>تشطيب الفلل والمباني</h3><p>تنسيق الأرضيات والدهانات والأسقف والأعمال الكهربائية والصحية ضمن نطاق التشطيب.</p></article><article class="service"><span class="number">03 / التنفيذ المتكامل</span><h3>تسليم مفتاح</h3><p>ربط البناء والأعمال الفنية والتشطيبات للعميل الذي يحتاج إدارة تنفيذ متكاملة.</p></article><article class="service"><span class="number">04 / المساحات الداخلية</span><h3>ديكور وتجهيز داخلي</h3><p>مناقشة احتياجات المساحات الداخلية والخامات والتفاصيل بما يتناسب مع مرحلة المشروع.</p></article></div><div class="section-action"><p>ما المرحلة التي وصل إليها مشروعك؟ دعنا نحدد نقطة البداية في مكالمة واحدة.</p><a class="call" href="tel:+966501047331" data-contact-channel="phone" data-contact-service="مقاولات عامة" data-contact-position="services">اتصل بفريق تعاود</a></div></div></section>
-<section class="section proof" id="projects" aria-labelledby="projects-title"><div class="container"><div class="section-heading"><span class="label">من مشاريع تعاود المنشورة</span><h2 id="projects-title">أعمال تشطيب وتسليم مفتاح في الرياض</h2><p class="muted">أمثلة على نطاقات تنفيذ مختلفة؛ نحدد تفاصيل مشروعك بعد مراجعة متطلباته.</p></div><div class="projects"><article class="project"><img src="/images/projects/faisaliah-villa-facades-finishing-01-v3.webp" width="1152" height="768" loading="lazy" decoding="async" alt="واجهات وتشطيبات فيلا بحي الفيصلية بالرياض"><div class="project-copy"><span class="overline">تشطيبات · حي الفيصلية</span><h3>واجهات وتشطيبات فيلا سكنية</h3><p>أعمال لياسة ورخام وسيراميك ضمن مشروع بمساحة 900 م².</p></div></article><article class="project"><img src="/images/projects/arouba-mosque-villas-01.webp" width="1152" height="768" loading="lazy" decoding="async" alt="مشروع مسجد وفلّتين بحي العروبة بالرياض"><div class="project-copy"><span class="overline">تسليم مفتاح · حي العروبة</span><h3>مشروع مسجد وفلّتين</h3><p>تنفيذ تسليم مفتاح لمشروع بمساحة 1,800 م².</p></div></article></div><p class="proof-note">الأمثلة تعرض أعمالًا منفذة؛ يختلف نطاق كل مشروع بحسب المخططات والمتطلبات.</p></div></section>
-<section class="section prepare" id="process" aria-labelledby="process-title"><div class="container prep-grid"><div class="prep-intro"><span class="label">ابدأ بمعلومات واضحة</span><h2 id="process-title">ماذا تخبرنا في أول اتصال؟</h2><p>هذه التفاصيل تساعدنا على فهم نطاق الطلب وتحديد الخطوة التالية دون افتراضات مبكرة عن السعر أو المدة.</p></div><ul class="prep-list"><li><b>01</b><div><strong>نوع المشروع والحي</strong><span>فيلا أو مبنى أو ملحق، مع موقعه داخل الرياض.</span></div></li><li><b>02</b><div><strong>المرحلة والخدمة المطلوبة</strong><span>بناء عظم، تشطيب، تسليم مفتاح أو ديكور، وما أُنجز حتى الآن.</span></div></li><li><b>03</b><div><strong>المساحة والمخططات</strong><span>المساحة التقريبية والمخططات أو الصور المتاحة.</span></div></li><li><b>04</b><div><strong>موعد البدء المتوقع</strong><span>التوقيت المطلوب وأي متطلبات خاصة بنطاق التنفيذ.</span></div></li></ul></div></section>
-<section class="end" id="contact" aria-labelledby="contact-title"><div class="container end-inner"><div><span class="eyebrow">ابدأ بمكالمة مباشرة</span><h2 id="contact-title">هل تبحث عن شركة بناء أو تشطيبات في الرياض؟</h2><p>اتصل بتعاود على <b dir="ltr">0501047331</b> واشرح لنا مشروعك والمرحلة التي وصل إليها.</p></div><a class="call" href="tel:+966501047331" data-contact-channel="phone" data-contact-service="مقاولات عامة" data-contact-position="final">اتصل الآن: <b dir="ltr">0501047331</b></a></div></section>
+<section class="hero" aria-labelledby="hero-title"><div class="container hero-grid">
+  <div class="hero-copy">
+    <span class="eyebrow">تعاود للمقاولات العامة · الرياض</span>
+    <h1 id="hero-title">شركة مقاولات بالرياض <em>من العظم إلى أدق تفاصيل التشطيب.</em></h1>
+    <p class="lead">لبناء الفلل والمشاريع وتشطيبها وتسليمها، ابدأ مع فريق يفهم المرحلة التي وصل إليها مشروعك. أخبرنا بما تحتاجه ونناقش معك نطاق العمل والخطوة المناسبة.</p>
+    <div class="hero-action"><a class="call" href="tel:+966501047331" data-contact-channel="phone" data-contact-service="مقاولات عامة" data-contact-position="hero"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.4 15.4 0 006.6 6.6l2.2-2.2a1 1 0 011-.24c1.1.36 2.3.54 3.6.54a1 1 0 011 1V20a1 1 0 01-1 1C10.6 21 3 13.4 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.3.18 2.5.54 3.6a1 1 0 01-.24 1z"/></svg>ناقش مشروعك الآن <b dir="ltr">0501047331</b></a><span class="action-note">اتصال مباشر بخط تعاود في الرياض</span></div>
+  </div>
+  <div class="hero-media" aria-label="صور من أعمال تعاود">
+    <img class="hero-main" src="/images/projects/project-villa-facade-marble-ceramic-manar.webp" width="1536" height="1024" alt="واجهات فلل من أعمال شركة تعاود" fetchpriority="high" decoding="async">
+    <img class="hero-detail" src="/images/projects/project-skylight-villa-manar.webp" width="1536" height="1024" alt="أعمال داخلية من مشاريع تعاود" loading="lazy" decoding="async">
+    <span class="media-caption">مشاهد من مشاريع تعاود</span>
+  </div>
+</div></section>
+<div class="scope" aria-label="خدمات تعاود"><div class="container"><span><i aria-hidden="true"></i>بناء عظم</span><span><i aria-hidden="true"></i>تشطيبات</span><span><i aria-hidden="true"></i>تسليم مفتاح</span><span><i aria-hidden="true"></i>ديكور داخلي</span></div></div>
+<section class="section services-section" id="services" aria-labelledby="services-title"><div class="container">
+  <div class="section-heading"><div><span class="label">خدمات تعاود</span><h2 id="services-title">حلول تنفيذ تناسب كل مرحلة من مشروعك</h2></div><p>تحدد متطلباتك نقطة البداية. من أعمال الإنشاء إلى التشطيبات، نناقش نطاق التنفيذ بناءً على المخططات وحالة المشروع.</p></div>
+  <div class="services">
+    <article class="service"><div class="service-top"><span class="service-number">01</span><span class="service-rule" aria-hidden="true"></span></div><h3>بناء العظم والإنشاءات</h3><p>تنفيذ الهيكل الإنشائي للفلل والملاحق والمباني وفق المخططات ونطاق المشروع.</p></article>
+    <article class="service"><div class="service-top"><span class="service-number">02</span><span class="service-rule" aria-hidden="true"></span></div><h3>تشطيب الفلل والمباني</h3><p>الأرضيات والدهانات والأسقف والأعمال الكهربائية والصحية ضمن نطاق التشطيب المتفق عليه.</p></article>
+    <article class="service"><div class="service-top"><span class="service-number">03</span><span class="service-rule" aria-hidden="true"></span></div><h3>تنفيذ تسليم مفتاح</h3><p>تنسيق مراحل البناء والأعمال الفنية والتشطيبات ضمن نطاق تنفيذ متكامل.</p></article>
+    <article class="service"><div class="service-top"><span class="service-number">04</span><span class="service-rule" aria-hidden="true"></span></div><h3>ديكور وتجهيز داخلي</h3><p>مناقشة تفاصيل المساحات الداخلية والخامات بحسب احتياجات المشروع ومرحلته.</p></article>
+  </div>
+  <div class="section-cta"><p>لا تعرف من أين تبدأ؟ أخبرنا بموقع مشروعك ومرحلته.</p><a href="tel:+966501047331" data-contact-channel="phone" data-contact-service="مقاولات عامة" data-contact-position="services">اتصل بفريق تعاود ←</a></div>
+</div></section>
+<section class="section proof" id="projects" aria-labelledby="projects-title"><div class="container">
+  <div class="section-heading"><div><span class="label">من أعمالنا المنشورة</span><h2 id="projects-title">مشاريع من أرض الواقع في الرياض</h2></div><p>شاهد أمثلة على مراحل تنفيذ مختلفة. لكل مشروع متطلباته الخاصة، ونناقش تفاصيل مشروعك بعد الاطلاع عليها.</p></div>
+  <div class="projects">
+    <article class="project"><div class="project-photo"><img src="/images/projects/faisaliah-villa-facades-finishing-01-v3.webp" width="1152" height="768" loading="lazy" decoding="async" alt="أعمال واجهات وتشطيبات فيلا بحي الفيصلية في الرياض"><span class="project-index">01 / تشطيبات</span></div><div class="project-copy"><small>حي الفيصلية · الرياض</small><h3>واجهات وتشطيبات فيلا سكنية</h3><p>أعمال لياسة ورخام وسيراميك ضمن مشروع بمساحة 900 م².</p></div></article>
+    <article class="project"><div class="project-photo"><img src="/images/projects/arouba-mosque-villas-01.webp" width="1152" height="768" loading="lazy" decoding="async" alt="أعمال إنشاء مشروع مسجد وفلّتين بحي العروبة في الرياض"><span class="project-index">02 / تسليم مفتاح</span></div><div class="project-copy"><small>حي العروبة · الرياض</small><h3>مشروع مسجد وفلّتين</h3><p>تنفيذ تسليم مفتاح لمشروع بمساحة 1,800 م².</p></div></article>
+  </div>
+  <p class="proof-note">الصور تعرض مراحل من أعمال منفذة؛ نطاق كل مشروع يختلف بحسب المخططات والمتطلبات.</p>
+</div></section>
+<section class="section process" id="process" aria-labelledby="process-title"><div class="container process-grid">
+  <div class="process-intro"><span class="label">مكالمة أولى أكثر فائدة</span><h2 id="process-title">أربع معلومات تختصر بداية المشروع</h2><p>جهز هذه التفاصيل عند الاتصال حتى نفهم طلبك ونحدد معك الخطوة التالية بوضوح.</p></div>
+  <div class="process-steps">
+    <div class="step"><span>01 / الموقع</span><h3>نوع المشروع والحي</h3><p>فيلا أو مبنى أو ملحق، وموقعه داخل الرياض.</p></div>
+    <div class="step"><span>02 / المرحلة</span><h3>ما الذي تحتاج تنفيذه؟</h3><p>بناء عظم أو تشطيب أو تسليم مفتاح أو ديكور.</p></div>
+    <div class="step"><span>03 / التفاصيل</span><h3>المساحة والمخططات</h3><p>المساحة التقريبية وأي مخططات أو صور متاحة.</p></div>
+    <div class="step"><span>04 / التوقيت</span><h3>موعد البدء المتوقع</h3><p>الوقت المناسب لك وأي متطلبات خاصة بالتنفيذ.</p></div>
+  </div>
+</div></section>
+<section class="final" id="contact" aria-labelledby="contact-title"><div class="container final-grid">
+  <div><span class="eyebrow">الخطوة التالية تبدأ باتصال</span><h2 id="contact-title">لديك مشروع بناء أو تشطيب في الرياض؟</h2><p>تحدث مع تعاود عن موقع المشروع، مرحلته، والخدمة التي تحتاجها.</p></div>
+  <a class="call" href="tel:+966501047331" data-contact-channel="phone" data-contact-service="مقاولات عامة" data-contact-position="final">اتصل الآن <b dir="ltr">0501047331</b></a>
+</div></section>
 </main>
 <footer class="footer"><div class="container"><span>شركة تعاود للمقاولات العامة — الرياض</span><a href="/privacy-policy.html">سياسة الخصوصية</a></div></footer>
-<div class="mobile-call"><a class="call" href="tel:+966501047331" data-contact-channel="phone" data-contact-service="مقاولات عامة" data-contact-position="sticky" aria-label="اتصل بتعاود على 0501047331"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.4 15.4 0 006.6 6.6l2.2-2.2a1 1 0 011-.24c1.1.36 2.3.54 3.6.54a1 1 0 011 1V20a1 1 0 01-1 1C10.6 21 3 13.4 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.3.18 2.5.54 3.6a1 1 0 01-.24 1z"/></svg>اتصال مباشر <span aria-hidden="true">·</span> <b dir="ltr">0501047331</b></a></div>
+<div class="mobile-call"><a class="call" href="tel:+966501047331" data-contact-channel="phone" data-contact-service="مقاولات عامة" data-contact-position="sticky" aria-label="اتصل بتعاود على 0501047331"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.4 15.4 0 006.6 6.6l2.2-2.2a1 1 0 011-.24c1.1.36 2.3.54 3.6.54a1 1 0 011 1V20a1 1 0 01-1 1C10.6 21 3 13.4 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.3.18 2.5.54 3.6a1 1 0 01-.24 1z"/></svg>اتصال مباشر <b dir="ltr">0501047331</b></a></div>
 </body></html>`;
 
 export function GET() {
