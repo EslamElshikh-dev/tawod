@@ -5,7 +5,7 @@ const html = `<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#1d2929">
+<meta name="theme-color" content="#ffffff">
 <meta name="robots" content="noindex, follow">
 <link rel="canonical" href="https://tawodco.com/lp/call-test-riyadh/">
 <title>شركة مقاولات بالرياض | بناء عظم وتشطيبات وتسليم مفتاح | تعاود</title>
@@ -16,22 +16,22 @@ const html = `<!doctype html>
 <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/alexandria-arabic-variable.woff2" crossorigin>
 <style>
 @font-face{font-family:Alexandria;src:url('/assets/fonts/alexandria-arabic-variable.woff2') format('woff2');font-display:swap}
-:root{font-family:Alexandria,Tahoma,Arial,sans-serif;color:#1d2929;background:#f7f4ee;line-height:1.8}
+:root{font-family:Alexandria,Tahoma,Arial,sans-serif;color:#1d2929;background:#fff;line-height:1.8}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0}a{color:inherit}img{max-width:100%}h1,h2,h3,p{margin:0}p{line-height:1.9}
 .container{width:min(1190px,calc(100% - 64px));margin-inline:auto}
-.top{background:#fffdf9;border-top:4px solid #b47640;border-bottom:1px solid #e8e2d9}
+.top{background:#fff;border-top:4px solid #b47640;border-bottom:1px solid #e9e8e5}
 .top .container{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:20px}
 .brand{display:flex;align-items:center;gap:13px;font-size:.97rem;font-weight:800;line-height:1.45}
 .brand img{display:block;width:65px;height:43px;object-fit:contain}
 .top-phone{display:inline-flex;align-items:center;gap:10px;text-decoration:none;border:1px solid #cfc8bc;padding:9px 17px;font-weight:800;font-size:.87rem;white-space:nowrap;transition:background .2s,border-color .2s}
 .top-phone:hover{background:#f4eee5;border-color:#b47640}.top-phone svg,.call svg,.mobile-call svg{width:19px;height:19px;fill:currentColor;flex:none}
 .mobile-label{display:none}
-.hero{position:relative;overflow:hidden;background:#f7f4ee}
-.hero:before{content:"";position:absolute;inset:0 auto auto 0;width:42%;height:100%;background:#efebe2;pointer-events:none}
+.hero{position:relative;overflow:hidden;background:#fff}
+.hero:before{content:"";position:absolute;inset:0 auto auto 0;width:43%;height:100%;background-image:linear-gradient(#aab1aa38 1px,transparent 1px),linear-gradient(90deg,#aab1aa38 1px,transparent 1px);background-size:35px 35px;opacity:.32;pointer-events:none}
 .hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,1.03fr) minmax(0,.97fr);align-items:center;gap:clamp(35px,6vw,86px);padding-block:clamp(52px,6vw,88px) clamp(54px,6vw,82px)}
 .hero-copy{padding-block:18px}.eyebrow,.label{display:flex;align-items:center;gap:11px;color:#9c6335;font-size:.79rem;font-weight:800;letter-spacing:.01em}
 .eyebrow:before,.label:before{content:"";display:block;width:31px;height:2px;background:currentColor}
-.hero h1{max-width:650px;font-size:clamp(2.55rem,4.5vw,4.45rem);line-height:1.38;letter-spacing:-.034em;margin:22px 0}
+.hero h1{max-width:650px;font-size:clamp(2.55rem,4.25vw,4.2rem);line-height:1.38;letter-spacing:-.034em;margin:22px 0}
 .hero h1 em{display:block;font-style:normal;color:#a56b3d}
 .lead{max-width:580px;color:#4f5a58;font-size:1.04rem;line-height:2}
 .hero-action{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:29px}
@@ -42,8 +42,9 @@ const html = `<!doctype html>
 .hero-media{position:relative;min-height:600px}
 .hero-media:before{content:"";position:absolute;inset:28px 0 18px 75px;border:1px solid #b47640;transform:translate(-13px,12px)}
 .hero-main{position:absolute;inset:0 0 38px 48px;width:calc(100% - 48px);height:calc(100% - 38px);object-fit:cover;object-position:52% 67%;box-shadow:0 24px 45px #1d29291c}
-.hero-detail{position:absolute;bottom:0;left:0;width:42%;height:190px;object-fit:cover;object-position:center;border:8px solid #f7f4ee;box-shadow:0 10px 25px #1d29292b}
+.hero-detail{position:absolute;bottom:0;left:0;width:42%;height:190px;object-fit:cover;object-position:center;border:8px solid #fff;box-shadow:0 10px 25px #1d29292b}
 .media-caption{position:absolute;right:19px;bottom:58px;color:#fff;background:#1d2929e8;border-right:3px solid #ca905a;padding:11px 15px;font-size:.75rem;font-weight:700}
+.media-side{position:absolute;top:4px;left:0;writing-mode:vertical-rl;transform:rotate(180deg);color:#92603a;font-size:.63rem;font-weight:800;letter-spacing:.08em}
 .scope{background:#1d2929;color:#f5eee2}
 .scope .container{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
 .scope span{position:relative;display:flex;align-items:center;justify-content:center;gap:11px;min-height:78px;font-size:.89rem;font-weight:700;text-align:center}
@@ -54,37 +55,41 @@ const html = `<!doctype html>
 .section-heading h2,.process h2,.final h2{font-size:clamp(1.9rem,3vw,2.7rem);line-height:1.55;letter-spacing:-.025em}
 .section-heading h2{max-width:690px;margin-top:14px}
 .section-heading p{max-width:390px;color:#62706a;font-size:.91rem}
-.services-section{background:#fffdf9}
+.services-section{background:#fff;border-bottom:1px solid #ededeb}
 .services{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
-.service{position:relative;min-height:254px;padding:32px 35px;background:#f7f4ee;border:1px solid #e9e3da;overflow:hidden}
+.service{position:relative;min-height:254px;padding:32px 35px;background:#fff;border:1px solid #e6e7e3;box-shadow:0 12px 35px #1d292908;overflow:hidden;transition:transform .25s,box-shadow .25s}
+.service:before{content:"";position:absolute;top:0;right:0;width:58px;height:3px;background:#b57640}
 .service:after{content:"";position:absolute;left:0;bottom:0;width:0;height:3px;background:#b57640;transition:width .3s}
-.service:hover:after{width:100%}
+.service:hover{transform:translateY(-4px);box-shadow:0 18px 40px #1d292914}.service:hover:after{width:100%}
 .service-top{display:flex;align-items:center;justify-content:space-between;color:#9b6336;margin-bottom:27px}
-.service-number{font-weight:800;font-size:1.5rem;line-height:1}.service-rule{width:47px;height:1px;background:#b9a48e}
+.service-number{display:grid;place-items:center;width:51px;height:51px;border:1px solid #e1cbbb;border-radius:50%;font-weight:800;font-size:1.08rem;line-height:1;background:#fcfaf8}.service-rule{width:47px;height:1px;background:#cbb6a0}
 .service h3{font-size:1.25rem;line-height:1.6;margin-bottom:9px}.service p{max-width:45ch;color:#61706a;font-size:.89rem}
-.section-cta{margin-top:19px;padding:22px 27px;background:#eae0d2;display:flex;align-items:center;justify-content:space-between;gap:22px}
+.section-cta{margin-top:19px;padding:22px 27px;background:#f8f8f6;border:1px solid #e6e7e3;border-right:3px solid #b57640;display:flex;align-items:center;justify-content:space-between;gap:22px}
 .section-cta p{font-size:.94rem;font-weight:700}.section-cta a{font-size:.9rem;font-weight:800;text-decoration:none;color:#804d29;border-bottom:2px solid #b57640;padding-bottom:3px;white-space:nowrap}
-.proof{background:#1d2929;color:#fff}
-.proof .label{color:#dda977}.proof .section-heading p{color:#c7d0ca}
+.proof{background:#fff;color:#1d2929;border-bottom:1px solid #ededeb}
+.proof .label{color:#9c6335}.proof .section-heading p{color:#62706a}
 .projects{display:grid;grid-template-columns:1.14fr .86fr;gap:20px}
-.project{background:#f6f3ed;color:#1d2929;overflow:hidden}
+.project{background:#fff;color:#1d2929;border:1px solid #e6e7e3;box-shadow:0 15px 38px #1d29290d;overflow:hidden}
 .project-photo{position:relative;height:320px;overflow:hidden}.project-photo img{display:block;width:100%;height:100%;object-fit:cover}
 .project:first-child .project-photo img{object-position:center 44%}.project:nth-child(2) .project-photo img{object-position:center 56%}
-.project-index{position:absolute;top:0;right:0;background:#b57640;color:#fff;padding:8px 15px;font-size:.76rem;font-weight:800}
+.project-index{position:absolute;top:0;right:0;background:#1d2929;color:#fff;border-top:3px solid #b57640;padding:8px 15px;font-size:.76rem;font-weight:800}
 .project-copy{padding:24px 27px 27px}.project-copy small{display:block;color:#9a6238;font-size:.76rem;font-weight:800;margin-bottom:8px}
 .project-copy h3{font-size:1.2rem;line-height:1.55;margin-bottom:5px}.project-copy p{font-size:.85rem;color:#63706a}
-.proof-note{color:#bbc9c1;margin-top:21px;font-size:.76rem}
-.process{background:#f7f4ee}.process-grid{display:grid;grid-template-columns:.77fr 1.23fr;gap:clamp(40px,7vw,110px)}
+.proof-note{color:#69726d;margin-top:21px;font-size:.76rem}
+.process{background:#fff}.process-grid{display:grid;grid-template-columns:.77fr 1.23fr;gap:clamp(40px,7vw,110px)}
 .process h2{margin:14px 0 15px}.process-intro p{font-size:.95rem;color:#62706a;max-width:37ch}
 .process-steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 27px}
-.step{border-top:1px solid #d7cfc3;padding:20px 0 28px}
+.step{border-top:1px solid #d9ded9;padding:20px 0 28px}
 .step span{display:block;color:#a56b3d;font-size:.78rem;font-weight:800;margin-bottom:9px}.step h3{font-size:1rem;line-height:1.55;margin-bottom:6px}
 .step p{color:#66716a;font-size:.82rem}
-.final{background:#b57640;color:#fff;padding:clamp(55px,7vw,86px) 0}
-.final-grid{display:flex;align-items:center;justify-content:space-between;gap:40px}.final .eyebrow{color:#fff6e9}.final .eyebrow:before{background:#fff6e9}
+.final{background:#fff;padding:0 0 clamp(56px,7vw,92px)}
+.final-grid{position:relative;isolation:isolate;display:flex;align-items:center;justify-content:space-between;gap:40px;overflow:hidden;background:#1d2929;color:#fff;padding:clamp(40px,5vw,68px)}
+.final-grid:before{content:"";position:absolute;z-index:0;left:-80px;top:-95px;width:310px;height:310px;border:1px solid #ffffff26;border-radius:50%;box-shadow:0 0 0 44px #ffffff08,0 0 0 88px #ffffff06}
+.final-grid>*{position:relative;z-index:1}
+.final .eyebrow{color:#dcb184}.final .eyebrow:before{background:#dcb184}
 .final h2{max-width:720px;margin:14px 0 10px}.final p{color:#fff4e9;font-size:.94rem}
-.final .call{background:#1d2929;min-width:235px}.final .call:hover{background:#354541}
-.footer{background:#172222;color:#d9dfd8;padding:25px 0;font-size:.78rem}
+.final .call{background:#b57640;min-width:235px}.final .call:hover{background:#935b31}
+.footer{background:#fff;color:#53615b;border-top:1px solid #ededeb;padding:25px 0;font-size:.78rem}
 .footer .container{display:flex;align-items:center;justify-content:space-between;gap:18px}
 .footer a{text-underline-offset:4px}.mobile-call{display:none}
 a:focus-visible{outline:3px solid #f1ae5e;outline-offset:4px}
@@ -98,7 +103,7 @@ a:focus-visible{outline:3px solid #f1ae5e;outline-offset:4px}
  .top .container{min-height:66px}.brand{gap:7px;font-size:.79rem}.brand img{width:48px;height:34px}
  .top-phone{min-height:39px;padding:7px 11px;font-size:.8rem;gap:6px}.top-phone svg{width:16px;height:16px}
  .desktop-number{display:none}.mobile-label{display:inline}
- .hero:before{width:33%;height:100%;opacity:.8}
+ .hero:before{width:32%;height:100%;opacity:.28}
  .hero-grid{display:flex;flex-direction:column;align-items:stretch;gap:27px;padding-block:39px 42px}
  .hero-copy{padding:0}.eyebrow,.label{font-size:.73rem;gap:8px}.eyebrow:before,.label:before{width:23px}
  .hero h1{font-size:clamp(2.1rem,8vw,3rem);line-height:1.42;margin:14px 0 12px}
@@ -106,14 +111,14 @@ a:focus-visible{outline:3px solid #f1ae5e;outline-offset:4px}
  .hero-action .call{width:100%;min-height:53px;font-size:.91rem}.action-note{display:block;width:100%;text-align:center;font-size:.73rem}
  .hero-media{min-height:330px}.hero-media:before{inset:16px 0 20px 35px;transform:translate(-8px,8px)}
  .hero-main{inset:0 0 26px 22px;width:calc(100% - 22px);height:calc(100% - 26px);object-position:50% 67%}
- .hero-detail{height:119px;width:39%;border-width:5px}.media-caption{right:10px;bottom:42px;font-size:.65rem;padding:6px 9px}
+ .hero-detail{height:119px;width:39%;border-width:5px}.media-caption{right:10px;bottom:42px;font-size:.65rem;padding:6px 9px}.media-side{font-size:.55rem;left:1px}
  .scope .container{grid-template-columns:repeat(2,minmax(0,1fr))}.scope span{min-height:53px;font-size:.76rem;gap:7px}
  .scope span:nth-child(3),.scope span:nth-child(4){border-top:1px solid #ffffff20}.scope span:nth-child(3):before{display:none}
  .section{padding:57px 0}.section-heading{display:block;margin-bottom:23px}
  .section-heading h2,.process h2,.final h2{font-size:clamp(1.7rem,6vw,2.15rem);line-height:1.52}
  .section-heading h2{margin:10px 0}.section-heading p{font-size:.85rem}
  .services{grid-template-columns:1fr;gap:10px}.service{min-height:auto;padding:20px 21px}
- .service-top{margin-bottom:11px}.service-number{font-size:1.15rem}.service-rule{width:30px}
+ .service-top{margin-bottom:11px}.service-number{width:38px;height:38px;font-size:.88rem}.service-rule{width:30px}
  .service h3{font-size:1.06rem;margin-bottom:4px}.service p{font-size:.81rem}
  .section-cta{padding:18px 20px;display:block;margin-top:12px}.section-cta p{font-size:.85rem}
  .section-cta a{display:inline-block;margin-top:9px;font-size:.83rem}
@@ -122,10 +127,10 @@ a:focus-visible{outline:3px solid #f1ae5e;outline-offset:4px}
  .proof-note{font-size:.72rem;margin-top:16px}
  .process-grid{grid-template-columns:1fr;gap:25px}.process h2{margin:9px 0}.process-intro p{font-size:.85rem}
  .process-steps{gap:0 17px}.step{padding:15px 0 20px}.step h3{font-size:.9rem}.step p{font-size:.75rem}
- .final{padding:55px 0 58px}.final-grid{display:block}.final h2{margin:11px 0 9px}.final p{font-size:.85rem}
+ .final{padding:0 0 58px}.final-grid{display:block;padding:38px 25px}.final h2{margin:11px 0 9px}.final p{font-size:.85rem}
  .final .call{width:100%;margin-top:23px;min-height:53px}
  .footer{padding:22px 0 calc(91px + env(safe-area-inset-bottom))}.footer .container{display:block}.footer a{display:inline-block;margin-top:6px}
- .mobile-call{display:block;position:fixed;inset:auto 0 0;z-index:50;background:#fffdf9;padding:9px 15px max(9px,env(safe-area-inset-bottom));box-shadow:0 -8px 26px #17222227;border-top:1px solid #dfd4c5}
+ .mobile-call{display:block;position:fixed;inset:auto 0 0;z-index:50;background:#fff;padding:9px 15px max(9px,env(safe-area-inset-bottom));box-shadow:0 -8px 26px #17222227;border-top:1px solid #e6e7e3}
  .mobile-call .call{width:100%;min-height:51px;background:#1d2929;font-size:.88rem;box-shadow:none}
 }
 @media(max-width:390px){
@@ -133,7 +138,7 @@ a:focus-visible{outline:3px solid #f1ae5e;outline-offset:4px}
  .hero h1{font-size:1.92rem}.hero-media{min-height:280px}.hero-detail{height:100px}
  .process-steps{grid-template-columns:1fr}.step{padding:13px 0}.scope span{font-size:.71rem}
 }
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.call,.top-phone,.service:after{transition:none}.call:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.call,.top-phone,.service,.service:after{transition:none}.call:hover,.service:hover{transform:none}}
 </style>
 <script src="/assets/js/tawod-analytics.js" defer></script>
 </head>
@@ -154,11 +159,12 @@ a:focus-visible{outline:3px solid #f1ae5e;outline-offset:4px}
     <img class="hero-main" src="/images/projects/project-villa-facade-marble-ceramic-manar.webp" width="1536" height="1024" alt="واجهات فلل من أعمال شركة تعاود" fetchpriority="high" decoding="async">
     <img class="hero-detail" src="/images/projects/project-skylight-villa-manar.webp" width="1536" height="1024" alt="أعمال داخلية من مشاريع تعاود" loading="lazy" decoding="async">
     <span class="media-caption">مشاهد من مشاريع تعاود</span>
+    <span class="media-side" aria-hidden="true">TAWOD · RIYADH</span>
   </div>
 </div></section>
 <div class="scope" aria-label="خدمات تعاود"><div class="container"><span><i aria-hidden="true"></i>بناء عظم</span><span><i aria-hidden="true"></i>تشطيبات</span><span><i aria-hidden="true"></i>تسليم مفتاح</span><span><i aria-hidden="true"></i>ديكور داخلي</span></div></div>
 <section class="section services-section" id="services" aria-labelledby="services-title"><div class="container">
-  <div class="section-heading"><div><span class="label">خدمات تعاود</span><h2 id="services-title">حلول تنفيذ تناسب كل مرحلة من مشروعك</h2></div><p>تحدد متطلباتك نقطة البداية. من أعمال الإنشاء إلى التشطيبات، نناقش نطاق التنفيذ بناءً على المخططات وحالة المشروع.</p></div>
+  <div class="section-heading"><div><span class="label">01 / خدمات تعاود</span><h2 id="services-title">حلول تنفيذ تناسب كل مرحلة من مشروعك</h2></div><p>تحدد متطلباتك نقطة البداية. من أعمال الإنشاء إلى التشطيبات، نناقش نطاق التنفيذ بناءً على المخططات وحالة المشروع.</p></div>
   <div class="services">
     <article class="service"><div class="service-top"><span class="service-number">01</span><span class="service-rule" aria-hidden="true"></span></div><h3>بناء العظم والإنشاءات</h3><p>تنفيذ الهيكل الإنشائي للفلل والملاحق والمباني وفق المخططات ونطاق المشروع.</p></article>
     <article class="service"><div class="service-top"><span class="service-number">02</span><span class="service-rule" aria-hidden="true"></span></div><h3>تشطيب الفلل والمباني</h3><p>الأرضيات والدهانات والأسقف والأعمال الكهربائية والصحية ضمن نطاق التشطيب المتفق عليه.</p></article>
@@ -168,7 +174,7 @@ a:focus-visible{outline:3px solid #f1ae5e;outline-offset:4px}
   <div class="section-cta"><p>لا تعرف من أين تبدأ؟ أخبرنا بموقع مشروعك ومرحلته.</p><a href="tel:+966501047331" data-contact-channel="phone" data-contact-service="مقاولات عامة" data-contact-position="services">اتصل بفريق تعاود ←</a></div>
 </div></section>
 <section class="section proof" id="projects" aria-labelledby="projects-title"><div class="container">
-  <div class="section-heading"><div><span class="label">من أعمالنا المنشورة</span><h2 id="projects-title">مشاريع من أرض الواقع في الرياض</h2></div><p>شاهد أمثلة على مراحل تنفيذ مختلفة. لكل مشروع متطلباته الخاصة، ونناقش تفاصيل مشروعك بعد الاطلاع عليها.</p></div>
+  <div class="section-heading"><div><span class="label">02 / من أعمالنا المنشورة</span><h2 id="projects-title">مشاريع من أرض الواقع في الرياض</h2></div><p>شاهد أمثلة على مراحل تنفيذ مختلفة. لكل مشروع متطلباته الخاصة، ونناقش تفاصيل مشروعك بعد الاطلاع عليها.</p></div>
   <div class="projects">
     <article class="project"><div class="project-photo"><img src="/images/projects/faisaliah-villa-facades-finishing-01-v3.webp" width="1152" height="768" loading="lazy" decoding="async" alt="أعمال واجهات وتشطيبات فيلا بحي الفيصلية في الرياض"><span class="project-index">01 / تشطيبات</span></div><div class="project-copy"><small>حي الفيصلية · الرياض</small><h3>واجهات وتشطيبات فيلا سكنية</h3><p>أعمال لياسة ورخام وسيراميك ضمن مشروع بمساحة 900 م².</p></div></article>
     <article class="project"><div class="project-photo"><img src="/images/projects/arouba-mosque-villas-01.webp" width="1152" height="768" loading="lazy" decoding="async" alt="أعمال إنشاء مشروع مسجد وفلّتين بحي العروبة في الرياض"><span class="project-index">02 / تسليم مفتاح</span></div><div class="project-copy"><small>حي العروبة · الرياض</small><h3>مشروع مسجد وفلّتين</h3><p>تنفيذ تسليم مفتاح لمشروع بمساحة 1,800 م².</p></div></article>
@@ -176,7 +182,7 @@ a:focus-visible{outline:3px solid #f1ae5e;outline-offset:4px}
   <p class="proof-note">الصور تعرض مراحل من أعمال منفذة؛ نطاق كل مشروع يختلف بحسب المخططات والمتطلبات.</p>
 </div></section>
 <section class="section process" id="process" aria-labelledby="process-title"><div class="container process-grid">
-  <div class="process-intro"><span class="label">مكالمة أولى أكثر فائدة</span><h2 id="process-title">أربع معلومات تختصر بداية المشروع</h2><p>جهز هذه التفاصيل عند الاتصال حتى نفهم طلبك ونحدد معك الخطوة التالية بوضوح.</p></div>
+  <div class="process-intro"><span class="label">03 / مكالمة أولى أكثر فائدة</span><h2 id="process-title">أربع معلومات تختصر بداية المشروع</h2><p>جهز هذه التفاصيل عند الاتصال حتى نفهم طلبك ونحدد معك الخطوة التالية بوضوح.</p></div>
   <div class="process-steps">
     <div class="step"><span>01 / الموقع</span><h3>نوع المشروع والحي</h3><p>فيلا أو مبنى أو ملحق، وموقعه داخل الرياض.</p></div>
     <div class="step"><span>02 / المرحلة</span><h3>ما الذي تحتاج تنفيذه؟</h3><p>بناء عظم أو تشطيب أو تسليم مفتاح أو ديكور.</p></div>
