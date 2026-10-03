@@ -43,6 +43,30 @@ body.tawod-contracting {
   background: linear-gradient(90deg, #eeb77e, #9b602f) !important;
   border-radius: 2px;
 }
+.tawod-contracting .nav-services-dropdown {
+  border-radius: 20px !important;
+  border-color: #e8ddce !important;
+  box-shadow: 0 20px 50px #62432615 !important;
+}
+.tawod-contracting .nav-services-dropdown a.nav-service-link {
+  border: 1px solid transparent;
+  border-radius: 13px;
+}
+.tawod-contracting .nav-services-dropdown a.nav-service-link:is(:hover, :focus-visible, .active) {
+  background: #fcf5eb !important;
+  border-color: #ecdbc5;
+}
+.tawod-contracting .nav-service-number {
+  border: 1px solid #ead5ba;
+  border-radius: 12px;
+  background: #fff5e8 !important;
+  color: #89592f !important;
+  font-size: .72rem;
+  font-weight: 600;
+}
+.tawod-contracting .nav-service-copy strong { font-size: .75rem; }
+.tawod-contracting .nav-service-copy small { font-size: .64rem; color: var(--muted); }
+.tawod-contracting :is(.sidebar-services-toggle, .nav-services-toggle) { color: var(--copper) !important; }
 .tawod-contracting .header-actions > .btn {
   background: #fff8f0 !important;
   border-color: #e4c29f !important;
@@ -432,6 +456,13 @@ html body.tawod-contracting .float-btns > .float-btn:focus-visible::after {
     min-height: 50px;
     border-radius: 19px;
   }
+}
+@media (max-width: 360px) {
+  .tawod-contracting .header > .container { width: calc(100% - 20px) !important; gap: 5px; }
+  .tawod-contracting .header .logo { padding-inline: 7px; min-height: 48px; }
+  .tawod-contracting .header :is(.logo img, .logo-img) { width: 86px !important; height: 38px !important; max-width: 86px !important; }
+  .tawod-contracting .header-actions { gap: 7px; }
+  .tawod-contracting .header-actions > .btn { font-size: .6rem !important; padding-inline: 10px !important; }
 }
 @media (prefers-reduced-motion: reduce) {
   .tawod-contracting .tawod-entered,
