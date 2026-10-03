@@ -32,7 +32,7 @@ function withoutImports(css) {
 }
 
 const vocabulary = cssVocabulary(
-  fs.readFileSync(path.join(root,'index.html'),'utf8')+' tawod-contracting contracting-brand-copy contracting-hero-grid contracting-icon contracting-city tawod-entered',
+  fs.readFileSync(path.join(root,'index.html'),'utf8')+' tawod-contracting contracting-brand-copy contracting-logo-art contracting-footer-group contracting-contact-space tawod-footer-in-view tawod-input-active contracting-hero-grid contracting-icon contracting-city tawod-entered',
   ['assets/js/tawod-home.js','assets/js/tawod-inner.js','assets/js/tawod-upgrades.js'].map(file=>fs.readFileSync(path.join(root,file),'utf8')).join('\n')
 );
 const legacySource = cssSources.filter(file=>!file.includes('tawod-contracting-')).map((file) => {
