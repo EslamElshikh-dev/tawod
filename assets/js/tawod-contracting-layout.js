@@ -9,8 +9,13 @@
       groups.forEach(group => {
         group.open = !compact.matches;
         const summary = group.querySelector('summary');
-        if (compact.matches) summary.removeAttribute('tabindex');
-        else summary.setAttribute('tabindex', '-1');
+        if (compact.matches) {
+          summary.removeAttribute('tabindex');
+          group.setAttribute('name', 'tawod-footer-nav');
+        } else {
+          summary.setAttribute('tabindex', '-1');
+          group.removeAttribute('name');
+        }
       });
     }
     arrange();

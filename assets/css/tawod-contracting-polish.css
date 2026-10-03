@@ -440,11 +440,11 @@ html body.tawod-contracting .float-btns > .float-btn {
 }
 html body.tawod-contracting .float-btns > .float-whatsapp {
   background: linear-gradient(145deg, #168e79, #117564);
-  color: #fff;
+  color: #fff !important;
 }
 html body.tawod-contracting .float-btns > .float-call {
   background: linear-gradient(145deg, #34343e, #1d1e26);
-  color: #f3bd83;
+  color: #f3bd83 !important;
 }
 html body.tawod-contracting .float-btns > .float-btn i { font-size: inherit; }
 html body.tawod-contracting .float-btns > .float-btn svg {
@@ -461,6 +461,12 @@ html body.tawod-contracting .float-call i {
 html body.tawod-contracting .float-btns > .float-btn::after {
   content: attr(aria-label);
   position: absolute;
+  z-index: 1;
+  right: auto;
+  bottom: auto;
+  width: auto;
+  height: auto;
+  animation: none !important;
   left: calc(100% + 18px);
   top: 50%;
   padding: 7px 13px;
@@ -503,6 +509,7 @@ html body.tawod-contracting.tawod-footer-in-view .float-btns > .float-btn {
 html body.tawod-contracting.tawod-footer-in-view .float-btns > .float-call {
   border-color: #74614e;
   background: #ffffff05;
+  color: #f3bd83 !important;
 }
 html body.tawod-contracting.tawod-footer-in-view .float-btns > .float-btn::after {
   position: static;
@@ -639,7 +646,7 @@ html body.tawod-contracting .float-btns > .float-btn:focus-visible::after {
   html body.tawod-contracting .float-btns > .float-call {
     background: #fbf4ea;
     border-color: #d7c0a7;
-    color: #684729;
+    color: #684729 !important;
   }
   html body.tawod-contracting .float-btns > .float-btn::after {
     position: static;
