@@ -21,6 +21,10 @@ const contactConversionFile = path.join(root, 'assets/js/contact-conversion.js')
 const contactConversionVersion = fs.existsSync(contactConversionFile)
   ? createHash('sha256').update(fs.readFileSync(contactConversionFile)).digest('hex').slice(0, 12)
   : null;
+const contactConversionCssFile = path.join(root, 'assets/css/contact-conversion.css');
+const contactConversionCssVersion = fs.existsSync(contactConversionCssFile)
+  ? createHash('sha256').update(fs.readFileSync(contactConversionCssFile)).digest('hex').slice(0, 12)
+  : null;
 const start = '<!-- TAWOD_ANALYTICS_START -->';
 const end = '<!-- TAWOD_ANALYTICS_END -->';
 const install = `${start}<script src="/assets/js/tawod-analytics.js?v=${version}" defer></script><script src="/assets/js/tawod-first-party.js?v=${firstPartyVersion}" defer></script><script src="/assets/js/tawod-whatsapp-attribution.js?v=${whatsappAttributionVersion}" defer></script>${end}`;
@@ -38,6 +42,7 @@ const analyticsScriptPattern = /\s*<script\b[^>]*\bsrc=["']\/assets\/js\/tawod-a
 const firstPartyScriptPattern = /\s*<script\b[^>]*\bsrc=["']\/assets\/js\/tawod-first-party\.js(?:\?v=[^"']*)?["'][^>]*><\/script>\s*/gi;
 const whatsappAttributionScriptPattern = /\s*<script\b[^>]*\bsrc=["']\/assets\/js\/tawod-whatsapp-attribution\.js(?:\?v=[^"']*)?["'][^>]*><\/script>\s*/gi;
 const contactConversionUrlPattern = /assets\/js\/contact-conversion\.js(?:\?v=[^"']*)?/gi;
+const contactConversionCssUrlPattern = /assets\/css\/contact-conversion\.css(?:\?v=[^"']*)?/gi;
 const legacyHomeTag = /\s*<!-- Google tag: queued immediately,[\s\S]*?-->\s*<script>[\s\S]*?<\/script>\s*/i;
 const inlineScript = /<script\b(?![^>]*\bsrc=)[^>]*>[\s\S]*?<\/script>\s*/gi;
 const formName = (file) => {
@@ -81,6 +86,9 @@ for (const file of walk(root).filter((candidate) => {
   html = normalizeLeadForms(html, relative(file));
   if (contactConversionVersion) {
     html = html.replace(contactConversionUrlPattern, `assets/js/contact-conversion.js?v=${contactConversionVersion}`);
+  }
+  if (contactConversionCssVersion) {
+    html = html.replace(contactConversionCssUrlPattern, `assets/css/contact-conversion.css?v=${contactConversionCssVersion}`);
   }
   html = html.replace(/[ \t]+$/gm, '').replace(/\n{3,}/g, '\n\n');
 

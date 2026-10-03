@@ -3,6 +3,7 @@ import path from 'node:path';
 import process from 'node:process';
 import {createHash} from 'node:crypto';
 import {articleRole,legacyTopicHubSlugs,topicForArticle,topicForService,topicUrl} from './blog-topic-data.mjs';
+import {optimizePaidServicePage} from './optimize-paid-service-pages.mjs';
 
 const root=process.cwd(),check=process.argv.includes('--check'),domain='https://tawodco.com',date='2026-07-13';
 const marks=['TRUST','TOC','TAKEAWAYS','TOOLS','TOPIC','RELATED','GUIDES','DECISION','CONTEXT','FAQ','SCHEMA'];
@@ -179,6 +180,7 @@ for(const f of walk(root).filter(x=>x.endsWith('.html')&&!rel(x).startsWith('ass
     if(s.indexable&&s.article)h=insertBeforeHeadEnd(h,articleSchema(r,h,c,questions,stats,metadata));
     else if(s.indexable){const hasPageSchema=/"@type"\s*:\s*"WebPage"/.test(h),hasBreadcrumb=/"@type"\s*:\s*"BreadcrumbList"/.test(h),hasFaqSchema=/"@type"\s*:\s*"FAQPage"/.test(h),hasSchemas=hasPageSchema&&hasBreadcrumb&&(!questions.length||hasFaqSchema);if(!hasSchemas)h=insertBeforeHeadEnd(h,pageSchema(r,h,c,questions,pageRefreshDates.get(r)||existingDate))}
   }
+  h=optimizePaidServicePage(h,r);
   h=h.replace(/[ \t]+$/gm,'').replace(/\n{3,}/g,'\n\n');
   if(h!==old){changes.push(r);if(!check)fs.writeFileSync(f,h)}
 }
