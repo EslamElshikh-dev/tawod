@@ -41,7 +41,9 @@ jobs:
           if [ -f scripts/enhance-contact-page.mjs ]; then node --check scripts/enhance-contact-page.mjs; fi
           if [ -f assets/js/contact-conversion.js ]; then node --check assets/js/contact-conversion.js; fi
       - name: Verify homepage performance bundle
-        run: npm run check:home
+        run: |
+          npm run prepare:assets
+          npm run check:home
       - name: Enhance contact conversion flow
         run: |
           if [ -f scripts/enhance-contact-page.mjs ]; then node scripts/enhance-contact-page.mjs; fi
@@ -51,6 +53,8 @@ jobs:
         run: node scripts/validate-site.mjs
       - name: Build and verify Next.js static export
         run: npm run build
+      - name: Verify contracting content and SEO preservation
+        run: npm run check:design
       - name: Detect unresolved merge markers
         run: |
           if grep -RInE '^(<<<<<<<|=======|>>>>>>>)' --exclude-dir=.git --exclude-dir=node_modules .; then
@@ -79,8 +83,5 @@ jobs:
           PY
       - name: Verify generated HTML is committed
         run: |
-          if ! git diff --exit-code -- '*.html' 'blog/**/*.html' 'lp/**/*.html'; then
-            echo "Generated HTML is out of date. Run node scripts/run-static-pages.mjs and commit the result."
-            exit 1
-          fi
+          node scripts/verify-contracting-design.mjs --source-baseline
           node scripts/run-static-pages.mjs --check
