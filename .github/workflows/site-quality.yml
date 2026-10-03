@@ -81,7 +81,7 @@ jobs:
               raise SystemExit(1)
           print(f'Asset-size checks passed for {len(changed)} changed files.')
           PY
-      - name: Verify generated HTML is committed
+      - name: Verify generated public content
         run: |
           node scripts/verify-contracting-design.mjs --source-baseline
           node scripts/run-static-pages.mjs --check

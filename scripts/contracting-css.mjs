@@ -10,7 +10,8 @@ export function cssVocabulary(html, interactionCode = '') {
 export function compileContractingCss(source, vocabulary, filename, layoutOnly = false) {
   return transform({filename,code:Buffer.from(source),minify:true,visitor:{
     Declaration(declaration) {
-      if (layoutOnly && /^(?:background(?:-|$)|border(?:-|$)|color$|font(?:-|$)|box-shadow$|text-shadow$|filter$|backdrop-filter$|letter-spacing$)/.test(declaration.property)) return [];
+      const property=declaration.property==='unparsed'?declaration.value.propertyId.property:declaration.property;
+      if (layoutOnly && /^(?:background(?:-|$)|border(?:-|$)|color$|font(?:-|$)|box-shadow$|text-shadow$|filter$|backdrop-filter$|letter-spacing$)/.test(property)) return [];
     },
     Rule:{
       'font-face'() { if(layoutOnly) return []; },

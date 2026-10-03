@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
+import { isDeepStrictEqual } from 'node:util';
 import { applyContractingDesign } from '../lib/contracting-design.mjs';
 import { pageStyles } from '../lib/contracting-design-assets.mjs';
 
@@ -17,9 +18,13 @@ const state=html=>({
   forms:matches(html,/<form\b[^>]*>|<(?:input|select|textarea)\b[^>]*>/gi),
   scripts:matches(html,/<script\b(?=[^>]*\bsrc=)[^>]*>/gi).filter(t=>!t.includes('/assets/js/tawod-contracting-ui.js')).map(t=>t.replace(/\?v=[^"'\s>]+/g,''))
 });
+const verifyState=(actual,expected,message)=>{
+  const changed=Object.keys(expected).filter(key=>!isDeepStrictEqual(actual[key],expected[key]));
+  assert.equal(changed.length,0,`${message}: ${changed.join(', ')}`);
+};
 for(const file of Object.keys(pageStyles)) {
   const before=fs.readFileSync(file,'utf8'),after=applyContractingDesign(file,before);
-  assert.deepEqual(state(after),state(before),`${file}: original copy, SEO, form or tracking changed`);
+  verifyState(state(after),state(before),`${file}: original copy, SEO, form or tracking changed`);
   assert.equal(applyContractingDesign(file,after),after,`${file}: rendering is not idempotent`);
   assert.ok(after.includes('data-contracting-design="2026-10"'));
   if(file!=='index.html') {
@@ -32,12 +37,24 @@ for(const file of ['maintenance/index.html','maintenance/services.html','admin.h
   const before=fs.readFileSync(file,'utf8');assert.equal(applyContractingDesign(file,before),before,`${file}: design leaked outside contracting pages`);
 }
 if(process.argv.includes('--source-baseline')) {
+  // The existing analytics installer adds these scripts to maintenance pages
+  // that do not yet contain them. All original scripts must still be retained;
+  // the installed first-party scripts must occur exactly once, in this order.
+  const installedTracking=[
+    '<script src="/assets/js/tawod-analytics.js" defer>',
+    '<script src="/assets/js/tawod-first-party.js" defer>',
+    '<script src="/assets/js/tawod-whatsapp-attribution.js" defer>'
+  ];
   const urls=[...fs.readFileSync('sitemap.xml','utf8').matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>new URL(m[1]).pathname);
   for(const pathname of urls) {
     const file=pathname==='/'?'index.html':pathname.endsWith('/')?`${pathname.slice(1)}index.html`:pathname.slice(1);
     const committed=execFileSync('git',['show',`HEAD:${file}`],{encoding:'utf8'});
-    assert.deepEqual(state(fs.readFileSync(file,'utf8')),state(committed),`${file}: generation changed committed copy, SEO, links, forms or tracking`);
+    const actual=state(fs.readFileSync(file,'utf8')),expected=state(committed);
+    assert.deepEqual(actual.scripts.filter(tag=>installedTracking.includes(tag)),installedTracking,`${file}: generated analytics scripts must be installed once, in order`);
+    actual.scripts=actual.scripts.filter(tag=>!installedTracking.includes(tag));
+    expected.scripts=expected.scripts.filter(tag=>!installedTracking.includes(tag));
+    verifyState(actual,expected,`${file}: generation changed committed copy, SEO, links, forms or tracking`);
   }
-  console.log(`Verified generated source semantics against the committed baseline for ${urls.length} public pages; only presentation and cache revisions may differ.`);
+  console.log(`Verified generated source semantics against the committed baseline for ${urls.length} public pages; presentation, cache revisions and installation of the existing analytics scripts may differ.`);
 }
 console.log(`Verified ${Object.keys(pageStyles).length} contracting pages: original content, SEO, link targets, forms and tracking preserved; local CSS/icons; idempotent rendering.`);
