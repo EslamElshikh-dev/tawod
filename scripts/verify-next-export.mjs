@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, relative, sep } from "node:path";
+import { applyContractingDesign } from '../lib/contracting-design.mjs';
 
 const root = process.cwd();
 const outputDirectory = join(root, "out");
@@ -22,7 +23,7 @@ const intentionalHtmlTransforms = new Map([
   [
     "projects.html",
     [
-      'href="assets/css/tawod-projects-showcase.css?v=',
+      'data-contracting-design="2026-10"',
       'data-project="faisaliah-villa-facades-finishing"',
       'data-project="villa-plaster-ceramic-marble-uhud-riyadh"',
       'data-project="alrajhi-tanks-king-salman-park"',
@@ -135,9 +136,9 @@ function optimizeArticleMarkup(relativePath, html) {
 function expectedExportHtml(relativePath, html) {
   if (relativePath === "404.html") return normalizeInternalHomepageLinks(html);
   return versionLocalAssets(
-    optimizeFontLoading(
+    applyContractingDesign(relativePath, optimizeFontLoading(
       optimizeArticleMarkup(relativePath, normalizeInternalHomepageLinks(html)),
-    ),
+    )),
   );
 }
 

@@ -2,10 +2,10 @@
   "name": "tawod-nextjs-site",
   "private": true,
   "scripts": {
-    "predev": "node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/install-site-analytics.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "predev": "node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/install-site-analytics.mjs && node scripts/build-contracting-design.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/install-site-analytics.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
-    "prepare:assets": "node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/install-site-analytics.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "prebuild": "node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/install-site-analytics.mjs && node scripts/build-contracting-design.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "prepare:assets": "node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/install-site-analytics.mjs && node scripts/build-contracting-design.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "build:maintenance": "node scripts/build-maintenance-site.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "build": "next build",
     "postbuild": "node scripts/finalize-next-export.mjs && node scripts/verify-next-export.mjs",
@@ -14,7 +14,6 @@
     "build:analytics": "node scripts/install-site-analytics.mjs",
     "check:analytics": "node scripts/install-site-analytics.mjs --check",
     "test:analytics": "node scripts/test-analytics.mjs",
-    "test:contact-submission": "node scripts/test-contact-submission.mjs",
     "test:command-center": "node scripts/test-command-center.mjs",
     "test:sales-workspace": "node scripts/test-sales-workspace.mjs",
     "build:static": "node scripts/build-static-pages.mjs && node scripts/install-site-analytics.mjs",
@@ -41,10 +40,13 @@
     "generate:bone-series": "node scripts/generate-seo-cluster-2026-08-23.mjs && node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/install-site-analytics.mjs && node scripts/build-static-pages.mjs && node scripts/install-site-analytics.mjs",
     "check:bone-series": "node scripts/validate-bone-construction-series.mjs && node scripts/validate-bone-construction-decision-guides.mjs",
     "validate:site": "node scripts/validate-site.mjs",
-    "check": "npm run prepare:assets && npm run typecheck && npm run check:analytics && npm run test:analytics && npm run test:contact-submission && npm run test:social-attribution && npm run test:command-center && npm run test:sales-workspace && npm run check:static && npm run check:home && npm run check:mobile-performance && npm run check:blog && npm run check:blogger-redirects && npm run check:blog-architecture && npm run check:bone-series && npm run check:seo-ownership && npm run check:branches && npm run check:dammam && npm run check:khobar && npm run check:dhahran && npm run check:city-distinctness && npm run validate:site && npm run build",
+    "check": "npm run prepare:assets && npm run typecheck && npm run check:design && npm run check:analytics && npm run test:analytics && npm run test:contact-submission && npm run test:social-attribution && npm run test:command-center && npm run test:sales-workspace && npm run check:static && npm run check:home && npm run check:mobile-performance && npm run check:blog && npm run check:blogger-redirects && npm run check:blog-architecture && npm run check:bone-series && npm run check:seo-ownership && npm run check:branches && npm run check:dammam && npm run check:khobar && npm run check:dhahran && npm run check:city-distinctness && npm run validate:site && npm run build",
     "sync:branches": "node scripts/business-branches.mjs",
     "check:branches": "node scripts/business-branches.mjs --check && node scripts/test-business-branches.mjs",
-    "test:social-attribution": "node scripts/test-social-attribution.mjs"
+    "test:social-attribution": "node scripts/test-social-attribution.mjs",
+    "build:design": "node scripts/build-contracting-design.mjs",
+    "check:design": "node scripts/verify-contracting-design.mjs",
+    "test:contact-submission": "node scripts/test-contact-submission.mjs"
   },
   "dependencies": {
     "next": "16.3.2",
@@ -53,6 +55,9 @@
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.8",
+    "@fortawesome/free-brands-svg-icons": "6.5.2",
+    "@fortawesome/free-regular-svg-icons": "6.5.2",
+    "@fortawesome/free-solid-svg-icons": "6.5.2",
     "@types/node": "^24.0.0",
     "@types/react": "19.2.18",
     "@types/react-dom": "^19.2.3",

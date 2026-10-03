@@ -12,3 +12,8 @@ public/
 /images/projects/modon-eight-warehouses-01-v3.webp
 /images/projects/modon-eight-warehouses-02-v3.webp
 /images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp
+
+# Generated contracting design assets, rebuilt before Next export.
+/assets/css/tawod-contracting-??????????.css
+/assets/js/tawod-contracting-ui.js
+/lib/contracting-design-assets.mjs

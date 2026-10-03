@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { applyContractingDesign } from '../lib/contracting-design.mjs';
 
 const root = process.cwd();
 const outputDirectory = join(root, "out");
@@ -22,12 +23,12 @@ if (!existsSync(rootRouteOutput)) {
   throw new Error("Next.js did not create the static root route output.");
 }
 
-const approvedHomepage = normalizeInternalHomepageLinks(
+const approvedHomepage = applyContractingDesign('index.html', normalizeInternalHomepageLinks(
   readFileSync(rootHtmlSource, "utf8").replaceAll(
     ">فيلا حي الفيصلية<",
     ">فيلا سكنية | حي الفيصلية<",
   ),
-);
+));
 
 if (readFileSync(rootRouteOutput, "utf8") !== approvedHomepage) {
   throw new Error("The exported root route differs from the approved homepage.");
