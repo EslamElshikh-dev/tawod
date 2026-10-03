@@ -8,6 +8,7 @@
      AW-18266173285/qi4gCLu5lsUcEOXe_oVE generate_lead transaction_id */
   var LEAD_SESSION_KEY = 'tawodLeadSubmitted';
   var LEAD_CONTEXT_VERSION = 3;
+  var CONFIRMED_LEADS_KEY = 'tawodConfirmedSubmissionsV1';
   var ATTRIBUTION_STORAGE_KEY = 'tawodAdsAttributionV1';
   var ATTRIBUTION_PARAMS = ['gclid', 'gbraid', 'wbraid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
   var INTERACTION_LOAD_DELAY = 2000;
@@ -252,20 +253,23 @@
     });
   }
 
-  function trackFormSubmit(event) {
-    var form = event.target;
-    if (event.defaultPrevented || !isLeadForm(form)) return;
-
+  function prepareFormSubmission(form, options) {
+    if (!isLeadForm(form)) return null;
+    options = options || {};
     applyAttributionToForm(form);
     var service = form.querySelector ? form.querySelector('[name="الخدمة_المطلوبة"]') : null;
     var context = {
       version: LEAD_CONTEXT_VERSION,
-      submission_id: createSubmissionId(),
+      submission_id: options.submissionId || createSubmissionId(),
+      submission_mode: options.mode || 'native',
+      created_at: Date.now(),
       form_name: form.getAttribute('data-analytics-form') || 'contact_quote_request',
       form_source_path: window.location.pathname,
       service_type: service && service.value ? service.value : 'not_selected',
       attribution: readAttribution()
     };
+
+    upsertAttributionField(form, 'tawod_request_id', context.submission_id);
 
     try { window.sessionStorage.setItem(LEAD_SESSION_KEY, JSON.stringify(context)); } catch (error) {}
 
@@ -273,9 +277,19 @@
       form_name: context.form_name,
       form_source_path: context.form_source_path,
       service_type: context.service_type,
+      submission_id: context.submission_id,
       page_path: window.location.pathname,
       transport_type: 'beacon'
     });
+    if (typeof window.CustomEvent === 'function' && typeof document.dispatchEvent === 'function') {
+      document.dispatchEvent(new window.CustomEvent('tawod:form-attempt', { detail: context }));
+    }
+    return context;
+  }
+
+  function trackFormSubmit(event) {
+    if (event.defaultPrevented) return;
+    prepareFormSubmission(event.target);
   }
 
   function storedLeadContext() {
@@ -291,10 +305,15 @@
     }
   }
 
-  function trackConfirmedForm() {
-    if (!/(?:^|\/)thank-you\.html$/.test(window.location.pathname)) return;
-    var context = storedLeadContext();
-    if (!context) return;
+  function emitConfirmedForm(context, method) {
+    if (!context || !context.submission_id) return false;
+    var confirmed = [];
+    try { confirmed = JSON.parse(window.localStorage.getItem(CONFIRMED_LEADS_KEY) || '[]'); } catch (error) {}
+    if (!Array.isArray(confirmed)) confirmed = [];
+    if (confirmed.indexOf(context.submission_id) !== -1) return false;
+    confirmed.push(context.submission_id);
+    try { window.localStorage.setItem(CONFIRMED_LEADS_KEY, JSON.stringify(confirmed.slice(-50))); } catch (error) {}
+    try { window.sessionStorage.removeItem(LEAD_SESSION_KEY); } catch (error) {}
 
     track('tawod_form_confirmed', {
       lead_source: 'contact_form',
@@ -302,24 +321,45 @@
       form_source_path: context.form_source_path || 'unknown',
       service_type: context.service_type || 'unknown',
       submission_id: context.submission_id || 'unknown',
+      confirmation_method: method,
       page_path: window.location.pathname,
       transport_type: 'beacon'
     });
 
-    /* Standard GA4 lead event, emitted only after a real form submission reaches
-       the thank-you page. Google Ads can safely import this event without
-       treating page views or button clicks as leads. */
+    /* Provider acceptance is a received form, not a qualified sales opportunity.
+       Personal form fields are never included in Analytics event parameters. */
     track('generate_lead', {
       lead_source: 'contact_form',
       form_name: context.form_name,
       form_source_path: context.form_source_path || 'unknown',
       service_type: context.service_type || 'unknown',
       submission_id: context.submission_id || 'unknown',
+      confirmation_method: method,
       page_path: window.location.pathname,
       transport_type: 'beacon'
     });
 
-    try { window.sessionStorage.removeItem(LEAD_SESSION_KEY); } catch (error) {}
+    if (typeof window.CustomEvent === 'function' && typeof document.dispatchEvent === 'function') {
+      document.dispatchEvent(new window.CustomEvent('tawod:form-confirmed', { detail: context }));
+    }
+    return true;
+  }
+
+  function confirmFormSubmission(submissionId) {
+    var context = storedLeadContext();
+    if (!context || context.submission_mode !== 'ajax' || context.submission_id !== submissionId) return false;
+    return emitConfirmedForm(context, 'provider_acceptance');
+  }
+
+  function trackConfirmedForm() {
+    if (!/(?:^|\/)thank-you\.html$/.test(window.location.pathname)) return;
+    var context = storedLeadContext();
+    if (!context || context.submission_mode === 'ajax') return;
+    if (context.created_at && Date.now() - context.created_at > 60 * 60 * 1000) {
+      try { window.sessionStorage.removeItem(LEAD_SESSION_KEY); } catch (error) {}
+      return;
+    }
+    emitConfirmedForm(context, 'provider_redirect');
   }
 
   function injectFeaturedProject() {
@@ -342,7 +382,9 @@
     adsConversionsFromWebsite: false,
     load: loadGoogleTag,
     track: track,
-    captureAttribution: captureAttribution
+    captureAttribution: captureAttribution,
+    prepareFormSubmission: prepareFormSubmission,
+    confirmFormSubmission: confirmFormSubmission
   });
 
   captureAttribution();

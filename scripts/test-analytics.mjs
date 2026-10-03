@@ -205,6 +205,25 @@ assert.equal(confirmedGa4Leads[0][2].submission_id, 'submission-test-1');
 assert.equal(confirmedThankYou.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'conversion').length, 0, 'thank-you confirmation must remain GA4-only');
 assert.equal(confirmedThankYou.storage.has('tawodLeadSubmitted'), false, 'diagnostic form context must be consumed');
 
+const pendingAjax = runAnalytics({ pathname: '/thank-you.html', leadFlag: JSON.stringify({
+  version: 3, submission_id: 'pending-ajax', submission_mode: 'ajax', created_at: Date.now(),
+  form_name: 'contact_quote_request', form_source_path: '/contact.html', service_type: 'تشطيبات عامة'
+}) });
+assert.equal(pendingAjax.window.dataLayer.filter(item => item[1] === 'generate_lead').length, 0,
+  'an unacknowledged AJAX attempt must never become a lead by visiting thank-you');
+assert.equal(pendingAjax.window.TawodAnalytics.confirmFormSubmission('wrong-request'), false);
+assert.equal(pendingAjax.window.TawodAnalytics.confirmFormSubmission('pending-ajax'), true);
+assert.equal(pendingAjax.window.TawodAnalytics.confirmFormSubmission('pending-ajax'), false,
+  'the same request acknowledgement must be consumed exactly once');
+assert.equal(pendingAjax.window.dataLayer.filter(item => item[1] === 'generate_lead').length, 1);
+
+const expiredNative = runAnalytics({ pathname: '/thank-you.html', leadFlag: JSON.stringify({
+  version: 3, submission_id: 'expired-native', submission_mode: 'native',
+  created_at: Date.now() - 2 * 60 * 60 * 1000, form_name: 'contact_quote_request'
+}) });
+assert.equal(expiredNative.window.dataLayer.filter(item => item[1] === 'generate_lead').length, 0,
+  'stale submission attempts must not create a later lead');
+
 function htmlFiles(directory) {
   return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     if (['.git', '.next', 'node_modules', 'out', 'public'].includes(entry.name)) return [];

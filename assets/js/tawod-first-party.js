@@ -224,17 +224,12 @@
     );
   }
 
-  function trackFormSubmit(event) {
-    var form = event.target;
-    if (event.defaultPrevented || !isLeadForm(form)) return;
-    var service = form.querySelector ? form.querySelector('[name="الخدمة_المطلوبة"]') : null;
-    var context = {
-      submission_id: id('lead'),
-      form_name: form.getAttribute('data-analytics-form') || 'contact_quote_request',
-      form_source_path: window.location.pathname || '/',
-      service_type: service && service.value ? service.value : 'not_selected'
-    };
+  function recordFormAttempt(context) {
+    if (!context || !context.submission_id) return;
+    var previous = null;
+    try { previous = JSON.parse(read(window.sessionStorage, LEAD_KEY) || 'null'); } catch (e) {}
     write(window.sessionStorage, LEAD_KEY, JSON.stringify(context));
+    if (previous && previous.submission_id === context.submission_id) return;
     send('form_submit_attempt', {
       form_name: context.form_name,
       form_source_path: context.form_source_path,
@@ -243,18 +238,46 @@
     });
   }
 
-  function trackConfirmedLead() {
-    if (!/(?:^|\/)thank-you\.html$/.test(window.location.pathname)) return;
-    var context = null;
-    try { context = JSON.parse(read(window.sessionStorage, LEAD_KEY) || 'null'); } catch (e) {}
+  function trackFormSubmit(event) {
+    var form = event.target;
+    if (event.defaultPrevented || !isLeadForm(form)) return;
+    var service = form.querySelector ? form.querySelector('[name="الخدمة_المطلوبة"]') : null;
+    var requestId = form.querySelector ? form.querySelector('[name="tawod_request_id"]') : null;
+    var context = {
+      submission_id: requestId && requestId.value ? requestId.value : id('lead'),
+      submission_mode: 'native',
+      created_at: Date.now(),
+      form_name: form.getAttribute('data-analytics-form') || 'contact_quote_request',
+      form_source_path: window.location.pathname || '/',
+      service_type: service && service.value ? service.value : 'not_selected'
+    };
+    recordFormAttempt(context);
+  }
+
+  function recordConfirmedLead(context) {
     if (!context || !context.form_name) return;
+    var pending = null;
+    try { pending = JSON.parse(read(window.sessionStorage, LEAD_KEY) || 'null'); } catch (e) {}
+    if (!pending || pending.submission_id !== context.submission_id) return;
+    remove(window.sessionStorage, LEAD_KEY);
     send('generate_lead', {
       form_name: context.form_name,
       form_source_path: context.form_source_path || 'unknown',
       service_type: context.service_type || 'unknown',
       metadata: { submission_id: context.submission_id || null }
     });
-    remove(window.sessionStorage, LEAD_KEY);
+  }
+
+  function trackConfirmedLead() {
+    if (!/(?:^|\/)thank-you\.html$/.test(window.location.pathname)) return;
+    var context = null;
+    try { context = JSON.parse(read(window.sessionStorage, LEAD_KEY) || 'null'); } catch (e) {}
+    if (!context || context.submission_mode === 'ajax') return;
+    if (context.created_at && Date.now() - context.created_at > 60 * 60 * 1000) {
+      remove(window.sessionStorage, LEAD_KEY);
+      return;
+    }
+    recordConfirmedLead(context);
   }
 
   document.addEventListener('click', function (event) {
@@ -262,6 +285,8 @@
     trackArticleClick(event);
   }, true);
   document.addEventListener('submit', trackFormSubmit);
+  document.addEventListener('tawod:form-attempt', function (event) { recordFormAttempt(event.detail); });
+  document.addEventListener('tawod:form-confirmed', function (event) { recordConfirmedLead(event.detail); });
 
   send('page_view');
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initializeArticleTracking);
