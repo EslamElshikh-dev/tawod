@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { join } from "node:path";
 
 import { legacyHtmlFiles, legacyHtmlHashes } from "@/lib/legacy-html-files";
+import { applyContractingDesign } from './contracting-design.mjs';
 
 const siteRoot = process.cwd();
 const legacyHtmlFileSet = new Set<string>(legacyHtmlFiles);
@@ -203,7 +204,7 @@ function enhanceLegacyHtml(relativePath: string, html: string) {
   }
 
   return versionLocalAssets(
-    optimizeFontLoading(
+    applyContractingDesign(relativePath, optimizeFontLoading(
       optimizeArticleMarkup(
         relativePath,
         normalizeInternalHomepageLinks(
@@ -213,7 +214,7 @@ function enhanceLegacyHtml(relativePath: string, html: string) {
           ),
         ),
       ),
-    ),
+    )),
   );
 }
 
