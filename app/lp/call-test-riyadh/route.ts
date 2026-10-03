@@ -22,7 +22,7 @@ const html = `<!doctype html>
 .top{background:#fff;border-top:4px solid #b47640;border-bottom:1px solid #e9e8e5}
 .top .container{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:20px}
 .brand{display:flex;align-items:center;gap:13px;font-size:.97rem;font-weight:800;line-height:1.45}
-.brand img{display:block;width:65px;height:43px;object-fit:contain}
+.brand img{display:block;width:65px;height:43px;object-fit:contain}.brand-short{display:none}
 .top-phone{display:inline-flex;align-items:center;gap:10px;text-decoration:none;border:1px solid #cfc8bc;padding:9px 17px;font-weight:800;font-size:.87rem;white-space:nowrap;transition:background .2s,border-color .2s}
 .top-phone:hover{background:#f4eee5;border-color:#b47640}.top-phone svg,.call svg,.mobile-call svg{width:19px;height:19px;fill:currentColor;flex:none}
 .mobile-label{display:none}
@@ -133,32 +133,32 @@ a:focus-visible{outline:3px solid #f1ae5e;outline-offset:4px}
 }
 @media(max-width:760px){
  .container{width:calc(100% - 36px)}
- .top .container{min-height:66px}.brand{gap:7px;font-size:.79rem}.brand img{width:48px;height:34px}
- .top-phone{min-height:39px;padding:7px 11px;font-size:.8rem;gap:6px}.top-phone svg{width:16px;height:16px}
+ .top .container{min-height:64px;gap:12px}.brand{gap:8px;font-size:1rem;white-space:nowrap}.brand img{width:42px;height:34px}.brand-full{display:none}.brand-short{display:inline}
+ .top-phone{min-height:40px;padding:7px 12px;font-size:.76rem;gap:7px;border-radius:7px}.top-phone svg{width:16px;height:16px}
  .desktop-number{display:none}.mobile-label{display:inline}
- .hero:before{width:32%;height:100%;opacity:.28}
- .hero-grid{display:flex;flex-direction:column;align-items:stretch;gap:27px;padding-block:39px 42px}
- .hero-copy{padding:0}.eyebrow,.label{font-size:.73rem;gap:8px}.eyebrow:before,.label:before{width:23px}
- .hero h1{font-size:clamp(2.1rem,8vw,3rem);line-height:1.42;margin:14px 0 12px}
- .lead{font-size:.91rem;line-height:1.9}.hero-action{margin-top:20px;gap:8px}
- .hero-action .call{width:100%;min-height:53px;font-size:.91rem}.action-note{display:block;width:100%;text-align:center;font-size:.73rem}
- .hero-promise{margin-top:18px;padding-top:14px;font-size:.72rem}.hero-promise span{width:28px;height:28px}
- .hero-media{min-height:330px}.hero-media:before{inset:16px 0 20px 35px;transform:translate(-8px,8px)}
- .hero-main{inset:0 0 26px 22px;width:calc(100% - 22px);height:calc(100% - 26px);object-position:50% 67%}
- .hero-detail{height:119px;width:39%;border-width:5px}.media-caption{right:10px;bottom:42px;font-size:.65rem;padding:6px 9px}.media-side{font-size:.55rem;left:1px}
+ .hero:before{display:none}
+ .hero-grid{display:flex;flex-direction:column;align-items:stretch;gap:20px;padding-block:29px 31px}
+ .hero-copy{padding:0}.eyebrow,.label{font-size:.69rem;gap:8px}.eyebrow:before,.label:before{width:21px}
+ .hero h1{font-size:clamp(1.74rem,7.7vw,2.2rem);line-height:1.36;margin:11px 0 10px}
+ .lead{font-size:.86rem;line-height:1.8}.hero-action{margin-top:17px;gap:0}
+ .hero-action .call{width:100%;min-height:52px;font-size:.86rem;border-radius:8px;box-shadow:0 8px 19px #1d29291b}.hero-action .call b,.action-note,.hero-promise{display:none}
+ .hero-media{min-height:0;height:220px;overflow:hidden;border-radius:11px;background:#d7d7d2}
+ .hero-media:before,.hero-detail,.media-side{display:none}
+ .hero-main{inset:0;width:100%;height:100%;object-position:center 68%;transform:scale(1.16);box-shadow:none}
+ .media-caption{right:10px;bottom:10px;font-size:.63rem;padding:6px 10px;border-radius:4px}
  .scope .container{grid-template-columns:repeat(2,minmax(0,1fr))}.scope span{min-height:53px;font-size:.76rem;gap:7px}
  .scope span:nth-child(3),.scope span:nth-child(4){border-top:1px solid #ffffff20}.scope span:nth-child(3):before{display:none}
- .section{padding:57px 0}.section-heading{display:block;margin-bottom:23px}
- .section-heading h2,.process h2,.final h2{font-size:clamp(1.7rem,6vw,2.15rem);line-height:1.52}
+ .section{padding:52px 0}.section-heading{display:block;margin-bottom:20px}
+ .section-heading h2,.process h2,.final h2{font-size:clamp(1.58rem,6vw,2.02rem);line-height:1.43}
  .section-heading h2{margin:10px 0}.section-heading p{font-size:.85rem}
- .services-layout{display:flex;flex-direction:column;gap:13px}.service-feature{order:-1;min-height:265px}.service-feature img{object-position:center 51%}
- .service-feature figcaption{padding:20px}.service-feature strong{font-size:1.13rem}.service-feature span{font-size:.74rem;max-width:32ch}
- .services{grid-template-columns:1fr;gap:9px}.service{min-height:auto;padding:17px 20px 18px}
- .service-top{margin-bottom:9px}.service-number{width:36px;height:36px;font-size:.82rem}.service-rule{width:30px}
- .service h3{font-size:1.04rem;margin-bottom:4px}.service p{font-size:.79rem}
+ .services-layout{display:flex;flex-direction:column;gap:13px}.service-feature{order:-1;min-height:220px;border-radius:11px}.service-feature img{object-position:center 55%}
+ .service-feature figcaption{padding:17px}.service-feature strong{font-size:1.08rem;line-height:1.35}.service-feature span{display:none}
+ .services{grid-template-columns:1fr;gap:9px}.service{display:grid;grid-template-columns:36px minmax(0,1fr);column-gap:11px;min-height:0;padding:14px 15px;background:#fff;border-radius:9px;box-shadow:0 5px 18px #1d29290a}
+ .service:before{top:13px;right:0;width:3px;height:calc(100% - 26px)}.service-top{grid-row:1/span 2;align-items:start;margin:0}.service-number{width:34px;height:34px;font-size:.78rem}.service-rule{display:none}
+ .service h3{grid-column:2;font-size:.98rem;line-height:1.45;margin:0 0 3px}.service p{grid-column:2;font-size:.74rem;line-height:1.75}
  .section-cta{padding:18px 20px;display:block;margin-top:12px}.section-cta p{font-size:.85rem}
  .section-cta a{display:inline-block;margin-top:9px;font-size:.83rem}
- .path-grid{grid-template-columns:1fr;gap:0;border-right:1px solid #e0e4df;margin-right:6px}
+ .pathways{background:#f8f9f7}.path-grid{grid-template-columns:1fr;gap:0;border-right:1px solid #d8ddd5;margin-right:6px}
  .path-card,.path-card:nth-child(n+3){min-height:auto;padding:0 25px 23px 18px;margin:0;border:0;border-left:0}
  .path-card:before{top:7px;right:-6px;width:11px;height:11px}.path-card .path-num{margin-bottom:7px}
  .path-card h3{font-size:1.02rem;margin-bottom:5px}.path-card p{font-size:.8rem}
@@ -167,41 +167,42 @@ a:focus-visible{outline:3px solid #f1ae5e;outline-offset:4px}
  .projects{grid-template-columns:1fr;gap:13px}.project-photo{height:240px}
  .project-copy{padding:17px 20px 20px}.project-copy h3{font-size:1.04rem}.project-copy p{font-size:.8rem}
  .proof-note{font-size:.72rem;margin-top:16px}
- .process-grid{grid-template-columns:1fr;gap:25px}.process h2{margin:9px 0}.process-intro p{font-size:.85rem}
- .process-steps{gap:0 17px}.step{padding:15px 0 20px}.step h3{font-size:.9rem}.step p{font-size:.75rem}
+ .process{background:#f8f9f7}.process-grid{grid-template-columns:1fr;gap:25px}.process h2{margin:9px 0}.process-intro p{font-size:.85rem}
+ .process-steps{grid-template-columns:1fr;gap:0}.step{padding:15px 0 18px}.step h3{font-size:.94rem}.step p{font-size:.78rem}
  .faq-grid{grid-template-columns:1fr;gap:25px}.faq-intro h2{font-size:clamp(1.7rem,6vw,2.15rem);margin:9px 0}
  .faq-intro p{font-size:.85rem}.faq-list summary{font-size:.87rem;padding:16px 0}.faq-list details p{font-size:.8rem;padding-bottom:17px}
  .final{padding:0 0 58px}.final-grid{display:block;padding:38px 25px}.final h2{margin:11px 0 9px}.final p{font-size:.85rem}
  .final .call{width:100%;margin-top:23px;min-height:53px}
  .footer{padding:22px 0 calc(91px + env(safe-area-inset-bottom))}.footer .container{display:block}.footer a{display:inline-block;margin-top:6px}
  .mobile-call{display:block;position:fixed;left:16px;bottom:max(16px,calc(env(safe-area-inset-bottom) + 14px));z-index:50;isolation:isolate}
+ .call-observed .mobile-call{visibility:hidden;opacity:0;pointer-events:none;transform:translateY(10px);transition:opacity .25s,transform .25s,visibility .25s}.call-observed .mobile-call.is-visible{visibility:visible;opacity:1;pointer-events:auto;transform:none}
  .mobile-call:before{content:"";position:absolute;inset:-6px;z-index:-1;border:1px solid #b57640a6;border-radius:999px;pointer-events:none;animation:call-ring 3.6s ease-out infinite}
- .mobile-call .call{min-height:56px;padding:8px 11px 8px 17px;border-radius:999px;background:#1d2929;font-size:.82rem;box-shadow:0 10px 28px #17222248;gap:9px}
- .mobile-call svg{box-sizing:content-box;width:18px;height:18px;padding:9px;border-radius:50%;background:#b57640;animation:phone-nudge 5s ease-in-out infinite}
+ .mobile-call .call{width:64px;height:64px;min-height:0;padding:0;border:2px solid #d49b63;border-radius:50%;background:#1d2929;font-size:.61rem;line-height:1.2;box-shadow:0 9px 23px #1722224d;flex-direction:column;gap:2px}
+ .mobile-call svg{width:19px;height:19px;color:#efb273;animation:phone-nudge 5s ease-in-out infinite}
 }
 @media(max-width:390px){
- .brand span{max-width:122px}.top-phone{padding:6px 9px}
- .hero h1{font-size:1.92rem}.hero-media{min-height:280px}.hero-detail{height:100px}
+ .top-phone{padding:6px 10px}
+ .hero h1{font-size:1.74rem}.hero-media{height:205px}
  .process-steps{grid-template-columns:1fr}.step{padding:13px 0}.scope span{font-size:.71rem}
- .mobile-call{left:12px}.mobile-call .call{min-height:52px;padding:7px 10px 7px 14px}
+ .mobile-call{left:12px}.mobile-call .call{width:60px;height:60px}
 }
 @keyframes call-ring{0%,57%{opacity:0;transform:scale(.93)}65%{opacity:.48}100%{opacity:0;transform:scale(1.16)}}
 @keyframes phone-nudge{0%,78%,100%{transform:rotate(0)}83%{transform:rotate(-10deg)}88%{transform:rotate(7deg)}93%{transform:rotate(0)}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.call,.top-phone,.service,.service-feature img{transition:none}.call:hover,.service:hover,.service-feature:hover img{transform:none}.mobile-call:before,.mobile-call svg{animation:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.call,.top-phone,.service,.service-feature img,.call-observed .mobile-call{transition:none}.call:hover,.service:hover,.service-feature:hover img{transform:none}.mobile-call:before,.mobile-call svg{animation:none}}
 </style>
 <script src="/assets/js/tawod-analytics.js" defer></script>
 </head>
 <body>
 <header class="top"><div class="container">
-  <div class="brand"><img src="/images/logo/tawod-logo.png" width="917" height="408" alt="شعار تعاود للمقاولات"><span>تعاود للمقاولات العامة</span></div>
+  <div class="brand"><img src="/images/logo/tawod-logo.png" width="917" height="408" alt="شعار تعاود للمقاولات"><span class="brand-full">تعاود للمقاولات العامة</span><span class="brand-short">تعاود</span></div>
   <a class="top-phone" href="tel:+966501047331" data-contact-channel="phone" data-contact-service="مقاولات عامة" data-contact-position="header" aria-label="الاتصال بتعاود على 0501047331"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.4 15.4 0 006.6 6.6l2.2-2.2a1 1 0 011-.24c1.1.36 2.3.54 3.6.54a1 1 0 011 1V20a1 1 0 01-1 1C10.6 21 3 13.4 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.3.18 2.5.54 3.6a1 1 0 01-.24 1z"/></svg><b class="desktop-number" dir="ltr">0501047331</b><span class="mobile-label">اتصل الآن</span></a>
 </div></header>
 <main>
 <section class="hero" aria-labelledby="hero-title"><div class="container hero-grid">
   <div class="hero-copy">
     <span class="eyebrow">تعاود للمقاولات العامة · الرياض</span>
-    <h1 id="hero-title">شركة مقاولات بالرياض <em>من العظم إلى أدق تفاصيل التشطيب.</em></h1>
-    <p class="lead">لبناء الفلل والمشاريع وتشطيبها وتسليمها، ابدأ مع فريق يفهم المرحلة التي وصل إليها مشروعك. أخبرنا بما تحتاجه ونناقش معك نطاق العمل والخطوة المناسبة.</p>
+    <h1 id="hero-title">شركة مقاولات بالرياض <em>من العظم إلى التسليم.</em></h1>
+    <p class="lead">بناء عظم وتشطيبات وتسليم مفتاح للفلل والمباني في الرياض. أخبرنا بمرحلة مشروعك ونناقش معك نطاق التنفيذ المناسب.</p>
     <div class="hero-action"><a class="call" href="tel:+966501047331" data-contact-channel="phone" data-contact-service="مقاولات عامة" data-contact-position="hero"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.4 15.4 0 006.6 6.6l2.2-2.2a1 1 0 011-.24c1.1.36 2.3.54 3.6.54a1 1 0 011 1V20a1 1 0 01-1 1C10.6 21 3 13.4 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.3.18 2.5.54 3.6a1 1 0 01-.24 1z"/></svg>ناقش مشروعك الآن <b dir="ltr">0501047331</b></a><span class="action-note">اتصال مباشر بخط تعاود في الرياض</span></div>
     <p class="hero-promise"><span aria-hidden="true">↗</span>بداية الحديث: موقع المشروع، مرحلته، ونطاق العمل المطلوب.</p>
   </div>
@@ -266,7 +267,8 @@ a:focus-visible{outline:3px solid #f1ae5e;outline-offset:4px}
 </div></section>
 </main>
 <footer class="footer"><div class="container"><span>شركة تعاود للمقاولات العامة — الرياض</span><a href="/privacy-policy.html">سياسة الخصوصية</a></div></footer>
-<div class="mobile-call"><a class="call" href="tel:+966501047331" data-contact-channel="phone" data-contact-service="مقاولات عامة" data-contact-position="floating-mobile" aria-label="اتصل بتعاود على 0501047331"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.4 15.4 0 006.6 6.6l2.2-2.2a1 1 0 011-.24c1.1.36 2.3.54 3.6.54a1 1 0 011 1V20a1 1 0 01-1 1C10.6 21 3 13.4 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.3.18 2.5.54 3.6a1 1 0 01-.24 1z"/></svg><span>اتصل الآن</span></a></div>
+<div class="mobile-call"><a class="call" href="tel:+966501047331" data-contact-channel="phone" data-contact-service="مقاولات عامة" data-contact-position="floating-mobile" aria-label="اتصل بتعاود على 0501047331"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.4 15.4 0 006.6 6.6l2.2-2.2a1 1 0 011-.24c1.1.36 2.3.54 3.6.54a1 1 0 011 1V20a1 1 0 01-1 1C10.6 21 3 13.4 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.3.18 2.5.54 3.6a1 1 0 01-.24 1z"/></svg><span>اتصل</span></a></div>
+<script>if('IntersectionObserver' in window){document.documentElement.classList.add('call-observed');const callButton=document.querySelector('.mobile-call');const heroCall=document.querySelector('.hero-action .call');const callObserver=new IntersectionObserver(([entry])=>{callButton.classList.toggle('is-visible',!entry.isIntersecting)},{threshold:.15});callObserver.observe(heroCall)}</script>
 </body></html>`;
 
 export function GET() {
