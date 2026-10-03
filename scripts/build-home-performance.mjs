@@ -15,7 +15,8 @@ const cssSources = [
   'assets/css/tawod-premium-2026.css',
   'assets/css/tawod-system.css',
   'assets/css/tawod-home-v2.css',
-  'assets/css/tawod-contracting-design.css'
+  'assets/css/tawod-contracting-design.css',
+  'assets/css/tawod-contracting-polish.css'
 ];
 
 const fontAndIconBase = `
@@ -31,17 +32,18 @@ function withoutImports(css) {
 }
 
 const vocabulary = cssVocabulary(
-  fs.readFileSync(path.join(root,'index.html'),'utf8')+' tawod-contracting contracting-brand-copy contracting-hero-grid contracting-icon',
+  fs.readFileSync(path.join(root,'index.html'),'utf8')+' tawod-contracting contracting-brand-copy contracting-hero-grid contracting-icon contracting-city tawod-entered',
   ['assets/js/tawod-home.js','assets/js/tawod-inner.js','assets/js/tawod-upgrades.js'].map(file=>fs.readFileSync(path.join(root,file),'utf8')).join('\n')
 );
-const legacySource = cssSources.filter(file=>!file.endsWith('tawod-contracting-design.css')).map((file) => {
+const legacySource = cssSources.filter(file=>!file.includes('tawod-contracting-')).map((file) => {
     const source = fs.readFileSync(path.join(root, file), 'utf8');
     return `/* Source: ${file} */\n${withoutImports(source)}`;
   }).join('\n');
 const bundleSource = [
   fontAndIconBase.trim(),
   compileContractingCss(legacySource,vocabulary,'home-layout.css',true).toString(),
-  fs.readFileSync(path.join(root,'assets/css/tawod-contracting-design.css'),'utf8')
+  fs.readFileSync(path.join(root,'assets/css/tawod-contracting-design.css'),'utf8'),
+  fs.readFileSync(path.join(root,'assets/css/tawod-contracting-polish.css'),'utf8')
 ].join('\n\n') + '\n';
 
 const bundlePath = path.join(root, 'assets/css/tawod-home-performance.css');
