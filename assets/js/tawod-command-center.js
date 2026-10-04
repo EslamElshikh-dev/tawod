@@ -13,6 +13,7 @@
   var decisionEditRequest = 0;
   var boardExpanded = {};
   var activeView = 'executive';
+  var viewMotion = null;
   var notificationFeed = null;
   var notificationRows = [];
   var notificationPending = false;
@@ -226,8 +227,12 @@
       rows.push(makeInsight('medium', 'الأجهزة', 'تحويل الكمبيوتر أضعف من الجوال', 'معدل الكمبيوتر ' + pct(desktop.referralRate) + ' مقابل ' + pct(mobile.referralRate) + ' للجوال.', 'راجع وضوح أزرار التواصل والعرض أعلى صفحات الكمبيوتر.', 'First-party', 'desktop-referral-gap'));
     }
     var paid = (data.sources || []).filter(function (row) { return row.source === 'google-ads'; })[0];
-    if (paid && number(paid.sessions) >= 20 && number(paid.referralRate) >= 8) {
-      rows.push(makeInsight('good', 'الاكتساب', 'زيارات Google Ads تُظهر نية تواصل قوية', n(paid.referrals) + ' إحالة من ' + n(paid.sessions) + ' زيارة منسوبة للحملات (' + pct(paid.referralRate) + ').', 'اربط الصرف والميزانية قبل التوسع لتقييم تكلفة الإحالة الحقيقية.', 'First-party attribution', 'review-paid-referrals'));
+    var measurement = ads.referralMeasurement || {}, matched = measurement.summary || {};
+    if (ads.connected && measurement.available && matched.costPerReferral != null) {
+      var incomplete = number(matched.unmatchedReferrals) > 0 || number(matched.spendCoverage) < 95;
+      rows.push(makeInsight(incomplete ? 'medium' : 'good', 'تكلفة الإحالة', 'الصرف مرتبط بإحالات الموقع', money(matched.matchedCost, ads.currency) + ' صرف مقابل ' + n(matched.referrals) + ' إحالة فريدة؛ التكلفة ' + money(matched.costPerReferral, ads.currency) + ' للفترة ' + measurement.startDate + ' إلى ' + measurement.endDate + '.', incomplete ? 'راجع الإحالات غير المنسوبة وجودة العملاء قبل التوسع؛ الربط يغطي ' + pct(matched.spendCoverage) + ' من صرف الفترة المكتملة.' : 'راجع تأهيل الإحالات والعقود في مسار البيع قبل زيادة الميزانية.', 'Google Ads + First-party', 'review-paid-referrals'));
+    } else if (paid && number(paid.sessions) >= 20) {
+      rows.push(makeInsight('medium', 'تكلفة الإحالة', 'تكلفة الإحالة تحتاج بيانات مكتملة', n(paid.referrals) + ' إحالة منسوبة للإعلانات في تقرير الموقع؛ لا تتوفر تكلفة متطابقة قابلة للعرض بعد.', 'افتح الصرف والإحالات وراجع تغطية الأيام وربط معرفات الحملات.', 'Google Ads + First-party', 'review-paid-referrals'));
     }
     if (ads.connected) {
       var a = ads.summary || {};
@@ -235,7 +240,7 @@
         rows.push(makeInsight('high', 'المكالمات', 'نسبة مكالمات فائتة مرتفعة', n(a.missedCalls) + ' مكالمة فائتة من ' + n(a.trackedCalls) + ' مكالمة مقاسة.', 'حدد تغطية للرد خلال ساعات الحملات وراجع جدول ظهور الإعلانات.', 'Google Ads Call Reporting', 'missed-call-coverage'));
       }
       if (number(a.budgetUseRate) > 110) {
-        rows.push(makeInsight('high', 'الميزانية', 'الصرف أعلى من الميزانية المخططة للفترة', 'نسبة استخدام الميزانية التقديرية ' + pct(a.budgetUseRate) + '.', 'راجع الميزانيات المشتركة وتغييرات الميزانية قبل رفع العطاءات.', 'Google Ads API', 'budget-period-review'));
+        rows.push(makeInsight('high', 'الميزانية', 'الصرف يتجاوز تقدير الميزانية الحالية', 'نسبة استخدام الميزانية التقديرية ' + pct(a.budgetUseRate) + '.', 'راجع الميزانيات المشتركة وتغييرات الميزانية قبل رفع العطاءات.', 'Google Ads API', 'budget-period-review'));
       }
     }
     if (!rows.length) rows.push(makeInsight('info', 'المتابعة', 'لا توجد إشارة حرجة', 'الإجماليات متطابقة ولا توجد مشكلة مدعومة بعينة كافية.', 'استمر بالمراقبة وراجع جودة العملاء أسبوعيًا.', 'المصادر المتصلة', 'weekly-quality-review'));
@@ -484,10 +489,24 @@
     }).join('') : '<div class="empty-box">لا توجد طلبات نماذج في الفترة؛ الاتصال وواتساب محسوبان كإحالات في القسم الرئيسي.</div>';
   }
 
+  function renderPaidReferralPanel(ads, currency) {
+    var measurement = ads.referralMeasurement || {}, s = measurement.summary || {};
+    if (!ads.connected || !measurement.available) {
+      el('paidReferralPanel').innerHTML = '<div class="panel-title"><div><span class="micro-label">الصرف ← الإحالة ← التأهيل</span><h3>ربط تكلفة الإحالة</h3></div><span class="measurement-state is-pending">بانتظار اكتمال البيانات</span></div><p class="measurement-note">' + (number(measurement.missingDays) ? 'بيانات الصرف ناقصة في ' + n(measurement.missingDays) + ' يوم داخل فترة القياس. لن تظهر تكلفة غير مكتملة.' : 'يلزم صرف متزامن مع زيارات منسوبة لحملة، وأيام مكتملة بتوقيت الرياض.') + '</p>';
+      return;
+    }
+    var complete = !number(s.unmatchedReferrals) && number(s.spendCoverage) >= 95;
+    el('paidReferralPanel').innerHTML = '<div class="panel-title"><div><span class="micro-label">الصرف ← الإحالة ← التأهيل</span><h3>تكلفة الإحالة من صرف فعلي</h3></div><span class="measurement-state ' + (complete ? 'is-complete' : 'is-pending') + '">' + (complete ? 'تم الربط' : 'ربط جزئي') + '</span></div>' +
+      '<div class="cost-equation"><div><span>صرف الحملات المرتبطة</span><strong>' + money(s.matchedCost, currency) + '</strong></div><span class="equation-symbol" aria-hidden="true">÷</span><div><span>جلسات أحالت للتواصل</span><strong>' + n(s.referrals) + '</strong></div><span class="equation-symbol" aria-hidden="true">=</span><div class="equation-result"><span>تكلفة الإحالة الفريدة</span><strong>' + (s.costPerReferral != null ? money(s.costPerReferral, currency) : '—') + '</strong></div></div>' +
+      '<div class="measurement-coverage"><span>الفترة: <b dir="ltr">' + esc(measurement.startDate) + ' — ' + esc(measurement.endDate) + '</b></span><span>' + n(measurement.coveredDays) + ' أيام مكتملة · الرياض</span><span>ميزانية الأيام التقديرية: ' + money(number((ads.summary || {}).dailyBudget) * number(measurement.coveredDays), currency) + '</span><span>تغطية الصرف: ' + (s.spendCoverage != null ? pct(s.spendCoverage) : '—') + '</span><span>' + n(s.matchedCampaigns) + ' حملات مرتبطة</span></div>' +
+      '<p class="measurement-note">' + (number(s.unmatchedReferrals) ? n(s.unmatchedReferrals) + ' إحالة إعلانية لم تُربط بحملة محددة. ' : '') + 'صرف غير مرتبط بزيارات الموقع: ' + money(Math.max(0, number(s.periodCost) - number(s.matchedCost)), currency) + '. ' + (measurement.trackingWindowShortened ? 'اقتُصرت الفترة على الأيام التي بدأ فيها قياس الموقع. ' : '') + 'تقدير الميزانية = الميزانية اليومية الحالية × الأيام المكتملة؛ لا يمثل سجل الميزانيات السابقة. الاتصال وواتساب في الجلسة نفسها يُحسبان إحالة واحدة. الإحالة ضغطة تواصل؛ التأهيل والعقد يُراجعان في مسار البيع.</p>' +
+      '<div class="measurement-actions"><a href="#acquisition">راجع إسناد الحملات</a><a href="#sales-pipeline">راجع جودة الفرص</a></div>';
+  }
   function renderAds(data) {
     var ads = data.googleAds || { connected: false };
     var s = ads.summary || {};
     var currency = ads.currency || 'SAR';
+    renderPaidReferralPanel(ads, currency);
     var fresh = statusFreshness(ads.connected, ads.lastSyncAt);
     el('googleAdsStatus').className = 'ads-status-chip ' + fresh.cls;
     el('googleAdsStatus').innerHTML = '<i></i>' + fresh.label;
@@ -511,11 +530,11 @@
         metric('عملاء محتملون', ads.callReportingConnected ? n(s.potentialCustomers) : 'غير متصل', 'مكالمة مستلمة >60ث', 'Call Reporting', 'potential'),
         metric('عملاء مؤكدون', ads.callReportingConnected ? n(s.confirmedCustomers) : 'غير متصل', '>60ث + تكرار/زيارة', 'تأهيل', 'confirmed'),
         metric('CPA', money(s.cpa, currency), 'تكلفة تحويل Google Ads', 'Google Ads', ''),
-        metric('تكلفة إحالة الموقع', number(s.siteReferrals) ? money(s.siteCostPerReferral, currency) : '—', n(s.siteReferrals) + ' إحالة فريدة من الإعلانات', 'First-party', 'referral-cpa')
+        metric('تكلفة إحالة الموقع', s.siteCostPerReferral != null ? money(s.siteCostPerReferral, currency) : '—', ads.referralMeasurement && ads.referralMeasurement.available ? n(s.siteReferrals) + ' إحالة · الحملات المرتبطة · أيام مكتملة' : 'بانتظار اكتمال بيانات الربط', 'صرف + First-party', 'referral-cpa')
       ].join('');
       var used = Math.min(100, Math.max(0, number(s.budgetUseRate)));
-      el('budgetPanel').innerHTML = '<div class="budget-copy"><div><span class="micro-label">BUDGET CONTROL</span><h3>الصرف مقابل الميزانية المخططة</h3></div><strong>' + pct(s.budgetUseRate) + '</strong></div>' +
-        '<div class="budget-track"><i style="width:' + used + '%"></i></div><div class="budget-values"><span>الصرف <b>' + money(s.cost, currency) + '</b></span><span>ميزانية الفترة التقديرية <b>' + money(s.plannedPeriodBudget, currency) + '</b></span><span>الميزانية الكلية المحددة <b>' + money(s.totalBudget, currency) + '</b></span></div><small>ميزانية الفترة = الميزانية اليومية الحالية × عدد أيام العرض؛ قد تختلف عن الميزانيات التاريخية إذا تغيّرت أثناء الفترة.</small>';
+      el('budgetPanel').innerHTML = '<div class="budget-copy"><div><span class="micro-label">BUDGET CONTROL</span><h3>الصرف مقابل تقدير الميزانية الحالية</h3></div><strong>' + pct(s.budgetUseRate) + '</strong></div>' +
+        '<div class="budget-track"><i style="width:' + used + '%"></i></div><div class="budget-values"><span>الصرف <b>' + money(s.cost, currency) + '</b></span><span>ميزانية الفترة التقديرية <b>' + money(s.plannedPeriodBudget, currency) + '</b></span><span>الميزانية اليومية الحالية <b>' + money(s.dailyBudget, currency) + '</b></span></div><small>ميزانية الفترة = الميزانية اليومية الحالية × عدد أيام العرض؛ قد تختلف عن الميزانيات التاريخية إذا تغيّرت أثناء الفترة.</small>';
       var daily = ads.daily || [];
       var maxCost = Math.max.apply(null, daily.map(function (row) { return number(row.cost); }).concat([1]));
       el('adsDailyChart').innerHTML = daily.length ? daily.map(function (row) {
@@ -524,7 +543,7 @@
       var campaigns = ads.campaigns || [];
       el('adsCampaignsEmpty').hidden = !!campaigns.length;
       el('adsCampaignsBody').innerHTML = campaigns.map(function (row) {
-        return '<tr><td><strong>' + esc(row.name) + '</strong><br><small>' + esc(row.campaignId) + '</small></td><td>' + esc(row.status) + '</td><td>' + money(row.dailyBudget, currency) + '</td><td>' + money(row.cost, currency) + '</td><td>' + n(row.clicks) + '</td><td>' + pct(row.ctr) + '</td><td><strong>' + n(row.siteReferrals) + '</strong><br><small>' + n(row.siteCalls) + ' اتصال · ' + n(row.siteWhatsapp) + ' واتساب</small></td><td>' + n(row.potentialCustomers) + '</td><td>' + n(row.confirmedCustomers) + '</td><td>' + money(row.cpa, currency) + '</td></tr>';
+        return '<tr><td><strong>' + esc(row.name) + '</strong><br><small>' + esc(row.campaignId) + '</small></td><td>' + esc(row.status) + '</td><td>' + money(row.dailyBudget, currency) + '</td><td>' + money(row.cost, currency) + '</td><td>' + n(row.clicks) + '</td><td>' + pct(row.ctr) + '</td><td><strong>' + n(row.siteReferrals) + '</strong><br><small>' + n(row.siteCalls) + ' اتصال · ' + n(row.siteWhatsapp) + ' واتساب</small></td><td>' + (row.siteCostPerReferral != null ? money(row.siteCostPerReferral, currency) : '—') + '<br><small>صرف الأيام المكتملة ' + (row.pairedCost != null ? money(row.pairedCost, currency) : '—') + '</small></td><td>' + (ads.callReportingConnected ? n(row.potentialCustomers) : '—') + '</td><td>' + (ads.callReportingConnected ? n(row.confirmedCustomers) : '—') + '</td><td>' + money(row.cpa, currency) + '</td></tr>';
       }).join('');
       var actions = ads.conversionActions || [];
       var leadCategories = ['CONTACT', 'PHONE_CALL_LEAD', 'SUBMIT_LEAD_FORM', 'QUALIFIED_LEAD', 'CONVERTED_LEAD'];
@@ -1335,6 +1354,7 @@
   }
   function activateView(id, move) {
     var section = viewFor(id), target = el(id), previous = activeView;
+    if (viewMotion) { viewMotion.cancel(); viewMotion = null; }
     activeView = section.id;
     document.querySelectorAll('.admin-section').forEach(function (item) { item.hidden = item !== section; });
     el('adminNav').querySelectorAll('a').forEach(function (link) {
@@ -1355,7 +1375,11 @@
     });
     el('mobileMoreButton').classList.toggle('is-active',!quick.includes(activeView));
     document.title = el('viewTitle').textContent + ' | لوحة تعاود';
+    renderRouteLinks(activeView);
     if (previous !== activeView || !section.dataset.rendered) { renderCurrentView(); section.dataset.rendered = payload ? 'true' : ''; }
+    if (move && previous !== activeView && !window.matchMedia('(prefers-reduced-motion:reduce)').matches && section.animate) {
+      viewMotion = section.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}],{duration:240,easing:'cubic-bezier(.2,.7,.2,1)'});
+    }
     if (id === 'opportunity-editor') { target.hidden = false; el('pipelineCancelButton').hidden = false; }
     if (move) {
       if (target && target !== section && !target.hidden) target.scrollIntoView({block:'start',behavior:'instant'});
@@ -1366,8 +1390,20 @@
       }
     }
   }
+  function renderRouteLinks(view) {
+    var groups = {
+      'google-ads': [['acquisition','مصادر الإحالات'],['sales-pipeline','جودة الفرص'],['decisions','قرار التوسع']],
+      'acquisition': [['google-ads','الصرف والإحالات'],['performance','صفحات الوصول'],['funnel','مسار التحويل']],
+      'business-profile': [['google-ads','الإعلانات'],['acquisition','المصادر'],['decisions','القرارات']],
+      'sales-pipeline': [['followups','الخطوة القادمة'],['customers','ملفات العملاء'],['commercial','قيمة العقود']],
+      'decisions': [['google-ads','الصرف والإحالات'],['followups','المتابعات'],['commercial','النتائج']]
+    };
+    var links = groups[view] || [['google-ads','الصرف والإحالات'],['sales-pipeline','الفرص والعقود'],['decisions','القرارات']];
+    el('routeLinks').innerHTML = '<span>انتقل إلى</span>' + links.filter(function (item) { return item[0] !== view; }).map(function (item) { return '<a href="#' + item[0] + '">' + item[1] + '<svg class="cc-icon" aria-hidden="true"><use href="#cc-i-arrow"></use></svg></a>'; }).join('');
+  }
   function navigateTo(id) {
     closeHeaderPanels(); closeNavigation(false);
+    if (!el(id) || !el(id).closest('.admin-section')) id = 'executive';
     if (location.hash !== '#' + id) history.pushState(null,'','#' + id);
     activateView(id,true);
   }
