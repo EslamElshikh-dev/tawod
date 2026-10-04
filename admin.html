@@ -3,14 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#08100e">
+<meta name="theme-color" content="#eef1f5">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
 <meta name="referrer" content="no-referrer">
 <title>مركز قيادة تعاود | التحليلات والقرارات</title>
 <link rel="icon" href="/images/logo/tawod-logo.png" type="image/png">
 <link rel="stylesheet" href="/assets/css/tawod-admin.css">
 <link rel="stylesheet" href="/assets/css/tawod-admin-ads.css">
-<link rel="stylesheet" href="/assets/css/tawod-command-center.css?v=20260930-customer-1">
+<link rel="stylesheet" href="/assets/css/tawod-command-center.css?v=20261004-light-1">
+<link rel="stylesheet" href="/assets/css/tawod-command-light.css?v=20261004-1">
 </head>
 <body class="admin-body">
 <svg xmlns="http://www.w3.org/2000/svg" class="cc-icon-sprite" aria-hidden="true" width="0" height="0"><defs>
@@ -79,7 +80,7 @@
 
   <main class="workspace" id="adminWorkspace">
     <header class="command-header">
-      <div class="header-main-row"><button id="navigationButton" class="icon-button mobile-nav-toggle" type="button" aria-label="فتح قائمة الأقسام" aria-controls="adminSidebar" aria-expanded="false"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-menu"></use></svg></button><div class="header-title"><p class="header-breadcrumb">تعاود <span>/</span> <span id="viewGroup">مساحة العمل</span></p><h1 id="viewTitle">نظرة عامة</h1></div><div class="header-identity"><button id="notificationButton" class="icon-button notification-button" type="button" aria-label="الإشعارات" aria-controls="notificationDrawer" aria-expanded="false"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-bell"></use></svg><b id="notificationBadge" hidden>0</b></button><button id="accountButton" class="account-button" type="button" aria-label="فتح قائمة الحساب" aria-controls="accountMenu" aria-expanded="false"><span class="account-avatar" id="accountAvatar"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-user"></use></svg></span><span class="account-button-copy"><strong id="accountDisplayName">حساب الإدارة</strong><small>إدارة اللوحة</small></span></button></div></div>
+      <div class="header-main-row"><button id="navigationButton" class="icon-button mobile-nav-toggle" type="button" aria-label="فتح قائمة الأقسام" aria-controls="adminSidebar" aria-expanded="false"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-menu"></use></svg></button><a class="header-brand" href="/" aria-label="تعاود"><img src="/images/logo/tawod-logo.png" alt="تعاود" width="86" height="38"></a><div class="header-title"><p class="header-breadcrumb">تعاود <span>/</span> <span id="viewGroup">مساحة العمل</span></p><h1 id="viewTitle">نظرة عامة</h1></div><div class="header-identity"><button id="notificationButton" class="icon-button notification-button" type="button" aria-label="الإشعارات" aria-controls="notificationDrawer" aria-expanded="false"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-bell"></use></svg><b id="notificationBadge" hidden>0</b></button><button id="accountButton" class="account-button" type="button" aria-label="فتح قائمة الحساب" aria-controls="accountMenu" aria-expanded="false"><span class="account-avatar" id="accountAvatar"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-user"></use></svg></span><span class="account-button-copy"><strong id="accountDisplayName">حساب الإدارة</strong><small>إدارة اللوحة</small></span></button></div></div>
       <div class="header-actions"><label class="period-control"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-calendar"></use></svg><select id="periodSelect" aria-label="فترة التقرير"><option value="7">آخر 7 أيام</option><option value="30" selected>آخر 30 يومًا</option><option value="90">آخر 90 يومًا</option></select></label><span class="header-sync" id="headerSyncStatus">جاري قراءة البيانات</span><button id="refreshButton" class="icon-button" type="button" aria-label="تحديث البيانات"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-refresh"></use></svg><span id="refreshLabel" class="sr-only">تحديث البيانات</span></button><button id="toolsButton" class="icon-button" type="button" aria-label="أدوات التقرير" aria-controls="toolsMenu" aria-expanded="false"><svg class="cc-icon" aria-hidden="true"><use href="#cc-i-more"></use></svg></button></div>
     </header>
     <div id="toolsMenu" class="header-menu tools-menu" hidden><button id="copyButton" type="button" data-icon="copy">نسخ الملخص</button><button id="printButton" type="button" data-icon="print">طباعة القسم الحالي</button></div>
@@ -194,9 +195,10 @@
     </section>
 
     <section class="admin-section" id="business-profile">
-      <div class="section-heading"><div><p class="eyebrow">GOOGLE BUSINESS PROFILE</p><h2>أداء الملف التجاري للشركة</h2></div><p>ظهور Search وMaps والإجراءات الفعلية من Performance API.</p></div>
-      <div class="ads-status-bar"><div class="ads-status-copy"><span class="ads-status-chip" id="businessProfileStatus"><i></i> فحص الاتصال</span><div><strong id="businessProfileName">الملف التجاري</strong><span id="businessProfileLastSync">—</span></div></div><span class="source-badge">المصدر: Business Profile API</span></div>
-      <div class="source-setup" id="businessProfileConnectHint"><strong>يلزم ربط الملف التجاري مرة واحدة</strong><p>عند الربط ستظهر مشاهدات البحث والخرائط، المكالمات، المحادثات، زيارات الموقع، طلبات الاتجاهات، وكلمات البحث.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">GOOGLE BUSINESS PROFILE</p><h2>أداء الملف التجاري للشركة</h2></div><p>ملف الرياض · الظهور وضغطات التواصل من Google.</p></div>
+      <div class="ads-status-bar"><div class="ads-status-copy"><span class="ads-status-chip" id="businessProfileStatus"><i></i> فحص الاتصال</span><div><strong id="businessProfileName">الملف التجاري</strong><span id="businessProfileLastSync">—</span></div></div><span class="source-badge">Google Business Profile · Windsor</span></div>
+      <div id="profileCoverageNote" class="profile-source-note" hidden></div>
+      <div class="source-setup" id="businessProfileConnectHint"><strong>بيانات الملف التجاري غير متاحة حاليًا</strong><p>تظهر الأرقام بعد وصول بيانات Google؛ لا تُستبدل البيانات المفقودة بأصفار.</p></div>
       <div class="profile-kpi-grid compact-top" id="profileSummaryMetrics"></div>
       <div class="two-column compact-top"><article class="panel"><div class="panel-title"><div><span class="micro-label">PROFILE TREND</span><h3>الظهور والإجراءات يوميًا</h3></div></div><div class="profile-chart" id="profileDailyChart"></div></article><article class="panel"><div class="panel-title"><div><span class="micro-label">SEARCH KEYWORDS</span><h3>كيف يجد العملاء الشركة؟</h3></div></div><div class="keyword-list" id="profileKeywords"></div></article></div>
     </section>
@@ -259,6 +261,6 @@
 <dialog id="customerDialog" class="account-dialog customer-dialog" aria-labelledby="customerDialogTitle"><div class="drawer-head"><div><span class="micro-label">CUSTOMER RECORD</span><h2 id="customerDialogTitle">ملف العميل</h2></div><button id="customerClose" type="button" class="icon-button" aria-label="إغلاق ملف العميل">×</button></div><p id="customerDialogError" class="form-error" role="alert"></p><div id="customerDetail"></div><form id="customerForm" class="customer-form" hidden autocomplete="off"><label><span>الاسم *</span><input id="customerName" required minlength="2" maxlength="100"></label><label><span>رقم الهاتف *</span><input id="customerPhone" type="tel" dir="ltr" required maxlength="20" placeholder="05xxxxxxxx"></label><label><span>الشركة · اختياري</span><input id="customerCompany" maxlength="120"></label><label><span>الحالة</span><select id="customerActive"><option value="true">نشط</option><option value="false">مؤرشف</option></select></label><label class="customer-wide"><span>ملاحظات العلاقة</span><textarea id="customerNote" rows="3" maxlength="1000"></textarea></label><div class="customer-wide pipeline-form-actions"><button id="customerSave" type="submit">حفظ العميل</button><button id="customerCancelEdit" type="button" class="button-ghost">إلغاء</button></div></form><div id="customerPicker" hidden><p>اختر ملف العميل الصحيح لربطه بهذه الفرصة.</p><label class="customer-search"><span>البحث بالاسم أو الهاتف</span><input id="customerPickerSearch" type="search" maxlength="100"></label><div id="customerPickerList" class="customer-picker-list"></div><small>يعرض أول 30 نتيجة. استخدم البحث للوصول للعميل المطلوب.</small></div></dialog>
 <div class="loading-layer" id="adminLoading" hidden><div class="loader"></div><p>جاري مطابقة المصادر وترتيب القرارات…</p></div>
 <div class="toast" id="adminToast" aria-live="polite"></div>
-<script src="/assets/js/tawod-command-center.js?v=20260930-customer-1" defer></script>
+<script src="/assets/js/tawod-command-center.js?v=20261004-profile-1" defer></script>
 </body>
 </html>
