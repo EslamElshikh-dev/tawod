@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
+const chart=createRequire(import.meta.url)('../assets/js/tawod-charts.js');
+assert.equal(chart.day('2026-10-04T22:00:00Z'),'2026-10-05','calendar dates must use Riyadh');
+assert.deepEqual(chart.normalize([{date:'2026-10-01',cost:0},{date:'2026-10-03',cost:12.75}],'2026-10-01','2026-10-03').map(r=>[r.date,r.reported,r.cost]),[['2026-10-01',true,0],['2026-10-02',false,undefined],['2026-10-03',true,12.75]]);
+const rows=chart.normalize([{date:'2026-10-01',cost:0},{date:'2026-10-03',cost:12.75}]);
+const segments=chart.segments(rows,{key:'cost'},20);
+assert.equal(segments.length,2,'the path must break across missing data');
+assert.equal(segments[0][0].y,220,'zero sits on the baseline without an artificial bar');
+assert.equal(segments[1][0].value,12.75,'fractional values must survive rendering');
+assert.equal(chart.ceiling(751),1000);assert.equal(chart.ceiling(0),1);
+const nullRows=chart.normalize([{date:'2026-10-01',conversions:null}]);
+assert.equal(chart.segments(nullRows,{key:'conversions'},1).length,0,'unavailable is not zero');
+assert.equal(chart.normalize([],null,null).length,0);
+assert.equal(chart.normalize([{date:'2026-10-01',cost:1}],'2026-10-01','2026-10-01').length,1);
+console.log('Verified chart dates, zero baselines, missing-day gaps, null values, fractional data, and scale boundaries.');

@@ -480,7 +480,7 @@ async function loadRecentReferrals(days: number) {
   if (!response.ok) return null;
   const seen = new Set<string>();
   return (await response.json()).flatMap((row: any) => {
-    if (/^(TEST|DUMMY|EXAMPLE|FAKE)(-|_|$)/i.test(row.click_id||'') || Date.parse(row.occurred_at)>Date.now()) return [];
+    if (/^(TEST|DUMMY|EXAMPLE|FAKE)(-|_|$)/i.test(row.click_id||'') || ['internal-qa','internal-test'].includes(String(row.utm_source||'').trim().toLowerCase().replaceAll('_','-')) || Date.parse(row.occurred_at)>Date.now()) return [];
     const method = row.event_name === 'call_click' || row.contact_method === 'call' ? 'call' : 'whatsapp';
     const dedupeKey = `${method}:${row.click_id || row.session_id || row.id}`;
     if (seen.has(dedupeKey)) return [];
@@ -832,7 +832,7 @@ Deno.serve(async (req) => {
     if (!authorized && typeof body.password === 'string' && body.password) authorized = await sha256(body.password) === await adminPasswordHash();
     if (!authorized) return json({ error: 'unauthorized' }, 401, origin);
     const days = Math.max(7, Math.min(Number(body.days) || 30, 90));
-    const [siteResponse, adsResponse, profileResponse, salesPipeline, recentReferrals, commercial, decisions, notifications, paidResponse] = await Promise.all([
+    const [siteResponse, adsResponse, profileResponse, salesPipeline, recentReferrals, commercial, decisions, notifications, paidResponse, verificationResponse] = await Promise.all([
       supabase('/rest/v1/rpc/tawod_admin_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
       supabase('/rest/v1/rpc/tawod_google_ads_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
       supabase('/rest/v1/rpc/tawod_business_profile_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
@@ -842,6 +842,7 @@ Deno.serve(async (req) => {
       loadDecisions(),
       loadNotificationFeed(),
       supabase('/rest/v1/rpc/tawod_paid_referral_costs', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
+      supabase('/rest/v1/tawod_measurement_verification?select=source,checked_at,period_start,period_end,source_fetched_at,results'),
     ]);
     if (!siteResponse.ok) return json({ error: 'analytics_query_failed' }, 500, origin);
     const siteRaw = await siteResponse.json();
@@ -850,7 +851,7 @@ Deno.serve(async (req) => {
     const googleAdsRaw = adsResponse.ok ? await adsResponse.json() : { connected: false, error: 'google_ads_query_failed' };
     const googleAds = enrichGoogleAdsWithFirstParty(googleAdsRaw, paidResponse.ok ? await paidResponse.json() : { available: false, error: 'paid_measurement_query_failed' });
     const businessProfile = profileResponse.ok ? await profileResponse.json() : { connected: false, error: 'business_profile_query_failed' };
-    return json({ ...site, recentReferrals: recentReferrals || site.recentReferrals || [], googleAds, businessProfile, salesPipeline, commercial, decisions, notifications, social, adminProfile: { username: ADMIN_USERNAME } }, 200, origin);
+    return json({ ...site, recentReferrals: recentReferrals || site.recentReferrals || [], googleAds, businessProfile, salesPipeline, commercial, decisions, notifications, social, measurementVerification: verificationResponse.ok ? await verificationResponse.json() : [], adminProfile: { username: ADMIN_USERNAME } }, 200, origin);
   }
 
   if (body?.mode === 'notification_feed') {

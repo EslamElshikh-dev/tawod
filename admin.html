@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/assets/css/tawod-admin.css">
 <link rel="stylesheet" href="/assets/css/tawod-admin-ads.css">
 <link rel="stylesheet" href="/assets/css/tawod-command-center.css?v=20261004-light-1">
-<link rel="stylesheet" href="/assets/css/tawod-command-light.css?v=20261004-cost-design-3">
+<link rel="stylesheet" href="/assets/css/tawod-command-light.css?v=20261005-charts-4">
 </head>
 <body class="admin-body">
 <svg xmlns="http://www.w3.org/2000/svg" class="cc-icon-sprite" aria-hidden="true" width="0" height="0"><defs>
@@ -180,8 +180,8 @@
 
     <section class="admin-section" id="trend">
       <div class="section-heading"><div><p class="eyebrow">TREND & MOMENTUM</p><h2>اتجاه الزيارات والإحالات</h2></div><p>آخر 7 أيام مقارنة بالأسبوع السابق.</p></div>
-      <div class="comparison-grid" id="comparisonMetrics"></div>
-      <article class="panel chart-panel"><div class="panel-title"><div><span class="micro-label">DAILY PERFORMANCE</span><h3>زيارات · اتصال · واتساب · إحالات</h3></div><div class="legend"><span><i class="legend-views"></i>زيارات</span><span><i class="legend-contacts"></i>إحالات</span></div></div><div class="daily-chart" id="dailyChart" aria-label="اتجاه الأداء اليومي"></div></article>
+      <p class="comparison-period" id="comparisonPeriod"></p><div class="comparison-grid" id="comparisonMetrics"></div>
+      <article class="panel chart-panel"><div class="panel-title"><div><span class="micro-label">DAILY PERFORMANCE</span><h3>تطور الزيارات والإحالات</h3></div></div><div class="daily-chart" id="dailyChart" aria-label="اتجاه الأداء اليومي"></div></article>
     </section>
 
     <section class="admin-section" id="google-ads">
@@ -191,7 +191,7 @@
       <div class="ads-kpi-grid compact-top" id="adsSummaryMetrics"></div>
       <article class="panel paid-referral-panel compact-top" id="paidReferralPanel" aria-label="ربط الصرف وإحالات الموقع"></article>
       <div class="budget-panel panel compact-top" id="budgetPanel"></div>
-      <div class="ads-grid compact-top"><article class="panel"><div class="panel-title"><div><span class="micro-label">DAILY SPEND</span><h3>النقرات · الإنفاق · التحويلات</h3></div></div><div class="ads-chart" id="adsDailyChart"></div></article><article class="panel"><div class="panel-title"><div><span class="micro-label">OPTIMIZATION</span><h3>تحسينات Google Ads</h3></div></div><div class="ads-actions" id="adsRecommendations"></div></article></div>
+      <div class="ads-grid compact-top"><article class="panel"><div class="panel-title"><div><span class="micro-label">DAILY SPEND</span><h3>الصرف وأداء الإعلانات يوميًا</h3></div></div><div class="ads-chart" id="adsDailyChart"></div></article><article class="panel"><div class="panel-title"><div><span class="micro-label">OPTIMIZATION</span><h3>تحسينات Google Ads</h3></div></div><div class="ads-actions" id="adsRecommendations"></div></article></div>
       <article class="panel table-panel compact-top"><div class="table-header"><div><span class="micro-label">CAMPAIGNS</span><h3>الحملات حسب الميزانية والقيمة</h3></div></div><div class="table-wrap"><table><thead><tr><th>الحملة</th><th>الحالة</th><th>الميزانية/يوم</th><th>الصرف</th><th>النقرات</th><th>CTR</th><th>إحالات الموقع</th><th>تكلفة إحالة الموقع</th><th>عميل محتمل</th><th>عميل مؤكد</th><th>CPA</th></tr></thead><tbody id="adsCampaignsBody"></tbody></table></div><div class="table-empty" id="adsCampaignsEmpty" hidden>لا توجد بيانات حملات متصلة.</div></article>
       <article class="panel compact-top"><div class="panel-title"><div><span class="micro-label">CONVERSION ACTIONS</span><h3>أحداث التحويل داخل Google Ads</h3></div><span id="adsConversionGoalHealth">فحص إعداد الأهداف</span></div><div class="ads-action-list" id="adsConversionActions"></div></article>
     </section>
@@ -225,7 +225,12 @@
       <div id="measurementHero" class="measurement-hero" aria-live="polite"></div>
       <div id="measurementChecks" class="measurement-check-grid"></div>
       <article class="panel measurement-diagnostics"><div class="panel-title"><div><span class="micro-label">EVIDENCE & COVERAGE</span><h3>اكتمال المصدر وجودة التسجيل</h3></div></div><div id="measurementDiagnostics" class="measurement-diagnostic-list"></div></article>
+      <article class="panel compact-top"><div class="panel-title"><div><span class="micro-label">SOURCE VERIFICATION</span><h3>المطابقة المستقلة للمصادر</h3></div></div><div id="measurementVerification"></div></article>
       <details class="measurement-details"><summary><span data-icon="check">تعريفات القياس وحدود المقارنة</span><small>اقرأ الرقم في سياقه</small></summary><div class="measurement-definitions"><p><strong>نفس الجلسة، مرة واحدة.</strong> نقرات اتصال وواتساب في جلسة واحدة تُحسب إحالة واحدة. لا تجمع إحالات الاتصال مع واتساب للوصول إلى الإجمالي.</p><p><strong>اليوم حسب بداية الجلسة.</strong> الرسم اليومي يُسند مشاهدات وإحالات الجلسة إلى يوم بدايتها بتوقيت الرياض؛ لذلك يتطابق مجموع الأيام مع فترة التقرير، حتى عند عبور منتصف الليل.</p><p><strong>المصدر مع بداية الجلسة.</strong> دخول بحملة جديدة يبدأ جلسة قياس جديدة. تعارض رابط سوشيال موسوم مع معرّف إعلان جوجل يُعرض للمراجعة، دون افتراض مصدره.</p><p><strong>جديد ومتكرر لهما تعريفان.</strong> الزائر الجديد: أول ظهور مسجل له خلال الفترة. الزائر بجلسة واحدة: ظهر في جلسة واحدة خلال الفترة، وقد يكون زار الموقع سابقًا. هوية الزائر مرتبطة بالمتصفح وليست شخصًا مؤكدًا.</p><p><strong>بيانات الحساب مستقلة.</strong> المشاهدات والوصول والمتابعون من تقرير حساب المنصة، وليست زيارات الموقع. لا يُحسب عائد الإعلانات أو تكلفة العميل المؤهل من أرقام غير مرتبطة ببعضها.</p></div></details>
+      <details class="panel compact-top"><summary>إكمال ربط تقارير البحث والتحليلات</summary><p class="workspace-notice">قياس الموقع والإعلانات والملف التجاري مرتبط بالفعل. المصادر التالية تحتاج اختيار حساب تعاود وتفويضه؛ فتح الرابط وحده لا يعني وصول تقارير جديدة.</p><div class="connection-options">
+        <article class="connection-option"><h4>GA4 · وسم الموقع موجود</h4><p>تقارير حساب Analytics لم تصل إلى الموصل بعد. اختر الخاصية التي تضم موقع tawodco.com ووسم G-4M3LNJF2ED؛ بعد التفويض يمكن إعداد نقل التقارير ومطابقتها.</p><a href="https://onboard.windsor.ai/connect?connector=googleanalytics4&amp;next=/googleanalytics4/authorize" target="_blank" rel="noopener noreferrer">تفويض تقارير GA4</a><details><summary>تعليمات الموصل</summary><p lang="en" dir="ltr">Notes: If Windsor.ai asks you to log in first, log in to the Windsor.ai account this assistant is connected to, also when you use "Continue with Google". Then, when Google asks which account to use, choose the Google account that has access to the GA4 property. On Google's permissions screen, tick the Google Analytics permission. Back on Windsor.ai, select the GA4 property in the list before clicking "Done, close this tab" or "Finish".</p></details></article>
+        <article class="connection-option"><h4>Search Console · خاصية تعاود</h4><p>تقارير بحث تعاود لم تصل إلى الموصل. اختر خاصية tawodco.com؛ بعد التفويض يمكن إعداد نقل النقرات والظهور والكلمات إلى اللوحة دون خلطها بزيارات الموقع.</p><a href="https://onboard.windsor.ai/connect?connector=searchconsole&amp;next=/searchconsole/authorize" target="_blank" rel="noopener noreferrer">تفويض Search Console</a><details><summary>تعليمات الموصل</summary><p lang="en" dir="ltr">Notes: If Windsor.ai asks you to log in first, log in to the Windsor.ai account this assistant is connected to, also when you use "Continue with Google". Then, when Google asks which account to use, choose the Google account that has access to the Search Console site. On Google's permissions screen, tick the Search Console permission. Back on Windsor.ai, select the Search Console site in the list before clicking "Done, close this tab" or "Finish".</p></details></article>
+      </div></details>
     </section>
 
     <section class="admin-section" id="acquisition">
@@ -263,6 +268,7 @@
 <dialog id="customerDialog" class="account-dialog customer-dialog" aria-labelledby="customerDialogTitle"><div class="drawer-head"><div><span class="micro-label">CUSTOMER RECORD</span><h2 id="customerDialogTitle">ملف العميل</h2></div><button id="customerClose" type="button" class="icon-button" aria-label="إغلاق ملف العميل">×</button></div><p id="customerDialogError" class="form-error" role="alert"></p><div id="customerDetail"></div><form id="customerForm" class="customer-form" hidden autocomplete="off"><label><span>الاسم *</span><input id="customerName" required minlength="2" maxlength="100"></label><label><span>رقم الهاتف *</span><input id="customerPhone" type="tel" dir="ltr" required maxlength="20" placeholder="05xxxxxxxx"></label><label><span>الشركة · اختياري</span><input id="customerCompany" maxlength="120"></label><label><span>الحالة</span><select id="customerActive"><option value="true">نشط</option><option value="false">مؤرشف</option></select></label><label class="customer-wide"><span>ملاحظات العلاقة</span><textarea id="customerNote" rows="3" maxlength="1000"></textarea></label><div class="customer-wide pipeline-form-actions"><button id="customerSave" type="submit">حفظ العميل</button><button id="customerCancelEdit" type="button" class="button-ghost">إلغاء</button></div></form><div id="customerPicker" hidden><p>اختر ملف العميل الصحيح لربطه بهذه الفرصة.</p><label class="customer-search"><span>البحث بالاسم أو الهاتف</span><input id="customerPickerSearch" type="search" maxlength="100"></label><div id="customerPickerList" class="customer-picker-list"></div><small>يعرض أول 30 نتيجة. استخدم البحث للوصول للعميل المطلوب.</small></div></dialog>
 <div class="loading-layer" id="adminLoading" hidden><div class="loader"></div><p>جاري مطابقة المصادر وترتيب القرارات…</p></div>
 <div class="toast" id="adminToast" aria-live="polite"></div>
+<script src="/assets/js/tawod-charts.js?v=20261005-charts-1" defer></script>
 <script src="/assets/js/tawod-command-center.js?v=20261004-profile-1" defer></script>
 </body>
 </html>
