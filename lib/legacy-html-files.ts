@@ -385,7 +385,7 @@ export const legacyHtmlHashes = {
   "dhahran/turnkey/index.html": "1e683dfe3255e4938bf951cff00a4fd7fb1ae0f72034596c7bf429e7adcea9aa",
   "editorial-policy/index.html": "c8812a33a53ebd8d1d148c3a8dac53e6fa37c8cd9dc08130a08ec9c8643fb760",
   "en/index.html": "9342a269b05cbf1609df636f521f7dcbf0c20fbcb1506c3b2e6cdf2cf868a5d2",
-  "index.html": "e945000ef7388dba3e03737bafdbf21c97a075fbee0b6326356dc5ba480ebd84",
+  "index.html": "7a4b4588d9f8376e7d6134b45cdf1f426db342a344c3dade31fb01d4df2b34fb",
   "khobar/about/index.html": "940a4c795c534b0438f4ee80320fe451bf9e3c8c5c9b25d6ca8d3e83fe7e42c6",
   "khobar/blog/best-general-contracting-company-khobar/index.html": "10c1bcb5b02b70dfc8b6499e6105e38155b2f574b4dbaebb0f9f947b928fad45",
   "khobar/blog/bone-construction-quality-checklist-khobar/index.html": "eab383b2d818b176cf4363d83a075f00d0e09173bae4f642adfef75c1cd82c33",
