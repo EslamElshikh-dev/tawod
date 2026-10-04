@@ -124,7 +124,7 @@
     var cards = [
       { title: 'الموقع', connected: !!q.lastEventAt, at: q.lastEventAt, hours: 26, detail: 'آخر حدث مقاس؛ هدوء الزيارات لا يعني تعطل التتبع.' },
       { title: 'Google Ads', connected: !!(data.googleAds || {}).connected, at: (data.googleAds || {}).lastSyncAt, hours: 2, detail: 'الإنفاق والتحويلات · قياس المكالمات له اتصال مستقل.' },
-      { title: 'الملف التجاري', connected: !!(data.businessProfile || {}).connected, at: (data.businessProfile || {}).lastSyncAt, hours: 26, detail: 'اكتمال الأيام يتطلب مراجعة دفعات Performance API.' }
+      { title: 'الملف التجاري', connected: !!(data.businessProfile || {}).connected, at: (data.businessProfile || {}).lastSyncAt, hours: 26, detail: 'مزامنة يومية عبر Windsor؛ آخر أيام Google قابلة للمراجعة.' }
     ];
     el('sourceQualityGrid').innerHTML = cards.map(function (row) {
       var stale = row.connected && (!row.at || Date.now() - new Date(row.at).getTime() > row.hours * 3600000);
@@ -554,8 +554,13 @@
     el('businessProfileName').textContent = bp.profileName || 'الملف التجاري';
     el('businessProfileLastSync').textContent = bp.connected ? 'آخر مزامنة: ' + formatDate(bp.lastSyncAt) : 'لم تصل بيانات الملف بعد';
     el('businessProfileConnectHint').hidden = !!bp.connected;
+    el('profileCoverageNote').hidden = !bp.connected;
+    if (bp.connected) {
+      var rangeLabel = esc(bp.rangeStart || '—') + ' إلى ' + esc(bp.rangeEnd || '—');
+      el('profileCoverageNote').innerHTML = '<strong>مزامنة يومية من ملف الرياض</strong> · الأيام الحديثة قابلة للمراجعة بعد معالجة Google. ضغط زر الاتصال لا يثبت مكالمة مستلمة؛ وضغط رابط الموقع لا يثبت جلسة في الموقع.<div class="profile-coverage"><span>فترة الملف: ' + rangeLabel + '</span><span>أيام متاحة: ' + n(bp.reportingDays) + ' من ' + n(bp.periodDays) + '</span><span>آخر يوم ورد: ' + esc(bp.lastReportDate || '—') + '</span></div>';
+    }
     if (!bp.connected) {
-      el('profileSummaryMetrics').innerHTML = unavailableMetrics(['ظهور البحث', 'ظهور الخرائط', 'المكالمات', 'المحادثات', 'زيارات الموقع', 'طلبات الاتجاهات', 'الحجوزات', 'معدل الإجراء'], 'الملف التجاري');
+      el('profileSummaryMetrics').innerHTML = unavailableMetrics(['ظهور البحث', 'ظهور الخرائط', 'ضغطات الاتصال', 'ضغطات الموقع', 'طلبات الاتجاهات', 'الحجوزات', 'مجموع الإجراءات', 'معدل الإجراء'], 'الملف التجاري');
       el('profileDailyChart').innerHTML = '<div class="chart-empty">المصدر غير متصل.</div>';
       el('profileKeywords').innerHTML = '<div class="empty-box">تظهر كلمات البحث بعد الربط.</div>';
       return;
@@ -563,18 +568,18 @@
     el('profileSummaryMetrics').innerHTML = [
       metric('ظهور البحث', n(s.searchImpressions), 'Desktop + Mobile', 'Business Profile', ''),
       metric('ظهور الخرائط', n(s.mapsImpressions), 'Desktop + Mobile', 'Business Profile', ''),
-      metric('المكالمات', n(s.calls), 'ضغط زر الاتصال في الملف', 'Business Profile', 'calls'),
-      metric('المحادثات', n(s.conversations), 'محادثات الملف التجاري', 'Business Profile', 'whatsapp'),
-      metric('زيارات الموقع', n(s.websiteClicks), 'ضغط رابط الموقع', 'Business Profile', ''),
+      metric('ضغطات الاتصال', n(s.calls), 'ضغط زر الاتصال في الملف', 'Google', 'calls'),
+      metric('ضغطات الموقع', n(s.websiteClicks), 'ضغط رابط الموقع في Google', 'Google', ''),
       metric('طلبات الاتجاهات', n(s.directions), 'Directions', 'Business Profile', ''),
       metric('الحجوزات', n(s.bookings), 'Reserve with Google', 'Business Profile', ''),
+      metric('مجموع الإجراءات', n(number(s.calls) + number(s.websiteClicks) + number(s.directions) + number(s.bookings)), 'مجموع الضغطات والحجوزات', 'محسوب', ''),
       metric('معدل الإجراء', pct(s.actionRate), 'كل الإجراءات ÷ الظهور', 'محسوب', 'rate')
     ].join('');
     var daily = bp.daily || [];
-    var max = Math.max.apply(null, daily.map(function (row) { return Math.max(number(row.searchImpressions) + number(row.mapsImpressions), number(row.calls) + number(row.conversations) + number(row.websiteClicks) + number(row.directions)); }).concat([1]));
+    var max = Math.max.apply(null, daily.map(function (row) { return Math.max(number(row.searchImpressions) + number(row.mapsImpressions), number(row.calls) + number(row.websiteClicks) + number(row.directions) + number(row.bookings)); }).concat([1]));
     el('profileDailyChart').innerHTML = daily.length ? daily.map(function (row) {
       var impressions = number(row.searchImpressions) + number(row.mapsImpressions);
-      var actions = number(row.calls) + number(row.conversations) + number(row.websiteClicks) + number(row.directions);
+      var actions = number(row.calls) + number(row.websiteClicks) + number(row.directions) + number(row.bookings);
       return '<div class="profile-day" title="ظهور ' + n(impressions) + ' · إجراءات ' + n(actions) + '"><i style="height:' + Math.max(3, rate(impressions, max)) + '%"></i><i style="height:' + Math.max(3, rate(actions, max)) + '%"></i><small>' + esc(String(row.date || '').slice(-2)) + '</small></div>';
     }).join('') : '<div class="chart-empty">لا توجد بيانات يومية.</div>';
     var keywords = bp.keywords || [];

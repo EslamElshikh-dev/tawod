@@ -7,7 +7,7 @@
 const TAWOD_PROFILE_SYNC_URL = 'https://vddoeiggfcwllfxpirep.supabase.co/functions/v1/tawod-analytics';
 const TAWOD_PROFILE_SYNC_KEY = 'PASTE_BUSINESS_PROFILE_SYNC_KEY_HERE';
 const TAWOD_LOCATION_ID = 'PASTE_UNOBFUSCATED_LOCATION_ID_HERE';
-const TAWOD_PROFILE_NAME = 'شركة تعاود للمقاولات العامة';
+const TAWOD_PROFILE_NAME = 'شركة تعاود للمقاولات · الرياض';
 const PROFILE_LOOKBACK_DAYS = 90;
 
 const DAILY_METRICS = [
@@ -15,7 +15,6 @@ const DAILY_METRICS = [
   'BUSINESS_IMPRESSIONS_MOBILE_SEARCH',
   'BUSINESS_IMPRESSIONS_DESKTOP_MAPS',
   'BUSINESS_IMPRESSIONS_MOBILE_MAPS',
-  'BUSINESS_CONVERSATIONS',
   'BUSINESS_DIRECTION_REQUESTS',
   'CALL_CLICKS',
   'WEBSITE_CLICKS',
@@ -27,7 +26,6 @@ const FIELD_BY_METRIC = {
   BUSINESS_IMPRESSIONS_MOBILE_SEARCH: 'searchMobileImpressions',
   BUSINESS_IMPRESSIONS_DESKTOP_MAPS: 'mapsDesktopImpressions',
   BUSINESS_IMPRESSIONS_MOBILE_MAPS: 'mapsMobileImpressions',
-  BUSINESS_CONVERSATIONS: 'conversations',
   BUSINESS_DIRECTION_REQUESTS: 'directionRequests',
   CALL_CLICKS: 'callClicks',
   WEBSITE_CLICKS: 'websiteClicks',
