@@ -1,0 +1,64 @@
+/* Contact guidance for the two Riyadh construction service pages. */
+.tawod-contracting.tawod-paid-build .tawod-build-scope {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+}
+.tawod-contracting.tawod-paid-build .tawod-build-scope li {
+  padding: 5px 12px;
+  border: 1px solid #e1d5c5;
+  border-radius: 8px;
+  background: #fff;
+  color: #594535;
+  font-size: .86rem;
+  line-height: 1.7;
+}
+.tawod-contracting.tawod-paid-build .hero-actions {
+  gap: 10px;
+  align-items: stretch;
+}
+.tawod-contracting.tawod-paid-build .hero-actions .btn {
+  min-height: 48px;
+  white-space: normal;
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px 10px;
+}
+.tawod-contracting.tawod-paid-build .page-hero .tawod-build-contact-note {
+  max-width: 760px;
+  margin: 16px 0 10px;
+  font-size: .88rem !important;
+  line-height: 1.8 !important;
+  color: #66615b !important;
+}
+.tawod-contracting.tawod-paid-build .tawod-build-alternative {
+  display: inline-block;
+  padding: 8px 0;
+  color: #715035;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  font-size: .88rem;
+  line-height: 1.8;
+}
+.tawod-contracting.tawod-paid-build .hero-actions .btn:focus-visible,
+.tawod-contracting.tawod-paid-build .tawod-build-alternative:focus-visible {
+  outline: 3px solid #2c6f66;
+  outline-offset: 4px;
+}
+@media (max-width: 767px) {
+  .tawod-contracting.tawod-paid-build .hero-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+  .tawod-contracting.tawod-paid-build .hero-actions .btn {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+  }
+}
