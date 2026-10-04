@@ -138,10 +138,10 @@
     if (row.sheetsSyncedAt) return { text: test ? 'وصل الاختبار' : 'تمت المزامنة', cls: 'contract_signed' };
     return { text: test ? 'اختبار بانتظار الرفع' : 'بانتظار الرفع', cls: 'quote_sent' };
   }
-  function statusFreshness(connected, at) {
+  function statusFreshness(connected, at, freshHours) {
     if (!connected) return { label: 'غير متصل', cls: 'is-offline' };
     var age = at ? (Date.now() - new Date(at).getTime()) / 3600000 : Infinity;
-    if (age <= 2) return { label: 'متصل · محدث', cls: 'is-live' };
+    if (age >= 0 && age <= (freshHours || 2)) return { label: 'متصل · محدث', cls: 'is-live' };
     if (age <= 26) return { label: 'متصل · يحتاج مزامنة', cls: 'is-stale' };
     return { label: 'متصل · بيانات قديمة', cls: 'is-stale' };
   }
@@ -438,15 +438,13 @@
       var g = growth(item[1], item[2]);
       return '<article class="comparison-card"><span>' + item[0] + '</span><strong>' + n(item[1]) + '</strong><small>السابق: ' + n(item[2]) + '</small><div class="trend-pill ' + g.cls + '">' + g.text + '</div></article>';
     }).join('');
-    var rows = data.daily || [];
-    if (!rows.length) { el('dailyChart').innerHTML = '<div class="chart-empty">لا توجد بيانات يومية.</div>'; return; }
-    var max = Math.max.apply(null, rows.map(function (row) { return Math.max(number(row.sessions), number(row.referrals)); }).concat([1]));
-    el('dailyChart').innerHTML = rows.map(function (row) {
-      return '<div class="daily-group" title="زيارات ' + n(row.sessions) + ' · إحالات ' + n(row.referrals) + ' · اتصال ' + n(row.calls) + ' · واتساب ' + n(row.whatsapp) + '">' +
-        '<i class="bar-views" style="height:' + Math.max(3, rate(row.sessions, max)) + '%"></i>' +
-        '<i class="bar-contacts" style="height:' + Math.max(3, rate(row.referrals, max)) + '%"></i>' +
-        '<small>' + esc(String(row.date || '').slice(-2).replace(/^0/, '')) + '</small></div>';
-    }).join('');
+    var q = data.dataQuality || {}, comparison=data.comparison7d || {};
+    el('comparisonPeriod').textContent = comparison.currentStart ? 'مقارنة أسبوعين مكتملين: ' + comparison.currentStart + ' إلى ' + comparison.currentEnd + ' مقابل ' + comparison.previousStart + ' إلى ' + comparison.previousEnd + ' · بتوقيت الرياض' : 'مقارنة فترتين متتاليتين من 7 أيام.';
+    window.TawodCharts.render(el('dailyChart'),{title:'أداء الموقع اليومي',rows:data.daily || [],start:q.startAt,end:q.endAt,today:window.TawodCharts.day(q.endAt),note:'فترة الموقع تشمل جزءًا من أول يوم واليوم الجاري؛ كل جلسة تُسند إلى يوم بدايتها.',modes:[
+      {id:'traffic',label:'زيارات وإحالات',series:[{key:'sessions',label:'الزيارات',color:'#bf7237'},{key:'referrals',label:'الإحالات الفريدة',color:'#187d5d'}]},
+      {id:'channels',label:'قنوات التواصل',series:[{key:'calls',label:'إحالات الاتصال',color:'#276eaa'},{key:'whatsapp',label:'إحالات واتساب',color:'#187d5d'}]},
+      {id:'rate',label:'معدل الإحالة',unit:'%',series:[{get:function(r){return r.sessions ? r.referrals/r.sessions*100 : null;},label:'الإحالات ÷ الزيارات',color:'#bf7237'}]}
+    ]});
   }
 
   function renderSources(data) {
@@ -535,11 +533,11 @@
       var used = Math.min(100, Math.max(0, number(s.budgetUseRate)));
       el('budgetPanel').innerHTML = '<div class="budget-copy"><div><span class="micro-label">BUDGET CONTROL</span><h3>الصرف مقابل تقدير الميزانية الحالية</h3></div><strong>' + pct(s.budgetUseRate) + '</strong></div>' +
         '<div class="budget-track"><i style="width:' + used + '%"></i></div><div class="budget-values"><span>الصرف <b>' + money(s.cost, currency) + '</b></span><span>ميزانية الفترة التقديرية <b>' + money(s.plannedPeriodBudget, currency) + '</b></span><span>الميزانية اليومية الحالية <b>' + money(s.dailyBudget, currency) + '</b></span></div><small>ميزانية الفترة = الميزانية اليومية الحالية × عدد أيام العرض؛ قد تختلف عن الميزانيات التاريخية إذا تغيّرت أثناء الفترة.</small>';
-      var daily = ads.daily || [];
-      var maxCost = Math.max.apply(null, daily.map(function (row) { return number(row.cost); }).concat([1]));
-      el('adsDailyChart').innerHTML = daily.length ? daily.map(function (row) {
-        return '<div class="ads-day" title="إنفاق ' + money(row.cost, currency) + ' · نقرات ' + n(row.clicks) + '"><i class="cost" style="height:' + Math.max(3, rate(row.cost, maxCost)) + '%"></i><small>' + esc(String(row.date || '').slice(-2)) + '</small></div>';
-      }).join('') : '<div class="chart-empty">لا توجد صفوف في الفترة.</div>';
+      window.TawodCharts.render(el('adsDailyChart'),{title:'أداء الإعلانات اليومي',rows:ads.daily || [],start:ads.startDate,end:ads.endDate,today:ads.endDate,note:'بيانات اليوم الجاري أولية. خط الميزانية مرجع بالقيمة الحالية، وليس سجل الميزانية التاريخية.',modes:[
+        {id:'cost',label:'الصرف والميزانية',unit:'SAR',series:[{key:'cost',label:'الصرف الفعلي',color:'#bf7237'},{get:function(){return s.dailyBudget;},label:'الميزانية اليومية الحالية',color:'#788d9c',dashed:true}]},
+        {id:'clicks',label:'النقرات',series:[{key:'clicks',label:'نقرات الإعلان',color:'#276eaa'}]},
+        {id:'conversions',label:'تحويلات Google Ads',decimals:2,series:[{key:'conversions',label:'تحويلات مسجلة',color:'#187d5d'}]}
+      ]});
       var campaigns = ads.campaigns || [];
       el('adsCampaignsEmpty').hidden = !!campaigns.length;
       el('adsCampaignsBody').innerHTML = campaigns.map(function (row) {
@@ -567,7 +565,7 @@
   function renderBusinessProfile(data) {
     var bp = data.businessProfile || { connected: false };
     var s = bp.summary || {};
-    var fresh = statusFreshness(bp.connected, bp.lastSyncAt);
+    var fresh = statusFreshness(bp.connected, bp.lastSyncAt, 26);
     el('businessProfileStatus').className = 'ads-status-chip ' + fresh.cls;
     el('businessProfileStatus').innerHTML = '<i></i>' + fresh.label;
     el('businessProfileName').textContent = bp.profileName || 'الملف التجاري';
@@ -594,13 +592,10 @@
       metric('مجموع الإجراءات', n(number(s.calls) + number(s.websiteClicks) + number(s.directions) + number(s.bookings)), 'مجموع الضغطات والحجوزات', 'محسوب', ''),
       metric('معدل الإجراء', pct(s.actionRate), 'كل الإجراءات ÷ الظهور', 'محسوب', 'rate')
     ].join('');
-    var daily = bp.daily || [];
-    var max = Math.max.apply(null, daily.map(function (row) { return Math.max(number(row.searchImpressions) + number(row.mapsImpressions), number(row.calls) + number(row.websiteClicks) + number(row.directions) + number(row.bookings)); }).concat([1]));
-    el('profileDailyChart').innerHTML = daily.length ? daily.map(function (row) {
-      var impressions = number(row.searchImpressions) + number(row.mapsImpressions);
-      var actions = number(row.calls) + number(row.websiteClicks) + number(row.directions) + number(row.bookings);
-      return '<div class="profile-day" title="ظهور ' + n(impressions) + ' · إجراءات ' + n(actions) + '"><i style="height:' + (impressions ? Math.max(3, rate(impressions, max)) : 0) + '%"></i><i style="height:' + (actions ? Math.max(3, rate(actions, max)) : 0) + '%"></i><small>' + esc(String(row.date || '').slice(-2)) + '</small></div>';
-    }).join('') : '<div class="chart-empty">لا توجد بيانات يومية.</div>';
+    window.TawodCharts.render(el('profileDailyChart'),{title:'أداء الملف التجاري اليومي',rows:bp.daily || [],start:bp.rangeStart,end:bp.rangeEnd,today:bp.rangeEnd,note:'آخر أيام Google قابلة للمراجعة. اليوم دون سجل يظهر كفجوة؛ الصفر الوارد من المصدر يُعرض صفرًا.',modes:[
+      {id:'impressions',label:'الظهور',series:[{key:'searchImpressions',label:'بحث Google',color:'#276eaa'},{key:'mapsImpressions',label:'خرائط Google',color:'#187d5d'}]},
+      {id:'actions',label:'إجراءات الملف',series:[{key:'calls',label:'ضغطات الاتصال',color:'#bf7237'},{key:'websiteClicks',label:'ضغطات الموقع',color:'#276eaa'},{key:'directions',label:'طلبات الاتجاهات',color:'#187d5d'}]}
+    ]});
     var keywords = bp.keywords || [];
     el('profileKeywords').innerHTML = keywords.length ? keywords.slice(0, 12).map(function (row, index) {
       var value = row.threshold != null ? 'أقل من ' + n(row.threshold) : n(row.impressions);
@@ -813,13 +808,18 @@
       ['تعارض مصدر السوشيال مع إعلان جوجل',socialValue(q.attributionConflicts),'تُصنّف ضمن «تعارض إسناد» لحين مراجعة الوسوم؛ لا تُنسب تلقائيًا لأي منصة.'],
       ['جلسات تواصل بلا مشاهدة صفحة في الفترة',socialValue(q.contactSessionsWithoutPage),'قد تبدأ الجلسة قبل بداية الفترة أو لا تصل مشاهدة الصفحة. مستبعدة من إحالات جلسات الموقع.'],
       ['نقرات تواصل بلا معرّف جلسة',socialValue(q.contactEventsWithoutSession),'لا يمكن ضمها إلى جلسة فريدة بثقة.'],
-      ['أحداث اختبار مستبعدة',socialValue(q.excludedTestEvents),'معرّفات TEST / DUMMY / EXAMPLE / FAKE مستبعدة من مؤشرات الموقع.'],
+      ['أحداث اختبار مستبعدة',socialValue(q.excludedTestEvents),'معرّفات TEST / DUMMY / EXAMPLE / FAKE ووسم internal_qa مستبعدة من مؤشرات الموقع.'],
       ['نقرات تواصل مكررة أو مشتركة',socialValue(q.duplicateOrCrossChannelClicks),'الضغطات الخام: '+n(q.rawContactClicks)+'؛ إحالات الجلسات الفريدة: '+n(q.uniqueReferralSessions)+'.'],
       ['زيارات السوشيال بحملة موسومة',socialSessions == null ? '—' : n(tagged)+' / '+n(socialSessions),'الوسم UTM يربط الزيارة بالحملة؛ لا يثبت اكتمال إسناد كل زيارات التطبيق.'],
       ['آخر حدث موقع مستلم',formatDate(q.lastEventAt),'يخص الأحداث المؤهلة للقياس؛ انقطاع أو حجب التتبع يؤثر على اكتمال البيانات.'],
       ['زوار جدد / زاروا الموقع سابقًا',n(summary.newVisitors)+' / '+n(summary.returningVisitors),'حسب أول ظهور مسجل للمتصفح، مع الفصل عن عدد الجلسات خلال الفترة.']
     ];
     el('measurementDiagnostics').innerHTML=diagnostics.map(function (row) { return '<div><div><strong>'+esc(row[0])+'</strong><p>'+esc(row[2])+'</p></div><b>'+esc(row[1])+'</b></div>'; }).join('');
+    el('measurementVerification').innerHTML=(data.measurementVerification || []).map(function(row){
+      var result=row.results || {}, stale=Date.now()-Date.parse(row.checked_at)>48*3600000;
+      return '<article class="source-verification"><strong>'+ (row.source==='google_ads' ? 'مطابقة صرف Google Ads' : 'مطابقة أداء الملف التجاري') +' · '+(result.matched ? 'الأرقام متطابقة ضمن دقة المصدر' : 'فرق يحتاج مراجعة')+'</strong><br><span>الفترة: '+esc(row.period_start)+' إلى '+esc(row.period_end)+' · آخر فحص: '+esc(formatDate(row.checked_at))+'</span><br><small>'+(stale ? 'مر أكثر من يومين على المطابقة المستقلة؛ المزامنة الحالية تُعرض منفصلة.' : 'مطابقة مستقلة وقت الفحص؛ لا تُغني عن توضيح الأيام الأولية أو تأخر المصدر.')+'</small></article>';
+    }).join('') || '<div class="empty-box">لم تُحفظ مطابقة مستقلة للمصادر بعد.</div>';
+
   }
   function buildSocialLink() {
     var url=new URL(el('socialLinkTarget').value);

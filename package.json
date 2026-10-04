@@ -14,7 +14,7 @@
     "build:analytics": "node scripts/install-site-analytics.mjs",
     "check:analytics": "node scripts/install-site-analytics.mjs --check",
     "test:analytics": "node scripts/test-analytics.mjs",
-    "test:command-center": "node scripts/test-command-center.mjs && node scripts/test-paid-referral-costs.mjs",
+    "test:command-center": "node scripts/test-command-center.mjs && node scripts/test-paid-referral-costs.mjs && node scripts/test-dashboard-charts.mjs",
     "test:sales-workspace": "node scripts/test-sales-workspace.mjs",
     "build:static": "node scripts/build-static-pages.mjs && node scripts/install-site-analytics.mjs",
     "check:static": "node scripts/build-static-pages.mjs --check",

@@ -33,6 +33,31 @@ await db.exec(fs.readFileSync('supabase/migrations/20260930051049_tawod_social_m
 await db.exec(fs.readFileSync('supabase/migrations/20260930062353_tawod_meta_attribution_clarity.sql','utf8'));
 await db.exec(fs.readFileSync('supabase/migrations/20260930161904_tawod_customer_records.sql','utf8'));
 await db.exec(fs.readFileSync('supabase/migrations/20260930170548_customer_activity_index.sql','utf8'));
+const integrity = fs.readFileSync('supabase/migrations/20261004231108_tawod_measurement_integrity.sql','utf8');
+await db.exec(integrity.split('-- Pair completed')[0]);
+assert.equal((await db.query("select has_table_privilege('anon','tawod_measurement_verification','SELECT') allowed")).rows[0].allowed,false);
+assert.equal((await db.query("select relrowsecurity enabled from pg_class where relname='tawod_measurement_verification'")).rows[0].enabled,true);
+await db.exec('begin; truncate tawod_analytics_events cascade;');
+for (const [session,offset,source] of [['previous',-8,'google'],['current',-1,'google'],['today',0,'google'],['qa',-1,'internal_qa']]) {
+  for (const event of ['page_view','call_click','whatsapp_click']) await db.query(`insert into tawod_analytics_events(session_id,visitor_id,event_name,occurred_at,utm_source,utm_medium,landing_path)
+    values($1,$1,$2,(((now() at time zone 'Asia/Riyadh')::date+$3::int)::timestamp at time zone 'Asia/Riyadh')+interval '1 second',$4,'cpc','/')`,[session,event,offset,source]);
+}
+await db.query("insert into tawod_analytics_events(session_id,event_name,occurred_at) values('orphan','call_click',now()-interval '1 day')");
+const integrityAudit=(await db.query('select tawod_admin_analytics(30) result')).rows[0].result;
+assert.equal(integrityAudit.summary.sessions,3);
+assert.equal(integrityAudit.summary.referralSessions,3,'cross-channel duplicates are one referral');
+assert.equal(integrityAudit.dataQuality.excludedTestEvents,3,'explicit QA markers excluded');
+assert.equal(integrityAudit.dataQuality.reconciled,true);
+assert.equal(integrityAudit.comparison7d.current.sessions,1,'incomplete current day excluded');
+assert.equal(integrityAudit.comparison7d.current.referrals,1,'orphan contacts excluded from comparison');
+assert.equal(integrityAudit.comparison7d.previous.sessions,1);
+assert.equal(integrityAudit.comparison7d.completedDaysOnly,true);
+const frequency=(await db.query('select tawod_visitor_frequency(30) result')).rows[0].result;
+assert.equal(frequency.visitors,3,'QA excluded from visitor frequency');
+const integrityFeed=(await db.query('select tawod_notification_feed() result')).rows[0].result;
+assert.ok(integrityFeed.entries.every(e=>e.detail.source!=='internal-qa'),'QA excluded from notifications');
+assert.ok(integrityFeed.entries.filter(e=>e.kind==='referral' && e.detail.source==='google-ads').length>=2,'notification attribution matches analytics');
+await db.exec('rollback;');
 const legacy = (await db.query('select * from tawod_sales_outcomes where id=$1',[legacyId])).rows[0];
 assert.equal(legacy.acquisition_source,'google-ads');
 assert.equal(legacy.stage_entered_at,null,'do not invent historical stage timestamps');
@@ -60,6 +85,7 @@ async function restFetch(url,init={}) {
   }
   if (['rpc/tawod_google_ads_analytics','rpc/tawod_business_profile_analytics'].includes(path)) return response({connected:false});
   if (path === 'rpc/tawod_paid_referral_costs') return response({available:false});
+  if (path === 'tawod_measurement_verification') return response([]);
   if (path === 'rpc/tawod_customer_api') { const a=JSON.parse(init.body); return response((await db.query('select tawod_customer_api($1,$2::jsonb) as data',[a.p_action,JSON.stringify(a.p_payload)])).rows[0].data); }
   if (path === 'rpc/tawod_sales_workspace') {
     const rows = await db.query('select tawod_sales_workspace($1) as workspace',[JSON.parse(init.body).p_days]);
