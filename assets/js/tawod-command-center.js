@@ -580,13 +580,13 @@
     el('profileDailyChart').innerHTML = daily.length ? daily.map(function (row) {
       var impressions = number(row.searchImpressions) + number(row.mapsImpressions);
       var actions = number(row.calls) + number(row.websiteClicks) + number(row.directions) + number(row.bookings);
-      return '<div class="profile-day" title="ظهور ' + n(impressions) + ' · إجراءات ' + n(actions) + '"><i style="height:' + Math.max(3, rate(impressions, max)) + '%"></i><i style="height:' + Math.max(3, rate(actions, max)) + '%"></i><small>' + esc(String(row.date || '').slice(-2)) + '</small></div>';
+      return '<div class="profile-day" title="ظهور ' + n(impressions) + ' · إجراءات ' + n(actions) + '"><i style="height:' + (impressions ? Math.max(3, rate(impressions, max)) : 0) + '%"></i><i style="height:' + (actions ? Math.max(3, rate(actions, max)) : 0) + '%"></i><small>' + esc(String(row.date || '').slice(-2)) + '</small></div>';
     }).join('') : '<div class="chart-empty">لا توجد بيانات يومية.</div>';
     var keywords = bp.keywords || [];
     el('profileKeywords').innerHTML = keywords.length ? keywords.slice(0, 12).map(function (row, index) {
       var value = row.threshold != null ? 'أقل من ' + n(row.threshold) : n(row.impressions);
       return '<div class="keyword-row"><span>' + String(index + 1).padStart(2, '0') + '</span><strong>' + esc(row.keyword) + '</strong><b>' + value + '</b></div>';
-    }).join('') : '<div class="empty-box">لا توجد كلمات بحث في الفترة.</div>';
+    }).join('') : '<div class="empty-box">لم تصل كلمات البحث الشهرية من Google بعد. لا تُستنتج من الزيارات.</div>';
   }
 
   function renderReferralsAndCalls(data) {
