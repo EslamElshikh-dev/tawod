@@ -23,14 +23,6 @@
     groups.forEach(group => group.querySelector('summary').addEventListener('click', event => {
       if (!compact.matches) event.preventDefault();
     }));
-    const footer = document.querySelector('footer');
-    if (footer && 'IntersectionObserver' in window) {
-      new IntersectionObserver(entries => {
-        body.classList.toggle('tawod-footer-in-view', entries[0].isIntersecting);
-      }).observe(footer);
-    } else {
-      body.classList.add('tawod-footer-in-view');
-    }
     function focusChanged() {
       body.classList.toggle('tawod-input-active', !!document.activeElement?.matches('input, select, textarea'));
     }
