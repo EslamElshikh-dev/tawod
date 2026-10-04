@@ -225,38 +225,25 @@ async function syncGoogleAds(body: any, origin: string | null) {
   return json({ ok: true, campaigns: campaigns.length, conversions: conversions.length, conversionActions: conversionActions.length, calls: calls.length, syncedAt: new Date().toISOString() }, 200, origin);
 }
 
-function enrichGoogleAdsWithFirstParty(googleAds: any, site: any) {
+function enrichGoogleAdsWithFirstParty(googleAds: any, measurement: any) {
   if (!googleAds || typeof googleAds !== 'object') return googleAds;
-  const siteCampaigns = Array.isArray(site?.campaigns) ? site.campaigns : [];
-  const paidSource = (Array.isArray(site?.sources) ? site.sources : []).find((row: any) => row?.source === 'google-ads') || {};
+  const available = measurement?.available === true;
+  const paired = Array.isArray(measurement?.campaigns) ? measurement.campaigns : [];
+  const metrics = measurement?.summary || {};
   const campaigns = (Array.isArray(googleAds.campaigns) ? googleAds.campaigns : []).map((row: any) => {
-    const id = String(row?.campaignId ?? '').trim();
-    const name = String(row?.name ?? '').trim();
-    const matches = siteCampaigns.filter((siteRow: any) => {
-      const campaign = String(siteRow?.campaign ?? '').trim();
-      return campaign && (campaign === id || campaign === name);
-    });
-    return {
-      ...row,
-      siteSessions: matches.reduce((sum: number, item: any) => sum + Math.max(0, finite(item?.sessions)), 0),
-      siteCalls: matches.reduce((sum: number, item: any) => sum + Math.max(0, finite(item?.calls)), 0),
-      siteWhatsapp: matches.reduce((sum: number, item: any) => sum + Math.max(0, finite(item?.whatsapp)), 0),
-      siteReferrals: matches.reduce((sum: number, item: any) => sum + Math.max(0, finite(item?.referrals)), 0)
-    };
+    const match = paired.find((item: any) => String(item.campaignId) === String(row.campaignId));
+    return { ...row, ...(match || {}), siteCostPerReferral: available ? (match?.siteCostPerReferral ?? null) : null };
   });
-  const summary = googleAds.summary || {};
-  const siteReferrals = Math.max(0, finite(paidSource?.referrals));
-  const cost = Math.max(0, finite(summary?.cost));
   return {
-    ...googleAds,
-    campaigns,
+    ...googleAds, campaigns, referralMeasurement: measurement || { available: false },
     summary: {
-      ...summary,
-      siteSessions: Math.max(0, finite(paidSource?.sessions)),
-      siteCalls: Math.max(0, finite(paidSource?.calls)),
-      siteWhatsapp: Math.max(0, finite(paidSource?.whatsapp)),
-      siteReferrals,
-      siteCostPerReferral: siteReferrals ? Math.round(cost / siteReferrals * 100) / 100 : 0
+      ...googleAds.summary,
+      siteSessions: Math.max(0, finite(metrics.sessions)),
+      siteCalls: Math.max(0, finite(metrics.calls)),
+      siteWhatsapp: Math.max(0, finite(metrics.whatsapp)),
+      siteReferrals: Math.max(0, finite(metrics.referrals)),
+      siteAttributedCost: available ? Math.max(0, finite(metrics.matchedCost)) : null,
+      siteCostPerReferral: available ? (metrics.costPerReferral ?? null) : null
     }
   };
 }
@@ -845,7 +832,7 @@ Deno.serve(async (req) => {
     if (!authorized && typeof body.password === 'string' && body.password) authorized = await sha256(body.password) === await adminPasswordHash();
     if (!authorized) return json({ error: 'unauthorized' }, 401, origin);
     const days = Math.max(7, Math.min(Number(body.days) || 30, 90));
-    const [siteResponse, adsResponse, profileResponse, salesPipeline, recentReferrals, commercial, decisions, notifications] = await Promise.all([
+    const [siteResponse, adsResponse, profileResponse, salesPipeline, recentReferrals, commercial, decisions, notifications, paidResponse] = await Promise.all([
       supabase('/rest/v1/rpc/tawod_admin_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
       supabase('/rest/v1/rpc/tawod_google_ads_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
       supabase('/rest/v1/rpc/tawod_business_profile_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
@@ -854,13 +841,14 @@ Deno.serve(async (req) => {
       loadCommercial(days),
       loadDecisions(),
       loadNotificationFeed(),
+      supabase('/rest/v1/rpc/tawod_paid_referral_costs', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
     ]);
     if (!siteResponse.ok) return json({ error: 'analytics_query_failed' }, 500, origin);
     const siteRaw = await siteResponse.json();
     const site=siteRaw;
     const social=await loadSocialWorkspace(days,site.dataQuality?.startAt||null,site.dataQuality?.endAt||null);
     const googleAdsRaw = adsResponse.ok ? await adsResponse.json() : { connected: false, error: 'google_ads_query_failed' };
-    const googleAds = enrichGoogleAdsWithFirstParty(googleAdsRaw, site);
+    const googleAds = enrichGoogleAdsWithFirstParty(googleAdsRaw, paidResponse.ok ? await paidResponse.json() : { available: false, error: 'paid_measurement_query_failed' });
     const businessProfile = profileResponse.ok ? await profileResponse.json() : { connected: false, error: 'business_profile_query_failed' };
     return json({ ...site, recentReferrals: recentReferrals || site.recentReferrals || [], googleAds, businessProfile, salesPipeline, commercial, decisions, notifications, social, adminProfile: { username: ADMIN_USERNAME } }, 200, origin);
   }

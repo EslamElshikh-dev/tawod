@@ -59,6 +59,7 @@ async function restFetch(url,init={}) {
     return response((await db.query('select '+identifier(fn)+'('+values.map((_,i)=>'$'+(i+1)).join(',')+') as result',values)).rows[0].result);
   }
   if (['rpc/tawod_google_ads_analytics','rpc/tawod_business_profile_analytics'].includes(path)) return response({connected:false});
+  if (path === 'rpc/tawod_paid_referral_costs') return response({available:false});
   if (path === 'rpc/tawod_customer_api') { const a=JSON.parse(init.body); return response((await db.query('select tawod_customer_api($1,$2::jsonb) as data',[a.p_action,JSON.stringify(a.p_payload)])).rows[0].data); }
   if (path === 'rpc/tawod_sales_workspace') {
     const rows = await db.query('select tawod_sales_workspace($1) as workspace',[JSON.parse(init.body).p_days]);
