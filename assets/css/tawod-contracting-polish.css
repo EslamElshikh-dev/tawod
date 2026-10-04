@@ -397,12 +397,7 @@ body.tawod-contracting {
   line-height: 1.9;
   color: #aaabb5 !important;
 }
-.tawod-contracting .contracting-contact-space {
-  min-height: calc(80px + env(safe-area-inset-bottom));
-  padding: 10px 24px calc(14px + env(safe-area-inset-bottom));
-}
-
-/* Direct links occupy a compact edge rail, then join the footer in flow. */
+/* Small independent floating icons, with no surrounding panel. */
 html body.tawod-contracting .float-btns {
   position: fixed;
   z-index: 990;
@@ -412,12 +407,12 @@ html body.tawod-contracting .float-btns {
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  width: 60px;
-  padding: 7px;
-  border: 1px solid transparent;
-  border-radius: 22px;
-  background: linear-gradient(#fff, #fff) padding-box, linear-gradient(160deg, #cfe8de, #ebc29a) border-box;
-  box-shadow: 0 6px 24px #1d1e2614;
+  width: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
   overflow: visible;
 }
 html body.tawod-contracting .float-btns > .float-btn {
@@ -431,7 +426,7 @@ html body.tawod-contracting .float-btns > .float-btn {
   justify-content: center;
   border: 1px solid #ffffff35;
   border-radius: 15px;
-  box-shadow: none;
+  box-shadow: 0 3px 10px #1d1e2618;
   font-size: 22px !important;
   text-decoration: none;
   transform: none;
@@ -482,46 +477,9 @@ html body.tawod-contracting .float-btns > .float-btn::after {
   transition: opacity .2s, transform .2s, visibility .2s;
   pointer-events: none;
 }
-html body.tawod-contracting.tawod-input-active:not(.tawod-footer-in-view) .float-btns {
+html body.tawod-contracting.tawod-input-active .float-btns {
   visibility: hidden;
   pointer-events: none;
-}
-html body.tawod-contracting.tawod-footer-in-view .float-btns {
-  position: static;
-  flex-direction: row;
-  width: min(420px, 100%);
-  padding: 0;
-  gap: 10px;
-  border: 0;
-  border-radius: 0;
-  background: none;
-  box-shadow: none;
-  margin: 0 auto;
-  transform: none;
-}
-html body.tawod-contracting.tawod-footer-in-view .float-btns > .float-btn {
-  flex: 1;
-  width: auto !important;
-  gap: 10px;
-  border-radius: 11px;
-  transform: none;
-}
-html body.tawod-contracting.tawod-footer-in-view .float-btns > .float-call {
-  border-color: #74614e;
-  background: #ffffff05;
-  color: #f3bd83 !important;
-}
-html body.tawod-contracting.tawod-footer-in-view .float-btns > .float-btn::after {
-  position: static;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  color: inherit;
-  background: none;
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-  font: 500 .77rem/1.8 Alexandria, Arial, sans-serif;
 }
 html body.tawod-contracting .float-btns > .float-btn:focus-visible::after {
   opacity: 1;
@@ -605,7 +563,7 @@ html body.tawod-contracting .float-btns > .float-btn:focus-visible::after {
   .tawod-contracting .hero-trust { padding-top: 16px; }
   .tawod-contracting .trust-strip-grid { border-radius: 17px !important; gap: 14px 0 !important; }
   .tawod-contracting :is(.premium-card, .home-project-card, .article-card) { border-radius: 19px !important; }
-  .tawod-contracting footer.footer { padding-top: 32px !important; }
+  .tawod-contracting footer.footer { padding: 32px 0 calc(120px + env(safe-area-inset-bottom)) !important; }
   .tawod-contracting .footer .footer-grid { grid-template-columns: 1fr !important; gap: 0 !important; padding-bottom: 0 !important; }
   .tawod-contracting .footer .footer-about { padding-bottom: 26px; }
   .tawod-contracting .footer .footer-about p { max-width: 36ch; font-size: .8rem !important; }
@@ -619,46 +577,13 @@ html body.tawod-contracting .float-btns > .float-btn:focus-visible::after {
   .tawod-contracting .footer .footer-links { margin: 0 0 14px !important; }
   .tawod-contracting .footer .footer-links a { min-height: 44px; font-size: .79rem !important; }
   .tawod-contracting .footer .footer-bottom { padding: 18px 0 10px !important; }
-  .tawod-contracting .contracting-contact-space { padding-inline: 20px; }
   html body.tawod-contracting .float-btns {
-    inset: auto 0 0;
-    flex-direction: row;
-    width: 100%;
-    padding: 8px max(16px, env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
-    gap: 10px;
-    border: 0;
-    border-top: 1px solid #e7e0d6;
-    border-radius: 0;
-    background: #fff;
-    box-shadow: 0 -4px 18px #1d1e2608;
+    left: max(12px, calc(env(safe-area-inset-left) + 8px));
+    bottom: max(16px, calc(env(safe-area-inset-bottom) + 10px));
   }
-  html body.tawod-contracting .float-btns > .float-btn {
-    flex: 1;
-    width: auto !important;
-    height: 46px !important;
-    min-width: 0;
-    min-height: 46px;
-    gap: 10px;
-    border-radius: 11px;
-    border: 1px solid #137c68;
-    transform: none;
-  }
-  html body.tawod-contracting .float-btns > .float-call {
-    background: #fbf4ea;
-    border-color: #d7c0a7;
-    color: #684729 !important;
-  }
-  html body.tawod-contracting .float-btns > .float-btn::after {
-    position: static;
-    padding: 0;
-    border: 0;
-    color: inherit;
-    background: none;
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    font: 500 .77rem/1.8 Alexandria, Arial, sans-serif;
-  }
+}
+@media (hover: none) {
+  html body.tawod-contracting .float-btns > .float-btn::after { display: none; }
 }
 @media (max-width: 360px) {
   .tawod-contracting .header > .container { width: calc(100% - 20px) !important; gap: 5px; }

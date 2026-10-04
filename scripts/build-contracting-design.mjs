@@ -14,7 +14,7 @@ const files=urls.map(p=>p==='/'?'index.html':p.endsWith('/')?`${p.slice(1)}index
 for(const f of ['thank-you.html','thankyou.html'])if(fs.existsSync(f)&&!files.includes(f))files.push(f);
 const interaction=fs.readdirSync('assets/js').filter(n=>n.endsWith('.js')&&!n.startsWith('tawod-contracting-')).map(n=>fs.readFileSync(`assets/js/${n}`,'utf8')).join('\n')+fs.readFileSync('lib/legacy-pages.ts','utf8');
 const allHtml=files.map(f=>fs.readFileSync(f,'utf8')).join('\n');
-const extra=' tawod-contracting contracting-brand-copy contracting-logo-art contracting-footer-group contracting-contact-space tawod-footer-in-view tawod-input-active contracting-hero-grid contracting-icon contracting-city tawod-entered projects-page';
+const extra=' tawod-contracting contracting-brand-copy contracting-logo-art contracting-footer-group tawod-input-active contracting-hero-grid contracting-icon contracting-city tawod-entered projects-page';
 const critical=compileContractingCss(modern.slice(0,modern.indexOf('/* Content */')),cssVocabulary(allHtml+extra,interaction),'critical.css').toString()+'\n.nav-services-dropdown,\n.nav-services-toggle { display: none; }\n';
 if(Buffer.byteLength(critical)>16*1024)throw new Error('Critical CSS exceeds the existing 16 KiB budget');
 fs.writeFileSync('assets/css/tawod-home-critical.css',critical);
