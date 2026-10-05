@@ -105,20 +105,33 @@ function fetchMonthlyKeywords_(location, end, token) {
       ];
       if (pageToken) params.push(`pageToken=${encodeURIComponent(pageToken)}`);
       const url = `https://businessprofileperformance.googleapis.com/v1/${location}/searchkeywords/impressions/monthly?${params.join('&')}`;
+      const fetchedAt = new Date().toISOString();
       const payload = googleGet_(url, token);
       (payload.searchKeywordsCounts || []).forEach(item => {
         const insight = item.insightsValue || {};
+        const count = keywordCount_(insight);
         rows.push({
           month: Utilities.formatDate(month, 'UTC', 'yyyy-MM-dd'),
           keyword: String(item.searchKeyword || ''),
-          impressions: Number(insight.value || 0),
-          threshold: insight.threshold == null ? null : Number(insight.threshold)
+          impressions: count.impressions,
+          threshold: count.threshold,
+          syncedAt: fetchedAt
         });
       });
       pageToken = payload.nextPageToken || '';
     } while (pageToken);
   }
   return rows;
+}
+
+function keywordCount_(insight) {
+  const hasValue = insight.value != null, hasThreshold = insight.threshold != null;
+  if (hasValue === hasThreshold) throw new Error('Google keyword must contain one exact value or threshold.');
+  const raw = hasThreshold ? insight.threshold : insight.value;
+  if (!(typeof raw === 'number' || (typeof raw === 'string' && /^\d+$/.test(raw)))) throw new Error('Invalid Google keyword count.');
+  const count = Number(raw);
+  if (!Number.isSafeInteger(count) || count < (hasThreshold ? 1 : 0)) throw new Error('Invalid Google keyword count.');
+  return { impressions: hasValue ? count : null, threshold: hasThreshold ? count : null };
 }
 
 function googleGet_(url, token) {

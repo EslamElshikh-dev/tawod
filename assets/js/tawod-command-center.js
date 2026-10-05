@@ -599,10 +599,15 @@
       {id:'actions',label:'إجراءات الملف',series:[{key:'calls',label:'ضغطات الاتصال',color:'#bf7237'},{key:'websiteClicks',label:'ضغطات الموقع',color:'#276eaa'},{key:'directions',label:'طلبات الاتجاهات',color:'#187d5d'}]}
     ]});
     var keywords = bp.keywords || [];
-    el('profileKeywords').innerHTML = keywords.length ? keywords.slice(0, 12).map(function (row, index) {
-      var value = row.threshold != null ? 'أقل من ' + n(row.threshold) : n(row.impressions);
-      return '<div class="keyword-row"><span>' + String(index + 1).padStart(2, '0') + '</span><strong>' + esc(row.keyword) + '</strong><b>' + value + '</b></div>';
-    }).join('') : '<div class="empty-box">لم تصل كلمات البحث الشهرية من Google بعد. لا تُستنتج من الزيارات.</div>';
+    el('profileKeywords').innerHTML = keywords.length ? '<p class="keyword-note">بيانات شهرية قد تشمل أيامًا خارج الفترة المحددة. «أقل من» حد من Google؛ العدد الدقيق غير متاح. الأشهر الأخيرة قد تتأخر أو تتغير.</p>' + keywords.map(renderProfileKeyword).join('') : '<div class="empty-box">لم يرسل Google كلمات بحث لأشهر هذه الفترة بعد. يمكنك مراجعة نطاق 90 يومًا؛ لا تُستنتج الكلمات من الزيارات.</div>';
+  }
+
+  function renderProfileKeyword(row, index) {
+    var threshold = row.threshold, impressions = row.impressions;
+    var value = Number.isSafeInteger(threshold) && threshold > 0 ? 'أقل من ' + n(threshold) : Number.isSafeInteger(impressions) && impressions >= 0 ? n(impressions) : 'غير متاح';
+    var month = 'الشهر غير متاح';
+    try { if (/^\d{4}-\d{2}-01$/.test(row.month)) month = new Intl.DateTimeFormat('ar-SA-u-ca-gregory', {month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(row.month + 'T00:00:00Z')); } catch (error) {}
+    return '<div class="keyword-row"><span>' + n(index + 1) + '</span><strong>' + esc(row.keyword) + '<small>' + esc(month) + '</small></strong><b>' + value + '</b></div>';
   }
 
   function renderReferralsAndCalls(data) {

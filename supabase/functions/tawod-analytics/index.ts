@@ -266,13 +266,36 @@ function cleanProfileRows(body: any) {
   });
 }
 function cleanKeywordRows(body: any) {
-  const locationId = text(body?.locationId, 180); if (!locationId) return [];
-  return (Array.isArray(body?.keywords) ? body.keywords : []).slice(0, 2000).flatMap((row: any) => {
-    const month = validDate(row?.month), keyword = text(row?.keyword, 300); if (!month || !keyword) return [];
-    return [{ report_month: month.slice(0, 7) + '-01', location_id: locationId, search_keyword: keyword,
-      impressions: Math.max(0, Math.trunc(finite(row?.impressions))),
-      threshold: row?.threshold == null ? null : Math.max(0, Math.trunc(finite(row.threshold))),
-      synced_at: new Date().toISOString() }];
+  if (body?.keywords == null) return [];
+  const locationId = text(body?.locationId, 180);
+  if (!locationId || !/^locations\/\d+$/.test(locationId) || !Array.isArray(body.keywords) || body.keywords.length > 2000) throw new Error('invalid_keyword_rows');
+  const count = (value: any, minimum: number) => {
+    if (value == null) return null;
+    if (!(typeof value === 'number' || (typeof value === 'string' && /^\d+$/.test(value)))) throw new Error('invalid_keyword_rows');
+    const result = Number(value);
+    if (!Number.isSafeInteger(result) || result < minimum) throw new Error('invalid_keyword_rows');
+    return result;
+  };
+  const seen = new Set<string>();
+  return body.keywords.map((row: any) => {
+    const month = validDate(row?.month), keyword = text(row?.keyword, 300);
+    if (!month || new Date(month + 'T00:00:00Z').toISOString().slice(0, 10) !== month || !keyword || typeof row?.keyword !== 'string' || row.keyword.length > 300) throw new Error('invalid_keyword_rows');
+    let impressions = count(row?.impressions, 0);
+    const threshold = count(row?.threshold, 1);
+    if (threshold != null) {
+      // Older clients and some connectors send a zero placeholder with a bound.
+      if (impressions != null && impressions !== 0) throw new Error('invalid_keyword_rows');
+      impressions = null;
+    } else if (impressions == null) throw new Error('invalid_keyword_rows');
+    const reportMonth = month.slice(0, 7) + '-01', key = reportMonth + '|' + keyword;
+    if (seen.has(key)) throw new Error('invalid_keyword_rows');
+    seen.add(key);
+    const sourceSync = row?.syncedAt ?? row?.data_fetched_at ?? body?.syncedAt;
+    let timestamp = sourceSync == null ? new Date().toISOString() : String(sourceSync);
+    if (sourceSync === row?.data_fetched_at && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(timestamp)) timestamp += 'Z';
+    if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(timestamp) || !Number.isFinite(Date.parse(timestamp))) throw new Error('invalid_keyword_rows');
+    return { report_month: reportMonth, location_id: locationId, search_keyword: keyword,
+      impressions, threshold, synced_at: new Date(timestamp).toISOString() };
   });
 }
 async function syncBusinessProfile(body: any, origin: string | null) {
@@ -280,7 +303,10 @@ async function syncBusinessProfile(body: any, origin: string | null) {
     await new Promise((resolve) => setTimeout(resolve, 350));
     return json({ error: 'unauthorized' }, 401, origin);
   }
-  const daily = cleanProfileRows(body), keywords = cleanKeywordRows(body);
+  let keywords;
+  try { keywords = cleanKeywordRows(body); }
+  catch { return json({ error: 'invalid_keyword_rows' }, 400, origin); }
+  const daily = cleanProfileRows(body);
   if (!daily.length && !keywords.length) return json({ error: 'no_sync_rows' }, 400, origin);
   if (daily.length) {
     const response = await supabase('/rest/v1/tawod_business_profile_daily?on_conflict=report_date,location_id', {

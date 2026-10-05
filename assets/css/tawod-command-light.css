@@ -334,3 +334,9 @@ input,select,textarea {color:#354f63!important;background-color:#fff!important;b
 .channel-item.call progress::-moz-progress-bar {background:#276eaa}
 .channel-item.whatsapp progress::-webkit-progress-value {background:#187d5d}
 .channel-item.whatsapp progress::-moz-progress-bar {background:#187d5d}
+.keyword-list {max-height:420px;overscroll-behavior:contain}
+.keyword-note {margin:0 0 10px;color:var(--muted);font-size:12px;line-height:1.8}
+.keyword-row {grid-template-columns:32px minmax(0,1fr) auto;padding:12px;gap:12px}
+.keyword-row strong {min-width:0;font-size:13px;overflow-wrap:anywhere}
+.keyword-row strong small {display:block;margin-top:3px;color:var(--muted);font-size:11px;font-weight:400}
+.keyword-row b {font-size:12px;white-space:nowrap}
