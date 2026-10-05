@@ -320,3 +320,17 @@ input,select,textarea {color:#354f63!important;background-color:#fff!important;b
 #google-ads .table-wrap th:first-child,#google-ads .table-wrap td:first-child {position:sticky;right:0;background:#fff;z-index:1;min-width:210px;max-width:260px}
 #google-ads .table-wrap th:first-child {background:#f7f9fb}
 #google-ads .table-wrap td:first-child small {display:none}
+
+/* Data indicators work under the admin page's existing style-src policy. */
+.chart-key.key-copper {background:#bf7237}
+.chart-key.key-green {background:#187d5d}
+.chart-key.key-blue {background:#276eaa}
+.chart-key.key-slate {background:#788d9c}
+.budget-track progress,.channel-track progress,.source-track progress {display:block;width:100%;height:100%;appearance:none;border:0;border-radius:99px;background:transparent}
+.budget-track progress::-webkit-progress-bar,.channel-track progress::-webkit-progress-bar,.source-track progress::-webkit-progress-bar {background:transparent;border-radius:99px}
+.budget-track progress::-webkit-progress-value,.channel-track progress::-webkit-progress-value,.source-track progress::-webkit-progress-value {background:#ba7b4e;border-radius:99px}
+.budget-track progress::-moz-progress-bar,.channel-track progress::-moz-progress-bar,.source-track progress::-moz-progress-bar {background:#ba7b4e;border-radius:99px}
+.channel-item.call progress::-webkit-progress-value {background:#276eaa}
+.channel-item.call progress::-moz-progress-bar {background:#276eaa}
+.channel-item.whatsapp progress::-webkit-progress-value {background:#187d5d}
+.channel-item.whatsapp progress::-moz-progress-bar {background:#187d5d}
