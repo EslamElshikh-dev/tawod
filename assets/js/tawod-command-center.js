@@ -338,7 +338,7 @@
       { label: 'اتصال', value: s.callReferralSessions, share: rate(s.callReferralSessions, channelTotal), cls: 'call' },
       { label: 'واتساب', value: s.whatsappReferralSessions, share: rate(s.whatsappReferralSessions, channelTotal), cls: 'whatsapp' }
     ].map(function (item) {
-      return '<div class="channel-item ' + item.cls + '"><div><strong>' + item.label + '</strong><span>' + n(item.value) + ' جلسة · ' + pct(item.share) + '</span></div><div class="channel-track"><i style="width:' + Math.min(100, item.share) + '%"></i></div></div>';
+      return '<div class="channel-item ' + item.cls + '"><div><strong>' + item.label + '</strong><span>' + n(item.value) + ' جلسة · ' + pct(item.share) + '</span></div><div class="channel-track"><progress value="' + Math.min(100, item.share) + '" max="100" aria-hidden="true"></progress></div></div>';
     }).join('') + '<small class="channel-note">الجلسة التي استخدمت القناتين تظهر في القناتين، لكنها تُحتسب إحالة ناجحة واحدة فقط.</small>';
     var q = data.dataQuality || {};
     el('reconciliationBox').innerHTML =
@@ -417,7 +417,7 @@
     }).join('');
     var reasons = commercial.lossReasons || [], total = reasons.reduce(function (sum,row) { return sum+number(row.total); },0);
     el('commercialLossReasons').innerHTML = reasons.length ? reasons.map(function (row) {
-      return '<div class="loss-reason"><div><strong>' + esc(row.reason === 'unknown' ? 'سبب غير مسجل' : lostReasonLabel(row.reason)) + '</strong><span>' + n(row.total) + ' فرصة · ' + pct(rate(row.total,total)) + '</span></div><div class="source-track"><i style="width:' + Math.min(100,rate(row.total,total)) + '%"></i></div></div>';
+      return '<div class="loss-reason"><div><strong>' + esc(row.reason === 'unknown' ? 'سبب غير مسجل' : lostReasonLabel(row.reason)) + '</strong><span>' + n(row.total) + ' فرصة · ' + pct(rate(row.total,total)) + '</span></div><div class="source-track"><progress value="' + Math.min(100,rate(row.total,total)) + '" max="100" aria-hidden="true"></progress></div></div>';
     }).join('') : '<div class="empty-box">' + (commercial.connected ? 'لا توجد فرص مفقودة مسجلة في هذه المجموعة.' : 'لا تتوفر بيانات الأسباب الآن.') + '</div>';
   }
 
@@ -452,7 +452,7 @@
     if (!rows.length) { el('sourcesList').innerHTML = '<div class="empty-box">لا توجد بيانات مصادر.</div>'; return; }
     var max = Math.max.apply(null, rows.map(function (row) { return number(row.sessions); }).concat([1]));
     el('sourcesList').innerHTML = rows.map(function (row) {
-      return '<div class="source-row"><div><strong>' + esc(sourceLabel(row.source)) + '</strong><span>' + n(row.sessions) + ' زيارة · ' + n(row.referrals) + ' إحالة <small>(' + n(row.calls) + ' اتصال + ' + n(row.whatsapp) + ' واتساب)</small></span></div><b>' + pct(row.referralRate) + '</b><div class="source-track"><i style="width:' + Math.max(3, rate(row.sessions, max)) + '%"></i></div></div>';
+      return '<div class="source-row"><div><strong>' + esc(sourceLabel(row.source)) + '</strong><span>' + n(row.sessions) + ' زيارة · ' + n(row.referrals) + ' إحالة <small>(' + n(row.calls) + ' اتصال + ' + n(row.whatsapp) + ' واتساب)</small></span></div><b>' + pct(row.referralRate) + '</b><div class="source-track"><progress value="' + Math.max(0, rate(row.sessions, max)) + '" max="100" aria-hidden="true"></progress></div></div>';
     }).join('');
     var devices = data.devices || [];
     var total = devices.reduce(function (sum, row) { return sum + number(row.sessions); }, 0);
@@ -534,7 +534,7 @@
       ].join('');
       var used = Math.min(100, Math.max(0, number(s.budgetUseRate)));
       el('budgetPanel').innerHTML = '<div class="budget-copy"><div><span class="micro-label">BUDGET CONTROL</span><h3>الصرف مقابل تقدير الميزانية الحالية</h3></div><strong>' + pct(s.budgetUseRate) + '</strong></div>' +
-        '<div class="budget-track"><i style="width:' + used + '%"></i></div><div class="budget-values"><span>الصرف <b>' + money(s.cost, currency) + '</b></span><span>ميزانية الفترة التقديرية <b>' + money(s.plannedPeriodBudget, currency) + '</b></span><span>الميزانية اليومية الحالية <b>' + money(s.dailyBudget, currency) + '</b></span></div><small>ميزانية الفترة = الميزانية اليومية الحالية × عدد أيام العرض؛ قد تختلف عن الميزانيات التاريخية إذا تغيّرت أثناء الفترة.</small>';
+        '<div class="budget-track"><progress value="' + used + '" max="100" aria-hidden="true"></progress></div><div class="budget-values"><span>الصرف <b>' + money(s.cost, currency) + '</b></span><span>ميزانية الفترة التقديرية <b>' + money(s.plannedPeriodBudget, currency) + '</b></span><span>الميزانية اليومية الحالية <b>' + money(s.dailyBudget, currency) + '</b></span></div><small>ميزانية الفترة = الميزانية اليومية الحالية × عدد أيام العرض؛ قد تختلف عن الميزانيات التاريخية إذا تغيّرت أثناء الفترة.</small>';
       window.TawodCharts.render(el('adsDailyChart'),{title:'أداء الإعلانات اليومي',rows:ads.daily || [],start:ads.startDate,end:ads.endDate,today:ads.endDate,note:'بيانات اليوم الجاري أولية. خط الميزانية مرجع بالقيمة الحالية، وليس سجل الميزانية التاريخية.',modes:[
         {id:'cost',label:'الصرف والميزانية',unit:'SAR',series:[{key:'cost',label:'الصرف الفعلي',color:'#bf7237'},{get:function(){return s.dailyBudget;},label:'الميزانية اليومية الحالية',color:'#788d9c',dashed:true}]},
         {id:'clicks',label:'النقرات',series:[{key:'clicks',label:'نقرات الإعلان',color:'#276eaa'}]},

@@ -7,6 +7,10 @@
   'use strict';
   var WIDTH = 1000, HEIGHT = 220;
   function escape(value) { return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function marker(series) {
+    var colors = {'#bf7237':'copper','#187d5d':'green','#276eaa':'blue','#788d9c':'slate'};
+    return '<i class="chart-key key-' + (colors[series.color] || 'slate') + '" aria-hidden="true"></i>';
+  }
   function value(input) { return input == null || input === '' || !Number.isFinite(Number(input)) ? null : Math.max(0, Number(input)); }
   function day(input) {
     if (!input) return null;
@@ -68,7 +72,7 @@
     var labelIndices = Array.from(new Set([0,Math.round((rows.length-1)/4),Math.round((rows.length-1)/2),Math.round((rows.length-1)*3/4),rows.length-1]));
     var missing = rows.filter(function (row) { return !row.reported; }).length;
     container.innerHTML='<div class="chart-toolbar"><div class="chart-modes" aria-label="مؤشرات الرسم">'+modes.map(function (m) { return '<button type="button" data-chart-mode="'+escape(m.id)+'" aria-pressed="'+(m.id===mode.id)+'">'+escape(m.label)+'</button>'; }).join('')+'</div><span class="chart-unit">'+escape(mode.unit==='SAR' ? 'ريال سعودي' : mode.unit==='%' ? 'نسبة مئوية' : 'عدد')+'</span></div>'+
-      '<div class="chart-legend">'+mode.series.map(function (s) { return '<span><i style="background:'+s.color+'"></i>'+escape(s.label)+'</span>'; }).join('')+'</div>'+
+      '<div class="chart-legend">'+mode.series.map(function (s) { return '<span>'+marker(s)+escape(s.label)+'</span>'; }).join('')+'</div>'+
       '<div class="chart-canvas"><div class="chart-y-axis" aria-hidden="true">'+[4,3,2,1,0].map(function (i) { return '<span>'+escape(new Intl.NumberFormat('ar-SA',{maximumFractionDigits:maximum<10 ? 2 : 1}).format(maximum*i/4))+'</span>'; }).join('')+'</div>'+
       '<div class="chart-plot" role="slider" tabindex="0" aria-label="'+escape(config.title)+'؛ استخدم السهمين لقراءة الأيام" aria-valuemin="0" aria-valuemax="'+(rows.length-1)+'"><svg viewBox="0 0 1000 220" preserveAspectRatio="none" role="presentation" aria-hidden="true">'+svg+'<line class="chart-cursor" y1="0" y2="220"/><g class="chart-selected-points"></g></svg></div></div>'+
       '<div class="chart-x-axis" aria-hidden="true">'+labelIndices.map(function (i,j) { return '<span class="'+(j%2 ? 'chart-extra-date' : '')+'">'+escape(shortDate(rows[i].date))+'</span>'; }).join('')+'</div>'+
@@ -78,7 +82,7 @@
     function select(index) {
       selected=Math.max(0,Math.min(rows.length-1,index)); var row=rows[selected], x=rows.length===1 ? WIDTH/2 : selected*WIDTH/(rows.length-1);
       var summary=shortDate(row.date)+(row.date===config.today ? ' · اليوم الجاري' : '')+(row.reported ? '' : ' · لا يوجد سجل يومي');
-      reader.innerHTML='<time datetime="'+row.date+'">'+escape(summary)+'</time><div>'+mode.series.map(function (s) { var v=row.reported ? value(s.get ? s.get(row) : row[s.key]) : null; return '<span><i style="background:'+s.color+'"></i>'+escape(s.label)+' <b>'+escape(number(v))+'</b></span>'; }).join('')+'</div>';
+      reader.innerHTML='<time datetime="'+row.date+'">'+escape(summary)+'</time><div>'+mode.series.map(function (s) { var v=row.reported ? value(s.get ? s.get(row) : row[s.key]) : null; return '<span>'+marker(s)+escape(s.label)+' <b>'+escape(number(v))+'</b></span>'; }).join('')+'</div>';
       plot.setAttribute('aria-valuenow',String(selected)); plot.setAttribute('aria-valuetext',summary+'؛ '+reader.textContent);
       var cursor=plot.querySelector('.chart-cursor'); cursor.setAttribute('x1',String(x));cursor.setAttribute('x2',String(x));
       plot.querySelector('.chart-selected-points').innerHTML=mode.series.map(function (s) { var v=row.reported ? value(s.get ? s.get(row) : row[s.key]) : null;return v==null ? '' : '<ellipse cx="'+x+'" cy="'+(HEIGHT-v/maximum*HEIGHT)+'" rx="10" ry="4" fill="'+s.color+'" stroke="#fff" stroke-width="2" vector-effect="non-scaling-stroke"/>'; }).join('');
