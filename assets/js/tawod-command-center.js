@@ -168,7 +168,7 @@
   }
   function metric(label, value, hint, source, cls) {
     return '<article class="kpi-card ' + esc(cls || '') + '"><div class="metric-top"><span>' + esc(label) +
-      '</span><em>' + esc(source) + '</em></div><strong>' + esc(value) + '</strong><small>' + esc(hint) + '</small></article>';
+      '</span><em>' + esc(source) + '</em></div><strong><bdi>' + esc(value) + '</bdi></strong><small>' + esc(hint) + '</small></article>';
   }
   function unavailableMetrics(labels, source) {
     return labels.map(function (label) { return metric(label, 'غير متصل', 'يلزم ربط المصدر', source, 'is-unavailable'); }).join('');
@@ -496,8 +496,8 @@
     var complete = !number(s.unmatchedReferrals) && number(s.spendCoverage) >= 95;
     el('paidReferralPanel').innerHTML = '<div class="panel-title"><div><span class="micro-label">الصرف ← الإحالة ← التأهيل</span><h3>تكلفة الإحالة من صرف فعلي</h3></div><span class="measurement-state ' + (complete ? 'is-complete' : 'is-pending') + '">' + (complete ? 'تم الربط' : 'ربط جزئي') + '</span></div>' +
       '<div class="cost-equation"><div><span>صرف الحملات المرتبطة</span><strong>' + money(s.matchedCost, currency) + '</strong></div><span class="equation-symbol" aria-hidden="true">÷</span><div><span>جلسات أحالت للتواصل</span><strong>' + n(s.referrals) + '</strong></div><span class="equation-symbol" aria-hidden="true">=</span><div class="equation-result"><span>تكلفة الإحالة الفريدة</span><strong>' + (s.costPerReferral != null ? money(s.costPerReferral, currency) : '—') + '</strong></div></div>' +
-      '<div class="measurement-coverage"><span>الفترة: <b dir="ltr">' + esc(measurement.startDate) + ' — ' + esc(measurement.endDate) + '</b></span><span>' + n(measurement.coveredDays) + ' أيام مكتملة · الرياض</span><span>ميزانية الأيام التقديرية: ' + money(number((ads.summary || {}).dailyBudget) * number(measurement.coveredDays), currency) + '</span><span>تغطية الصرف: ' + (s.spendCoverage != null ? pct(s.spendCoverage) : '—') + '</span><span>' + n(s.matchedCampaigns) + ' حملات مرتبطة</span></div>' +
-      '<p class="measurement-note">' + (number(s.unmatchedReferrals) ? n(s.unmatchedReferrals) + ' إحالة إعلانية لم تُربط بحملة محددة. ' : '') + 'صرف غير مرتبط بزيارات الموقع: ' + money(Math.max(0, number(s.periodCost) - number(s.matchedCost)), currency) + '. ' + (measurement.trackingWindowShortened ? 'اقتُصرت الفترة على الأيام التي بدأ فيها قياس الموقع. ' : '') + 'تقدير الميزانية = الميزانية اليومية الحالية × الأيام المكتملة؛ لا يمثل سجل الميزانيات السابقة. الاتصال وواتساب في الجلسة نفسها يُحسبان إحالة واحدة. الإحالة ضغطة تواصل؛ التأهيل والعقد يُراجعان في مسار البيع.</p>' +
+      '<details class="finance-details"><summary>تفاصيل الفترة والربط · تغطية الصرف ' + (s.spendCoverage != null ? pct(s.spendCoverage) : '—') + '</summary><div class="measurement-coverage"><span>الفترة: <b dir="ltr">' + esc(measurement.startDate) + ' — ' + esc(measurement.endDate) + '</b></span><span>' + n(measurement.coveredDays) + ' أيام مكتملة · الرياض</span><span>ميزانية الأيام التقديرية: ' + money(number((ads.summary || {}).dailyBudget) * number(measurement.coveredDays), currency) + '</span><span>تغطية الصرف: ' + (s.spendCoverage != null ? pct(s.spendCoverage) : '—') + '</span><span>' + n(s.matchedCampaigns) + ' حملات مرتبطة</span></div>' +
+      '<p class="measurement-note">' + (number(s.unmatchedReferrals) ? n(s.unmatchedReferrals) + ' إحالة إعلانية لم تُربط بحملة محددة. ' : '') + 'صرف غير مرتبط بزيارات الموقع: ' + money(Math.max(0, number(s.periodCost) - number(s.matchedCost)), currency) + '. ' + (measurement.trackingWindowShortened ? 'اقتُصرت الفترة على الأيام التي بدأ فيها قياس الموقع. ' : '') + 'تقدير الميزانية = الميزانية اليومية الحالية × الأيام المكتملة؛ لا يمثل سجل الميزانيات السابقة. الاتصال وواتساب في الجلسة نفسها يُحسبان إحالة واحدة. الإحالة ضغطة تواصل؛ التأهيل والعقد يُراجعان في مسار البيع.</p></details>' +
       '<div class="measurement-actions"><a href="#acquisition">راجع إسناد الحملات</a><a href="#sales-pipeline">راجع جودة الفرص</a></div>';
   }
   function renderAds(data) {
@@ -512,7 +512,8 @@
     el('googleAdsSyncFeedback').textContent = ads.connected && fresh.cls === 'is-live' ? 'مزامنة تلقائية كل ساعة · البيانات محدثة' : 'المشغّل التلقائي يعمل كل ساعة';
     el('googleAdsConnectHint').hidden = !!ads.connected;
     if (!ads.connected) {
-      el('adsSummaryMetrics').innerHTML = unavailableMetrics(['الميزانية اليومية', 'الصرف', 'النقرات', 'التحويلات', 'مكالمات مقاسة', 'عملاء محتملون', 'عملاء مؤكدون', 'CPA'], 'Google Ads');
+      el('adsSummaryMetrics').innerHTML = unavailableMetrics(['الميزانية اليومية', 'الصرف', 'النقرات', 'التحويلات'], 'Google Ads');
+      el('adsQualityMetrics').innerHTML = unavailableMetrics(['CPA', 'مكالمات مقاسة', 'عملاء محتملون', 'عملاء مؤكدون'], 'Google Ads');
       el('budgetPanel').innerHTML = '<div class="empty-box">الميزانية والصرف غير متاحين قبل مزامنة الحساب.</div>';
       el('adsDailyChart').innerHTML = '<div class="chart-empty">المصدر غير متصل.</div>';
       el('adsCampaignsBody').innerHTML = ''; el('adsCampaignsEmpty').hidden = false;
@@ -523,12 +524,13 @@
         metric('الميزانية اليومية', money(s.dailyBudget, currency), 'الميزانية الحالية للحملات المفعلة', 'Google Ads', 'budget'),
         metric('الصرف', money(s.cost, currency), 'الفترة المختارة', 'Google Ads', 'spend'),
         metric('النقرات', n(s.clicks), 'CTR ' + pct(s.ctr), 'Google Ads', ''),
-        metric('التحويلات', n(s.conversions, 1), 'Conversion Actions', 'Google Ads', ''),
-        metric('مكالمات مقاسة', ads.callReportingConnected ? n(s.trackedCalls) : 'غير متصل', 'مدة وحالة فعلية', 'Call Reporting', ''),
-        metric('عملاء محتملون', ads.callReportingConnected ? n(s.potentialCustomers) : 'غير متصل', 'مكالمة مستلمة >60ث', 'Call Reporting', 'potential'),
-        metric('عملاء مؤكدون', ads.callReportingConnected ? n(s.confirmedCustomers) : 'غير متصل', '>60ث + تكرار/زيارة', 'تأهيل', 'confirmed'),
+        metric('التحويلات', n(s.conversions, 1), 'Conversion Actions', 'Google Ads', '')
+      ].join('');
+      el('adsQualityMetrics').innerHTML = [
         metric('CPA', money(s.cpa, currency), 'تكلفة تحويل Google Ads', 'Google Ads', ''),
-        metric('تكلفة إحالة الموقع', s.siteCostPerReferral != null ? money(s.siteCostPerReferral, currency) : '—', ads.referralMeasurement && ads.referralMeasurement.available ? n(s.siteReferrals) + ' إحالة · الحملات المرتبطة · أيام مكتملة' : 'بانتظار اكتمال بيانات الربط', 'صرف + First-party', 'referral-cpa')
+        metric('مكالمات مقاسة', ads.callReportingConnected ? n(s.trackedCalls) : 'غير متصل', 'مدة وحالة فعلية', 'Call Reporting', ads.callReportingConnected ? '' : 'is-unavailable'),
+        metric('عملاء محتملون', ads.callReportingConnected ? n(s.potentialCustomers) : 'غير متصل', 'مكالمة مستلمة >60ث', 'Call Reporting', ads.callReportingConnected ? 'potential' : 'is-unavailable'),
+        metric('عملاء مؤكدون', ads.callReportingConnected ? n(s.confirmedCustomers) : 'غير متصل', '>60ث + تكرار/زيارة', 'تأهيل', ads.callReportingConnected ? 'confirmed' : 'is-unavailable')
       ].join('');
       var used = Math.min(100, Math.max(0, number(s.budgetUseRate)));
       el('budgetPanel').innerHTML = '<div class="budget-copy"><div><span class="micro-label">BUDGET CONTROL</span><h3>الصرف مقابل تقدير الميزانية الحالية</h3></div><strong>' + pct(s.budgetUseRate) + '</strong></div>' +
@@ -574,7 +576,7 @@
     el('profileCoverageNote').hidden = !bp.connected;
     if (bp.connected) {
       var rangeLabel = esc(bp.rangeStart || '—') + ' إلى ' + esc(bp.rangeEnd || '—');
-      el('profileCoverageNote').innerHTML = '<strong>مزامنة يومية من ملف الرياض</strong> · الأيام الحديثة قابلة للمراجعة بعد معالجة Google. ضغط زر الاتصال لا يثبت مكالمة مستلمة؛ وضغط رابط الموقع لا يثبت جلسة في الموقع.<div class="profile-coverage"><span>فترة الملف: ' + rangeLabel + '</span><span>أيام متاحة: ' + n(bp.reportingDays) + ' من ' + n(bp.periodDays) + '</span><span>آخر يوم ورد: ' + esc(bp.lastReportDate || '—') + '</span></div>';
+      el('profileCoverageNote').innerHTML = '<details class="report-details"><summary>تغطية البيانات · ' + n(bp.reportingDays) + ' من ' + n(bp.periodDays) + ' يوم</summary><strong>مزامنة يومية من ملف الرياض</strong> · الأيام الحديثة قابلة للمراجعة بعد معالجة Google. ضغط زر الاتصال لا يثبت مكالمة مستلمة؛ وضغط رابط الموقع لا يثبت جلسة في الموقع.<div class="profile-coverage"><span>فترة الملف: ' + rangeLabel + '</span><span>أيام متاحة: ' + n(bp.reportingDays) + ' من ' + n(bp.periodDays) + '</span><span>آخر يوم ورد: ' + esc(bp.lastReportDate || '—') + '</span></div></details>';
     }
     if (!bp.connected) {
       el('profileSummaryMetrics').innerHTML = unavailableMetrics(['ظهور البحث', 'ظهور الخرائط', 'ضغطات الاتصال', 'ضغطات الموقع', 'طلبات الاتجاهات', 'الحجوزات', 'مجموع الإجراءات', 'معدل الإجراء'], 'الملف التجاري');
