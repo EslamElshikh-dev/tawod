@@ -442,11 +442,11 @@ export const legacyHtmlHashes = {
   "project-modon-eight-warehouses-riyadh.html": "f0ecd4b6d55ab2db057fc40c82d348b7d38dbf574579ae0abf9890041d803a98",
   "project-villa-plaster-ceramic-marble-uhud-riyadh.html": "ffe0bcf87e7c8a62eb020f4e18734f78547518d7612d0c6e43803115350e1102",
   "projects.html": "bcf34afd71c4577e4f430956d67a718711dce7cf4f22e96f087290c92090363e",
-  "service-construction.html": "fa799d84411f498d5532a97b69b115aa7c80a9b5820f4aa18a79a9f8035a3615",
+  "service-construction.html": "e5e70b80ab43ad4b77bd1e1e43a6d816e0d5bc6ffce294f4fde78e0bef21e61c",
   "service-decor.html": "2fe126d36906b4beb9e742793c438828adbd1ffabf476c847f1959d2fd673eee",
   "service-finishing.html": "e5e0d09b2f76a6b93c5e518a430d0b38129a31ec5205db728b6671414641c0b0",
   "service-mep.html": "c0a2f13aba294fb7fc4386fcff7f6b643a968318b51fad3f168d7222b0d81ae8",
   "service-restoration.html": "cdbd8e0d0a28fde80f348345c67005c8fcb08650ac76ec420c20f4797366cf6d",
-  "service-turnkey.html": "a10b336189b3b4cb5df4db4c28010e8bb85269721dc3c790533d0b203424c01e",
+  "service-turnkey.html": "a96359a295b7ea13d2b9cd067d4991474f6c45d28191004e66105197e0f0984d",
   "thank-you.html": "8f886ff53c1d22fdd7558a655657f5e92c8453d83e90d7e448acc501e0f85b2c"
 } as const;
