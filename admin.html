@@ -147,6 +147,7 @@
           <input id="pipelineId" type="hidden">
           <div class="pipeline-customer-binding"><div><span>ملف العميل</span><strong id="pipelineCustomerName">سجّل الفرصة أولًا لربطها بعميل</strong></div><button id="pipelineCustomerChoose" type="button" class="button-secondary" hidden>ربط بملف عميل</button><button id="pipelineCustomerView" type="button" class="button-ghost" hidden>فتح الملف</button><button id="pipelineCustomerUnlink" type="button" class="button-ghost" hidden>إزالة الربط</button></div><div class="pipeline-source-binding" id="pipelineSourceBinding">فرصة يدوية · المصدر غير مرتبط بإحالة مقاسة</div>
           <label><span>القناة</span><select id="pipelineSourceType" required><option value="whatsapp">واتساب</option><option value="call">اتصال</option><option value="form">نموذج</option><option value="other">أخرى</option></select></label>
+          <label><span>عرفتنا منين؟ (حسب إفادة العميل)</span><select id="pipelineReportedSource" aria-describedby="pipelineReportedSourceHelp"><option value="unknown">لم يُسأل / غير معروف</option><option value="google_maps">جوجل ماب</option><option value="google_search">بحث جوجل</option><option value="google_ad">إعلان جوجل</option><option value="referral">توصية من شخص</option><option value="social">منصات التواصل</option><option value="other">مصدر آخر</option></select><small id="pipelineReportedSourceHelp">سجل إجابة العميل؛ تظهر منفصلة عن المصدر المقاس.</small></label>
           <label><span>المرحلة</span><select id="pipelineStage" required><option value="new">إحالة جديدة</option><option value="qualified">عميل مؤهل</option><option value="quote_sent">عرض سعر مرسل</option><option value="site_visit">زيارة موقع</option><option value="contract_signed">عقد موقّع</option><option value="lost">لم يتم التعاقد</option></select></label>
           <label><span>الخدمة</span><input id="pipelineServiceType" type="text" maxlength="160" placeholder="مثال: بناء عظم"></label>
           <label><span>الحملة</span><input id="pipelineCampaign" type="text" maxlength="180" placeholder="اسم الحملة إن وُجد"></label>
@@ -270,6 +271,6 @@
 <div class="loading-layer" id="adminLoading" hidden><div class="loader"></div><p>جاري مطابقة المصادر وترتيب القرارات…</p></div>
 <div class="toast" id="adminToast" aria-live="polite"></div>
 <script src="/assets/js/tawod-charts.js?v=20261005-charts-1" defer></script>
-<script src="/assets/js/tawod-command-center.js?v=20261005-layout-1" defer></script>
+<script src="/assets/js/tawod-command-center.js?v=20261006-source-1" defer></script>
 </body>
 </html>

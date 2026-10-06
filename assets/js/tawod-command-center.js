@@ -75,6 +75,29 @@
   function salesSourceLabel(value) {
     return { call: 'اتصال', whatsapp: 'واتساب', form: 'نموذج', other: 'أخرى' }[value] || value || '—';
   }
+  var REPORTED_SOURCE_PREFIX = 'المصدر حسب إفادة العميل: ';
+  var REPORTED_SOURCES = {
+    google_maps: 'جوجل ماب', google_search: 'بحث جوجل', google_ad: 'إعلان جوجل',
+    referral: 'توصية من شخص', social: 'منصات التواصل', other: 'مصدر آخر'
+  };
+  function readReportedSource(notes) {
+    var value = String(notes || '');
+    var keys = Object.keys(REPORTED_SOURCES);
+    for (var i = 0; i < keys.length; i++) {
+      var prefix = REPORTED_SOURCE_PREFIX + REPORTED_SOURCES[keys[i]];
+      if (value === prefix) return { source: keys[i], notes: '' };
+      if (value.indexOf(prefix + '\n') === 0) return { source: keys[i], notes: value.slice(prefix.length + 1) };
+    }
+    return { source: 'unknown', notes: value };
+  }
+  function writeReportedSource(source, notes) {
+    var label = REPORTED_SOURCES[source];
+    return label ? REPORTED_SOURCE_PREFIX + label + (notes ? '\n' + notes : '') : notes;
+  }
+  function reportedSourceDetail(notes) {
+    var source = readReportedSource(notes).source;
+    return REPORTED_SOURCES[source] ? '<small>حسب إفادة العميل: ' + esc(REPORTED_SOURCES[source]) + '</small>' : '';
+  }
   function salesStageLabel(value) {
     return { new: 'إحالة جديدة', qualified: 'عميل مؤهل', quote_sent: 'عرض سعر مرسل', site_visit: 'زيارة موقع', contract_signed: 'عقد موقّع', lost: 'لم يتم التعاقد' }[value] || value || '—';
   }
@@ -364,7 +387,7 @@
     el('pipelineLastUpdate').textContent = sales.lastUpdatedAt ? 'آخر تحديث: ' + formatDate(sales.lastUpdatedAt) : 'لم تُسجل نتائج بعد';
     el('pipelineBody').innerHTML = entries.map(function (row) {
       var sync = sheetsSyncLabel(row);
-      return '<tr data-outcome="' + esc(row.id) + '"><td><code>' + esc(opportunityId(row)) + '</code>' + (row.isTest ? '<small>بيانات اختبار</small>' : '') + '<small>' + esc(formatDate(row.occurredAt)) + '</small></td><td><span class="channel-tag ' + esc(row.sourceType) + '">' + esc(salesSourceLabel(row.sourceType)) + '</span><small>' + esc(sourceLabel(row.acquisitionSource || 'غير مرتبط')) + '</small></td><td>' + esc(row.serviceType) + '<small>' + esc(row.projectLocation) + '</small></td><td>' + esc(row.campaignName) + '</td><td><span class="stage-tag ' + esc(row.stage) + '">' + esc(salesStageLabel(row.stage)) + '</span>' + (row.stage === 'lost' ? '<small>' + esc(lostReasonLabel(row.lostReason)) + '</small>' : '') + '</td><td>' + esc(row.assignee || 'دون مسؤول') + '<small>' + esc(formatDate(row.nextFollowUpAt)) + '</small></td><td><span class="stage-tag ' + esc(sync.cls) + '">' + esc(sync.text) + '</span></td><td>' + esc(money(row.estimatedValue, 'SAR')) + '</td><td><strong>' + esc(money(row.contractValue, 'SAR')) + '</strong></td><td><button class="pipeline-edit" type="button">فتح</button></td></tr>';
+      return '<tr data-outcome="' + esc(row.id) + '"><td><code>' + esc(opportunityId(row)) + '</code>' + (row.isTest ? '<small>بيانات اختبار</small>' : '') + '<small>' + esc(formatDate(row.occurredAt)) + '</small></td><td><span class="channel-tag ' + esc(row.sourceType) + '">' + esc(salesSourceLabel(row.sourceType)) + '</span><small>' + esc(sourceLabel(row.acquisitionSource || 'غير مرتبط')) + '</small>' + reportedSourceDetail(row.notes) + '</td><td>' + esc(row.serviceType) + '<small>' + esc(row.projectLocation) + '</small></td><td>' + esc(row.campaignName) + '</td><td><span class="stage-tag ' + esc(row.stage) + '">' + esc(salesStageLabel(row.stage)) + '</span>' + (row.stage === 'lost' ? '<small>' + esc(lostReasonLabel(row.lostReason)) + '</small>' : '') + '</td><td>' + esc(row.assignee || 'دون مسؤول') + '<small>' + esc(formatDate(row.nextFollowUpAt)) + '</small></td><td><span class="stage-tag ' + esc(sync.cls) + '">' + esc(sync.text) + '</span></td><td>' + esc(money(row.estimatedValue, 'SAR')) + '</td><td><strong>' + esc(money(row.contractValue, 'SAR')) + '</strong></td><td><button class="pipeline-edit" type="button">فتح</button></td></tr>';
     }).join('');
   }
 
@@ -1068,7 +1091,9 @@
     el('pipelineCampaign').value = row.campaignName || '';
     el('pipelineEstimatedValue').value = number(row.estimatedValue);
     el('pipelineContractValue').value = number(row.contractValue);
-    el('pipelineNotes').value = row.notes || '';
+    var reported = readReportedSource(row.notes);
+    el('pipelineReportedSource').value = reported.source;
+    el('pipelineNotes').value = reported.notes;
     el('pipelineLocation').value = row.projectLocation || '';
     el('pipelineTiming').value = row.executionTiming || 'unknown';
     el('pipelineFit').value = row.serviceFit || 'unknown';
@@ -1128,6 +1153,14 @@
     if (['qualified','quote_sent','site_visit','contract_signed'].includes(stage) && (el('pipelineFit').value !== 'suitable' || el('pipelineContactResult').value !== 'contacted')) {
       el('pipelineError').textContent = 'راجع التواصل واختر خدمة مناسبة قبل اعتماد التأهيل.'; return;
     }
+    var freeNotes = el('pipelineNotes').value.trim();
+    if (stage === 'lost' && el('pipelineLostReason').value === 'other' && !freeNotes) {
+      el('pipelineError').textContent = 'اكتب سبب عدم التعاقد في الملاحظة.'; return;
+    }
+    var savedNotes = writeReportedSource(el('pipelineReportedSource').value, freeNotes);
+    if (savedNotes.length > 500) {
+      el('pipelineError').textContent = 'اختصر الملاحظة قليلًا لحفظها مع مصدر العميل (500 حرف كحد أقصى).'; return;
+    }
     var queuedForSheets = el('pipelineSourceType').value === 'whatsapp' && ['qualified', 'quote_sent', 'site_visit', 'contract_signed'].indexOf(stage) !== -1;
     button.disabled = true; button.textContent = 'حفظ…';
     try {
@@ -1137,7 +1170,7 @@
         sourceType: el('pipelineSourceType').value, stage: stage,
         serviceType: el('pipelineServiceType').value.trim(), campaignName: el('pipelineCampaign').value.trim(),
         estimatedValue: number(el('pipelineEstimatedValue').value), contractValue: number(el('pipelineContractValue').value),
-        notes: el('pipelineNotes').value.trim(),
+        notes: savedNotes,
         expectedUpdatedAt: el('pipelineForm').dataset.updatedAt || null,
         assignee: el('pipelineAssignee').value.trim(), nextAction: el('pipelineNextAction').value.trim(),
         nextFollowUpAt: inputTimestamp(el('pipelineFollowupAt').value), lastContactAt: inputTimestamp(el('pipelineLastContactAt').value),
@@ -1324,8 +1357,8 @@
     if (!payload || !(payload.salesPipeline || {}).connected) return;
     var sales = payload.salesPipeline;
     var entries = (sales.entries || []).filter(function (row) { return !row.isTest && (el('pipelineStageFilter').value === 'all' || el('pipelineStageFilter').value === row.stage); });
-    var rows = [['معرف العرض','معرف الفرصة الكامل','تاريخ الإحالة','القناة','المصدر','الحملة','الخدمة','المنطقة','المرحلة','المسؤول','المتابعة القادمة (ISO)','آخر تواصل فعلي (ISO)','قيمة متوقعة SAR','قيمة العقد SAR','سبب عدم التعاقد','مرجع الإحالة']].concat(entries.map(function (row) {
-      return [opportunityId(row),row.id,row.occurredAt,salesSourceLabel(row.sourceType),sourceLabel(row.acquisitionSource || 'غير مرتبط'),row.campaignName,row.serviceType,row.projectLocation,salesStageLabel(row.stage),row.assignee,row.nextFollowUpAt,row.lastContactAt,row.estimatedValue,row.contractValue,row.lostReason ? lostReasonLabel(row.lostReason) : '',row.sourceRef];
+    var rows = [['معرف العرض','معرف الفرصة الكامل','تاريخ الإحالة','القناة','المصدر','الحملة','الخدمة','المنطقة','المرحلة','المسؤول','المتابعة القادمة (ISO)','آخر تواصل فعلي (ISO)','قيمة متوقعة SAR','قيمة العقد SAR','سبب عدم التعاقد','مرجع الإحالة','المصدر حسب إفادة العميل']].concat(entries.map(function (row) {
+      return [opportunityId(row),row.id,row.occurredAt,salesSourceLabel(row.sourceType),sourceLabel(row.acquisitionSource || 'غير مرتبط'),row.campaignName,row.serviceType,row.projectLocation,salesStageLabel(row.stage),row.assignee,row.nextFollowUpAt,row.lastContactAt,row.estimatedValue,row.contractValue,row.lostReason ? lostReasonLabel(row.lostReason) : '',row.sourceRef,REPORTED_SOURCES[readReportedSource(row.notes).source] || 'لم يُسجل'];
     }));
     downloadCsv(rows,'tawod-opportunities-' + riyadhInput(payload.generatedAt || new Date().toISOString()).slice(0,10) + '.csv');
     showToast(sales.entriesTruncated ? 'تم تصدير الفرص المعروضة فقط (حد العرض 500)' : 'تم تصدير الفرص الفعلية في العرض الحالي');
