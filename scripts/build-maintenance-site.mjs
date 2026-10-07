@@ -52,9 +52,9 @@ const servicePhotos={
   ['tawod-cleaning-window.webp',941,1672,'تنظيف النوافذ','العناية بنافذة زجاجية مرتفعة'],
   ['tawod-cleaning-facade-wash.webp',1050,1400,'غسل الواجهة الزجاجية','عامل ينظف واجهة زجاجية خارجية'],
   ['tawod-cleaning-facade-access.webp',1050,1400,'العمل على واجهة زجاجية','عامل يعمل على واجهة زجاجية باستخدام سقالة'],
-  ['tawod-cleaning-glass-facade-team.webp',1448,1086,'فريق تنظيف الواجهات','فريق ينظف واجهة زجاجية في مساحة خارجية'],
-  ['tawod-cleaning-floor-equipment.webp',1449,1086,'معدات تنظيف الأرضيات','عاملان يستخدمان معدات تنظيف أرضيات داخلية'],
-  ['tawod-cleaning-arched-window.webp',844,1500,'تنظيف نافذة داخلية','عامل يعتني بنافذة داخلية مرتفعة باستخدام سلم'],
+  ['tawod-cleaning-glass-facade-team-safety-v2.webp',1448,1086,'فريق تنظيف الواجهات','فريق ينظف واجهة زجاجية في مساحة خارجية'],
+  ['tawod-cleaning-floor-equipment-safety-v2.webp',1449,1086,'معدات تنظيف الأرضيات','عاملان يستخدمان معدات تنظيف أرضيات داخلية'],
+  ['tawod-cleaning-arched-window-safety-v2.webp',844,1500,'تنظيف نافذة داخلية','عامل يعتني بنافذة داخلية مرتفعة باستخدام سلم'],
  ],
  'technical-maintenance':[
   ['tawod-ac-duct-maintenance.webp',1050,1400,'أعمال مجاري الهواء','فنيان يعملان على مجاري هواء التكييف'],
@@ -68,9 +68,9 @@ const servicePhotos={
   ['tawod-electrical-control-panel.webp',1050,1400,'لوحة التحكم الكهربائية','تفاصيل لوحة تحكم كهربائية داخل الموقع'],
  ],
  'landscaping-irrigation':[
-  ['tawod-landscaping-team.webp',1200,900,'العناية بالمساحات الخضراء','فريق يتابع النباتات في مساحة خارجية'],
+  ['tawod-landscaping-team-safety-v2.webp',1200,900,'العناية بالمساحات الخضراء','فريق يتابع النباتات في مساحة خارجية'],
   ['tawod-irrigation-controller.webp',1122,1402,'صيانة نظام الري','فحص وحدة التحكم في نظام الري'],
-  ['tawod-landscaping-planting.webp',1315,1196,'أعمال البستنة','عامل يجهز التربة ضمن أعمال البستنة'],
+  ['tawod-landscaping-planting-safety-v2.webp',1315,1196,'أعمال البستنة','عامل يجهز التربة ضمن أعمال البستنة'],
   ['tawod-irrigation-grass-access.webp',844,1500,'فحص نقطة ري في المسطح الأخضر','عامل يفحص صندوق خدمة داخل المسطح الأخضر'],
  ],
  'pest-control':[
@@ -81,14 +81,14 @@ const servicePhotos={
   ['tawod-pest-garden-sprayer.webp',1050,1400,'رش في مساحة خارجية','عامل يحمل مرشّة في مساحة خارجية'],
  ],
  'waterproofing-leak-detection':[
-  ['tawod-waterproofing-drain-inspection.webp',1086,1448,'فحص مصرف أرضي','عامل يفحص نقطة صرف داخل تجويف أرضي'],
+  ['tawod-waterproofing-drain-inspection-safety-v2.webp',1086,1448,'فحص مصرف أرضي','عامل يفحص نقطة صرف داخل تجويف أرضي'],
  ],
  'facility-management':[
-  ['tawod-cleaning-meeting-room.webp',1448,1086,'فريق العناية بالمرافق','عاملان يعتنيان بقاعة اجتماعات'],
+  ['tawod-cleaning-meeting-room-safety-v2.webp',1448,1086,'فريق العناية بالمرافق','عاملان يعتنيان بقاعة اجتماعات'],
   ['tawod-facility-mosque-lift.webp',670,1500,'الوصول للأعمال العلوية','استخدام منصة رفع داخل مرفق','18%'],
  ],
  'operations-staffing':[
-  ['tawod-cleaning-meeting-room.webp',1448,1086,'كوادر العناية بالمكان','عاملان يعتنيان بقاعة اجتماعات'],
+  ['tawod-cleaning-meeting-room-safety-v2.webp',1448,1086,'كوادر العناية بالمكان','عاملان يعتنيان بقاعة اجتماعات'],
   ['tawod-cleaning-interior-detail.webp',844,1500,'العناية بالتفاصيل الداخلية','عامل يعتني بتفاصيل مساحة داخلية'],
  ],
  'restoration-finishing':[
@@ -111,7 +111,7 @@ const request=()=>`<section class="request-section section" id="request"><div cl
 
 const sectors=[['building','العمائر والمجمعات الطبية والمصانع','نظافة وصيانة وعناية دورية بالمباني والمرافق بحسب احتياج المنشأة.'],['people','الشركات والضيافة','المكاتب والشركات واللاونجات. خدمات تراعي ساعات النشاط وحركة الزوار.'],['shield','المساجد','نظافة المرافق والعناية بالمداخل والأنظمة، مع مراعاة أوقات الصلاة.'],['court','التعليم والرياضة','المدارس والجامعات وملاعب البادل وكرة القدم والمسارات الرياضية.']];
 function home(){
- const body=`<section class="hero"><div class="container hero-grid"><div class="hero-copy"><div class="eyebrow hero-eyebrow"><span class="tiny-line"></span> تعاود · خدمات المرافق في الرياض</div><h1>الصيانة والتشغيل،<br><span>بعناية تشمل<br class="desktop-break"> <em class="hero-highlight">كل التفاصيل.</em></span></h1><p>من نظافة المكان وصيانة أنظمته، إلى المساحات الخضراء والكوادر التشغيلية. نجمع احتياجات منشأتك في نطاق واضح، يبدأ بفهم الموقع ويصل إلى التنفيذ والمتابعة.</p><div class="hero-actions"><a class="button" href="#request">اطلب دراسة احتياجك ${arr()}</a><a class="button button-outline" href="#services">استكشف خدماتنا</a></div><div class="hero-points"><span>${icon('check')} خدمة محددة أو عقد متكامل</span><span>${icon('check')} للمنازل والمنشآت</span><span>${icon('check')} داخل الرياض</span></div></div><figure class="hero-visual">${img()}<div class="image-label"><span>تفاصيل المكان تصنع الفرق</span><strong>جاهزية. عناية. استمرارية.</strong></div><figcaption>تصور بصري للمرافق</figcaption><div class="visual-tag">${icon('leaf')} عناية تمتد من الداخل إلى الخارج</div><a class="hero-field-note" href="${page('landscaping-irrigation')}"><img src="${base}assets/images/tawod-landscaping-team.webp" width="1200" height="900" alt="" decoding="async"><span><small>من صور العمل</small><strong>فريق العناية بالمرافق</strong></span>${arr()}</a></figure></div></section>
+ const body=`<section class="hero"><div class="container hero-grid"><div class="hero-copy"><div class="eyebrow hero-eyebrow"><span class="tiny-line"></span> تعاود · خدمات المرافق في الرياض</div><h1>الصيانة والتشغيل،<br><span>بعناية تشمل<br class="desktop-break"> <em class="hero-highlight">كل التفاصيل.</em></span></h1><p>من نظافة المكان وصيانة أنظمته، إلى المساحات الخضراء والكوادر التشغيلية. نجمع احتياجات منشأتك في نطاق واضح، يبدأ بفهم الموقع ويصل إلى التنفيذ والمتابعة.</p><div class="hero-actions"><a class="button" href="#request">اطلب دراسة احتياجك ${arr()}</a><a class="button button-outline" href="#services">استكشف خدماتنا</a></div><div class="hero-points"><span>${icon('check')} خدمة محددة أو عقد متكامل</span><span>${icon('check')} للمنازل والمنشآت</span><span>${icon('check')} داخل الرياض</span></div></div><figure class="hero-visual">${img()}<div class="image-label"><span>تفاصيل المكان تصنع الفرق</span><strong>جاهزية. عناية. استمرارية.</strong></div><figcaption>تصور بصري للمرافق</figcaption><div class="visual-tag">${icon('leaf')} عناية تمتد من الداخل إلى الخارج</div><a class="hero-field-note" href="${page('landscaping-irrigation')}"><img src="${base}assets/images/tawod-landscaping-team-safety-v2.webp" width="1200" height="900" alt="" decoding="async"><span><small>من صور العمل</small><strong>فريق العناية بالمرافق</strong></span>${arr()}</a></figure></div></section>
  <section class="principles" aria-label="أساس الخدمة"><div class="container principles-grid"><div><span>01</span><strong>نفهم الموقع</strong><p>نوع المنشأة وحالة أنظمتها وأولوياتك.</p></div><div><span>02</span><strong>نحدد النطاق</strong><p>أعمال ومواد وكوادر ومسؤوليات واضحة.</p></div><div><span>03</span><strong>ننظم التنفيذ</strong><p>مواعيد تراعي استخدام المكان وطبيعة العمل.</p></div><div><span>04</span><strong>نراجع التفاصيل</strong><p>متابعة للأعمال وفق ما تم الاتفاق عليه.</p></div></div></section>
  <section class="section" id="services"><div class="container"><div class="services-intro">${sectionHead('مجالات العناية','احتياجات متعددة.<br><span class="muted-heading">تعاود تنسق تفاصيلها.</span>','اختر الخدمة التي تحتاجها الآن، أو اجمع أكثر من تخصص في برنامج يناسب موقعك. لكل خدمة نطاق واضح وصفحة تشرح التفاصيل.')}<div class="services-count" aria-label="مجالات العناية بالمرافق"><strong>${String(groups.length).padStart(2,'0')}</strong><span>مجالات خدمة<br>لنطاق يناسب مكانك</span></div></div><div class="services-grid">${groups.map(groupCard).join('')}</div><div class="section-bottom"><p>تبحث عن تخصص بعينه؟ ستجد المصاعد والتكييف والمسابح وغيرها في دليل الخدمات.</p><a class="text-link" href="${page('services')}">جميع الخدمات بالتفصيل ${arr()}</a></div></div></section>
  <section class="operations-section section"><div class="container operations-grid"><div><span class="eyebrow">إدارة المرافق وعقود التشغيل</span><h2>عقد يناسب منشأتك.<br><span>وتفاصيل تعرفها من البداية.</span></h2><p>حدّد التخصصات التي يحتاجها الموقع، ونوع الكوادر، وساعات الاستخدام. نرتب منها نطاقًا يوضح الزيارات والورديات والمواد والمتابعة، لتعرف ما يشمله العقد وكيف يُنفذ.</p><a class="button" href="${page('facility-management')}">اكتشف عقود التشغيل ${arr()}</a></div><div class="scope-sheet"><div class="sheet-title"><span>${icon('list')} عناصر نطاق التشغيل</span><small>تُحدد حسب موقعك</small></div>${[['الأعمال الفنية','مصاعد · تكييف · كهرباء · سباكة'],['العناية اليومية','نظافة · تعقيم · بستنة · آفات'],['الكوادر التشغيلية','فنيون · نظافة · ضيافة وكاترينج'],['المتابعة','جدول أعمال · مسؤوليات · مراجعة']].map(([t,d],i)=>`<div class="sheet-row"><span>${number(i)}</span><div><h3>${t}</h3><p>${d}</p></div>${icon('check')}</div>`).join('')}<a href="${base}#request">لنحدد احتياج منشأتك ${arr()}</a></div></div></section>
@@ -143,7 +143,7 @@ for(const s of services)writeFileSync(`maintenance/${s.slug}.html`,servicePage(s
 // Keep all existing URLs; add the new routes and refresh only this section's sitemap dates.
 let sitemap=readFileSync('sitemap.xml','utf8');
 const urls=['', 'services.html','privacy.html',...services.map(s=>s.slug+'.html')].map(p=>B.url+p);
-const updatedPages = new Set(['', 'services.html', 'cleaning-services.html', 'tank-cleaning-disinfection.html', 'spider-facade-cleaning.html', 'tile-polishing.html']);
+const updatedPages = new Set(['', 'services.html', 'cleaning-services.html', 'tank-cleaning-disinfection.html', 'spider-facade-cleaning.html', 'tile-polishing.html', 'landscaping-irrigation.html', 'waterproofing-leak-detection.html', 'facility-management.html', 'operations-staffing.html']);
 for(const url of urls){const lastmod=updatedPages.has(url.slice(B.url.length))?'2026-10-08':'2026-09-28';const entry=`  <url><loc>${url}</loc><lastmod>${lastmod}</lastmod></url>`;const escaped=url.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');const re=new RegExp(`\\s*<url>\\s*<loc>${escaped}</loc>[\\s\\S]*?</url>`);if(re.test(sitemap))sitemap=sitemap.replace(re,'\n'+entry);else sitemap=sitemap.replace('</urlset>',entry+'\n</urlset>');}
 writeFileSync('sitemap.xml',sitemap);
 console.log(`Generated ${services.length+3} maintenance pages, with ${groups.length} service groups.`);
