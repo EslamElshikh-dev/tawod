@@ -160,3 +160,24 @@
 @media(max-width:700px){.hero{padding-bottom:82px}.hero-visual .image-label{bottom:102px}.hero-visual figcaption{top:13px;left:12px;bottom:auto;font-size:.58rem}.hero-field-note{left:7px;bottom:-34px;width:min(284px,calc(100% - 14px));min-height:79px;padding:7px 9px;gap:10px;border-radius:16px}.hero-field-note img{width:64px;height:63px;flex-basis:64px;border-radius:10px}.hero-field-note strong{font-size:.73rem}.services-intro{grid-template-columns:1fr;gap:18px;margin-bottom:24px}.services-intro .section-heading{margin:0}.services-count{min-height:unset;flex-direction:row;align-items:center;justify-content:flex-start;gap:17px;padding:11px 18px;border-radius:15px 30px 15px 15px}.services-count strong{font-size:2.45rem}.services-count span{margin:0;font-size:.71rem}.services-count span br{display:none}.principles-grid{gap:10px;padding-block:18px}.principles-grid>div,.principles-grid>div:first-child{padding:14px 13px;border-radius:14px}.principles-grid>div:before{inset-inline-start:14px;width:30px}.principles-grid>div>span{font-size:.76rem;margin-bottom:7px}.principles-grid>div>span:after{width:12px}.principles strong{font-size:.82rem}.principles p{font-size:.7rem}.sector-card{padding:17px;border-radius:17px}.sector-card>span{width:45px;height:45px;margin-bottom:18px;border-radius:13px}.sector-card>span>.icon{width:25px;height:25px}.service-card.has-photo h3{min-height:0}.service-brief:before{inset-inline-start:24px}}
 @media(max-width:360px){.hero-field-note{left:4px;bottom:-33px}.sectors-grid{gap:13px}.sector-card{padding:18px}}
 @media(prefers-reduced-motion:reduce){.hero-field-note,.sector-card{transition:none!important;transform:none!important}}
+
+/* Official orange symbol, bilingual brand line and the expanded service scope. */
+:root{--brand-orange:#f6b26d}
+.brand-logo{position:relative;display:block;width:104px;flex:0 0 104px;aspect-ratio:917/408}
+.brand .brand-logo img{width:100%;height:auto;filter:brightness(0)}
+.brand .brand-logo .brand-icon-color{position:absolute;inset:0;filter:none;clip-path:inset(0 0 0 62%);pointer-events:none}
+.brand-copy strong{color:var(--ink);white-space:nowrap}
+.brand-copy>.brand-translation{color:var(--ink);font:500 .62rem/1.6 Arial,sans-serif;letter-spacing:.01em;text-align:right;white-space:nowrap}
+.brand-accent{color:var(--brand-orange);font-style:normal}
+.hero-points{display:grid;grid-template-columns:1fr;gap:10px}
+.hero-points>span{justify-content:flex-start}
+.hero-visual .image-label{bottom:93px}
+.image-label>.hero-service-lines{color:#fff;font-size:.95rem;line-height:1.95;font-weight:550;text-wrap:pretty;text-shadow:0 2px 12px #0005}
+.hero-field-note .field-note-detail{font-size:.61rem;line-height:1.7;color:#5c6266;margin-top:3px}
+.service-card>.service-assurance{display:flex;align-items:center;gap:9px;width:100%;margin:0 0 21px;padding:13px 12px;border:1px solid #ead4ba;border-radius:12px;background:linear-gradient(110deg,#fff4e7,#fffaf4);color:#5d432e;font-size:.76rem;line-height:1.85;font-weight:600}
+.service-assurance>.icon{flex:0 0 21px;color:var(--brand-orange)}
+.service-card[data-service-tone="insulation"] .service-icon{background:#edf0f4;color:#4d607a}
+.service-choices>.choice:nth-last-child(2){grid-column:1}
+@media(max-width:1000px){.brand-logo{width:101px;flex-basis:101px}.brand-copy strong{font-size:.75rem}.brand-copy>.brand-translation{font-size:.59rem}}
+@media(max-width:700px){.brand{min-width:0;gap:10px;flex-shrink:1}.brand-logo{width:76px;flex-basis:76px}.brand-copy{min-width:0;padding-inline-start:10px}.brand-copy strong{font-size:.66rem}.brand-copy>.brand-translation{font-size:.54rem}.hero-points{font-size:.71rem;gap:10px}.hero-visual .image-label{bottom:98px}.image-label>.hero-service-lines{font-size:.79rem;line-height:1.95}.hero-field-note .field-note-detail{font-size:.59rem}.service-card>.service-assurance{font-size:.74rem}}
+@media(max-width:360px){.header-inner{gap:8px}.brand{gap:8px}.brand-logo{width:64px;flex-basis:64px}.brand-copy{padding-inline-start:8px}.brand-copy strong{font-size:.61rem}.brand-copy>.brand-translation{font-size:.51rem;white-space:normal}.image-label>.hero-service-lines{font-size:.74rem}}
