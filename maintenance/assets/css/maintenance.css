@@ -181,3 +181,8 @@
 @media(max-width:1000px){.brand-logo{width:101px;flex-basis:101px}.brand-copy strong{font-size:.75rem}.brand-copy>.brand-translation{font-size:.59rem}}
 @media(max-width:700px){.brand{min-width:0;gap:10px;flex-shrink:1}.brand-logo{width:76px;flex-basis:76px}.brand-copy{min-width:0;padding-inline-start:10px}.brand-copy strong{font-size:.66rem}.brand-copy>.brand-translation{font-size:.54rem}.hero-points{font-size:.71rem;gap:10px}.hero-visual .image-label{bottom:98px}.image-label>.hero-service-lines{font-size:.79rem;line-height:1.95}.hero-field-note .field-note-detail{font-size:.59rem}.service-card>.service-assurance{font-size:.74rem}}
 @media(max-width:360px){.header-inner{gap:8px}.brand{gap:8px}.brand-logo{width:64px;flex-basis:64px}.brand-copy{padding-inline-start:8px}.brand-copy strong{font-size:.61rem}.brand-copy>.brand-translation{font-size:.51rem;white-space:normal}.image-label>.hero-service-lines{font-size:.74rem}}
+
+/* Keep the facade name fully visible and the footer wordmark legible. */
+.hero-visual>picture>img{object-position:15% center}
+.site-footer .brand .brand-logo img{filter:none}
+.site-footer .brand-copy strong{color:#fff}
