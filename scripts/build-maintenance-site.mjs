@@ -99,7 +99,7 @@ const servicePhotos={
 const serviceConceptPhotos=JSON.parse(readFileSync(new URL('../data/maintenance-card-illustrations.json',import.meta.url),'utf8')).images;
 const hasCardPhoto=slug=>Boolean(servicePhotos[slug]?.length||serviceConceptPhotos[slug]);
 const photoImg=(photo)=>`<img src="${base}assets/images/${photo[0]}" width="${photo[1]}" height="${photo[2]}" alt="${esc(photo[4])}"${photo[5]?` style="object-position:center ${photo[5]}"`:''} loading="lazy" decoding="async">`;
-const conceptPhotoImg=photo=>`<img src="${base}assets/images/${photo.fileBase}-800.webp" srcset="${base}assets/images/${photo.fileBase}-480.webp 480w, ${base}assets/images/${photo.fileBase}-800.webp 800w, ${base}assets/images/${photo.fileBase}-1200.webp 1200w" sizes="(max-width: 700px) calc(100vw - 52px), (max-width: 1100px) calc((100vw - 119px) / 2), 390px" width="${photo.width}" height="${photo.height}" alt="${esc(photo.alt)}" loading="lazy" decoding="async">`;
+const conceptPhotoImg=photo=>`<img src="${base}assets/images/${photo.fileBase}-800.webp" srcset="${base}assets/images/${photo.fileBase}-480.webp 480w, ${base}assets/images/${photo.fileBase}-800.webp 800w, ${base}assets/images/${photo.fileBase}-1200.webp 1200w" sizes="(max-width: 700px) calc(100vw - 52px), (max-width: 1100px) calc((100vw - 119px) / 2), 390px" width="${photo.width}" height="${photo.height}"${photo.objectPosition?` style="object-position:${esc(photo.objectPosition)}"`:""} alt="${esc(photo.alt)}" loading="lazy" decoding="async">`;
 const cardPhoto=slug=>{
  const fieldPhoto=servicePhotos[slug]?.[0];
  const conceptPhoto=serviceConceptPhotos[slug];

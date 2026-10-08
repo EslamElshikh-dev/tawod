@@ -5,6 +5,7 @@
       "width": 1200,
       "height": 800,
       "title": "تنظيف وتعقيم الخزانات",
+      "objectPosition": "center 8%",
       "alt": "تصور لخدمة تنظيف خزان مياه بواسطة فنيي تعاود بملابس السلامة",
       "files": ["maintenance/assets/images/tawod-tank-service-concept-v1-480.webp", "maintenance/assets/images/tawod-tank-service-concept-v1-800.webp", "maintenance/assets/images/tawod-tank-service-concept-v1-1200.webp"]
     },
@@ -13,6 +14,7 @@
       "width": 1200,
       "height": 800,
       "title": "العزل المائي والحراري",
+      "objectPosition": "center 8%",
       "alt": "تصور لفنيي تعاود ينفذون العزل على سطح مبنى",
       "files": ["maintenance/assets/images/tawod-roof-insulation-concept-v1-480.webp", "maintenance/assets/images/tawod-roof-insulation-concept-v1-800.webp", "maintenance/assets/images/tawod-roof-insulation-concept-v1-1200.webp"]
     },
