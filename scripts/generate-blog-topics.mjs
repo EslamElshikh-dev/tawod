@@ -191,7 +191,10 @@ function updateSitemap() {
     .replace(/\s*<url><loc>https:\/\/tawodco\.com\/blog\/turnkey-riyadh\/<\/loc>[\s\S]*?<\/url>/g, "")
     .replace(/\s*<url><loc>https:\/\/tawodco\.com\/editorial-policy\/<\/loc>[\s\S]*?<\/url>/g, "")
     .replace(/\s*<url><loc>https:\/\/tawodco\.com\/project-[^<]+<\/loc>[\s\S]*?<\/url>/g, "");
-  const topicEntries = blogTopics.map((topic) => `  <url><loc>${domain}${topicUrl(topic)}</loc><lastmod>${buildDate}</lastmod><changefreq>weekly</changefreq><priority>0.78</priority></url>`);
+  const topicEntries = blogTopics.map((topic) => {
+    const topicDate = articles.filter(article => article.topic.slug === topic.slug).map(article => article.datePublished).sort().at(-1) || buildDate;
+    return `  <url><loc>${domain}${topicUrl(topic)}</loc><lastmod>${topicDate > buildDate ? topicDate : buildDate}</lastmod><changefreq>weekly</changefreq><priority>0.78</priority></url>`;
+  });
   const projectEntries = [
     "project-faisaliah-villa-facades-finishing.html",
     "project-villa-plaster-ceramic-marble-uhud-riyadh.html",

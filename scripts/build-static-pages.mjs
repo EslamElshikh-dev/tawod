@@ -4,6 +4,7 @@ import process from 'node:process';
 import {createHash} from 'node:crypto';
 import {articleRole,legacyTopicHubSlugs,topicForArticle,topicForService,topicUrl} from './blog-topic-data.mjs';
 import {optimizePaidServicePage} from './optimize-paid-service-pages.mjs';
+import {newArticleSlugs as riyadhArticleSlugs} from './riyadh-articles-2026-10-08.mjs';
 
 const root=process.cwd(),check=process.argv.includes('--check'),domain='https://tawodco.com',date='2026-07-13';
 const marks=['TRUST','TOC','TAKEAWAYS','TOOLS','TOPIC','RELATED','GUIDES','DECISION','CONTEXT','FAQ','SCHEMA'];
@@ -91,9 +92,10 @@ function articleArchitecture(r,metadata){
   const slug=r.split('/')[1],topic=topicForArticle(slug),role=articleRole(slug,topic),related=articleCatalog.filter(article=>article.topic.slug===topic.slug&&article.slug!==slug).slice(0,4),[ta,tb]=marker('TOPIC'),[ra,rb]=marker('RELATED');
   const secondary=topic.secondaryServiceUrl?`<a href="${topic.secondaryServiceUrl}" data-article-link="service"><i class="fa-solid fa-swatchbook" aria-hidden="true"></i>${topic.secondaryServiceLabel}</a>`:'';
   const trail=`${ta}<nav class="tawod-article-topic-path" aria-label="مسار موضوع المقال"><a href="/blog/">المدونة</a><i class="fa-solid fa-angle-left" aria-hidden="true"></i><a href="${topicUrl(topic)}">${topic.title}</a><i class="fa-solid fa-angle-left" aria-hidden="true"></i><span aria-current="page">${role==='pillar'?'الدليل المحوري':'دليل متخصص'}</span></nav><aside class="tawod-editorial-meta" aria-label="إعداد ومراجعة المقال"><span><strong>إعداد</strong>فريق المحتوى في شركة تعاود</span><span><strong>مراجعة فنية</strong>فريق المشاريع والتنفيذ</span><a href="/editorial-policy/"><strong>آخر مراجعة</strong>${formatEditorialDate(metadata.dateModified)} · السياسة التحريرية</a></aside>${tb}`;
+  const editorialTrail = riyadhArticleSlugs.includes(slug) ? trail.replace('<strong>إعداد</strong>فريق المحتوى في شركة تعاود', '<strong>الناشر</strong>شركة تعاود للمقاولات العامة').replace('<strong>مراجعة فنية</strong>فريق المشاريع والتنفيذ', '<strong>نوع المحتوى</strong>دليل إرشادي للمالك').replace('<strong>آخر مراجعة</strong>', '<strong>تاريخ المحتوى</strong>') : trail;
   const links=related.map(article=>`<a href="/blog/${article.slug}/" data-article-link="related"><span>${esc(article.title)}</span><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></a>`).join('');
   const cluster=`${ra}<section class="tawod-article-cluster" aria-labelledby="related-${slug}"><div class="tawod-article-cluster-head"><div><span class="eyebrow">المسار المعرفي</span><h2 id="related-${slug}">تابع أدلة ${topic.title}</h2><p>انتقل إلى الدليل المحوري أو الأدلة المرتبطة، ثم إلى الخدمة عندما تصبح جاهزًا للتنفيذ.</p></div><a href="${topicUrl(topic)}" data-article-link="hub">عرض المركز كاملًا</a></div><div class="tawod-related-guides">${links}</div><div class="tawod-article-cluster-actions"><a href="${topic.serviceUrl}" data-article-link="service"><i class="fa-solid ${topic.icon}" aria-hidden="true"></i>${topic.serviceLabel}</a>${secondary}<a href="${topic.projectUrl}" data-article-link="project"><i class="fa-solid fa-building-circle-check" aria-hidden="true"></i>${topic.projectLabel}</a><a href="/contact.html" data-article-link="quote"><i class="fa-solid fa-file-signature" aria-hidden="true"></i>طلب عرض سعر مناسب للمشروع</a></div></section>${rb}`;
-  return{topic,role,trail,cluster};
+  return{topic,role,trail:editorialTrail,cluster};
 }
 
 function serviceGuides(r){

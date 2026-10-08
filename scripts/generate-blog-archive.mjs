@@ -8,7 +8,7 @@ import { blogTopics, legacyTopicHubSlugs, topicForArticle, topicUrl } from "./bl
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const blogDir = join(rootDir, "blog");
 const pageSize = 10;
-const buildDate = "2026-09-13";
+const buildDate = "2026-10-08";
 const assetVersion = (relativePath) => createHash("sha256").update(readFileSync(join(rootDir, relativePath))).digest("hex").slice(0, 12);
 const archiveCssVersion = assetVersion("assets/css/blog-archive.css");
 const archiveJsVersion = assetVersion("assets/js/blog-archive.js");
@@ -135,8 +135,11 @@ function articleCard(article, { featured = false, eager = false } = {}) {
   const badge = featured
     ? '<span class="editor-pick"><i aria-hidden="true" class="fa-solid fa-star"></i> اختيار تعاود</span>'
     : "";
+  const campaign = article.image.includes('/tawod-gbp-');
+  const campaignStem = campaign ? article.image.replace(/-1200\.webp$/, '') : '';
+  const responsiveImage = campaign ? ` width="1122" height="1402" srcset="${campaignStem}-480.webp 480w, ${campaignStem}-960.webp 960w" sizes="(max-width: 767px) calc(100vw - 76px), 360px"` : '';
   return `<article class="article-card${featured ? "" : " reveal"}">
-    <div class="card-media">${badge}<a href="${url}" aria-label="${escapeHtml(article.title)}"><img alt="${escapeHtml(article.alt)}" decoding="async" loading="${eager ? "eager" : "lazy"}" src="${escapeHtml(article.image)}"></a></div>
+    <div class="card-media${campaign ? ' card-media--campaign' : ''}">${badge}<a href="${url}" aria-label="${escapeHtml(article.title)}"><img alt="${escapeHtml(article.alt)}" decoding="async" loading="${eager ? "eager" : "lazy"}" src="${escapeHtml(campaign ? `${campaignStem}-480.webp` : article.image)}"${responsiveImage}></a></div>
     <div class="card-body">
       <div class="card-meta"><time datetime="${article.datePublished}"><i aria-hidden="true" class="fa-regular fa-calendar"></i> ${formatDate(article.datePublished)}</time><span><i aria-hidden="true" class="fa-solid ${article.icon}"></i> ${article.category}</span></div>
       <h3><a href="${url}">${escapeHtml(article.title)}</a></h3>
