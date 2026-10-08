@@ -2,6 +2,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, relative, sep } from "node:path";
 import { applyContractingDesign } from '../lib/contracting-design.mjs';
+import { sitemapFiles } from './generate-sitemaps.mjs';
 
 const root = process.cwd();
 const outputDirectory = join(root, "out");
@@ -212,8 +213,7 @@ for (const relativePath of [
   "images/projects/modon-eight-warehouses-02-v3.webp",
   "maintenance/assets/css/maintenance.css",
   "robots.txt",
-  "sitemap.xml",
-  "sitemap-projects.xml",
+  ...sitemapFiles,
 ]) {
   const sourceFile = join(root, relativePath);
   const outputFile = join(outputDirectory, relativePath);

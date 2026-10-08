@@ -8,6 +8,7 @@ import {
 } from "node:fs";
 import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
+import { generateSitemaps, sitemapFiles } from './generate-sitemaps.mjs';
 
 const root = process.cwd();
 const publicDirectory = join(root, "public");
@@ -23,12 +24,7 @@ const files = [
   "CNAME",
   "google-ads-page-feed.csv",
   "robots.txt",
-  "sitemap.xml",
-  "sitemap-projects.xml",
-  "sitemap-dammam.xml",
-  "sitemap-dhahran.xml",
-  "sitemap-khobar.xml",
-  "sitemap-turnkey.xml",
+  ...sitemapFiles,
 ];
 const generatedProjectPages = [
   {
@@ -145,6 +141,8 @@ for (const image of encodedProjectImages) {
   mkdirSync(dirname(output), { recursive: true });
   writeFileSync(output, bytes);
 }
+
+generateSitemaps();
 
 rmSync(publicDirectory, { recursive: true, force: true });
 mkdirSync(publicDirectory, { recursive: true });

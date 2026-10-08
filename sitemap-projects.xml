@@ -1,67 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-  <url>
-    <loc>https://tawodco.com/projects.html</loc>
-    <lastmod>2026-08-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://tawodco.com/project-faisaliah-villa-facades-finishing.html</loc>
-    <lastmod>2026-08-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.80</priority>
-    <image:image>
-      <image:loc>https://tawodco.com/images/projects/faisaliah-villa-facades-finishing-01-v3.webp</image:loc>
-      <image:title>تنفيذ واجهات وتشطيبات فيلا سكنية في حي الفيصلية بالرياض</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://tawodco.com/project-villa-plaster-ceramic-marble-uhud-riyadh.html</loc>
-    <lastmod>2026-08-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.80</priority>
-    <image:image>
-      <image:loc>https://tawodco.com/images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp</image:loc>
-      <image:title>تنفيذ اللياسة والقروفات والسيراميك والرخام لفيلا سكنية بحي أحد بالرياض</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://tawodco.com/project-alrajhi-tanks-king-salman-park.html</loc>
-    <lastmod>2026-08-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.80</priority>
-    <image:image>
-      <image:loc>https://tawodco.com/images/projects/alrajhi-tanks-king-salman-park-01.webp</image:loc>
-      <image:title>أعمال حدادة وعزل خزانات في حديقة الملك سلمان بالرياض</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://tawodco.com/project-modon-eight-warehouses-riyadh.html</loc>
-    <lastmod>2026-08-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.80</priority>
-    <image:image>
-      <image:loc>https://tawodco.com/images/projects/modon-eight-warehouses-02-v3.webp</image:loc>
-      <image:title>مشروع تنفيذ 8 مستودعات في المدينة الصناعية الثانية بالرياض</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://tawodco.com/images/projects/modon-eight-warehouses-01-v4.webp</image:loc>
-      <image:title>تسليح القواعد الخرسانية لمشروع المستودعات</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://tawodco.com/project-arouba-mosque-villas.html</loc>
-    <lastmod>2026-08-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.80</priority>
-    <image:image>
-      <image:loc>https://tawodco.com/images/projects/arouba-mosque-villas-01.webp</image:loc>
-      <image:title>مسجد و ٢ فيلا | حي العروبة</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://tawodco.com/images/projects/arouba-mosque-villas-02.webp</image:loc>
-      <image:title>تقدم أعمال مشروع حي العروبة</image:title>
-    </image:image>
-  </url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url><loc>https://tawodco.com/project-alrajhi-tanks-king-salman-park.html</loc><lastmod>2026-09-13</lastmod><image:image><image:loc>https://tawodco.com/images/projects/alrajhi-tanks-king-salman-park-01.webp</image:loc></image:image></url>
+  <url><loc>https://tawodco.com/project-arouba-mosque-villas.html</loc><lastmod>2026-09-13</lastmod><image:image><image:loc>https://tawodco.com/images/projects/arouba-mosque-villas-01.webp</image:loc></image:image><image:image><image:loc>https://tawodco.com/images/projects/arouba-mosque-villas-02.webp</image:loc></image:image></url>
+  <url><loc>https://tawodco.com/project-faisaliah-villa-facades-finishing.html</loc><lastmod>2026-09-13</lastmod><image:image><image:loc>https://tawodco.com/images/projects/faisaliah-villa-facades-finishing-01-v3.webp</image:loc></image:image></url>
+  <url><loc>https://tawodco.com/project-modon-eight-warehouses-riyadh.html</loc><lastmod>2026-09-13</lastmod><image:image><image:loc>https://tawodco.com/images/projects/modon-eight-warehouses-01-v4.webp</image:loc></image:image><image:image><image:loc>https://tawodco.com/images/projects/modon-eight-warehouses-02-v3.webp</image:loc></image:image></url>
+  <url><loc>https://tawodco.com/project-villa-plaster-ceramic-marble-uhud-riyadh.html</loc><lastmod>2026-09-13</lastmod><image:image><image:loc>https://tawodco.com/images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp</image:loc></image:image></url>
+  <url><loc>https://tawodco.com/projects.html</loc><lastmod>2026-08-27</lastmod><image:image><image:loc>https://tawodco.com/images/services/service-construction-riyadh.webp</image:loc></image:image><image:image><image:loc>https://tawodco.com/images/services/service-decor-riyadh.webp</image:loc></image:image><image:image><image:loc>https://tawodco.com/images/services/service-finishing-riyadh.webp</image:loc></image:image><image:image><image:loc>https://tawodco.com/images/services/service-mep-riyadh-v2.webp</image:loc></image:image><image:image><image:loc>https://tawodco.com/images/services/service-restoration-riyadh.webp</image:loc></image:image><image:image><image:loc>https://tawodco.com/images/services/service-turnkey-riyadh.webp</image:loc></image:image></url>
 </urlset>

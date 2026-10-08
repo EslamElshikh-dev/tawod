@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { createHash } from 'node:crypto';
+import { generateSitemaps } from './generate-sitemaps.mjs';
 
 const root=process.cwd(),domain='https://tawodco.com',errors=[],warnings=[];
 const assetRevision=file=>createHash('sha256').update(fs.readFileSync(path.join(root,'assets','js',file))).digest('hex').slice(0,12);
@@ -101,7 +102,7 @@ for(const [r,h] of pages){
 if(!fs.existsSync('sitemap.xml'))errors.push('sitemap.xml missing');else{const s=fs.readFileSync('sitemap.xml','utf8'),listed=all(s,/<loc>([^<]+)<\/loc>/gi).map(m=>new URL(m[1]).pathname),urls=new Set(listed);if(listed.length!==urls.size)errors.push(`sitemap.xml contains ${listed.length-urls.size} duplicate URL(s)`);for(const p of indexable)if(!urls.has(p))errors.push(`sitemap.xml missing ${p}`);for(const p of urls){let r=p==='/'?'index.html':p.slice(1);if(r.endsWith('/'))r+='index.html';if(!pages.has(r))errors.push(`sitemap URL does not resolve: ${p}`)}}
 const localCities=[...new Set([...indexable].map(p=>p.match(/^\/(dammam|khobar|dhahran)\//)?.[1]).filter(Boolean))];
 for(const city of localCities){const file=`sitemap-${city}.xml`;if(!fs.existsSync(file)){errors.push(`${file} missing`);continue}const s=fs.readFileSync(file,'utf8'),urls=new Set(all(s,/<loc>([^<]+)<\/loc>/gi).map(m=>new URL(m[1]).pathname)),cityPages=new Set([...indexable].filter(p=>p.startsWith(`/${city}/`)));for(const p of cityPages)if(!urls.has(p))errors.push(`${file} missing ${p}`);for(const p of urls){if(!p.startsWith(`/${city}/`))errors.push(`${file} contains non-${city} URL ${p}`);if(!cityPages.has(p))errors.push(`${file} has unexpected URL ${p}`)}}
-if(!fs.existsSync('robots.txt'))errors.push('robots.txt missing');else{const robots=fs.readFileSync('robots.txt','utf8'),sitemapLines=robots.split(/\r?\n/).filter(line=>/^Sitemap:/i.test(line.trim())).map(line=>line.trim());if(sitemapLines.length!==1||sitemapLines[0]!=='Sitemap: https://tawodco.com/sitemap.xml')errors.push(`robots.txt must advertise only the canonical sitemap.xml; found ${sitemapLines.join(', ')||'none'}`)}
+try{generateSitemaps({check:true})}catch(error){errors.push(error.message)}
 if(!fs.existsSync('assets/js/tawod-inner.js'))errors.push('tawod-inner.js missing');else{const js=fs.readFileSync('assets/js/tawod-inner.js','utf8');['injectComprehensiveFaq','addFaqSchema','applyServiceProfile','injectTrustStrip','addPageSchema'].forEach(x=>{if(js.includes(x))errors.push(`tawod-inner.js still contains runtime generator ${x}`)});if(/\.\.\/\.\.\/images\/logo\//.test(js))errors.push('tawod-inner.js contains a depth-dependent logo path')}
 if(!fs.existsSync('assets/js/tawod-analytics.js'))errors.push('tawod-analytics.js missing');else{const js=fs.readFileSync('assets/js/tawod-analytics.js','utf8');['G-4M3LNJF2ED','AW-18266173285','AW-18266173285/qi4gCLu5lsUcEOXe_oVE','form_submit_attempt','tawodLeadSubmitted','generate_lead','transaction_id'].forEach(value=>{if(!js.includes(value))errors.push(`tawod-analytics.js missing ${value}`)})}
 for(const file of ['assets/js/tawod-home.js','assets/js/tawod-inner.js','assets/js/blog-archive.js']){const js=fs.readFileSync(file,'utf8');if(/\bgtag\s*\(/.test(js))errors.push(`${file}: duplicate analytics tracking remains`)}
