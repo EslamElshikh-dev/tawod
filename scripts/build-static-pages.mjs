@@ -28,7 +28,7 @@ const serviceRefreshDates=new Map([
   ['service-construction.html','2026-09-03'],
   ['service-turnkey.html','2026-09-03'],
   ['service-restoration.html','2026-09-29'],
-  ['service-finishing.html','2026-09-03'],
+  ['service-finishing.html','2026-10-08'],
   ['service-decor.html','2026-09-03'],
   ['service-mep.html','2026-09-03'],
 ]);
