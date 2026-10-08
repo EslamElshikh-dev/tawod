@@ -1,5 +1,10 @@
 (function () {
   'use strict';
+  var motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function onMotionChange(callback) {
+    if (motionPreference.addEventListener) motionPreference.addEventListener('change', callback);
+    else if (motionPreference.addListener) motionPreference.addListener(callback);
+  }
   var toggle = document.querySelector('[data-menu-toggle]');
   var menu = document.getElementById('mobile-menu');
   var panel = menu && menu.querySelector('.menu-panel');
@@ -37,21 +42,27 @@
   var siteHeader = document.querySelector('.site-header');
   if (siteHeader) {
     var scrollFrame = 0;
+    var maxScroll = 0;
     var updateReadingProgress = function () {
-      var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       siteHeader.style.setProperty('--scroll-progress', String(maxScroll > 0 ? Math.min(1, Math.max(0, window.scrollY / maxScroll)) : 0));
       siteHeader.classList.toggle('is-scrolled', window.scrollY > 24);
       scrollFrame = 0;
     };
-    updateReadingProgress();
+    var refreshScrollRange = function () {
+      maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      updateReadingProgress();
+    };
+    refreshScrollRange();
     window.addEventListener('scroll', function () {
       if (!scrollFrame) scrollFrame = window.requestAnimationFrame(updateReadingProgress);
     }, { passive: true });
-    window.addEventListener('resize', updateReadingProgress, { passive: true });
+    window.addEventListener('resize', refreshScrollRange, { passive: true });
+    if ('ResizeObserver' in window) new ResizeObserver(refreshScrollRange).observe(document.body);
+    else window.addEventListener('load', refreshScrollRange, { once: true });
   }
   // Reveal below-the-fold content only when motion is supported and welcome.
-  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    var revealTargets = document.querySelectorAll('.section-heading, .service-card, .catalog-card, .service-photo-grid figure, .scope-card, .process-grid li, .sector-card, .related-grid > a, .scope-sheet, .service-brief');
+  if ('IntersectionObserver' in window && !motionPreference.matches) {
+    var revealTargets = document.querySelectorAll('.section-heading, .catalog-heading, .service-card, .catalog-card, .fieldwork-card, .service-photo-grid figure, .scope-card, .process-grid li, .sector-card, .related-grid > a, .scope-sheet, .service-brief, .sports-callout, .about-grid, .footer-signature');
     var revealObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
@@ -59,12 +70,30 @@
         revealObserver.unobserve(entry.target);
       });
     }, { rootMargin: '0px 0px -6% 0px', threshold: 0.04 });
-    revealTargets.forEach(function (el, index) {
+    var revealColumns = window.innerWidth > 1100 ? 3 : window.innerWidth > 700 ? 2 : 1;
+    revealTargets.forEach(function (el) {
       // Above-the-fold content stays immediately readable while the page loads.
       if (el.getBoundingClientRect().top < window.innerHeight - 32) return;
-      el.style.setProperty('--reveal-delay', String(index % 3 * 75) + 'ms');
+      var siblingIndex = Array.prototype.indexOf.call(el.parentElement.children, el);
+      el.style.setProperty('--reveal-delay', String(siblingIndex % revealColumns * 60) + 'ms');
       el.classList.add('reveal-pending');
+      var settleReveal = function (event) {
+        if (event.target !== el || event.propertyName !== 'opacity') return;
+        el.classList.remove('reveal-pending');
+        el.style.removeProperty('--reveal-delay');
+        el.removeEventListener('transitionend', settleReveal);
+      };
+      el.addEventListener('transitionend', settleReveal);
       revealObserver.observe(el);
+    });
+    onMotionChange(function (event) {
+      if (!event.matches) return;
+      revealObserver.disconnect();
+      revealTargets.forEach(function (el) {
+        el.classList.add('is-visible');
+        el.classList.remove('reveal-pending');
+        el.style.removeProperty('--reveal-delay');
+      });
     });
   }
   // The complete service catalogue is rendered before this optional filter is enabled.
@@ -74,16 +103,39 @@
     var filterButtons = Array.from(filters.querySelectorAll('[data-service-filter]'));
     var serviceCards = Array.from(serviceGrid.querySelectorAll('[data-service-category]'));
     var filterResult = filters.querySelector('[data-filter-result]');
+    var activeCategory = 'all';
+    var filterAnimations = [];
+    function stopFilterMotion() {
+      filterAnimations.forEach(function (animation) { animation.cancel(); });
+      filterAnimations = [];
+    }
+    onMotionChange(function (event) { if (event.matches) stopFilterMotion(); });
     filters.hidden = false;
     filterButtons.forEach(function (button) {
       button.addEventListener('click', function () {
         var category = button.getAttribute('data-service-filter');
+        if (category === activeCategory) return;
+        activeCategory = category;
+        stopFilterMotion();
         var visible = 0;
         filterButtons.forEach(function (item) { item.setAttribute('aria-pressed', String(item === button)); });
         serviceCards.forEach(function (card) {
           card.hidden = category !== 'all' && card.getAttribute('data-service-category') !== category;
-          if (!card.hidden) visible++;
+          if (!card.hidden) {
+            visible++;
+            card.classList.add('is-visible');
+            card.classList.remove('reveal-pending');
+            card.style.removeProperty('--reveal-delay');
+            if (revealObserver) revealObserver.unobserve(card);
+            if (!motionPreference.matches && typeof card.animate === 'function') {
+              filterAnimations.push(card.animate([
+                { opacity: 0.4, translate: '0 8px' },
+                { opacity: 1, translate: '0 0' }
+              ], { duration: 280, delay: Math.min(visible - 1, 2) * 40, easing: 'cubic-bezier(.2,.75,.25,1)', fill: 'backwards' }));
+            }
+          }
         });
+        if (siteHeader) refreshScrollRange();
         if (filterResult) filterResult.textContent = visible + ' مجالات خدمة';
       });
     });
