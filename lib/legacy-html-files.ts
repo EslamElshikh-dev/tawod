@@ -425,7 +425,7 @@ export const legacyHtmlHashes = {
   "maintenance/facility-management.html": "a7274465a19d9ee461d9a23103dd9e39653efb68af56f04e1922339208ac3585",
   "maintenance/fire-safety-systems.html": "6df678b5251babb708b1e7f3c0cf68c367faec5205221597d19055e7504d2b88",
   "maintenance/furniture-moving.html": "9a5398fdff0729a5e9ac85e3883bc23a402bc16c5d934bed447165037b0e83cb",
-  "maintenance/index.html": "d1a4f913a8e91d173956f813184f0a91ed380791185b7a6621e68272084c3c9a",
+  "maintenance/index.html": "c965b09fa06f945ea3ae4d19f1ec14e60d43f3913f43ca7893ddab95339a9238",
   "maintenance/landscaping-irrigation.html": "fc3125715fb0d5884546901355dd86a8329b262e1f8e06ee20b4607793f71c32",
   "maintenance/operations-staffing.html": "5cf0b052ae4a5bd5cbb0c6baec1d833ab7dc70f7fbbdd956d8d11dd8701715c7",
   "maintenance/pest-control.html": "d707ce9ff7d46f7bf20c57238100e865d406141c7e2d77108a4f94e0cbc23e68",
