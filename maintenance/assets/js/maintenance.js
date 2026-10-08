@@ -28,7 +28,7 @@
       if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     });
-    var desktop = window.matchMedia('(min-width: 1001px)');
+    var desktop = window.matchMedia('(min-width: 1101px)');
     var reset = function (e) { if (e.matches && !menu.hidden) setMenu(false); };
     if (desktop.addEventListener) desktop.addEventListener('change', reset);
     else if (desktop.addListener) desktop.addListener(reset);
@@ -65,6 +65,27 @@
       el.style.setProperty('--reveal-delay', String(index % 3 * 75) + 'ms');
       el.classList.add('reveal-pending');
       revealObserver.observe(el);
+    });
+  }
+  // The complete service catalogue is rendered before this optional filter is enabled.
+  var filters = document.querySelector('[data-service-filters]');
+  var serviceGrid = document.getElementById('service-grid');
+  if (filters && serviceGrid) {
+    var filterButtons = Array.from(filters.querySelectorAll('[data-service-filter]'));
+    var serviceCards = Array.from(serviceGrid.querySelectorAll('[data-service-category]'));
+    var filterResult = filters.querySelector('[data-filter-result]');
+    filters.hidden = false;
+    filterButtons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        var category = button.getAttribute('data-service-filter');
+        var visible = 0;
+        filterButtons.forEach(function (item) { item.setAttribute('aria-pressed', String(item === button)); });
+        serviceCards.forEach(function (card) {
+          card.hidden = category !== 'all' && card.getAttribute('data-service-category') !== category;
+          if (!card.hidden) visible++;
+        });
+        if (filterResult) filterResult.textContent = visible + ' مجالات خدمة';
+      });
     });
   }
   var form = document.getElementById('service-request');
