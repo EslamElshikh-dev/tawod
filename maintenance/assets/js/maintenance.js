@@ -90,6 +90,54 @@
   }
   var form = document.getElementById('service-request');
   var review = document.getElementById('request-review');
+  var selectionTray = document.querySelector('[data-selection-tray]');
+  var selectedServiceCount = 0;
+  var contactInView = false;
+  function updateSelectionTray() {
+    if (selectionTray) selectionTray.hidden = selectedServiceCount === 0 || contactInView;
+  }
+  if (form && selectionTray) {
+    var serviceInputs = Array.from(form.querySelectorAll('input[name="services"]'));
+    var pickButtons = Array.from(document.querySelectorAll('[data-service-pick]'));
+    function syncServiceSelection() {
+      var selected = serviceInputs.filter(function (input) { return input.checked; }).map(function (input) { return input.value; });
+      selectedServiceCount = selected.length;
+      document.body.classList.toggle('has-service-selection', selectedServiceCount > 0);
+      var label = selectedServiceCount === 1 ? 'خدمة واحدة مختارة' : selectedServiceCount === 2 ? 'خدمتان مختارتان' : selectedServiceCount + (selectedServiceCount <= 10 ? ' خدمات مختارة' : ' خدمة مختارة');
+      selectionTray.querySelector('[data-selection-label]').textContent = label;
+      var names = selectionTray.querySelector('[data-selection-names]');
+      var text = selected.join(' · ');
+      if (names.textContent !== text) names.textContent = text;
+      pickButtons.forEach(function (button) {
+        var picked = selected.indexOf(button.getAttribute('data-service-pick')) !== -1;
+        button.setAttribute('aria-pressed', String(picked));
+        button.querySelector('[data-pick-add]').hidden = picked;
+        button.querySelector('[data-pick-selected]').hidden = !picked;
+        button.querySelector('[data-pick-label]').textContent = picked ? 'مضاف' : 'أضف';
+        button.closest('.service-card').classList.toggle('is-selected', picked);
+      });
+      updateSelectionTray();
+    }
+    pickButtons.forEach(function (button) {
+      var input = serviceInputs.find(function (item) { return item.value === button.getAttribute('data-service-pick'); });
+      if (!input) return;
+      button.hidden = false;
+      button.addEventListener('click', function () {
+        input.checked = !input.checked;
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    });
+    var pickHint = document.querySelector('[data-pick-hint]');
+    if (pickHint) pickHint.hidden = false;
+    form.addEventListener('change', syncServiceSelection);
+    selectionTray.querySelector('[data-selection-clear]').addEventListener('click', function () {
+      var returnFocus = pickButtons.find(function (button) { return button.getAttribute('aria-pressed') === 'true' && !button.closest('.service-card').hidden; }) || pickButtons.find(function (button) { return !button.closest('.service-card').hidden; });
+      serviceInputs.forEach(function (input) { input.checked = false; });
+      form.dispatchEvent(new Event('change', { bubbles: true }));
+      if (returnFocus) returnFocus.focus({ preventScroll: true });
+    });
+    syncServiceSelection();
+  }
   if (form && review) {
     form.addEventListener('submit', function (event) {
       event.preventDefault();
@@ -117,6 +165,62 @@
     document.getElementById('request-edit').addEventListener('click',function () { review.hidden = true; form.hidden = false; form.querySelector('input').focus({preventScroll:true}); form.scrollIntoView({behavior:'auto',block:'start'}); });
     form.addEventListener('change',function () { document.getElementById('form-error').textContent = ''; });
   }
+  // Images remain normal file links when the native dialog is unavailable.
+  var photoDialog = document.querySelector('[data-photo-dialog]');
+  var photoLinks = Array.from(document.querySelectorAll('[data-photo-open]'));
+  if (photoDialog && photoLinks.length && typeof photoDialog.showModal === 'function') {
+    var photoImage = photoDialog.querySelector('[data-photo-image]');
+    var photoStage = photoDialog.querySelector('[data-photo-stage]');
+    var photoClose = photoDialog.querySelector('[data-photo-close]');
+    var photoIndex = 0;
+    var photoReturnFocus;
+    function showPhoto(index) {
+      photoIndex = (index + photoLinks.length) % photoLinks.length;
+      var link = photoLinks[photoIndex];
+      var original = link.querySelector('img');
+      photoStage.classList.add('is-loading');
+      photoImage.alt = original.alt;
+      photoImage.width = Number(original.getAttribute('width')) || 1200;
+      photoImage.height = Number(original.getAttribute('height')) || 900;
+      photoImage.src = link.href;
+      photoDialog.querySelector('[data-photo-title]').textContent = link.getAttribute('data-photo-caption');
+      photoDialog.querySelector('[data-photo-count]').textContent = (photoIndex + 1) + ' / ' + photoLinks.length;
+      if (photoImage.complete && photoImage.naturalWidth) photoStage.classList.remove('is-loading');
+    }
+    photoImage.addEventListener('load', function () { photoStage.classList.remove('is-loading'); });
+    photoImage.addEventListener('error', function () { photoStage.classList.remove('is-loading'); });
+    photoLinks.forEach(function (link, index) {
+      link.addEventListener('click', function (event) {
+        if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0) return;
+        event.preventDefault();
+        photoReturnFocus = link;
+        showPhoto(index);
+        photoDialog.showModal();
+        document.body.classList.add('photo-open');
+        photoClose.focus({ preventScroll: true });
+      });
+    });
+    var previousPhoto = photoDialog.querySelector('[data-photo-prev]');
+    var nextPhoto = photoDialog.querySelector('[data-photo-next]');
+    previousPhoto.hidden = nextPhoto.hidden = photoLinks.length < 2;
+    previousPhoto.addEventListener('click', function () { showPhoto(photoIndex - 1); });
+    nextPhoto.addEventListener('click', function () { showPhoto(photoIndex + 1); });
+    photoClose.addEventListener('click', function () { photoDialog.close(); });
+    photoDialog.addEventListener('keydown', function (event) {
+      if (event.key === 'ArrowLeft') { event.preventDefault(); showPhoto(photoIndex + 1); }
+      else if (event.key === 'ArrowRight') { event.preventDefault(); showPhoto(photoIndex - 1); }
+    });
+    photoDialog.addEventListener('click', function (event) {
+      if (event.target !== photoDialog) return;
+      var rect = photoDialog.getBoundingClientRect();
+      if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) photoDialog.close();
+    });
+    photoDialog.addEventListener('close', function () {
+      document.body.classList.remove('photo-open');
+      photoImage.removeAttribute('src');
+      if (photoReturnFocus && document.contains(photoReturnFocus)) photoReturnFocus.focus({ preventScroll: true });
+    });
+  }
   document.querySelectorAll('[data-current-year]').forEach(function (el) { el.textContent = String(new Date().getFullYear()); });
   // Keep quick contact buttons clear of the request flow and footer contacts.
   var floatingContact = document.querySelector('.contact-float');
@@ -127,6 +231,8 @@
         if (entry.isIntersecting) contactSections.add(entry.target);
         else contactSections.delete(entry.target);
       });
+      contactInView = contactSections.size > 0;
+      updateSelectionTray();
       floatingContact.hidden = contactSections.size > 0;
     });
     document.querySelectorAll('.request-section, .service-cta, .site-footer').forEach(function (el) { contactObserver.observe(el); });
