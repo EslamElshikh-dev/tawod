@@ -7,7 +7,11 @@
       "title": "تنظيف وتعقيم الخزانات",
       "objectPosition": "center 8%",
       "alt": "تصور لخدمة تنظيف خزان مياه بواسطة فنيي تعاود بملابس السلامة",
-      "files": ["maintenance/assets/images/tawod-tank-service-concept-v1-480.webp", "maintenance/assets/images/tawod-tank-service-concept-v1-800.webp", "maintenance/assets/images/tawod-tank-service-concept-v1-1200.webp"]
+      "files": [
+        "maintenance/assets/images/tawod-tank-service-concept-v1-480.webp",
+        "maintenance/assets/images/tawod-tank-service-concept-v1-800.webp",
+        "maintenance/assets/images/tawod-tank-service-concept-v1-1200.webp"
+      ]
     },
     "waterproofing-insulation": {
       "fileBase": "tawod-roof-insulation-concept-v1",
@@ -16,7 +20,11 @@
       "title": "العزل المائي والحراري",
       "objectPosition": "center 8%",
       "alt": "تصور لفنيي تعاود ينفذون العزل على سطح مبنى",
-      "files": ["maintenance/assets/images/tawod-roof-insulation-concept-v1-480.webp", "maintenance/assets/images/tawod-roof-insulation-concept-v1-800.webp", "maintenance/assets/images/tawod-roof-insulation-concept-v1-1200.webp"]
+      "files": [
+        "maintenance/assets/images/tawod-roof-insulation-concept-v1-480.webp",
+        "maintenance/assets/images/tawod-roof-insulation-concept-v1-800.webp",
+        "maintenance/assets/images/tawod-roof-insulation-concept-v1-1200.webp"
+      ]
     },
     "education-sports-facilities": {
       "fileBase": "tawod-sports-facility-concept-v1",
@@ -24,7 +32,128 @@
       "height": 800,
       "title": "المنشآت التعليمية والرياضية",
       "alt": "تصور لفنيي تعاود يفحصون شبكة وأرضية ملعب بادل",
-      "files": ["maintenance/assets/images/tawod-sports-facility-concept-v1-480.webp", "maintenance/assets/images/tawod-sports-facility-concept-v1-800.webp", "maintenance/assets/images/tawod-sports-facility-concept-v1-1200.webp"]
+      "files": [
+        "maintenance/assets/images/tawod-sports-facility-concept-v1-480.webp",
+        "maintenance/assets/images/tawod-sports-facility-concept-v1-800.webp",
+        "maintenance/assets/images/tawod-sports-facility-concept-v1-1200.webp"
+      ]
+    },
+    "spider-facade-cleaning": {
+      "fileBase": "tawod-spider-facade-concept-v1",
+      "width": 1200,
+      "height": 800,
+      "title": "خدمة السبايدر لتنظيف الواجهات",
+      "objectPosition": "center 8%",
+      "alt": "فني تعاود ينظف واجهة زجاجية باستخدام معدات الوصول بالحبال",
+      "files": [
+        "maintenance/assets/images/tawod-spider-facade-concept-v1-480.webp",
+        "maintenance/assets/images/tawod-spider-facade-concept-v1-800.webp",
+        "maintenance/assets/images/tawod-spider-facade-concept-v1-1200.webp"
+      ]
+    },
+    "tile-polishing": {
+      "fileBase": "tawod-floor-polishing-concept-v1",
+      "width": 1200,
+      "height": 800,
+      "title": "جلي وتلميع البلاط",
+      "objectPosition": "center 8%",
+      "alt": "فنيا تعاود يعملان على جلي وتلميع أرضية رخامية",
+      "files": [
+        "maintenance/assets/images/tawod-floor-polishing-concept-v1-480.webp",
+        "maintenance/assets/images/tawod-floor-polishing-concept-v1-800.webp",
+        "maintenance/assets/images/tawod-floor-polishing-concept-v1-1200.webp"
+      ]
+    },
+    "elevator-maintenance": {
+      "fileBase": "tawod-elevator-maintenance-concept-v1",
+      "width": 1200,
+      "height": 800,
+      "title": "صيانة المصاعد",
+      "objectPosition": "center 8%",
+      "alt": "فنيا تعاود يفحصان أبواب وعتبة مصعد في مبنى",
+      "files": [
+        "maintenance/assets/images/tawod-elevator-maintenance-concept-v1-480.webp",
+        "maintenance/assets/images/tawod-elevator-maintenance-concept-v1-800.webp",
+        "maintenance/assets/images/tawod-elevator-maintenance-concept-v1-1200.webp"
+      ]
+    },
+    "plumbing-services": {
+      "fileBase": "tawod-plumbing-service-concept-v1",
+      "width": 1200,
+      "height": 800,
+      "title": "السباكة وشبكات المياه والصرف",
+      "objectPosition": "center 8%",
+      "alt": "فنيا تعاود يفحصان توصيلات مضخة وشبكة مياه",
+      "files": [
+        "maintenance/assets/images/tawod-plumbing-service-concept-v1-480.webp",
+        "maintenance/assets/images/tawod-plumbing-service-concept-v1-800.webp",
+        "maintenance/assets/images/tawod-plumbing-service-concept-v1-1200.webp"
+      ]
+    },
+    "cctv-security-systems": {
+      "fileBase": "tawod-cctv-installation-concept-v1",
+      "width": 1200,
+      "height": 800,
+      "title": "تركيب وصيانة كاميرات المراقبة",
+      "objectPosition": "center 8%",
+      "alt": "فنيا تعاود يثبتان كاميرا مراقبة على جدار منشأة",
+      "files": [
+        "maintenance/assets/images/tawod-cctv-installation-concept-v1-480.webp",
+        "maintenance/assets/images/tawod-cctv-installation-concept-v1-800.webp",
+        "maintenance/assets/images/tawod-cctv-installation-concept-v1-1200.webp"
+      ]
+    },
+    "fire-safety-systems": {
+      "fileBase": "tawod-fire-safety-concept-v1",
+      "width": 1200,
+      "height": 800,
+      "title": "صيانة أنظمة السلامة من الحريق",
+      "objectPosition": "center 8%",
+      "alt": "فنيا تعاود يفحصان لوحة إنذار وخزانة معدات إطفاء",
+      "files": [
+        "maintenance/assets/images/tawod-fire-safety-concept-v1-480.webp",
+        "maintenance/assets/images/tawod-fire-safety-concept-v1-800.webp",
+        "maintenance/assets/images/tawod-fire-safety-concept-v1-1200.webp"
+      ]
+    },
+    "pools-fountains": {
+      "fileBase": "tawod-pool-maintenance-concept-v1",
+      "width": 1200,
+      "height": 800,
+      "title": "تركيب وصيانة المسابح والشلالات والنوافير",
+      "objectPosition": "center 8%",
+      "alt": "فنيا تعاود يفحصان معدات ترشيح ومياه مسبح",
+      "files": [
+        "maintenance/assets/images/tawod-pool-maintenance-concept-v1-480.webp",
+        "maintenance/assets/images/tawod-pool-maintenance-concept-v1-800.webp",
+        "maintenance/assets/images/tawod-pool-maintenance-concept-v1-1200.webp"
+      ]
+    },
+    "property-management": {
+      "fileBase": "tawod-property-management-concept-v1",
+      "width": 1200,
+      "height": 800,
+      "title": "إدارة الأملاك والمرافق التشغيلية",
+      "objectPosition": "center 8%",
+      "alt": "فريق تعاود يراجع حالة مرافق مبنى أثناء معاينة",
+      "files": [
+        "maintenance/assets/images/tawod-property-management-concept-v1-480.webp",
+        "maintenance/assets/images/tawod-property-management-concept-v1-800.webp",
+        "maintenance/assets/images/tawod-property-management-concept-v1-1200.webp"
+      ]
+    },
+    "furniture-moving": {
+      "fileBase": "tawod-furniture-moving-concept-v1",
+      "width": 1200,
+      "height": 800,
+      "title": "فك وتركيب ونقل الأثاث",
+      "objectPosition": "center 8%",
+      "alt": "عاملان من تعاود ينقلان قطعة أثاث مغلفة داخل منزل",
+      "files": [
+        "maintenance/assets/images/tawod-furniture-moving-concept-v1-480.webp",
+        "maintenance/assets/images/tawod-furniture-moving-concept-v1-800.webp",
+        "maintenance/assets/images/tawod-furniture-moving-concept-v1-1200.webp"
+      ]
     }
   },
   "generation": {
@@ -49,6 +178,51 @@
         "id": "education",
         "filename": "tawod-sports-facility-concept-v1",
         "prompt": "Use case: compositing, photorealistic-natural.\nAsset type: customized maintenance website service-card photograph, landscape 3:2, approximately 1536x1024.\nInput image 1 is the edit target: use its actual adult workers and preserve the realistic Tawod uniform design and photographic texture while replacing their activity, pose, equipment and environment with the requested service scene. Input image 2 is the exact Tawod emblem reference for embroidery and vest branding.\nKeep the same photographic world as the original: natural Saudi daylight, cream Riyadh buildings, authentic slightly worn work equipment, realistic fabric, skin and shadows. High quality professional documentary photography, not a cinematic poster or 3D render.\nUniform: every worker wears a clean yellow baseball cap with the Tawod emblem embroidered in the original orange #f6b26d and small black lettering \"تعاود\" and \"TAWOD\"; fluorescent yellow reflective work vest, royal-blue long-sleeve work shirt, dark charcoal trousers, appropriate gloves and black closed safety boots. On the vest back use the exact reference emblem in orange and the readable black word \"تعاود\" above \"TAWOD\". Preserve the geometric shape of the supplied logo, do not invent a different emblem. No extra slogans or phone numbers.\nComposition: two adult technicians absorbed in a plausible task rather than looking at camera. Medium wide eye-level view with useful technical action and branding inside the central 75% of the image, suitable for a wide card crop. Natural anatomy, hands gripping the actual tool, accurate hoses/fasteners and grounded shadows. No text overlays, no watermarks, no fake certification marks, no children, no exaggerated glow.\nPrimary request: transform the scene into professional maintenance of an outdoor padel court at a quiet educational or sports facility in Riyadh. Two technicians inspect a real blue-green artificial-turf padel court, with standard net, metal posts and glass enclosure. One technician crouches at a net post and uses a small wrench on a visible post fixing, with the wrench contacting the actual bolt. The other technician checks the turf surface and an adjacent court edge with a measuring tool. In the background a low warm-beige institutional building and a few palms are softly out of focus, without any name or signage. Convey precise care for sports facilities, accurate court materials, natural adult poses and restrained professional photography. No players, students or spectators. Keep the net and technical action clear in the card's central crop and the yellow caps/reflective vests consistent with the supplied reference."
+      },
+      {
+        "id": "spider",
+        "filename": "tawod-spider-facade-concept-v1",
+        "prompt": "Use case: compositing, photorealistic-natural.\nAsset type: a single customized Tawod maintenance website service-card photograph, landscape 3:2, approximately 1536x1024. This must be one coherent photograph, never a collage, split screen or poster.\nInput image 1 is the photographic edit target: re-compose its adult workers into the service activity below, preserving the authentic Tawod workwear, natural skin, fabric and documentary photographic character. Input image 2 is the exact Tawod emblem reference for embroidered branding.\nStyle: professional candid site photography in Riyadh, warm neutral cream buildings, believable slightly worn equipment, natural daylight or soft indoor light, restrained contrast, realistic perspective and grounded shadows.\nUniform: royal-blue work shirts, fluorescent yellow reflective vests, dark charcoal work trousers, suitable protective gloves and black closed safety boots. Every cap is yellow, with the exact Tawod emblem in original orange #f6b26d and small black lettering \"تعاود\" and \"TAWOD\". Where the specific activity requires a safety helmet, use a yellow branded safety helmet instead of a cap. Vest backs carry the reference orange emblem above the readable black words \"تعاود\" and \"TAWOD\". Do not invent another logo or add slogans, phone numbers or certification symbols.\nComposition: medium-wide eye-level candid view. Keep the workers, visible branding, their hands and the decisive service action inside the central 70% of the photograph. Keep complete heads away from the top edge and show real boots when full bodies are visible. Equipment must be correctly connected, tools must visibly touch the part being worked on, and anatomy, fingers and grips must be natural.\nNo captions, text overlays, watermarks, advertising graphics, exaggerated glow or 3D rendering. No customers, children, staged handshakes or people posing toward camera.\nSpecific scene: A trained adult rope-access technician professionally cleans the glass facade of a low-rise commercial building in Riyadh. The camera is at the technician's working level, a medium-wide side/back view, with warm beige stone and glass reflections behind him. He sits correctly on a rated work seat and wears a fitted full-body work harness with two distinct ropes descending from above: the primary work line through a descender and an independent safety line attached to his harness. Yellow Tawod-branded protective helmet with chin strap, gloves, blue long sleeves, reflective vest and closed safety boots. One hand uses a real rubber squeegee against the glass at a natural reachable height; a small bucket is clipped safely to the work seat. Both rope attachments and the boots against the glass are plausible. Clear glass-cleaning action and genuine-looking professional equipment, no extreme height spectacle, no dangling loose tools. Keep the worker's helmet, vest emblem and squeegee in the crop's central area."
+      },
+      {
+        "id": "polishing",
+        "filename": "tawod-floor-polishing-concept-v1",
+        "prompt": "Use case: compositing, photorealistic-natural.\nAsset type: a single customized Tawod maintenance website service-card photograph, landscape 3:2, approximately 1536x1024. This must be one coherent photograph, never a collage, split screen or poster.\nInput image 1 is the photographic edit target: re-compose its adult workers into the service activity below, preserving the authentic Tawod workwear, natural skin, fabric and documentary photographic character. Input image 2 is the exact Tawod emblem reference for embroidered branding.\nStyle: professional candid site photography in Riyadh, warm neutral cream buildings, believable slightly worn equipment, natural daylight or soft indoor light, restrained contrast, realistic perspective and grounded shadows.\nUniform: royal-blue work shirts, fluorescent yellow reflective vests, dark charcoal work trousers, suitable protective gloves and black closed safety boots. Every cap is yellow, with the exact Tawod emblem in original orange #f6b26d and small black lettering \"تعاود\" and \"TAWOD\". Where the specific activity requires a safety helmet, use a yellow branded safety helmet instead of a cap. Vest backs carry the reference orange emblem above the readable black words \"تعاود\" and \"TAWOD\". Do not invent another logo or add slogans, phone numbers or certification symbols.\nComposition: medium-wide eye-level candid view. Keep the workers, visible branding, their hands and the decisive service action inside the central 70% of the photograph. Keep complete heads away from the top edge and show real boots when full bodies are visible. Equipment must be correctly connected, tools must visibly touch the part being worked on, and anatomy, fingers and grips must be natural.\nNo captions, text overlays, watermarks, advertising graphics, exaggerated glow or 3D rendering. No customers, children, staged handshakes or people posing toward camera.\nSpecific scene: Two adult Tawod workers polish a pale natural marble floor inside a contemporary Riyadh villa lobby with cream walls and glass doors. The main worker naturally guides a professional low-speed single-disc floor polishing machine with both hands on the horizontal handle. The circular machine head rests flat on the floor, and its cable is correctly routed along the wall, away from the moving disc. A second worker attends to the cable and supplies at the side. Subtle believable marble sheen and a small freshly polished area, never mirror-like artificial gloss. Both wear yellow branded caps, blue shirts, reflective vests, gloves and safety boots. Show the machine's actual base, handle and the workers' hand contact clearly. Warm indoor daylight and realistic stone veining."
+      },
+      {
+        "id": "elevators",
+        "filename": "tawod-elevator-maintenance-concept-v1",
+        "prompt": "Use case: compositing, photorealistic-natural.\nAsset type: a single customized Tawod maintenance website service-card photograph, landscape 3:2, approximately 1536x1024. This must be one coherent photograph, never a collage, split screen or poster.\nInput image 1 is the photographic edit target: re-compose its adult workers into the service activity below, preserving the authentic Tawod workwear, natural skin, fabric and documentary photographic character. Input image 2 is the exact Tawod emblem reference for embroidered branding.\nStyle: professional candid site photography in Riyadh, warm neutral cream buildings, believable slightly worn equipment, natural daylight or soft indoor light, restrained contrast, realistic perspective and grounded shadows.\nUniform: royal-blue work shirts, fluorescent yellow reflective vests, dark charcoal work trousers, suitable protective gloves and black closed safety boots. Every cap is yellow, with the exact Tawod emblem in original orange #f6b26d and small black lettering \"تعاود\" and \"TAWOD\". Where the specific activity requires a safety helmet, use a yellow branded safety helmet instead of a cap. Vest backs carry the reference orange emblem above the readable black words \"تعاود\" and \"TAWOD\". Do not invent another logo or add slogans, phone numbers or certification symbols.\nComposition: medium-wide eye-level candid view. Keep the workers, visible branding, their hands and the decisive service action inside the central 70% of the photograph. Keep complete heads away from the top edge and show real boots when full bodies are visible. Equipment must be correctly connected, tools must visibly touch the part being worked on, and anatomy, fingers and grips must be natural.\nNo captions, text overlays, watermarks, advertising graphics, exaggerated glow or 3D rendering. No customers, children, staged handshakes or people posing toward camera.\nSpecific scene: Professional routine elevator door inspection on the landing of a tidy Riyadh office building. Show a real closed brushed-stainless-steel elevator doorway, its lower door guide and threshold visible. One adult technician crouches safely on the solid landing and checks the accessible lower door guide with a small precision tool contacting the guide; his other hand holds a compact inspection lamp. A second technician stands to the side, reviewing a maintenance tablet angled away from the camera. A small tool case rests safely on the landing. All elevator doors remain closed, no exposed shaft, no open pit and no live electrical work. Yellow Tawod caps, blue work shirts, reflective vests, gloves and safety boots. Frame the elevator, tools and both workers convincingly; this should read as technical inspection rather than general cleaning."
+      },
+      {
+        "id": "plumbing",
+        "filename": "tawod-plumbing-service-concept-v1",
+        "prompt": "Use case: compositing, photorealistic-natural.\nAsset type: a single customized Tawod maintenance website service-card photograph, landscape 3:2, approximately 1536x1024. This must be one coherent photograph, never a collage, split screen or poster.\nInput image 1 is the photographic edit target: re-compose its adult workers into the service activity below, preserving the authentic Tawod workwear, natural skin, fabric and documentary photographic character. Input image 2 is the exact Tawod emblem reference for embroidered branding.\nStyle: professional candid site photography in Riyadh, warm neutral cream buildings, believable slightly worn equipment, natural daylight or soft indoor light, restrained contrast, realistic perspective and grounded shadows.\nUniform: royal-blue work shirts, fluorescent yellow reflective vests, dark charcoal work trousers, suitable protective gloves and black closed safety boots. Every cap is yellow, with the exact Tawod emblem in original orange #f6b26d and small black lettering \"تعاود\" and \"TAWOD\". Where the specific activity requires a safety helmet, use a yellow branded safety helmet instead of a cap. Vest backs carry the reference orange emblem above the readable black words \"تعاود\" and \"TAWOD\". Do not invent another logo or add slogans, phone numbers or certification symbols.\nComposition: medium-wide eye-level candid view. Keep the workers, visible branding, their hands and the decisive service action inside the central 70% of the photograph. Keep complete heads away from the top edge and show real boots when full bodies are visible. Equipment must be correctly connected, tools must visibly touch the part being worked on, and anatomy, fingers and grips must be natural.\nNo captions, text overlays, watermarks, advertising graphics, exaggerated glow or 3D rendering. No customers, children, staged handshakes or people posing toward camera.\nSpecific scene: Two adult Tawod plumbers in a clean ground-level villa utility area in Riyadh, next to a correctly plumbed compact water booster pump with PVC supply lines, brass union fittings, an isolation valve and a pressure gauge. One crouching plumber uses a real adjustable wrench against the flats of an accessible brass union; the other checks the gauge and the isolated line. The pipes form a coherent connected system with realistic joints and supports; no disconnected hoses, floating gauges or water spraying everywhere. The pump is switched off for the work. Yellow branded caps, blue shirts, reflective vests, suitable gloves and black safety boots. Tools and hands sharply readable in the central crop, warm cream walls and subtle natural utility-room daylight."
+      },
+      {
+        "id": "cctv",
+        "filename": "tawod-cctv-installation-concept-v1",
+        "prompt": "Use case: compositing, photorealistic-natural.\nAsset type: a single customized Tawod maintenance website service-card photograph, landscape 3:2, approximately 1536x1024. This must be one coherent photograph, never a collage, split screen or poster.\nInput image 1 is the photographic edit target: re-compose its adult workers into the service activity below, preserving the authentic Tawod workwear, natural skin, fabric and documentary photographic character. Input image 2 is the exact Tawod emblem reference for embroidered branding.\nStyle: professional candid site photography in Riyadh, warm neutral cream buildings, believable slightly worn equipment, natural daylight or soft indoor light, restrained contrast, realistic perspective and grounded shadows.\nUniform: royal-blue work shirts, fluorescent yellow reflective vests, dark charcoal work trousers, suitable protective gloves and black closed safety boots. Every cap is yellow, with the exact Tawod emblem in original orange #f6b26d and small black lettering \"تعاود\" and \"TAWOD\". Where the specific activity requires a safety helmet, use a yellow branded safety helmet instead of a cap. Vest backs carry the reference orange emblem above the readable black words \"تعاود\" and \"TAWOD\". Do not invent another logo or add slogans, phone numbers or certification symbols.\nComposition: medium-wide eye-level candid view. Keep the workers, visible branding, their hands and the decisive service action inside the central 70% of the photograph. Keep complete heads away from the top edge and show real boots when full bodies are visible. Equipment must be correctly connected, tools must visibly touch the part being worked on, and anatomy, fingers and grips must be natural.\nNo captions, text overlays, watermarks, advertising graphics, exaggerated glow or 3D rendering. No customers, children, staged handshakes or people posing toward camera.\nSpecific scene: Installation and adjustment of one real compact white surveillance camera on a cream wall in a Riyadh office corridor. One adult technician stands on a low, stable two-step platform with all feet flat on the platform, using a screwdriver that actually touches the camera bracket screw at a reachable height. The small camera body, bracket, neat cable conduit and fixing are realistically sized and connected. A second adult technician on the floor checks a small test monitor angled away from the camera; no invented legible screen text or fake video people. Yellow Tawod caps, blue shirts, reflective vests, lightweight work gloves and safety boots. Keep the working hands, camera and helmet/cap fully inside the central crop. Clean office glazing in the softly out-of-focus background."
+      },
+      {
+        "id": "fire",
+        "filename": "tawod-fire-safety-concept-v1",
+        "prompt": "Use case: compositing, photorealistic-natural.\nAsset type: a single customized Tawod maintenance website service-card photograph, landscape 3:2, approximately 1536x1024. This must be one coherent photograph, never a collage, split screen or poster.\nInput image 1 is the photographic edit target: re-compose its adult workers into the service activity below, preserving the authentic Tawod workwear, natural skin, fabric and documentary photographic character. Input image 2 is the exact Tawod emblem reference for embroidered branding.\nStyle: professional candid site photography in Riyadh, warm neutral cream buildings, believable slightly worn equipment, natural daylight or soft indoor light, restrained contrast, realistic perspective and grounded shadows.\nUniform: royal-blue work shirts, fluorescent yellow reflective vests, dark charcoal work trousers, suitable protective gloves and black closed safety boots. Every cap is yellow, with the exact Tawod emblem in original orange #f6b26d and small black lettering \"تعاود\" and \"TAWOD\". Where the specific activity requires a safety helmet, use a yellow branded safety helmet instead of a cap. Vest backs carry the reference orange emblem above the readable black words \"تعاود\" and \"TAWOD\". Do not invent another logo or add slogans, phone numbers or certification symbols.\nComposition: medium-wide eye-level candid view. Keep the workers, visible branding, their hands and the decisive service action inside the central 70% of the photograph. Keep complete heads away from the top edge and show real boots when full bodies are visible. Equipment must be correctly connected, tools must visibly touch the part being worked on, and anatomy, fingers and grips must be natural.\nNo captions, text overlays, watermarks, advertising graphics, exaggerated glow or 3D rendering. No customers, children, staged handshakes or people posing toward camera.\nSpecific scene: Two adult technicians inspect a standard building fire-safety station in a tidy Riyadh commercial corridor. A wall-mounted fire-alarm control panel with plausible small status lights sits beside a red fire-hose cabinet with an actual coiled hose and brass valve. One technician reviews the exterior alarm-panel status and a handheld inspection tablet; the other carefully checks the visible hose connection and valve with gloved hands. This is calm preventive inspection with the system intact, not a fire emergency. Do not expose mains electricity, spray water, show flames or invent approval seals. Yellow Tawod caps, blue shirts, reflective vests, gloves and safety boots. The recognizable red cabinet and alarm panel clearly communicate the service while the worker branding stays legible."
+      },
+      {
+        "id": "pools",
+        "filename": "tawod-pool-maintenance-concept-v1",
+        "prompt": "Use case: compositing, photorealistic-natural.\nAsset type: a single customized Tawod maintenance website service-card photograph, landscape 3:2, approximately 1536x1024. This must be one coherent photograph, never a collage, split screen or poster.\nInput image 1 is the photographic edit target: re-compose its adult workers into the service activity below, preserving the authentic Tawod workwear, natural skin, fabric and documentary photographic character. Input image 2 is the exact Tawod emblem reference for embroidered branding.\nStyle: professional candid site photography in Riyadh, warm neutral cream buildings, believable slightly worn equipment, natural daylight or soft indoor light, restrained contrast, realistic perspective and grounded shadows.\nUniform: royal-blue work shirts, fluorescent yellow reflective vests, dark charcoal work trousers, suitable protective gloves and black closed safety boots. Every cap is yellow, with the exact Tawod emblem in original orange #f6b26d and small black lettering \"تعاود\" and \"TAWOD\". Where the specific activity requires a safety helmet, use a yellow branded safety helmet instead of a cap. Vest backs carry the reference orange emblem above the readable black words \"تعاود\" and \"TAWOD\". Do not invent another logo or add slogans, phone numbers or certification symbols.\nComposition: medium-wide eye-level candid view. Keep the workers, visible branding, their hands and the decisive service action inside the central 70% of the photograph. Keep complete heads away from the top edge and show real boots when full bodies are visible. Equipment must be correctly connected, tools must visibly touch the part being worked on, and anatomy, fingers and grips must be natural.\nNo captions, text overlays, watermarks, advertising graphics, exaggerated glow or 3D rendering. No customers, children, staged handshakes or people posing toward camera.\nSpecific scene: Routine swimming-pool maintenance at a modern Riyadh villa, with a blue pool and a modest water feature visible in the background. Beside the pool on a dry service deck, show a genuine compact pool filtration unit: a pump, a round filter tank and connected PVC valves arranged coherently. One adult technician kneels next to the isolated pump and checks a visible service fitting with a suitable tool; the second checks pool water using a small clear test kit. Both wear yellow Tawod caps, blue shirts, reflective vests, gloves and closed non-slip safety boots. No technician inside water and no electrical cables across wet surfaces. Blue water, warm beige stone and believable technical equipment, realistic proportions and natural afternoon light."
+      },
+      {
+        "id": "property",
+        "filename": "tawod-property-management-concept-v1",
+        "prompt": "Use case: compositing, photorealistic-natural.\nAsset type: a single customized Tawod maintenance website service-card photograph, landscape 3:2, approximately 1536x1024. This must be one coherent photograph, never a collage, split screen or poster.\nInput image 1 is the photographic edit target: re-compose its adult workers into the service activity below, preserving the authentic Tawod workwear, natural skin, fabric and documentary photographic character. Input image 2 is the exact Tawod emblem reference for embroidered branding.\nStyle: professional candid site photography in Riyadh, warm neutral cream buildings, believable slightly worn equipment, natural daylight or soft indoor light, restrained contrast, realistic perspective and grounded shadows.\nUniform: royal-blue work shirts, fluorescent yellow reflective vests, dark charcoal work trousers, suitable protective gloves and black closed safety boots. Every cap is yellow, with the exact Tawod emblem in original orange #f6b26d and small black lettering \"تعاود\" and \"TAWOD\". Where the specific activity requires a safety helmet, use a yellow branded safety helmet instead of a cap. Vest backs carry the reference orange emblem above the readable black words \"تعاود\" and \"TAWOD\". Do not invent another logo or add slogans, phone numbers or certification symbols.\nComposition: medium-wide eye-level candid view. Keep the workers, visible branding, their hands and the decisive service action inside the central 70% of the photograph. Keep complete heads away from the top edge and show real boots when full bodies are visible. Equipment must be correctly connected, tools must visibly touch the part being worked on, and anatomy, fingers and grips must be natural.\nNo captions, text overlays, watermarks, advertising graphics, exaggerated glow or 3D rendering. No customers, children, staged handshakes or people posing toward camera.\nSpecific scene: A professional facilities and property inspection by two adult Tawod team members at the entrance of a well-maintained Riyadh residential building. Warm beige facade, shaded glass entrance, small neat planted area and a discreet wall-mounted building service cabinet in the background. One team member reviews a slim tablet showing no readable text; the other points naturally toward an actual entrance fixture being inspected and records the observation in a small clipboard. This is a candid operational site walk, not a sales handshake or staged portrait. Both wear yellow branded caps, tidy blue work shirts, reflective Tawod vests, dark trousers and safety boots. Keep their hands, tablet and vest/cap branding clear in the central crop, with realistic daylight and calm professional body language."
+      },
+      {
+        "id": "furniture",
+        "filename": "tawod-furniture-moving-concept-v1",
+        "prompt": "Use case: compositing, photorealistic-natural.\nAsset type: a single customized Tawod maintenance website service-card photograph, landscape 3:2, approximately 1536x1024. This must be one coherent photograph, never a collage, split screen or poster.\nInput image 1 is the photographic edit target: re-compose its adult workers into the service activity below, preserving the authentic Tawod workwear, natural skin, fabric and documentary photographic character. Input image 2 is the exact Tawod emblem reference for embroidered branding.\nStyle: professional candid site photography in Riyadh, warm neutral cream buildings, believable slightly worn equipment, natural daylight or soft indoor light, restrained contrast, realistic perspective and grounded shadows.\nUniform: royal-blue work shirts, fluorescent yellow reflective vests, dark charcoal work trousers, suitable protective gloves and black closed safety boots. Every cap is yellow, with the exact Tawod emblem in original orange #f6b26d and small black lettering \"تعاود\" and \"TAWOD\". Where the specific activity requires a safety helmet, use a yellow branded safety helmet instead of a cap. Vest backs carry the reference orange emblem above the readable black words \"تعاود\" and \"TAWOD\". Do not invent another logo or add slogans, phone numbers or certification symbols.\nComposition: medium-wide eye-level candid view. Keep the workers, visible branding, their hands and the decisive service action inside the central 70% of the photograph. Keep complete heads away from the top edge and show real boots when full bodies are visible. Equipment must be correctly connected, tools must visibly touch the part being worked on, and anatomy, fingers and grips must be natural.\nNo captions, text overlays, watermarks, advertising graphics, exaggerated glow or 3D rendering. No customers, children, staged handshakes or people posing toward camera.\nSpecific scene: Two adult Tawod movers carefully carry a medium-sized wooden sideboard protected by a quilted moving blanket with stretch-wrap securing its corners through a wide doorway in a Riyadh villa. Each worker grips the actual underside at opposite ends, carrying at hip height with plausible ergonomic posture and a coordinated step. The furniture is realistically sized and its weight is believable, not floating; the doorway is wide enough and the path is clear. A neat hand trolley and a few packed boxes sit off the walking path. Yellow Tawod caps with the orange emblem and black lettering, blue shirts, reflective vests, protective grip gloves, dark work trousers and closed safety boots. Show the movers, hand contact and protected furniture as the unmistakable subject, authentic warm indoor daylight."
       }
     ]
   }
