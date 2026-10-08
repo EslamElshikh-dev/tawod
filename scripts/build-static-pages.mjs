@@ -5,14 +5,16 @@ import {createHash} from 'node:crypto';
 import {articleRole,legacyTopicHubSlugs,topicForArticle,topicForService,topicUrl} from './blog-topic-data.mjs';
 import {optimizePaidServicePage} from './optimize-paid-service-pages.mjs';
 import {newArticleSlugs as riyadhArticleSlugs} from './riyadh-articles-2026-10-08.mjs';
+import {articleProjectExample,articleProjectExamples} from './service-project-evidence.mjs';
 
 const root=process.cwd(),check=process.argv.includes('--check'),domain='https://tawodco.com',date='2026-07-13';
-const marks=['TRUST','TOC','TAKEAWAYS','TOOLS','TOPIC','RELATED','GUIDES','DECISION','CONTEXT','FAQ','SCHEMA'];
+const marks=['TRUST','TOC','TAKEAWAYS','TOOLS','TOPIC','RELATED','GUIDES','DECISION','CONTEXT','FAQ','SCHEMA','FIELD'];
 const rootServices=new Set(['service-construction.html','service-turnkey.html','service-restoration.html','service-finishing.html','service-decor.html','service-mep.html']);
 const ignoredDirectories=new Set(['.git','.next','node_modules','out','public']);
 const architectureCss='assets/css/tawod-blog-architecture.css';
 const architectureVersion=createHash('sha256').update(fs.readFileSync(path.join(root,architectureCss))).digest('hex').slice(0,12);
 const contentRefreshDates=new Map([
+  ...Object.keys(articleProjectExamples).map(slug=>[`blog/${slug}/index.html`,'2026-10-08']),
   ['blog/mechanical-mep-works-riyadh/index.html','2026-09-13'],
   ['blog/turnkey-commercial-fitout-riyadh/index.html','2026-08-29'],
   ['blog/turnkey-contracts-riyadh/index.html','2026-08-29'],
@@ -26,8 +28,8 @@ const contentRefreshDates=new Map([
   ['blog/interior-design-execution-stages-riyadh/index.html','2026-09-13'],
 ]);
 const serviceRefreshDates=new Map([
-  ['service-construction.html','2026-09-03'],
-  ['service-turnkey.html','2026-09-03'],
+  ['service-construction.html','2026-10-08'],
+  ['service-turnkey.html','2026-10-08'],
   ['service-restoration.html','2026-09-29'],
   ['service-finishing.html','2026-10-08'],
   ['service-decor.html','2026-09-03'],
@@ -125,6 +127,7 @@ function article(h,r,metadata){
       return existing?x:`<h2${a} id="${id}">${t}</h2>`;
     });
   }
+  body+=articleProjectExample(r.split('/')[1]);
   const words=text(body).split(/\s+/).filter(Boolean).length,minutes=Math.max(1,Math.ceil(words/180));
   if(!hasAuthoredToc&&heads.length>=3){
     const [ta,tb]=marker('TOC'),[ka,kb]=marker('TAKEAWAYS');

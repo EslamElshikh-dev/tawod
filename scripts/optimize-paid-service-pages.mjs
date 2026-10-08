@@ -1,11 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { enhanceServiceEvidence, enhanceProjectGuideLinks } from './service-project-evidence.mjs';
 
 const pages = new Map([
   ['service-construction.html', 'construction'], ['service-turnkey.html', 'turnkey'],
   ['service-restoration.html', 'restoration'], ['service-finishing.html', 'finishing'],
-  ['service-decor.html', 'decor'], ['service-mep.html', 'mep'], ['contact.html', null]
+  ['service-decor.html', 'decor'], ['service-mep.html', 'mep'], ['contact.html', null],
+  ['project-arouba-mosque-villas.html', 'turnkey']
 ]);
 
 export function optimizePaidServicePage(before, file) {
@@ -19,7 +21,7 @@ export function optimizePaidServicePage(before, file) {
       .replace(/\swidth=["'][^"']*["']/i, '').replace(/\sheight=["'][^"']*["']/i, '')
       .replace(/>$/, ' width="180" height="80">'));
   if (service) html = html.replace(/href=["']contact\.html(?:#form)?["']/g, 'href="contact.html?service=' + service + '#form"');
-  return html;
+  return enhanceProjectGuideLinks(enhanceServiceEvidence(html, file), file);
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
