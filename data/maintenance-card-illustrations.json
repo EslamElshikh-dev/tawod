@@ -1,0 +1,53 @@
+{
+  "images": {
+    "tank-cleaning-disinfection": {
+      "fileBase": "tawod-tank-service-concept-v1",
+      "width": 1200,
+      "height": 800,
+      "title": "تنظيف وتعقيم الخزانات",
+      "alt": "تصور لخدمة تنظيف خزان مياه بواسطة فنيي تعاود بملابس السلامة",
+      "files": ["maintenance/assets/images/tawod-tank-service-concept-v1-480.webp", "maintenance/assets/images/tawod-tank-service-concept-v1-800.webp", "maintenance/assets/images/tawod-tank-service-concept-v1-1200.webp"]
+    },
+    "waterproofing-insulation": {
+      "fileBase": "tawod-roof-insulation-concept-v1",
+      "width": 1200,
+      "height": 800,
+      "title": "العزل المائي والحراري",
+      "alt": "تصور لفنيي تعاود ينفذون العزل على سطح مبنى",
+      "files": ["maintenance/assets/images/tawod-roof-insulation-concept-v1-480.webp", "maintenance/assets/images/tawod-roof-insulation-concept-v1-800.webp", "maintenance/assets/images/tawod-roof-insulation-concept-v1-1200.webp"]
+    },
+    "education-sports-facilities": {
+      "fileBase": "tawod-sports-facility-concept-v1",
+      "width": 1200,
+      "height": 800,
+      "title": "المنشآت التعليمية والرياضية",
+      "alt": "تصور لفنيي تعاود يفحصون شبكة وأرضية ملعب بادل",
+      "files": ["maintenance/assets/images/tawod-sports-facility-concept-v1-480.webp", "maintenance/assets/images/tawod-sports-facility-concept-v1-800.webp", "maintenance/assets/images/tawod-sports-facility-concept-v1-1200.webp"]
+    }
+  },
+  "generation": {
+    "method": "built-in image generation",
+    "intent": "Illustrative service scenes, separate from documented fieldwork photography",
+    "references": [
+      "maintenance/assets/images/tawod-landscaping-team-uniform-v3.webp",
+      "images/logo/tawod-logo.png"
+    ],
+    "prompts": [
+      {
+        "id": "tanks",
+        "filename": "tawod-tank-service-concept-v1",
+        "prompt": "Use case: compositing, photorealistic-natural.\nAsset type: customized maintenance website service-card photograph, landscape 3:2, approximately 1536x1024.\nInput image 1 is the edit target: use its actual adult workers and preserve the realistic Tawod uniform design and photographic texture while replacing their activity, pose, equipment and environment with the requested service scene. Input image 2 is the exact Tawod emblem reference for embroidery and vest branding.\nKeep the same photographic world as the original: natural Saudi daylight, cream Riyadh buildings, authentic slightly worn work equipment, realistic fabric, skin and shadows. High quality professional documentary photography, not a cinematic poster or 3D render.\nUniform: every worker wears a clean yellow baseball cap with the Tawod emblem embroidered in the original orange #f6b26d and small black lettering \"تعاود\" and \"TAWOD\"; fluorescent yellow reflective work vest, royal-blue long-sleeve work shirt, dark charcoal trousers, appropriate gloves and black closed safety boots. On the vest back use the exact reference emblem in orange and the readable black word \"تعاود\" above \"TAWOD\". Preserve the geometric shape of the supplied logo, do not invent a different emblem. No extra slogans or phone numbers.\nComposition: two adult technicians absorbed in a plausible task rather than looking at camera. Medium wide eye-level view with useful technical action and branding inside the central 75% of the image, suitable for a wide card crop. Natural anatomy, hands gripping the actual tool, accurate hoses/fasteners and grounded shadows. No text overlays, no watermarks, no fake certification marks, no children, no exaggerated glow.\nPrimary request: transform the scene into professional cleaning of a water storage tank. On a tidy enclosed flat roof of a Riyadh villa, beside a short cream-white upright polyethylene water tank about 1.25 metres tall with an accessible open lid. One technician stands outside the tank and directs a washing lance down through the open hatch; the hose visibly connects the lance to a compact cleaning unit on the floor. The second technician attends to the unit and checks a clean hose connection. Both wear protective gloves and clear eye protection. The tank lid lies safely beside it. Show the plastic texture, clean pipe fittings and controlled wash work convincingly. Nobody enters a tank or any confined space. The tank and technicians are the unmistakable subject; retain subtle warm-neutral tones and the realistic candid character of the reference photograph."
+      },
+      {
+        "id": "insulation",
+        "filename": "tawod-roof-insulation-concept-v1",
+        "prompt": "Use case: compositing, photorealistic-natural.\nAsset type: customized maintenance website service-card photograph, landscape 3:2, approximately 1536x1024.\nInput image 1 is the edit target: use its actual adult workers and preserve the realistic Tawod uniform design and photographic texture while replacing their activity, pose, equipment and environment with the requested service scene. Input image 2 is the exact Tawod emblem reference for embroidery and vest branding.\nKeep the same photographic world as the original: natural Saudi daylight, cream Riyadh buildings, authentic slightly worn work equipment, realistic fabric, skin and shadows. High quality professional documentary photography, not a cinematic poster or 3D render.\nUniform: every worker wears a clean yellow baseball cap with the Tawod emblem embroidered in the original orange #f6b26d and small black lettering \"تعاود\" and \"TAWOD\"; fluorescent yellow reflective work vest, royal-blue long-sleeve work shirt, dark charcoal trousers, appropriate gloves and black closed safety boots. On the vest back use the exact reference emblem in orange and the readable black word \"تعاود\" above \"TAWOD\". Preserve the geometric shape of the supplied logo, do not invent a different emblem. No extra slogans or phone numbers.\nComposition: two adult technicians absorbed in a plausible task rather than looking at camera. Medium wide eye-level view with useful technical action and branding inside the central 75% of the image, suitable for a wide card crop. Natural anatomy, hands gripping the actual tool, accurate hoses/fasteners and grounded shadows. No text overlays, no watermarks, no fake certification marks, no children, no exaggerated glow.\nPrimary request: transform the scene into professional roof waterproofing and thermal-insulation preparation. A enclosed flat concrete roof in Riyadh with a high cream parapet in the background. One technician is applying a neat grey liquid waterproofing layer with a long-handled roller, leaving a physically believable fresh coating boundary across the roof. A second technician kneels near the roof/parapet junction and presses reinforcing fabric into the coating with a small roller. A few rigid insulation boards are neatly stacked in a corner awaiting the next stage, with a plain unbranded coating bucket nearby. Show crisp workmanship and authentic concrete, coating, glove and fabric details. No torch, flames, exposed roof edges or hazardous poses. Work is in the centre of the image, branding is visible naturally on the standing worker's back or cap."
+      },
+      {
+        "id": "education",
+        "filename": "tawod-sports-facility-concept-v1",
+        "prompt": "Use case: compositing, photorealistic-natural.\nAsset type: customized maintenance website service-card photograph, landscape 3:2, approximately 1536x1024.\nInput image 1 is the edit target: use its actual adult workers and preserve the realistic Tawod uniform design and photographic texture while replacing their activity, pose, equipment and environment with the requested service scene. Input image 2 is the exact Tawod emblem reference for embroidery and vest branding.\nKeep the same photographic world as the original: natural Saudi daylight, cream Riyadh buildings, authentic slightly worn work equipment, realistic fabric, skin and shadows. High quality professional documentary photography, not a cinematic poster or 3D render.\nUniform: every worker wears a clean yellow baseball cap with the Tawod emblem embroidered in the original orange #f6b26d and small black lettering \"تعاود\" and \"TAWOD\"; fluorescent yellow reflective work vest, royal-blue long-sleeve work shirt, dark charcoal trousers, appropriate gloves and black closed safety boots. On the vest back use the exact reference emblem in orange and the readable black word \"تعاود\" above \"TAWOD\". Preserve the geometric shape of the supplied logo, do not invent a different emblem. No extra slogans or phone numbers.\nComposition: two adult technicians absorbed in a plausible task rather than looking at camera. Medium wide eye-level view with useful technical action and branding inside the central 75% of the image, suitable for a wide card crop. Natural anatomy, hands gripping the actual tool, accurate hoses/fasteners and grounded shadows. No text overlays, no watermarks, no fake certification marks, no children, no exaggerated glow.\nPrimary request: transform the scene into professional maintenance of an outdoor padel court at a quiet educational or sports facility in Riyadh. Two technicians inspect a real blue-green artificial-turf padel court, with standard net, metal posts and glass enclosure. One technician crouches at a net post and uses a small wrench on a visible post fixing, with the wrench contacting the actual bolt. The other technician checks the turf surface and an adjacent court edge with a measuring tool. In the background a low warm-beige institutional building and a few palms are softly out of focus, without any name or signage. Convey precise care for sports facilities, accurate court materials, natural adult poses and restrained professional photography. No players, students or spectators. Keep the net and technical action clear in the card's central crop and the yellow caps/reflective vests consistent with the supplied reference."
+      }
+    ]
+  }
+}
