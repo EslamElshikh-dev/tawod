@@ -3,6 +3,7 @@ import path from 'node:path';
 import process from 'node:process';
 import { createHash } from 'node:crypto';
 import { generateSitemaps } from './generate-sitemaps.mjs';
+import { sharingKeys, sharingMetadata } from './normalize-seo-sharing.mjs';
 
 const root=process.cwd(),domain='https://tawodco.com',errors=[],warnings=[];
 const assetRevision=file=>createHash('sha256').update(fs.readFileSync(path.join(root,'assets','js',file))).digest('hex').slice(0,12);
@@ -49,6 +50,11 @@ for(const [r,h] of pages){
   const ds=all(h,/<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["'][^>]*>|<meta[^>]*content=["']([^"']*)["'][^>]*name=["']description["'][^>]*>/gi);if(ds.length!==1)errors.push(`${r}: expected one meta description, found ${ds.length}`);const d=ds[0]?(ds[0][1]||ds[0][2]||''):'';if(d&&(d.length<70||d.length>180))warnings.push(`${r}: description length ${d.length}`);
   const cs=all(h,/<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["'][^>]*>|<link[^>]*href=["']([^"']+)["'][^>]*rel=["']canonical["'][^>]*>/gi);if(cs.length!==1)errors.push(`${r}: expected one canonical, found ${cs.length}`);const c=cs[0]?(cs[0][1]||cs[0][2]):'';if(c){if(canonicals.has(c))errors.push(`${r}: duplicate canonical with ${canonicals.get(c)}`);else canonicals.set(c,r);if(r!=='404.html'&&c!==domain+pagePath(r))errors.push(`${r}: canonical mismatch ${c}`)}
   const h1=all(h,/<h1\b[^>]*>/gi).length;if(h1!==1)errors.push(`${r}: expected one H1, found ${h1}`);
+  const sharing=sharingMetadata(h);
+  if(!sharing.some(m=>m.name==='robots'&&/\bnoindex\b/i.test(m.content||''))){
+    for(const key of sharingKeys){const fields=sharing.filter(m=>(m.property||m.name)===key);if(fields.length!==1||!fields[0].content)errors.push(`${r}: expected one nonempty ${key}`)}
+    if(sharing.find(m=>(m.property||m.name)==='og:url')?.content!==c)errors.push(`${r}: og:url must match canonical`);
+  }
   const ids=all(h,/\bid=["']([^"']+)["']/gi).map(m=>m[1]);[...new Set(ids.filter((x,i,a)=>a.indexOf(x)!==i))].forEach(id=>errors.push(`${r}: duplicate id ${id}`));
   const schemas=[];all(h,/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi).forEach((m,i)=>{try{schemas.push(JSON.parse(m[1].trim()))}catch(e){errors.push(`${r}: invalid JSON-LD block ${i+1}: ${e.message}`)}});
   if(r.startsWith('lp/')&&!/<meta\b(?=[^>]*name=["']robots["'])[^>]*content=["'][^"']*noindex/i.test(h))errors.push(`${r}: ads-only landing page must be noindex,follow`);
