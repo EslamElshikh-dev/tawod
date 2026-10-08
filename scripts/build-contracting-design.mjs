@@ -8,7 +8,7 @@ import * as regular from '@fortawesome/free-regular-svg-icons';
 import * as brands from '@fortawesome/free-brands-svg-icons';
 import { compileContractingCss, cssVocabulary } from './contracting-css.mjs';
 
-const modern=fs.readFileSync('assets/css/tawod-contracting-design.css','utf8')+'\n'+fs.readFileSync('assets/css/tawod-contracting-polish.css','utf8');
+const modern=fs.readFileSync('assets/css/tawod-contracting-design.css','utf8')+'\n'+fs.readFileSync('assets/css/tawod-contracting-polish.css','utf8')+'\n'+fs.readFileSync('assets/css/tawod-finishing-stage.css','utf8');
 const urls=[...fs.readFileSync('sitemap.xml','utf8').matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>new URL(m[1]).pathname).filter(p=>!p.startsWith('/maintenance/'));
 const files=urls.map(p=>p==='/'?'index.html':p.endsWith('/')?`${p.slice(1)}index.html`:p.slice(1));
 for(const f of ['thank-you.html','thankyou.html'])if(fs.existsSync(f)&&!files.includes(f))files.push(f);
