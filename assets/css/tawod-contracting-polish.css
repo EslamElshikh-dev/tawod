@@ -606,3 +606,6 @@ html body.tawod-contracting .float-btns > .float-btn:focus-visible::after {
     display: none;
   }
 }
+.tawod-contracting .contracting-office-details{padding:22px 0 0;border-top:1px solid var(--line);font-size:.85rem;line-height:1.9}
+.tawod-contracting .contracting-office-details p{margin:0 0 8px}
+.tawod-contracting .contracting-office-details a{color:inherit}

@@ -18,6 +18,18 @@
     "label": "السبت إلى الخميس من 7:00 صباحًا إلى 10:00 مساءً",
     "closedLabel": "الجمعة مغلق"
   },
+  "riyadh": {
+    "address": {
+      "streetAddress": "4206 طريق عثمان بن عفان الفرعي، حي الوادي",
+      "addressLocality": "Riyadh",
+      "addressRegion": "Riyadh Province",
+      "postalCode": "13313",
+      "addressCountry": "SA"
+    },
+    "formattedAddress": "4206 طريق عثمان بن عفان الفرعي، حي الوادي، الرياض 13313، المملكة العربية السعودية",
+    "geo": {"latitude": 24.7927311, "longitude": 46.6998365},
+    "mapsUrl": "https://maps.google.com/maps?cid=10137711914490617617"
+  },
   "dammam": {
     "name": "شركة تعاود للمقاولات العامة - فرع الدمام",
     "signageName": "شركة تعاود للمقاولات",

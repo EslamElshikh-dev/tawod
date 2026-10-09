@@ -4,6 +4,7 @@ import { join } from "node:path";
 
 import { legacyHtmlFiles, legacyHtmlHashes } from "@/lib/legacy-html-files";
 import { applyContractingDesign } from './contracting-design.mjs';
+import { optimizeArticleMarkup } from './article-presentation.mjs';
 
 const siteRoot = process.cwd();
 const legacyHtmlFileSet = new Set<string>(legacyHtmlFiles);
@@ -126,27 +127,6 @@ function isBlogArticle(relativePath: string) {
   return /(?:^|\/)blog\/(?!page\/|topics\/)[^/]+\/index\.html$/.test(relativePath);
 }
 
-function optimizeArticleMarkup(relativePath: string, html: string) {
-  if (!isBlogArticle(relativePath)) return html;
-  let optimizedHtml = html.replace(
-    /(<article\b[^>]*\bclass=(["']))([^"']*\barticle-content\b[^"']*)(\2[^>]*>)/i,
-    (match, start: string, quote: string, classes: string, end: string) => {
-      const safeClasses = classes.split(/\s+/).filter((name) => name && name !== "reveal-up").join(" ");
-      return `${start}${safeClasses}${end}`;
-    },
-  );
-  optimizedHtml = optimizedHtml.replace(
-    /(<article\b[^>]*\bclass=["'][^"']*\barticle-content\b[^"']*["'][^>]*>[\s\S]*?<img\b)([^>]*)(>)/i,
-    (match, start: string, attributes: string, end: string) => {
-      const optimizedAttributes = attributes
-        .replace(/\s+loading=["'][^"']*["']/i, "")
-        .replace(/\s+fetchpriority=["'][^"']*["']/i, "")
-        .replace(/\s+decoding=["'][^"']*["']/i, "");
-      return `${start}${optimizedAttributes} loading="lazy" decoding="async" fetchpriority="low"${end}`;
-    },
-  );
-  return optimizedHtml;
-}
 
 function normalizeProjectPresentation(relativePath: string, html: string) {
   if (relativePath === "index.html") {

@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { isDeepStrictEqual } from 'node:util';
 import { applyContractingDesign } from '../lib/contracting-design.mjs';
 import { pageStyles } from '../lib/contracting-design-assets.mjs';
+import { repairContractingSeo } from '../lib/contracting-seo.mjs';
 
 const matches=(html,pattern)=>[...html.matchAll(pattern)].map(m=>m[0]);
 const text=value=>value.replace(/<svg\b[\s\S]*?<\/svg>/gi,'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
@@ -24,7 +25,7 @@ const verifyState=(actual,expected,message)=>{
 };
 for(const file of Object.keys(pageStyles)) {
   const before=fs.readFileSync(file,'utf8'),after=applyContractingDesign(file,before);
-  verifyState(state(after),state(before),`${file}: original copy, SEO, form or tracking changed`);
+  verifyState(state(after),state(repairContractingSeo(file,before)),`${file}: original copy, SEO, form or tracking changed beyond the verified SEO repairs`);
   assert.equal(applyContractingDesign(file,after),after,`${file}: rendering is not idempotent`);
   assert.ok(after.includes('data-contracting-design="2026-10"'));
   if(file!=='index.html') {

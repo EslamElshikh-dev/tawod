@@ -259,8 +259,9 @@ function articleCard(article, index = 1) {
 function blogSchemas() {
   const url = `${domain}/dammam/blog/`;
   return `<script type="application/ld+json">${jsonScript({'@context': 'https://schema.org', '@graph': [
-    {'@type': 'CollectionPage', '@id': `${url}#webpage`, url, name: 'مقالات تعاود للمقاولات في الدمام', description: 'أدلة عملية عن البناء والترميم والتشطيب وإدارة المشاريع في الدمام.', inLanguage: 'ar-SA', about: {'@type': 'City', name: 'الدمام'}},
-    {'@type': 'Blog', '@id': `${url}#blog`, url, name: 'مدونة تعاود للمقاولات في الدمام', inLanguage: 'ar-SA', publisher: {'@type': 'Organization', name: 'شركة تعاود للمقاولات العامة', url: `${domain}/dammam/`}, blogPost: articles.map((article) => ({'@type': 'BlogPosting', headline: article.title, url: `${url}${article.slug}/`}))},
+    {'@type': 'CollectionPage', '@id': `${url}#webpage`, url, name: 'مقالات تعاود للمقاولات في الدمام', description: 'أدلة عملية عن البناء والترميم والتشطيب وإدارة المشاريع في الدمام.', inLanguage: 'ar-SA', about: {'@type': 'City', name: 'الدمام'}, mainEntity: {'@id': `${url}#articles`}},
+    {'@type': 'Blog', '@id': `${url}#blog`, url, name: 'مدونة تعاود للمقاولات في الدمام', inLanguage: 'ar-SA', publisher: {'@type': 'Organization', name: 'شركة تعاود للمقاولات العامة', url: `${domain}/dammam/`}},
+    {'@type': 'ItemList', '@id': `${url}#articles`, numberOfItems: articles.length, itemListElement: articles.map((article, index) => ({'@type': 'ListItem', position: index + 1, name: article.title, url: `${url}${article.slug}/`}))},
     {'@type': 'BreadcrumbList', itemListElement: [{'@type': 'ListItem', position: 1, name: 'شركة تعاود في الدمام', item: `${domain}/dammam/`}, {'@type': 'ListItem', position: 2, name: 'المقالات', item: url}]},
     {'@type': 'FAQPage', mainEntity: [
       {'@type': 'Question', name: 'ما موضوعات مقالات تعاود في الدمام؟', acceptedAnswer: {'@type': 'Answer', text: 'تغطي المقالات اختيار شركة المقاولات وبناء الفلل والعظم وتسليم المفتاح والترميم والتشطيبات والواجهات والأعمال الفنية والكود السعودي والمشاريع التجارية في الدمام.'}},
