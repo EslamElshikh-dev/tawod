@@ -19,8 +19,11 @@ export function applyReportFollowup() {
           ? block.replace(/href=(["'])\/projects\.html\1/g, 'href="/project-faisaliah-villa-facades-finishing.html"') : block);
     }
     html = html.replace(/<form\b[^>]*formsubmit\.co\/[\s\S]*?<\/form>/gi, block => {
-      block = block.replace(/<input\b[^>]*name=["']البريد_الإلكتروني["'][^>]*>/i, tag =>
-        tag.replace(/\srequired(?:=["'][^"']*["'])?/i, '').replace(/placeholder=(["'])[^"']*\1/i, 'placeholder="البريد الإلكتروني (اختياري)"').replace(/>$/, ' dir="ltr">'));
+      block = block.replace(/<input\b[^>]*name=["']البريد_الإلكتروني["'][^>]*>/i, tag => {
+        const input = tag.replace(/\srequired(?:=["'][^"']*["'])?/i, '')
+          .replace(/placeholder=(["'])[^"']*\1/i, 'placeholder="البريد الإلكتروني (اختياري)"');
+        return /\bdir=/.test(input) ? input.replace(/\bdir=["'][^"']*["']/i, 'dir="ltr"') : input.replace(/>$/, ' dir="ltr">');
+      });
       block = block.replace(/<textarea\b[^>]*name=["']التفاصيل["'][^>]*>/i, tag =>
         tag.replace(/\srequired(?:=["'][^"']*["'])?/i, '').replace(/placeholder=(["'])[^"']*\1/i, 'placeholder="الحي، المساحة والمرحلة الحالية (اختياري)"'));
       block = block.replace(/<input\b[^>]*name=["']_captcha["'][^>]*>/i, '<input name="_captcha" type="hidden" value="true">')
