@@ -2,8 +2,8 @@
   "version": 1,
   "pages": {
     "https://tawodco.com/": {
-      "fingerprint": "c7180b119aef847f9cc82906a3490c8ce2c7c43ce092e4e6e6a981d8d385fd1f",
-      "lastmod": "2026-08-29"
+      "fingerprint": "dd40187de86fb4fa7a80bdc86ddb64d96ceced31c7a6154b5ae0107833fdd6e3",
+      "lastmod": "2026-10-09"
     },
     "https://tawodco.com/about.html": {
       "fingerprint": "2324403b57dc20da0d7cbfd860b7bcdb8674b93142c77db75c32d6fdb1b6a1ee",
@@ -894,8 +894,8 @@
       "lastmod": "2026-08-27"
     },
     "https://tawodco.com/service-construction.html": {
-      "fingerprint": "b38933a8fb1cd9f847ec41eebe18e5d96836d183cb294497e27b5369c7011bb9",
-      "lastmod": "2026-10-08"
+      "fingerprint": "74f50999837cb9158fbab695dc9cdbf5e4a78ba38e7d71135724301f5719de5e",
+      "lastmod": "2026-10-09"
     },
     "https://tawodco.com/service-decor.html": {
       "fingerprint": "7adb278eed7f3f71d31e1cdf76ee50c54be5040dd95dcbcbb39267d2a3b3b7cf",
@@ -910,8 +910,8 @@
       "lastmod": "2026-08-23"
     },
     "https://tawodco.com/service-restoration.html": {
-      "fingerprint": "eb907d34858018a2c913f28fd8e85efe5ec9ec43d2d9d937b0e8b559c669d29e",
-      "lastmod": "2026-08-23"
+      "fingerprint": "1746a27fcaf1a12e5cf0967ef9963b475c6bd05172195ee0206460677c5036ed",
+      "lastmod": "2026-10-09"
     },
     "https://tawodco.com/service-turnkey.html": {
       "fingerprint": "6134eeb1f5ab29225ffb630a6db6e3799095560d0d323f3e136603d141d145cf",
@@ -920,12 +920,12 @@
   },
   "files": {
     "sitemap.xml": {
-      "fingerprint": "56a6f110e922bf66f937f2107a58cd00e450d03a2da8af4974e39c1b6ed7fd43",
+      "fingerprint": "4c7b11c45d05bae5cb97a64ae483c86440058361fcebd4c084239f3b035e881d",
       "lastmod": "2026-10-09"
     },
     "sitemap-pages.xml": {
-      "fingerprint": "cc7dbf015f0d97f30fabe4e63e5facfacc4bf970fbe58e679632d7e077115ae8",
-      "lastmod": "2026-10-08"
+      "fingerprint": "65e588f0b669611b9b47b247d9fe598926371e90bd428acbc7d1d6adc40d59dc",
+      "lastmod": "2026-10-09"
     },
     "sitemap-blog.xml": {
       "fingerprint": "57d0cc63d2cbe01152de743dcc343d4ba242a7049d20c3b7cceb2a1f8ba6f591",

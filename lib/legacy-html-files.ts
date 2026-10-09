@@ -410,7 +410,7 @@ export const legacyHtmlHashes = {
   "dhahran/turnkey/index.html": "1e683dfe3255e4938bf951cff00a4fd7fb1ae0f72034596c7bf429e7adcea9aa",
   "editorial-policy/index.html": "7db50bfd665723a1997d6e31b3597511bc24749f91952a1233996efeb8170dc9",
   "en/index.html": "9342a269b05cbf1609df636f521f7dcbf0c20fbcb1506c3b2e6cdf2cf868a5d2",
-  "index.html": "7a4b4588d9f8376e7d6134b45cdf1f426db342a344c3dade31fb01d4df2b34fb",
+  "index.html": "3152aa26f193349c43a51aa48556b099ee94e534d7353609c21ac8fea4e4ea19",
   "khobar/about/index.html": "940a4c795c534b0438f4ee80320fe451bf9e3c8c5c9b25d6ca8d3e83fe7e42c6",
   "khobar/blog/best-general-contracting-company-khobar/index.html": "10c1bcb5b02b70dfc8b6499e6105e38155b2f574b4dbaebb0f9f947b928fad45",
   "khobar/blog/bone-construction-quality-checklist-khobar/index.html": "eab383b2d818b176cf4363d83a075f00d0e09173bae4f642adfef75c1cd82c33",
@@ -470,11 +470,11 @@ export const legacyHtmlHashes = {
   "project-modon-eight-warehouses-riyadh.html": "f0ecd4b6d55ab2db057fc40c82d348b7d38dbf574579ae0abf9890041d803a98",
   "project-villa-plaster-ceramic-marble-uhud-riyadh.html": "d736614ee65f888491185a298b9c5dc9ed22c8961355edae07736187a5441a8c",
   "projects.html": "737857bbe4c510a11d2900b2fe4269d982ae1750f0daf69d7ae1e066adb1c3c5",
-  "service-construction.html": "4957b35fd07a14c0afa4e4c27ab0eefe01960fe7746d2d6f2333fe39acab113a",
+  "service-construction.html": "6f75d584d48a0ad812a425223edc2ff6f9e2553f75683b70989d6de4efd1a12f",
   "service-decor.html": "8daf9b2f1781deb86a426250dd08c90d1bbf132f19a493c76923d599b77eefdb",
   "service-finishing.html": "a793c31bee86686244881490831e9b98a748ffeb76cda6de7340131c5235b25c",
   "service-mep.html": "8c159412375978120a5b7854789315b4d9ef445e1d3c3e97dd025571ad4f78f4",
-  "service-restoration.html": "9866f61c2c119de4685fc9ec5b8c6a717855b0a6baf4a177cea1d54d95464a73",
+  "service-restoration.html": "f1fdd1ada91fac66205f978ff168e4e4b4f03fdd987bad09d4c827b2c202e8ad",
   "service-turnkey.html": "7e2b4e4409b18452e51e72d499271ec9b191bfcd3c15644332a56dbcd2ef0457",
   "thank-you.html": "8f886ff53c1d22fdd7558a655657f5e92c8453d83e90d7e448acc501e0f85b2c"
 } as const;

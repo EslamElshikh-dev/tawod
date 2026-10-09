@@ -53,6 +53,7 @@ const profiles = {
     quoteText: 'أرسل موقع المشروع ونوع المبنى والمساحة والمخططات المعمارية والإنشائية، وتقرير التربة وجدول الكميات عند توفرهما. وضّح أيضًا هل المطلوب تنفيذ العظم فقط أم استكمال مراحل لاحقة.',
     quoteMessage: 'أرغب في عرض بناء عظم في الرياض. الحي: … نوع المبنى: … المساحة: … المرحلة الحالية: … المخططات وتقرير التربة المتاحان: … نطاق التوريد والتنفيذ المطلوب: …',
     quoteLabel: 'أرسل تفاصيل مشروع البناء عبر واتساب',
+    introMessage: 'السلام عليكم، أحتاج بناء عظم في الرياض وأرغب في مناقشة نطاق العمل. حي المشروع: … نوع المبنى: …',
   },
 };
 
@@ -92,7 +93,7 @@ export function enhanceServiceEvidence(html, file) {
   html = html.includes('<!-- TAWOD_ANALYTICS_START -->') ? html.replace('<!-- TAWOD_ANALYTICS_START -->', stylesheet + '<!-- TAWOD_ANALYTICS_START -->') : html.replace(/<\/head>/i, stylesheet + '</head>');
   html = html.replace(/<section\b[^>]*class=["'][^"']*page-hero[^"']*["'][^>]*>[\s\S]*?<\/section>/i, hero => {
     hero = hero.replace(/<a\b[^>]*class=["'][^"']*tawod-evidence-hero-link[^"']*["'][^>]*>[\s\S]*?<\/a>/gi, '');
-    hero = hero.replace(/<a\b[^>]*class=["'][^"']*btn-whatsapp[^"']*["'][^>]*>/gi, tag => tag.replace(/href=["'][^"']*["']/i, `href="${whatsapp(profile.quoteMessage)}"`));
+    hero = hero.replace(/<a\b[^>]*class=["'][^"']*btn-whatsapp[^"']*["'][^>]*>/gi, tag => tag.replace(/href=["'][^"']*["']/i, `href="${whatsapp(profile.introMessage || profile.quoteMessage)}"`));
     return hero.replace(/(<div\b[^>]*class=["'][^"']*hero-actions[^"']*["'][^>]*>[\s\S]*?)(<\/div>)/i, `$1<a class="btn btn-outline tawod-evidence-hero-link" href="#project-evidence">شاهد مشروعًا منفذًا</a>$2`);
   });
   const block = evidence(profile);

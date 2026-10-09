@@ -599,3 +599,10 @@ html body.tawod-contracting .float-btns > .float-btn:focus-visible::after {
   html body.tawod-contracting .float-call i { animation: none !important; }
   .tawod-contracting :is(.btn, .card-img, .home-project-media img) { transition: none; }
 }
+
+/* The restoration page already has a fixed mobile contact bar. */
+@media (max-width: 767px) {
+  html body.tawod-contracting.restoration-page .float-btns {
+    display: none;
+  }
+}
