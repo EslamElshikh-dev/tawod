@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
+import { generateSitemaps } from './generate-sitemaps.mjs';
 import { createHash } from 'node:crypto';
 import articles from './dammam-articles-2026-08-13.mjs';
 import { dammam, enhanceBranchHtml } from './business-branches.mjs';
@@ -490,7 +491,8 @@ function enhanceExistingPage(file, page) {
 
   const active = page === 'home' ? 'home' : ['construction', 'turnkey', 'renovation', 'finishing', 'decor', 'mep'].includes(page) ? 'services' : page;
   html = html.replace(/<a class="skip-link"[\s\S]*?<\/header>/i, header(active));
-  html = html.replace(/<footer class="footer">[\s\S]*?(?=<\/body>)/i, `${footer(page === 'home')}\n`);
+  const contactScript = page === 'contact' ? `<script src="/assets/js/contact-conversion.js?v=${assetRevision('contact-conversion.js')}" defer></script>` : '';
+  html = html.replace(/<footer class="footer">[\s\S]*?(?=<\/body>)/i, `${footer(page === 'home')}\n${contactScript}`);
 
   html = html.replace(/<ul class="nav-links">[\s\S]*?<\/ul>/i, (block) => addNavItemToBlock(block, '<li><a href="/dammam/blog/">المقالات</a></li>', /<li><a[^>]*href="\/dammam\/contact\/"/i));
   html = html.replace(/<nav class="sidebar-nav">[\s\S]*?<\/nav>/i, (block) => addNavItemToBlock(block, '<a href="/dammam/blog/">المقالات <i class="fa-solid fa-chevron-left"></i></a>', /<a[^>]*href="\/dammam\/contact\/"/i));
@@ -520,20 +522,9 @@ function enhanceExistingPage(file, page) {
 }
 
 function updateSitemaps() {
-  const paths = [
-    '/dammam/', '/dammam/services/', '/dammam/construction/', '/dammam/turnkey/', '/dammam/renovation/',
-    '/dammam/finishing/', '/dammam/decor/', '/dammam/mep/', '/dammam/about/', '/dammam/projects/', '/dammam/contact/',
-    '/dammam/blog/', ...articles.map((article) => `/dammam/blog/${article.slug}/`)
-  ];
-  const mainFile = path.join(root, 'sitemap.xml');
-  let main = fs.readFileSync(mainFile, 'utf8').replace(/\s*<url><loc>https:\/\/tawodco\.com\/dammam\/[\s\S]*?<\/url>/g, '');
-  const updated = new Set(['/dammam/', '/dammam/about/', '/dammam/contact/']);
-  const entries = paths.map((pathname) => `  <url><loc>${domain}${pathname}</loc><lastmod>${updated.has(pathname) ? dammam.updatedAt : date}</lastmod></url>`).join('\n');
-  main = main.replace(/\s*<\/urlset>/, `\n${entries}\n</urlset>`);
-  writeIfChanged(mainFile, main);
-
-  const local = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>`;
-  writeIfChanged(path.join(root, 'sitemap-dammam.xml'), local);
+  // Use the site's canonical partitioning, reciprocal language links and
+  // content-based dates rather than the retired city-only XML format.
+  generateSitemaps({ check });
 }
 
 for (const article of articles) {

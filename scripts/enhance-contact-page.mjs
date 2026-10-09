@@ -69,9 +69,8 @@ html=html.replace(/<input\b[^>]*name="رقم_الجوال"[^>]*>/i,(tag)=>{
 });
 
 html=html.replace(/<input\b[^>]*name="البريد_الإلكتروني"[^>]*>/i,(tag)=>{
-  let normalized=tag.replace(/\sautocomplete="[^"]*"/gi,'');
-  normalized=setAttribute(normalized,'id','contact-email');
-  return normalized.replace(/>$/,' autocomplete="email">');
+  const normalized=setAttribute(tag,'id','contact-email');
+  return setAttribute(normalized,'autocomplete','email');
 });
 
 html=html.replace(/<select\b[^>]*name="الخدمة_المطلوبة"[^>]*>/i,(tag)=>setAttribute(tag,'id','contact-service'));

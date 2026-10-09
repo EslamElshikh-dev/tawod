@@ -2,10 +2,10 @@
   "name": "tawod-nextjs-site",
   "private": true,
   "scripts": {
-    "predev": "node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/install-site-analytics.mjs && node scripts/build-contracting-design.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "predev": "node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/build-report-followup.mjs && node scripts/install-site-analytics.mjs && node scripts/build-contracting-design.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/install-site-analytics.mjs && node scripts/build-contracting-design.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
-    "prepare:assets": "node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/install-site-analytics.mjs && node scripts/build-contracting-design.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "prebuild": "node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/build-report-followup.mjs && node scripts/install-site-analytics.mjs && node scripts/build-contracting-design.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "prepare:assets": "node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/build-report-followup.mjs && node scripts/install-site-analytics.mjs && node scripts/build-contracting-design.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "build:maintenance": "node scripts/build-maintenance-site.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "build": "next build",
     "postbuild": "node scripts/finalize-next-export.mjs && node scripts/verify-next-export.mjs",
@@ -51,7 +51,8 @@
     "test:social-attribution": "node scripts/test-social-attribution.mjs",
     "build:design": "node scripts/build-contracting-design.mjs",
     "check:design": "node scripts/verify-contracting-design.mjs",
-    "test:contact-submission": "node scripts/test-contact-submission.mjs"
+    "test:contact-submission": "node scripts/test-contact-submission.mjs",
+    "build:report-followup": "node scripts/build-report-followup.mjs && node scripts/install-site-analytics.mjs"
   },
   "dependencies": {
     "next": "16.3.2",

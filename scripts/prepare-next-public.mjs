@@ -10,6 +10,7 @@ import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
 import { generateSitemaps, sitemapFiles } from './generate-sitemaps.mjs';
 import { normalizeSiteSharing } from './normalize-seo-sharing.mjs';
+import { buildEnglishSite } from './build-english-site.mjs';
 
 const root = process.cwd();
 const publicDirectory = join(root, "public");
@@ -143,6 +144,8 @@ for (const image of encodedProjectImages) {
   writeFileSync(output, bytes);
 }
 
+// Reapply reciprocal language links after reconstructing project HTML parts.
+buildEnglishSite();
 normalizeSiteSharing();
 generateSitemaps();
 

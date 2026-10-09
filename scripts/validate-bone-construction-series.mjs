@@ -129,7 +129,9 @@ for (const article of articles) {
 for (const slug of [pillarSlug, "bone-construction-quote-request-riyadh", "bone-construction-contract-riyadh", "bone-construction-execution-plan-riyadh"]) {
   if (!service.includes(`/blog/${slug}/`)) errors.push(`service-construction.html: curated link missing for ${slug}`);
 }
-for (const slug of [pillarSlug, "bone-construction-execution-plan-riyadh"]) {
+// Al Arouba is a turnkey mosque-and-villas case. Its reverse guide links were
+// aligned with that published scope; the construction service keeps the bone guides.
+for (const slug of ["turnkey-construction-riyadh-guide", "turnkey-phased-handover-riyadh"]) {
   if (!project.includes(`blog/${slug}/`)) errors.push(`project-arouba-mosque-villas.html: reverse article link missing for ${slug}`);
 }
 

@@ -17,7 +17,7 @@ class Element {
   addEventListener(k,fn) { (this.listeners ||= {})[k]=fn; }
 }
 
-function run({result={success:true},fail=false,pending=false,phoneValue='٠٥٥١١٢٨٨٨٤'}={}) {
+function run({result={success:true},fail=false,pending=false,phoneValue='٠٥٥١١٢٨٨٨٤',home=false,english=false}={}) {
   const session = new Map(), local = new Map(), listeners = new Map(), providerRequests = [], firstPartyEvents=[];
   const fields = new Map();
   const phone = new Element('input'); phone.name='رقم_الجوال'; phone.value=phoneValue; phone.parentNode=new Element();
@@ -27,9 +27,11 @@ function run({result={success:true},fail=false,pending=false,phoneValue='٠٥٥�
   for(const f of [phone,service,name,email]) fields.set(f.name,f);
   fields.set('_next',{value:'https://tawodco.com/thank-you.html'});
   fields.set('_captcha',{value:'true'}); fields.set('_honey',{value:''});
+  fields.set('الموافقة_على_الخصوصية',{value:'موافق'});
   const submit = new Element('button'); submit.innerHTML='إرسال الطلب'; submit.parentNode=new Element();
   const form = new Element('form'); form.setAttribute('action','https://formsubmit.co/info@tawodco.com');
-  form.setAttribute('data-analytics-form','contact_quote_request');
+  form.setAttribute('data-analytics-form',english?'en_quote_request':home?'home_quote_request':'contact_quote_request');
+  if(english)form.setAttribute('lang','en');
   form.reportValidity=()=>true;
   form.appendChild=(el)=>{el.parentNode=form;form.children.push(el);if(el.name)fields.set(el.name,el);};
   form.querySelector=(sel)=>{
@@ -38,16 +40,17 @@ function run({result={success:true},fail=false,pending=false,phoneValue='٠٥٥�
     const m=sel.match(/\[name="([^"]+)"\]/); return m?fields.get(m[1])||null:null;
   };
   const document={
-    readyState:'loading', title:'تواصل مع تعاود', referrer:'', body:null,
+    readyState:'loading', title:'تواصل مع تعاود', referrer:'', body:null, documentElement:{lang:english?'en-SA':'ar'},
     head:{appendChild(){}}, createElement:tag=>new Element(tag),
-    getElementById:id=>id==='form'?form:null, querySelector:()=>null,
+    getElementById:id=>!home&&id==='form'?form:null, querySelector:()=>null,
+    querySelectorAll:()=>[form],
     addEventListener:(name,fn)=>{if(!listeners.has(name))listeners.set(name,[]);listeners.get(name).push(fn);},
     dispatchEvent:event=>{for(const fn of listeners.get(event.type)||[])fn(event);}
   };
   let resolveProvider;
   const storage = map=>({getItem:k=>map.get(k)||null,setItem:(k,v)=>map.set(k,String(v)),removeItem:k=>map.delete(k)});
   const window={
-    location:{hostname:'tawodco.com',pathname:'/contact.html',search:'?service=finishing',href:'https://tawodco.com/contact.html?service=finishing'},
+    location:{hostname:'tawodco.com',pathname:english?'/en/contact/':home?'/':'/contact.html',search:'?service=finishing',href:english?'https://tawodco.com/en/contact/?service=finishing':home?'https://tawodco.com/':'https://tawodco.com/contact.html?service=finishing'},
     localStorage:storage(local),sessionStorage:storage(session),screen:{width:390},innerWidth:390,
     addEventListener(){},setTimeout:()=>1,clearTimeout(){},
     CustomEvent:class {constructor(type,{detail}){this.type=type;this.detail=detail;}},
@@ -105,4 +108,28 @@ assert.equal(invalid.providerRequests.length,0);assert.equal(leads(invalid).leng
 const double=run({pending:true});double.send();double.send();
 assert.equal(double.providerRequests.length,1,'in-flight double clicks must send one request');
 double.resolve();await settle();assert.equal(leads(double).length,1);
-console.log('Verified provider acceptance, shared request ids, Arabic phones, failure recovery, activation handling, and duplicate prevention without sending real customer requests.');
+
+const home=run({home:true});home.send();await settle();
+assert.equal(home.providerRequests.length,1,'Homepage must share the AJAX confirmation path');
+assert.equal(leads(home)[0][2].form_name,'home_quote_request');
+assert.equal(home.firstPartyEvents.find(x=>x.event_name==='generate_lead').form_source_path,'/');
+assert.equal(home.submit.disabled,true);
+
+const homeFailure=run({home:true,fail:true});homeFailure.send();await settle();
+assert.equal(leads(homeFailure).length,0);assert.equal(homeFailure.submit.disabled,false);
+assert.equal(homeFailure.name.value,'اختبار داخلي');
+const bot=run();bot.fields.get('_honey').value='spam';bot.send();await settle();
+assert.equal(bot.providerRequests.length,0);
+const english=run({english:true});english.send();await settle();
+assert.equal(leads(english).length,1);
+assert.equal(leads(english)[0][2].form_name,'en_quote_request');
+assert.equal(english.firstPartyEvents.find(x=>x.event_name==='generate_lead').form_source_path,'/en/contact/');
+assert.equal(english.fields.get('_next').value,'https://tawodco.com/en/thank-you.html');
+assert.match(english.status().textContent,/Your request was accepted/);
+const englishFailure=run({english:true,fail:true});englishFailure.send();await settle();
+assert.equal(leads(englishFailure).length,0);assert.equal(englishFailure.submit.disabled,false);
+assert.match(englishFailure.status().textContent,/Your details remain in the form/);
+const englishInvalid=run({english:true,phoneValue:'123'});englishInvalid.send();await settle();
+assert.equal(englishInvalid.providerRequests.length,0);
+assert.match(englishInvalid.status().textContent,/Check your mobile number/);
+console.log('Verified Arabic and English contact and homepage provider acceptance, shared request ids, Arabic phones, failure recovery, activation handling, honeypots and duplicate prevention without sending real customer requests.');
