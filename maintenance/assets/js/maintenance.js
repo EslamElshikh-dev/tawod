@@ -156,6 +156,10 @@
       selectedServiceCount = selected.length;
       document.body.classList.toggle('has-service-selection', selectedServiceCount > 0);
       var label = selectedServiceCount === 1 ? 'خدمة واحدة مختارة' : selectedServiceCount === 2 ? 'خدمتان مختارتان' : selectedServiceCount + (selectedServiceCount <= 10 ? ' خدمات مختارة' : ' خدمة مختارة');
+      var formSelection = form.querySelector('[data-form-selection]');
+      if (formSelection) formSelection.textContent = selectedServiceCount ? label : 'لم تختر خدمات بعد';
+      var clearSelection = form.querySelector('[data-form-clear]');
+      if (clearSelection) clearSelection.hidden = !selectedServiceCount;
       selectionTray.querySelector('[data-selection-label]').textContent = label;
       var names = selectionTray.querySelector('[data-selection-names]');
       var text = selected.join(' · ');
@@ -189,6 +193,12 @@
       if (returnFocus) returnFocus.focus({ preventScroll: true });
     });
     syncServiceSelection();
+    var clearFormSelection = form.querySelector('[data-form-clear]');
+    if (clearFormSelection) clearFormSelection.addEventListener('click', function () {
+      serviceInputs.forEach(function (input) { input.checked = false; });
+      form.dispatchEvent(new Event('change', { bubbles: true }));
+      serviceInputs[0].focus({ preventScroll: true });
+    });
   }
   if (form && review) {
     form.addEventListener('submit', function (event) {
@@ -200,6 +210,20 @@
       var district = form.elements.district.value.trim();
       if (!district) { error.textContent = 'اكتب اسم الحي داخل الرياض.'; form.elements.district.focus(); return; }
       var message = ['السلام عليكم، أرغب في دراسة احتياجي لدى تعاود للصيانة والتشغيل وإدارة المرافق.', '', 'الخدمات: ' + selected.join('، '), 'نوع الموقع: ' + form.elements.property.value, 'الموقع: الرياض، ' + district, 'نوع الطلب: ' + form.elements.duration.value];
+      var contactName = form.elements.contact_name.value.trim();
+      var contactPhone = form.elements.contact_phone.value.trim().replace(/[٠-٩]/g, function (c) { return String(c.charCodeAt(0) - 1632); }).replace(/[۰-۹]/g, function (c) { return String(c.charCodeAt(0) - 1776); }).replace(/[\s()-]/g, '').replace(/^00/, '+');
+      if (contactPhone) {
+        if (/^05\d{8}$/.test(contactPhone)) contactPhone = '+966' + contactPhone.slice(1);
+        else if (/^5\d{8}$/.test(contactPhone)) contactPhone = '+966' + contactPhone;
+        else if (/^9665\d{8}$/.test(contactPhone)) contactPhone = '+' + contactPhone;
+        if (!/^\+9665\d{8}$/.test(contactPhone)) {
+          error.textContent = 'أدخل رقم جوال سعودي صحيحًا، مثل 0533152133، أو اترك رقم التواصل فارغًا.';
+          form.elements.contact_phone.focus();
+          return;
+        }
+      }
+      if (contactName) message.push('اسم التواصل: ' + contactName);
+      if (contactPhone) message.push('رقم التواصل: ' + contactPhone);
       var notes = form.elements.notes.value.trim();
       if (notes) message.push('التفاصيل: ' + notes);
       message.push('', 'أرجو التواصل لتحديد نطاق الخدمة والخطوة المناسبة.');
@@ -216,6 +240,7 @@
     });
     document.getElementById('request-edit').addEventListener('click',function () { review.hidden = true; form.hidden = false; form.querySelector('input').focus({preventScroll:true}); form.scrollIntoView({behavior:'auto',block:'start'}); });
     form.addEventListener('change',function () { document.getElementById('form-error').textContent = ''; });
+    form.addEventListener('input',function () { document.getElementById('form-error').textContent = ''; });
   }
   // Images remain normal file links when the native dialog is unavailable.
   var photoDialog = document.querySelector('[data-photo-dialog]');
