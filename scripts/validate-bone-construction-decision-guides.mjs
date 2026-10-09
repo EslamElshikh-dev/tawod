@@ -141,7 +141,8 @@ for (const article of articles) {
 
 const qualityHtml = readFileSync(join(root, "blog", "bone-construction-quality-checklist-riyadh", "index.html"), "utf8");
 if (!qualityHtml.includes('"datePublished":"2026-08-09"')) errors.push("Quality checklist lost its original publication date");
-if (!qualityHtml.includes('"dateModified":"2026-08-29"')) errors.push("Quality checklist modified date was not updated");
+const qualityModified = qualityHtml.match(/"dateModified":"(\d{4}-\d{2}-\d{2})"/)?.[1];
+if (!qualityModified || qualityModified < '2026-08-29') errors.push("Quality checklist modified date predates the decision-guide refresh");
 
 for (const slug of ["bone-construction-cost-riyadh", "bone-construction-duration-riyadh", "bone-construction-quality-checklist-riyadh", "bone-construction-handover-riyadh"]) {
   if (!service.includes(`/blog/${slug}/`)) errors.push(`service-construction.html: curated link missing for ${slug}`);

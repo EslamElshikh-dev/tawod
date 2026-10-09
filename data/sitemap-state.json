@@ -2,7 +2,7 @@
   "version": 1,
   "pages": {
     "https://tawodco.com/": {
-      "fingerprint": "dd40187de86fb4fa7a80bdc86ddb64d96ceced31c7a6154b5ae0107833fdd6e3",
+      "fingerprint": "cc8695ba6b319b18ef4553bcb502f67d2728c96d8ec80e6bc270780c7af57118",
       "lastmod": "2026-10-09"
     },
     "https://tawodco.com/about.html": {
@@ -490,8 +490,8 @@
       "lastmod": "2026-08-01"
     },
     "https://tawodco.com/contact.html": {
-      "fingerprint": "64991c26684a5be1e08cd1d17420e2cbe62025ad390597bd10effdb886453211",
-      "lastmod": "2026-09-15"
+      "fingerprint": "63713c9cba78000ec91f7a45742253b1368867469647305eabe52d8b16822874",
+      "lastmod": "2026-10-09"
     },
     "https://tawodco.com/dammam/": {
       "fingerprint": "ec2beff6ffaf932682b6369262dcb68829f8dbd74c9d92cffe40a2d5e0561a1f",
@@ -674,8 +674,60 @@
       "lastmod": "2026-09-13"
     },
     "https://tawodco.com/en/": {
-      "fingerprint": "6e63b380c617c18e244e72295aed333e09f9bcc82a77705cc005cbf089b6d305",
-      "lastmod": "2026-07-25"
+      "fingerprint": "114f1dd09f27aca4563aa728a9de9ceebfba8a4641157b2c0c4b7c0dea3a9b9a",
+      "lastmod": "2026-10-09"
+    },
+    "https://tawodco.com/en/contact/": {
+      "fingerprint": "51749f2cf314fd298107e634dc6b54415f9226faeb219e3b2b14b19bc8600cd6",
+      "lastmod": "2026-10-09"
+    },
+    "https://tawodco.com/en/projects/": {
+      "fingerprint": "237dff6f7d1d5628268eb02e99276da762a72caac7a7dd6e0191497b9177a57e",
+      "lastmod": "2026-10-09"
+    },
+    "https://tawodco.com/en/projects/arouba-mosque-villas/": {
+      "fingerprint": "3dd0b87091e2c1e0cd975b44fe923fa3b71882f81dfde7a159595f6ae7d813e1",
+      "lastmod": "2026-10-09"
+    },
+    "https://tawodco.com/en/projects/eight-warehouses-riyadh/": {
+      "fingerprint": "d9949c8fb0732d00f00464cc5294c09d8b90504ff65626fc0dbaa3b9996fb12a",
+      "lastmod": "2026-10-09"
+    },
+    "https://tawodco.com/en/projects/faisaliah-villa/": {
+      "fingerprint": "bd23049e7a9554c9a7fcd73b5c5a91e780a3b1a2fc3bf393b1531c0a08d94979",
+      "lastmod": "2026-10-09"
+    },
+    "https://tawodco.com/en/projects/king-salman-park-tanks/": {
+      "fingerprint": "17e3092e9e94bdd5fb30dee85b80994524c81ae6265e8bb7eee6c950d6dc3fdd",
+      "lastmod": "2026-10-09"
+    },
+    "https://tawodco.com/en/projects/uhud-villa/": {
+      "fingerprint": "f086aac62f7a0cfdbab83f6209af112e1844573af13824451fee2fffd79e879b",
+      "lastmod": "2026-10-09"
+    },
+    "https://tawodco.com/en/services/construction/": {
+      "fingerprint": "856ed3e55ba715c610c373c2ec169ea3419fc58fb9cbac072eb93382bc226e26",
+      "lastmod": "2026-10-09"
+    },
+    "https://tawodco.com/en/services/electrical-plumbing/": {
+      "fingerprint": "06110df3a2114e829a5ecd0f6427af6f1dff257abe9a25cfa46860f975fadcf8",
+      "lastmod": "2026-10-09"
+    },
+    "https://tawodco.com/en/services/finishing/": {
+      "fingerprint": "29c6d654d1e6519662d04bd5c546e66428c12cf0d5c7c913ec52a84a9bb321f7",
+      "lastmod": "2026-10-09"
+    },
+    "https://tawodco.com/en/services/interior-design/": {
+      "fingerprint": "08eab309b146a2c5124e09e764a754b96d063bed62a585098969aa3ed7b8cf2d",
+      "lastmod": "2026-10-09"
+    },
+    "https://tawodco.com/en/services/renovation/": {
+      "fingerprint": "b985c3caaafb0764fee530385c513d6ae72cf8eadbf397f97ffed6ce5be68423",
+      "lastmod": "2026-10-09"
+    },
+    "https://tawodco.com/en/services/turnkey/": {
+      "fingerprint": "a83969b41a80b2bf34be46bce5e81af9783bcb5bb17c9df94280e7a83e4ef66a",
+      "lastmod": "2026-10-09"
     },
     "https://tawodco.com/khobar/": {
       "fingerprint": "826629ae7530589507befb13be638c36f60fa8dd6f9193bfcdad093e4958bc16",
@@ -870,61 +922,61 @@
       "lastmod": "2026-07-25"
     },
     "https://tawodco.com/project-alrajhi-tanks-king-salman-park.html": {
-      "fingerprint": "4c6a197aebb2a27ab499c52d10ae4abbebca8fe768f01e53f7ef42e834de892c",
-      "lastmod": "2026-09-13"
+      "fingerprint": "0ab7aef01382f71e9f13b568a5b1bf69d16c930c82d67a6e362a987c95d3e1c5",
+      "lastmod": "2026-10-09"
     },
     "https://tawodco.com/project-arouba-mosque-villas.html": {
-      "fingerprint": "b1a26d9b88d79449f7f40302347e94fef3bdd5ac0bef57973287fb87c2b1cd74",
-      "lastmod": "2026-10-08"
+      "fingerprint": "273318cc22810564c78674fd24709ecbff27bfe41569ec7d44726434d1fc95b4",
+      "lastmod": "2026-10-09"
     },
     "https://tawodco.com/project-faisaliah-villa-facades-finishing.html": {
-      "fingerprint": "935a7562fd052335dec299fcfdef3d46ae09f8d375a62706dbd4bbcc3d2f2fa4",
-      "lastmod": "2026-09-13"
+      "fingerprint": "3fa29452e22272e5dfe20364c8bf238c2ff6ca15e98eb609b720304a551f12aa",
+      "lastmod": "2026-10-09"
     },
     "https://tawodco.com/project-modon-eight-warehouses-riyadh.html": {
-      "fingerprint": "a3486c10f4e668b74945aa86571b8886213d81f7a9e33b15fcaf4ce41ed6fdf4",
-      "lastmod": "2026-09-13"
+      "fingerprint": "794d3d3dcc353695d1d0b324509a2f66f73acc5d47b208dceb5726f6bc2ada0d",
+      "lastmod": "2026-10-09"
     },
     "https://tawodco.com/project-villa-plaster-ceramic-marble-uhud-riyadh.html": {
-      "fingerprint": "26ddda105a769fd066afccec5f2ede760e6f982d716283be55a18c937dd88896",
-      "lastmod": "2026-09-13"
+      "fingerprint": "328ca336640e04c8428de2e5ba22061a11f270af6a9b08a3ca11b4f1b1a14267",
+      "lastmod": "2026-10-09"
     },
     "https://tawodco.com/projects.html": {
-      "fingerprint": "3e890326b7ba32114c03a75012ae27325513b6c215fb4956c67b0bc75ad177a4",
-      "lastmod": "2026-08-27"
+      "fingerprint": "a6843360f2e0843b3715f1c4fb3d15e6f4be8f07d2faab1529a645a6f0142b07",
+      "lastmod": "2026-10-09"
     },
     "https://tawodco.com/service-construction.html": {
-      "fingerprint": "74f50999837cb9158fbab695dc9cdbf5e4a78ba38e7d71135724301f5719de5e",
+      "fingerprint": "fb54d4a392834656d24f8d8db63db29fc11d40877f372418b6415bf66991068e",
       "lastmod": "2026-10-09"
     },
     "https://tawodco.com/service-decor.html": {
-      "fingerprint": "7adb278eed7f3f71d31e1cdf76ee50c54be5040dd95dcbcbb39267d2a3b3b7cf",
-      "lastmod": "2026-08-23"
+      "fingerprint": "1fdd2ce354760f07ca5f0884b0e8e8ad76216d4f62aea975b13ce89521cf9a70",
+      "lastmod": "2026-10-09"
     },
     "https://tawodco.com/service-finishing.html": {
-      "fingerprint": "68e940ae3a94edcac4ecfda7c45b1e5322fc2e3d8ea94610e876297e550e751b",
-      "lastmod": "2026-10-08"
+      "fingerprint": "144cc33dd1f8f3a22558d0b356b6530e875a8767c9e09fd5cb0573c815605000",
+      "lastmod": "2026-10-09"
     },
     "https://tawodco.com/service-mep.html": {
-      "fingerprint": "6e636821ff7e4d42443a4ebb582cfcde5a81b624c99f2ab385684f8104ede456",
-      "lastmod": "2026-08-23"
+      "fingerprint": "d966e450dc63543688981c8c4dcee5d35280d7046f7a5ed2bb4b3931d571cb40",
+      "lastmod": "2026-10-09"
     },
     "https://tawodco.com/service-restoration.html": {
-      "fingerprint": "1746a27fcaf1a12e5cf0967ef9963b475c6bd05172195ee0206460677c5036ed",
+      "fingerprint": "796cdfc3a6b852075abe2040075b195906f04544d1656b25ae08431f28aeadcd",
       "lastmod": "2026-10-09"
     },
     "https://tawodco.com/service-turnkey.html": {
-      "fingerprint": "6134eeb1f5ab29225ffb630a6db6e3799095560d0d323f3e136603d141d145cf",
-      "lastmod": "2026-10-08"
+      "fingerprint": "abdefdc945aa843d217977a4c9c3c74b9c26fccf695e411ec87e149c826f74f0",
+      "lastmod": "2026-10-09"
     }
   },
   "files": {
     "sitemap.xml": {
-      "fingerprint": "4c7b11c45d05bae5cb97a64ae483c86440058361fcebd4c084239f3b035e881d",
+      "fingerprint": "4bced76ebd4d9000e9bd6f4efc68ac84518c37271581bc1a905d4978fbcfd6da",
       "lastmod": "2026-10-09"
     },
     "sitemap-pages.xml": {
-      "fingerprint": "65e588f0b669611b9b47b247d9fe598926371e90bd428acbc7d1d6adc40d59dc",
+      "fingerprint": "eda816dd0bee8ac00a58e7176bc9a8ae415da45e30fb398cb4c3c991783f6eac",
       "lastmod": "2026-10-09"
     },
     "sitemap-blog.xml": {
@@ -932,8 +984,8 @@
       "lastmod": "2026-10-08"
     },
     "sitemap-projects.xml": {
-      "fingerprint": "e75a7e6d231764b255c4250a412473250ca4ac810cb77045ed6db65db163cd44",
-      "lastmod": "2026-10-08"
+      "fingerprint": "23c75c84d3b30290f0dc63f16c0ace305b6a1815325433ebe28db85d9b85b023",
+      "lastmod": "2026-10-09"
     },
     "sitemap-maintenance.xml": {
       "fingerprint": "1d7f342963e395b2033cb498f5615c51a27279ade4cf220bb50924de52673746",
@@ -952,8 +1004,8 @@
       "lastmod": "2026-10-08"
     },
     "sitemap-turnkey.xml": {
-      "fingerprint": "164d9f16a79ae30742d4efb87519043367b0b8d4de911cf4a45d1ff28d9eeb62",
-      "lastmod": "2026-10-08"
+      "fingerprint": "32383308a2257c8fde18fb41b96a51b52c0d34583a70c9a2cf28d7bd76856c69",
+      "lastmod": "2026-10-09"
     }
   }
 }

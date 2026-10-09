@@ -10,7 +10,9 @@ import { compileContractingCss, cssVocabulary } from './contracting-css.mjs';
 
 const modern=fs.readFileSync('assets/css/tawod-contracting-design.css','utf8')+'\n'+fs.readFileSync('assets/css/tawod-contracting-polish.css','utf8')+'\n'+fs.readFileSync('assets/css/tawod-finishing-stage.css','utf8');
 const urls=[...fs.readFileSync('sitemap.xml','utf8').matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>new URL(m[1]).pathname).filter(p=>!p.startsWith('/maintenance/'));
-const files=urls.map(p=>p==='/'?'index.html':p.endsWith('/')?`${p.slice(1)}index.html`:p.slice(1));
+// English pages have their own small LTR sheet and navigation, avoiding the
+// Arabic layout bundle and its font download for English-only visitors.
+const files=urls.filter(p=>!p.startsWith('/en/')).map(p=>p==='/'?'index.html':p.endsWith('/')?`${p.slice(1)}index.html`:p.slice(1));
 for(const f of ['thank-you.html','thankyou.html'])if(fs.existsSync(f)&&!files.includes(f))files.push(f);
 const interaction=fs.readdirSync('assets/js').filter(n=>n.endsWith('.js')&&!n.startsWith('tawod-contracting-')).map(n=>fs.readFileSync(`assets/js/${n}`,'utf8')).join('\n')+fs.readFileSync('lib/legacy-pages.ts','utf8');
 const allHtml=files.map(f=>fs.readFileSync(f,'utf8')).join('\n');

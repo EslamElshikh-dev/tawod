@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
+import { generateSitemaps } from './generate-sitemaps.mjs';
 import baseArticles from './dammam-articles-2026-08-13.mjs';
 import { stripBranchMarkup } from './business-branches.mjs';
 
@@ -629,21 +630,9 @@ function renderExistingPage(page) {
 }
 
 function updateSitemaps() {
-  const paths = [
-    '/khobar/', '/khobar/services/', '/khobar/construction/', '/khobar/turnkey/', '/khobar/renovation/',
-    '/khobar/finishing/', '/khobar/decor/', '/khobar/mep/', '/khobar/about/', '/khobar/projects/', '/khobar/contact/',
-    '/khobar/blog/', ...articles.map((article) => `/khobar/blog/${article.slug}/`)
-  ];
-  const mainFile = path.join(root, 'sitemap.xml');
-  let main = fs.readFileSync(mainFile, 'utf8').replace(/\s*<url><loc>https:\/\/tawodco\.com\/khobar\/[\s\S]*?<\/url>/g, '');
-  const entries = paths.map((pathname) => `  <url><loc>${domain}${pathname}</loc><lastmod>${date}</lastmod></url>`).join('\n');
-  const dammamStart = /  <url><loc>https:\/\/tawodco\.com\/dammam\//;
-  main = dammamStart.test(main) ? main.replace(dammamStart, `${entries}\n$&`) : main.replace(/\s*<\/urlset>/, `\n${entries}\n</urlset>`);
-  writeIfChanged(mainFile, main);
-
-  const local = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${paths.map((pathname) => `  <url><loc>${domain}${pathname}</loc><lastmod>${date}</lastmod></url>`).join('\n')}\n</urlset>`;
-  writeIfChanged(path.join(root, 'sitemap-khobar.xml'), local);
-
+  // Use the site's canonical partitioning, reciprocal language links and
+  // content-based dates rather than the retired city-only XML format.
+  generateSitemaps({ check });
 }
 
 const css = localizeString(fs.readFileSync(path.join(root, 'assets', 'css', 'tawod-dammam.css'), 'utf8'));

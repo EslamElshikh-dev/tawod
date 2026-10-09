@@ -48,6 +48,7 @@ const inlineScript = /<script\b(?![^>]*\bsrc=)[^>]*>[\s\S]*?<\/script>\s*/gi;
 const formName = (file) => {
   if (file === 'index.html') return 'home_quote_request';
   if (file === 'contact.html') return 'contact_quote_request';
+  if (file === 'en/contact/index.html') return 'en_quote_request';
   const city = file.match(/^(dammam|khobar|dhahran)\/contact\/index\.html$/)?.[1];
   return city ? `${city}_quote_request` : 'contact_quote_request';
 };
@@ -59,7 +60,7 @@ const normalizeLeadForms = (html, file) => html.replace(
       const clean = tag.replace(/\sdata-analytics-form=["'][^"']*["']/i, '');
       return clean.replace(/>$/, ` data-analytics-form="${analyticsName}">`);
     });
-    const next = '<input name="_next" type="hidden" value="https://tawodco.com/thank-you.html">';
+    const next = `<input name="_next" type="hidden" value="https://tawodco.com/${file.startsWith('en/') ? 'en/' : ''}thank-you.html">`;
     if (/<input\b[^>]*\bname=["']_next["'][^>]*>/i.test(normalized)) {
       return normalized.replace(/<input\b[^>]*\bname=["']_next["'][^>]*>/i, next);
     }
@@ -84,6 +85,14 @@ for (const file of walk(root).filter((candidate) => {
   ));
   html = html.replace(/<\/head>/i, `${install}</head>`);
   html = normalizeLeadForms(html, relative(file));
+  // Every contracting quote form shares validation and explicit provider
+  // acceptance. The native CAPTCHA-enabled action remains the fallback.
+  if (/data-analytics-form=/.test(html) && /<form\b[^>]*formsubmit\.co\//i.test(html) && !/contact-conversion\.js/.test(html)) {
+    html = html.replace(/<\/body>/i, `<script src="/assets/js/contact-conversion.js?v=${contactConversionVersion}" defer></script></body>`);
+  }
+  if (/contact-conversion\.js/.test(html) && !/contact-conversion\.css/.test(html)) {
+    html = html.replace(/<\/head>/i, `<link rel="stylesheet" href="/assets/css/contact-conversion.css?v=${contactConversionCssVersion}"></head>`);
+  }
   if (contactConversionVersion) {
     html = html.replace(contactConversionUrlPattern, `assets/js/contact-conversion.js?v=${contactConversionVersion}`);
   }

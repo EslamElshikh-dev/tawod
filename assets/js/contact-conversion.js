@@ -17,9 +17,12 @@
     return /^(?:\+?966|00966|0)?5\d{8}$/.test(normalizePhone(value));
   }
 
-  ready(function () {
-    var form = document.getElementById('form');
-    if (!form) return;
+  function enhanceForm(form, index) {
+    if (!form || form.getAttribute('data-contact-enhanced') === 'true') return;
+    form.setAttribute('data-contact-enhanced', 'true');
+    var prefix = 'quote-' + index;
+    var english = /^en\b/i.test(form.getAttribute('lang') || (document.documentElement && document.documentElement.lang) || '');
+    function copy(arabic, en) { return english ? en : arabic; }
 
     form.classList.add('contact-lead-form');
     var phone = form.querySelector('input[name="رقم_الجوال"]');
@@ -46,7 +49,7 @@
     form.appendChild(status);
 
     var next = form.querySelector('input[name="_next"]');
-    if (next) next.value = 'https://tawodco.com/thank-you.html';
+    if (next) next.value = english ? 'https://tawodco.com/en/thank-you.html' : 'https://tawodco.com/thank-you.html';
     var captcha = form.querySelector('input[name="_captcha"]');
     if (captcha) captcha.value = 'true';
 
@@ -54,7 +57,7 @@
       var honeypot = document.createElement('div');
       honeypot.className = 'hp-field';
       honeypot.setAttribute('aria-hidden', 'true');
-      honeypot.innerHTML = '<label for="website-field">اترك هذا الحقل فارغًا</label><input id="website-field" name="_honey" tabindex="-1" autocomplete="off">';
+      honeypot.innerHTML = '<label for="' + prefix + '-website">' + copy('اترك هذا الحقل فارغًا', 'Leave this field blank') + '</label><input id="' + prefix + '-website" name="_honey" tabindex="-1" autocomplete="off">';
       form.insertBefore(honeypot, form.firstChild);
     }
 
@@ -62,31 +65,33 @@
       phone.setAttribute('inputmode', 'tel');
       phone.setAttribute('autocomplete', 'tel');
       phone.setAttribute('maxlength', '16');
-      phone.setAttribute('aria-describedby', 'phone-hint phone-error');
+      phone.setAttribute('dir', 'ltr');
+      phone.setAttribute('aria-describedby', prefix + '-phone-hint ' + prefix + '-phone-error');
       var hint = document.createElement('small');
-      hint.id = 'phone-hint';
+      hint.id = prefix + '-phone-hint';
       hint.className = 'field-hint';
-      hint.textContent = 'مثال: 0551128884';
+      hint.textContent = copy('مثال: 0551128884', 'Example: 0551128884');
       var error = document.createElement('small');
-      error.id = 'phone-error';
+      error.id = prefix + '-phone-error';
       error.className = 'field-error';
-      error.textContent = 'أدخل رقم جوال سعودي صحيح.';
+      error.textContent = copy('أدخل رقم جوال سعودي صحيح.', 'Enter a valid Saudi mobile number.');
       phone.parentNode.appendChild(hint);
       phone.parentNode.appendChild(error);
       phone.addEventListener('input', function () {
         phone.classList.remove('is-invalid');
+        phone.removeAttribute('aria-invalid');
         error.classList.remove('visible');
       });
     }
 
     if (details) {
       details.setAttribute('maxlength', '1200');
-      details.setAttribute('aria-describedby', 'details-counter');
+      details.setAttribute('aria-describedby', prefix + '-details-hint ' + prefix + '-details-counter');
       var meta = document.createElement('div');
       meta.className = 'details-meta';
-      meta.innerHTML = '<span>اذكر الموقع والمساحة والمرحلة الحالية لتحصل على رد أدق.</span><span id="details-counter">0 / 1200</span>';
+      meta.innerHTML = '<span id="' + prefix + '-details-hint">' + copy('الموقع والمساحة والمرحلة الحالية تساعدنا على فهم طلبك.', 'The location, area and current stage help us understand your request.') + '</span><span id="' + prefix + '-details-counter">0 / 1200</span>';
       details.parentNode.appendChild(meta);
-      var counter = meta.querySelector('#details-counter');
+      var counter = meta.querySelector('#' + prefix + '-details-counter');
       var updateCounter = function () {
         counter.textContent = details.value.length + ' / 1200';
       };
@@ -101,14 +106,14 @@
       row.appendChild(submit);
       var note = document.createElement('span');
       note.className = 'submit-note';
-      note.innerHTML = '<i class="fa-solid fa-shield-halved" aria-hidden="true"></i> بياناتك تستخدم لمراجعة الطلب والتواصل فقط';
+      note.textContent = copy('بياناتك تستخدم لمراجعة الطلب والتواصل فقط', 'Your details are used to review and respond to your request.');
       row.appendChild(note);
     }
 
-    if (!form.querySelector('#privacy-consent')) {
+    if (!form.querySelector('[name="الموافقة_على_الخصوصية"]')) {
       var privacy = document.createElement('div');
       privacy.className = 'privacy-check form-group-full';
-      privacy.innerHTML = '<input id="privacy-consent" name="الموافقة_على_الخصوصية" type="checkbox" value="موافق" required><label for="privacy-consent">أوافق على استخدام بياناتي للتواصل بخصوص هذا الطلب وفق <a href="privacy-policy.html">سياسة الخصوصية</a>.</label>';
+      privacy.innerHTML = '<input id="' + prefix + '-privacy" name="الموافقة_على_الخصوصية" type="checkbox" value="موافق" required><label for="' + prefix + '-privacy">أوافق على استخدام بياناتي للتواصل بخصوص هذا الطلب وفق <a href="/privacy-policy.html">سياسة الخصوصية</a>.</label>';
       var target = submit && submit.closest('.submit-row');
       form.insertBefore(privacy, target || submit);
     }
@@ -120,11 +125,11 @@
       if (phone && !validSaudiPhone(phone.value)) {
         event.preventDefault();
         phone.classList.add('is-invalid');
-        var phoneError = form.querySelector('#phone-error');
-        if (phoneError) phoneError.classList.add('visible');
+        phone.setAttribute('aria-invalid', 'true');
+        error.classList.add('visible');
         phone.focus();
         status.className = 'form-status error visible';
-        status.textContent = 'راجع رقم الجوال قبل إرسال الطلب.';
+        status.textContent = copy('راجع رقم الجوال قبل إرسال الطلب.', 'Check your mobile number before sending.');
         return;
       }
 
@@ -133,6 +138,8 @@
         event.preventDefault();
         return;
       }
+      var honey = form.querySelector('input[name="_honey"]');
+      if (honey && honey.value) { event.preventDefault(); return; }
 
       var action = form.getAttribute('action') || '';
       var canConfirm = typeof window.fetch === 'function' && window.TawodAnalytics &&
@@ -153,14 +160,15 @@
       var controller = typeof window.AbortController === 'function' ? new window.AbortController() : null;
       var timer = controller ? window.setTimeout(function () { controller.abort(); }, 25000) : null;
       sending = true;
+      form.setAttribute('aria-busy', 'true');
 
       if (submit) {
         submit.setAttribute('aria-busy', 'true');
         submit.disabled = true;
-        submit.innerHTML = 'جاري إرسال الطلب <i class="fa-solid fa-spinner" aria-hidden="true"></i>';
+        submit.textContent = copy('جاري إرسال الطلب…', 'Sending your request…');
       }
       status.className = 'form-status visible';
-      status.textContent = 'جاري إرسال طلبك، انتظر لحظة.';
+      status.textContent = copy('جاري إرسال طلبك، انتظر لحظة.', 'Sending your request. Please wait a moment.');
 
       window.fetch(action.replace(/formsubmit\.co\//i, 'formsubmit.co/ajax/'), {
         method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
@@ -175,14 +183,15 @@
         completed = true;
         window.TawodAnalytics.confirmFormSubmission(requestId);
         status.className = 'form-status success visible';
-        status.textContent = 'تم إرسال طلبك بنجاح. رقم المتابعة: ' + requestId + '. سنراجع التفاصيل للتواصل معك.';
-        if (submit) submit.textContent = 'تم إرسال الطلب';
+        status.textContent = copy('تم إرسال طلبك بنجاح. رقم المتابعة: ', 'Your request was accepted. Reference: ') + requestId + copy('. سنراجع التفاصيل للتواصل معك.', '. Our team will review the details to follow up.');
+        if (submit) submit.textContent = copy('تم إرسال الطلب', 'Request sent');
       }).catch(function () {
         status.className = 'form-status error visible';
-        status.textContent = 'تعذر تأكيد إرسال الطلب. البيانات ما زالت في النموذج؛ أعد المحاولة أو تواصل معنا عبر الهاتف أو الواتساب.';
+        status.textContent = copy('تعذر تأكيد إرسال الطلب. البيانات ما زالت في النموذج؛ أعد المحاولة أو تواصل معنا عبر الهاتف أو الواتساب.', 'We could not confirm your request. Your details remain in the form; try again or contact us by phone or WhatsApp.');
       }).finally(function () {
         if (timer) window.clearTimeout(timer);
         sending = false;
+        form.removeAttribute('aria-busy');
         if (submit) {
           submit.removeAttribute('aria-busy');
           submit.disabled = completed;
@@ -198,5 +207,12 @@
         submit.innerHTML = submitLabel;
       }
     });
+  }
+
+  ready(function () {
+    var forms = typeof document.querySelectorAll === 'function'
+      ? document.querySelectorAll('form[data-analytics-form][action^="https://formsubmit.co/"]')
+      : [document.getElementById('form')];
+    Array.prototype.forEach.call(forms, enhanceForm);
   });
 })();

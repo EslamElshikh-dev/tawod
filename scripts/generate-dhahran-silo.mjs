@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
+import { generateSitemaps } from './generate-sitemaps.mjs';
 
 const root = process.cwd();
 const check = process.argv.includes('--check');
@@ -577,24 +578,9 @@ function renderBlogIndex() {
 }
 
 function updateSitemaps() {
-  const paths = [
-    '/dhahran/', '/dhahran/services/', '/dhahran/construction/', '/dhahran/turnkey/', '/dhahran/renovation/',
-    '/dhahran/finishing/', '/dhahran/decor/', '/dhahran/mep/', '/dhahran/about/', '/dhahran/projects/', '/dhahran/contact/',
-    '/dhahran/blog/', ...articles.map((article) => `/dhahran/blog/${article.slug}/`)
-  ];
-  const mainFile = path.join(root, 'sitemap.xml');
-  let main = fs.readFileSync(mainFile, 'utf8').replace(/\s*<url><loc>https:\/\/tawodco\.com\/dhahran\/[\s\S]*?<\/url>/g, '');
-  const entries = paths.map((pathname) => `  <url><loc>${domain}${pathname}</loc><lastmod>${date}</lastmod></url>`).join('\n');
-  const khobarStart = /  <url><loc>https:\/\/tawodco\.com\/khobar\//;
-  const dammamStart = /  <url><loc>https:\/\/tawodco\.com\/dammam\//;
-  if (khobarStart.test(main)) main = main.replace(khobarStart, `${entries}\n$&`);
-  else if (dammamStart.test(main)) main = main.replace(dammamStart, `${entries}\n$&`);
-  else main = main.replace(/\s*<\/urlset>/, `\n${entries}\n</urlset>`);
-  writeIfChanged(mainFile, main);
-
-  const local = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${paths.map((pathname) => `  <url><loc>${domain}${pathname}</loc><lastmod>${date}</lastmod></url>`).join('\n')}\n</urlset>`;
-  writeIfChanged(path.join(root, 'sitemap-dhahran.xml'), local);
-
+  // Use the site's canonical partitioning, reciprocal language links and
+  // content-based dates rather than the retired city-only XML format.
+  generateSitemaps({ check });
 }
 
 writeIfChanged(path.join(root, 'assets', 'css', 'tawod-dhahran.css'), localize(fs.readFileSync(path.join(root, 'assets', 'css', 'tawod-khobar.css'), 'utf8')));
