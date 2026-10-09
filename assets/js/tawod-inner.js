@@ -23,12 +23,6 @@
     return '<svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   }
 
-  function removeLanguageControls() {
-    qa('.lang-switch, .lang-switch-link, [data-language="en"], a[aria-label*="English"]').forEach(function (element) {
-      element.remove();
-    });
-  }
-
   function setupHeaderServicesMenu() {
     var services = [
       { href: '/service-construction.html', label: 'البناء والإنشاءات', detail: 'الهياكل والأعمال الإنشائية' },
@@ -466,7 +460,6 @@
   ready(function () {
     fixCustomerFacingCopy();
     cleanDammamCustomerCopy();
-    removeLanguageControls();
     setupHeaderServicesMenu();
     setupHeaderScrollState();
     setupMenu();

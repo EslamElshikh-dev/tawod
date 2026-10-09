@@ -5,6 +5,8 @@ import { createHash } from 'node:crypto';
 
 const root = process.cwd();
 const check = process.argv.includes('--check');
+const homeVersion = createHash('sha256').update(fs.readFileSync(path.join(root, 'assets/js/tawod-home.js'))).digest('hex').slice(0, 12);
+const innerVersion = createHash('sha256').update(fs.readFileSync(path.join(root, 'assets/js/tawod-inner.js'))).digest('hex').slice(0, 12);
 const version = createHash('sha256')
   .update(fs.readFileSync(path.join(root, 'assets/js/tawod-analytics.js')))
   .digest('hex')
@@ -99,6 +101,8 @@ for (const file of walk(root).filter((candidate) => {
   if (contactConversionCssVersion) {
     html = html.replace(contactConversionCssUrlPattern, `assets/css/contact-conversion.css?v=${contactConversionCssVersion}`);
   }
+  html = html.replace(/assets\/js\/tawod-home\.js(?:\?v=[^"']*)?/g, `assets/js/tawod-home.js?v=${homeVersion}`);
+  html = html.replace(/assets\/js\/tawod-inner\.js(?:\?v=[^"']*)?/g, `assets/js/tawod-inner.js?v=${innerVersion}`);
   html = html.replace(/[ \t]+$/gm, '').replace(/\n{3,}/g, '\n\n');
 
   if (html !== oldHtml) {
