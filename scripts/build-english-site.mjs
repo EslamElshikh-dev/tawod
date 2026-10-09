@@ -200,12 +200,16 @@ export function buildEnglishSite() {
     let html = previous.replace(/<link\b(?=[^>]*\brel=["']alternate["'])(?=[^>]*\bhreflang=)[^>]*>\s*/gi, '')
       .replace(/(<link\b(?=[^>]*\brel=["']canonical["'])[^>]*>)/i, '$1\n' + alternates(pair.ar, pair.en));
     if (pair.ar !== '/') {
+      // Recreate each control in its own navigation region. Exact class tokens
+      // prevent the desktop matcher from also consuming sidebar-language-link.
+      html = html.replace(/<a\b[^>]*>[\s\S]*?<\/a>/gi, anchor => {
+        const classes = anchor.match(/\bclass=["']([^"']*)["']/i)?.[1].split(/\s+/) || [];
+        return classes.includes('language-link') || classes.includes('sidebar-language-link') ? '' : anchor;
+      });
       const link = `<a class="language-link" href="${pair.en}" lang="en" hreflang="en-SA" aria-label="Read this page in English">EN</a>`;
-      const pattern = /<a\b(?=[^>]*class=["'][^"']*language-link)[^>]*>[\s\S]*?<\/a>/i;
-      html = pattern.test(html) ? html.replace(pattern, link) : html.replace(/(<div\b[^>]*class=["']header-actions["'][^>]*>)/i, '$1' + link);
+      html = html.replace(/(<div\b[^>]*class=["']header-actions["'][^>]*>)/i, '$1' + link);
       const mobileLink = `<a class="sidebar-language-link" href="${pair.en}" lang="en" hreflang="en-SA">English</a>`;
-      const mobilePattern = /<a\b(?=[^>]*class=["'][^"']*sidebar-language-link)[^>]*>[\s\S]*?<\/a>/i;
-      html = mobilePattern.test(html) ? html.replace(mobilePattern, mobileLink) : html.replace(/(<nav\b[^>]*class=["']sidebar-nav["'][^>]*>[\s\S]*?)(<\/nav>)/i, '$1' + mobileLink + '$2');
+      html = html.replace(/(<nav\b[^>]*class=["']sidebar-nav["'][^>]*>[\s\S]*?)(<\/nav>)/i, '$1' + mobileLink + '$2');
       if (!html.includes(mobileLink)) throw new Error(`Missing mobile English switch in ${file}`);
       if (!html.includes(`href="${pair.en}" lang="en"`)) throw new Error(`Missing English switch in ${file}`);
     }

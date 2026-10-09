@@ -32,15 +32,6 @@
   pointer-events: none;
 }
 
-/* Language switching was removed from the site. Hide any stale server-rendered controls immediately before JS cleanup. */
-.lang-switch,
-.lang-switch-link,
-.header-actions [data-language='en'],
-.sidebar-nav [data-language='en'],
-a[aria-label*='English'] {
-  display: none !important;
-}
-
 /* Match inner-page typography to the current homepage visual system. */
 html body,
 html body button,
