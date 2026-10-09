@@ -2,6 +2,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, relative, sep } from "node:path";
 import { applyContractingDesign } from '../lib/contracting-design.mjs';
+import { optimizeArticleMarkup } from '../lib/article-presentation.mjs';
 import { sitemapFiles } from './generate-sitemaps.mjs';
 
 const root = process.cwd();
@@ -115,24 +116,6 @@ function isBlogArticle(relativePath) {
   return /(?:^|\/)blog\/(?!page\/|topics\/)[^/]+\/index\.html$/.test(relativePath);
 }
 
-function optimizeArticleMarkup(relativePath, html) {
-  if (!isBlogArticle(relativePath)) return html;
-  let optimizedHtml = html.replace(
-    /(<article\b[^>]*\bclass=(["']))([^"']*\barticle-content\b[^"']*)(\2[^>]*>)/i,
-    (match, start, quote, classes, end) => `${start}${classes.split(/\s+/).filter((name) => name && name !== "reveal-up").join(" ")}${end}`,
-  );
-  optimizedHtml = optimizedHtml.replace(
-    /(<article\b[^>]*\bclass=["'][^"']*\barticle-content\b[^"']*["'][^>]*>[\s\S]*?<img\b)([^>]*)(>)/i,
-    (match, start, attributes, end) => {
-      const optimizedAttributes = attributes
-        .replace(/\s+loading=["'][^"']*["']/i, "")
-        .replace(/\s+fetchpriority=["'][^"']*["']/i, "")
-        .replace(/\s+decoding=["'][^"']*["']/i, "");
-      return `${start}${optimizedAttributes} loading="lazy" decoding="async" fetchpriority="low"${end}`;
-    },
-  );
-  return optimizedHtml;
-}
 
 function expectedExportHtml(relativePath, html) {
   if (relativePath === "404.html") return normalizeInternalHomepageLinks(html);

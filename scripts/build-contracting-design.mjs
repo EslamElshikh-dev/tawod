@@ -8,6 +8,8 @@ import * as regular from '@fortawesome/free-regular-svg-icons';
 import * as brands from '@fortawesome/free-brands-svg-icons';
 import { compileContractingCss, cssVocabulary } from './contracting-css.mjs';
 
+execFileSync(process.execPath,['scripts/build-contracting-images.mjs'],{stdio:'inherit'});
+
 const modern=fs.readFileSync('assets/css/tawod-contracting-design.css','utf8')+'\n'+fs.readFileSync('assets/css/tawod-contracting-polish.css','utf8')+'\n'+fs.readFileSync('assets/css/tawod-finishing-stage.css','utf8');
 const urls=[...fs.readFileSync('sitemap.xml','utf8').matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>new URL(m[1]).pathname).filter(p=>!p.startsWith('/maintenance/'));
 // English pages have their own small LTR sheet and navigation, avoiding the
@@ -16,7 +18,7 @@ const files=urls.filter(p=>!p.startsWith('/en/')).map(p=>p==='/'?'index.html':p.
 for(const f of ['thank-you.html','thankyou.html'])if(fs.existsSync(f)&&!files.includes(f))files.push(f);
 const interaction=fs.readdirSync('assets/js').filter(n=>n.endsWith('.js')&&!n.startsWith('tawod-contracting-')).map(n=>fs.readFileSync(`assets/js/${n}`,'utf8')).join('\n')+fs.readFileSync('lib/legacy-pages.ts','utf8');
 const allHtml=files.map(f=>fs.readFileSync(f,'utf8')).join('\n');
-const extra=' tawod-contracting contracting-brand-copy contracting-logo-art contracting-footer-group tawod-input-active contracting-hero-grid contracting-icon contracting-city tawod-entered projects-page';
+const extra=' tawod-contracting contracting-brand-copy contracting-logo-art contracting-footer-group tawod-input-active contracting-hero-grid contracting-icon contracting-city tawod-entered projects-page contracting-office-details';
 const critical=compileContractingCss(modern.slice(0,modern.indexOf('/* Content */')),cssVocabulary(allHtml+extra,interaction),'critical.css').toString()+'\n.nav-services-dropdown,\n.nav-services-toggle { display: none; }\n';
 if(Buffer.byteLength(critical)>16*1024)throw new Error('Critical CSS exceeds the existing 16 KiB budget');
 fs.writeFileSync('assets/css/tawod-home-critical.css',critical);

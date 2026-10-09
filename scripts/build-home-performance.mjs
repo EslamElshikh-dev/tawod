@@ -31,9 +31,18 @@ function withoutImports(css) {
     .trim();
 }
 
+const homepage = fs.readFileSync(path.join(root,'index.html'),'utf8');
+// Preserve the states used by scripts actually loaded on the homepage. The
+// inner-page script is not loaded here; retaining its article classes caused
+// article-only CSS to be bundled into the homepage.
+const homepageScripts = [...new Set([
+  ...[...homepage.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["']/gi)].map(m=>m[1].replace(/^\//,'').split('?')[0])
+    .filter(file=>!/^https?:/.test(file)&&!file.includes('tawod-contracting-ui.js')&&fs.existsSync(path.join(root,file))),
+  'assets/js/tawod-contracting-layout.js','assets/js/tawod-contracting-motion.js'
+])];
 const vocabulary = cssVocabulary(
-  fs.readFileSync(path.join(root,'index.html'),'utf8')+' tawod-contracting contracting-brand-copy contracting-logo-art contracting-footer-group tawod-input-active contracting-hero-grid contracting-icon contracting-city tawod-entered',
-  ['assets/js/tawod-home.js','assets/js/tawod-inner.js','assets/js/tawod-upgrades.js'].map(file=>fs.readFileSync(path.join(root,file),'utf8')).join('\n')
+  homepage+' tawod-contracting contracting-brand-copy contracting-logo-art contracting-footer-group tawod-input-active contracting-hero-grid contracting-icon contracting-city tawod-entered contracting-office-details',
+  homepageScripts.map(file=>fs.readFileSync(path.join(root,file),'utf8')).join('\n')
 );
 const legacySource = cssSources.filter(file=>!file.includes('tawod-contracting-')).map((file) => {
     const source = fs.readFileSync(path.join(root, file), 'utf8');

@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const businessData = JSON.parse(fs.readFileSync(new URL('../data/business-branches.json', import.meta.url), 'utf8'));
-export const { company, workingHours, dammam } = businessData;
+export const { company, workingHours, riyadh, dammam } = businessData;
 const root = fileURLToPath(new URL('../', import.meta.url));
 const schemaPattern = /<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
 const markerPattern = /<!-- TAWOD_BRANCH_[A-Z]+_START -->[\s\S]*?<!-- TAWOD_BRANCH_[A-Z]+_END -->/g;
@@ -11,6 +11,8 @@ const esc = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').
 const json = value => JSON.stringify(value).replace(/</g, '\\u003c');
 const block = (name, content) => `<!-- TAWOD_BRANCH_${name}_START -->${content}<!-- TAWOD_BRANCH_${name}_END -->`;
 const normalized = html => html.replace(/[ \t]+$/gm, '').replace(/\n{3,}/g, '\n\n').trim() + '\n';
+
+export { companySchema } from '../lib/business-schema.mjs';
 
 export function branchSchema() {
   return {
@@ -69,7 +71,7 @@ function branchSection() {
 
 export function enhanceBranchHtml(html, relativePath) {
   if (['sitemap.xml', 'sitemap-dammam.xml'].includes(relativePath)) {
-    const updatedPages = new Set([dammam.url, dammam.contactUrl, `${dammam.url}about/`, `${company.url}contact.html`]);
+    const updatedPages = new Set([dammam.url, dammam.contactUrl, `${dammam.url}about/`]);
     return html.replace(/<url><loc>([^<]+)<\/loc><lastmod>[^<]+<\/lastmod><\/url>/g,
       (entry, url) => updatedPages.has(url) ? entry.replace(/<lastmod>[^<]+<\/lastmod>/, `<lastmod>${dammam.updatedAt}</lastmod>`) : entry);
   }
