@@ -203,6 +203,10 @@ export function buildEnglishSite() {
       const link = `<a class="language-link" href="${pair.en}" lang="en" hreflang="en-SA" aria-label="Read this page in English">EN</a>`;
       const pattern = /<a\b(?=[^>]*class=["'][^"']*language-link)[^>]*>[\s\S]*?<\/a>/i;
       html = pattern.test(html) ? html.replace(pattern, link) : html.replace(/(<div\b[^>]*class=["']header-actions["'][^>]*>)/i, '$1' + link);
+      const mobileLink = `<a class="sidebar-language-link" href="${pair.en}" lang="en" hreflang="en-SA">English</a>`;
+      const mobilePattern = /<a\b(?=[^>]*class=["'][^"']*sidebar-language-link)[^>]*>[\s\S]*?<\/a>/i;
+      html = mobilePattern.test(html) ? html.replace(mobilePattern, mobileLink) : html.replace(/(<nav\b[^>]*class=["']sidebar-nav["'][^>]*>[\s\S]*?)(<\/nav>)/i, '$1' + mobileLink + '$2');
+      if (!html.includes(mobileLink)) throw new Error(`Missing mobile English switch in ${file}`);
       if (!html.includes(`href="${pair.en}" lang="en"`)) throw new Error(`Missing English switch in ${file}`);
     }
     if (html !== previous) fs.writeFileSync(file, html);
