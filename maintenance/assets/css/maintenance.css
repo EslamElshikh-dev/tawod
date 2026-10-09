@@ -896,3 +896,31 @@ body.photo-open{overflow:hidden}
  .service-card,.scope-card,.fieldwork-card{break-inside:avoid}
  .reveal-pending{opacity:1;translate:none}
 }
+/* October client review: clear service sharing and a distinct lower team statement. */
+.maintenance-page .team-section{padding-top:20px}
+.maintenance-page .team-highlight{position:relative;isolation:isolate;max-width:1050px;margin:auto;padding:clamp(30px,5vw,64px);overflow:hidden;border:1px solid #e7ddce;border-radius:30px;background:linear-gradient(135deg,#fffdf9,#f8efe1);text-align:center;box-shadow:0 14px 40px #46331c08}
+.maintenance-page .team-highlight:before{content:"";position:absolute;z-index:-1;inset:12px;border:1px solid #c9986333;border-radius:22px;pointer-events:none}
+.maintenance-page .team-emblem{display:grid;place-items:center;width:62px;height:62px;margin:0 auto 20px;border:1px solid #d9bd97;border-radius:18px;background:#fff9ee;color:var(--copper)}
+.maintenance-page .team-emblem .icon{width:29px;height:29px}
+.maintenance-page .team-highlight h2{margin:15px auto;font-size:clamp(1.55rem,3.6vw,3rem);line-height:1.65;color:var(--ink)}
+.maintenance-page .team-highlight h2 strong{font-weight:600;color:var(--copper)}
+.maintenance-page .team-highlight>p{max-width:680px;margin:0 auto;font-size:.86rem;line-height:2;color:#655d52}
+.maintenance-page .team-points{display:flex;justify-content:center;flex-wrap:wrap;gap:12px 20px;margin:24px auto;color:#69533d;font-size:.75rem}
+.maintenance-page .team-points>span{display:flex;align-items:center;gap:7px}
+.maintenance-page .team-points .icon{width:18px;height:18px}
+.maintenance-page .team-highlight .button{margin-top:5px}
+.maintenance-page .service-share{display:grid;grid-template-columns:132px minmax(0,1fr);align-items:center;gap:24px;margin-top:28px;padding:24px;border:1px solid #e6ded2;border-radius:22px;background:#fbf7f0}
+.maintenance-page .service-share h3{margin:6px 0;font-size:1rem;color:var(--ink)}
+.maintenance-page .service-share p{margin:0;font-size:.74rem;line-height:1.95;color:#686159}
+.maintenance-page .service-share .eyebrow{font-size:.6rem}
+.maintenance-page .service-share .text-link{margin-top:12px;font-size:.72rem}
+.maintenance-page .service-qr{display:block;width:132px;height:132px;border-radius:12px;background:#fff;overflow:hidden}
+.maintenance-page .service-qr img{display:block;width:132px;height:132px;object-fit:contain}
+.maintenance-page .footer-main .footer-socials{display:flex;flex-direction:row;align-items:center;flex-wrap:wrap;gap:10px;margin-top:24px}
+.maintenance-page .footer-main .footer-socials a{position:relative;display:grid;place-items:center;width:44px;height:44px;margin:0;border:1px solid #bca98c60;border-radius:13px;background:#ffffff06;color:#f2d6ad;transition:background .2s,color .2s}
+.maintenance-page .footer-main .footer-socials a:hover{background:#f3c995;color:#211e1b}
+.maintenance-page .footer-main .footer-socials .icon{width:20px;height:20px}
+.maintenance-page .footer-socials span{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.maintenance-page .service-photo-grid figcaption small{font-size:.6rem;color:#817260;font-weight:400}
+.maintenance-page .hero-field-note img{object-position:center 72%}
+@media(max-width:700px){.maintenance-page .team-highlight{border-radius:24px;padding:28px 20px}.maintenance-page .team-highlight>p{font-size:.76rem}.maintenance-page .team-points{gap:10px 13px;font-size:.68rem}.maintenance-page .service-share{grid-template-columns:1fr;justify-items:start;gap:14px;padding:20px}.maintenance-page .service-share h3{font-size:.9rem}.maintenance-page .service-share p{font-size:.72rem}.maintenance-page .team-highlight .button{font-size:.74rem}}

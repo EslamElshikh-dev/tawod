@@ -106,6 +106,21 @@
       "source": "/blog/finishing-facades-restoration-riyadh/index.html",
       "destination": "/blog/finishing-facades-restoration-riyadh/",
       "permanent": true
+    },
+    {
+      "source": "/maintenance/education-sports-facilities.html",
+      "destination": "/maintenance/facility-management.html",
+      "permanent": true
+    },
+    {
+      "source": "/maintenance/restoration-finishing.html",
+      "destination": "/service-restoration.html",
+      "permanent": true
+    },
+    {
+      "source": "/maintenance/furniture-moving.html",
+      "destination": "/maintenance/services.html",
+      "permanent": true
     }
   ],
   "headers": [

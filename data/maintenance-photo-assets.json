@@ -1,0 +1,95 @@
+{
+  "images": {
+    "bus": {
+      "file": "tawod-operations-team-bus-white-v4.webp",
+      "width": 1200,
+      "height": 1200,
+      "sourceType": "fieldwork",
+      "srcset": "/maintenance/assets/images/tawod-operations-team-bus-white-v4-480.webp 480w, /maintenance/assets/images/tawod-operations-team-bus-white-v4-800.webp 800w, /maintenance/assets/images/tawod-operations-team-bus-white-v4.webp 1200w"
+    },
+    "mosque": {
+      "file": "tawod-mosque-cleaning-team-white-v4.webp",
+      "width": 1200,
+      "height": 800,
+      "sourceType": "fieldwork",
+      "srcset": "/maintenance/assets/images/tawod-mosque-cleaning-team-white-v4-480.webp 480w, /maintenance/assets/images/tawod-mosque-cleaning-team-white-v4-800.webp 800w, /maintenance/assets/images/tawod-mosque-cleaning-team-white-v4.webp 1200w"
+    },
+    "mirror": {
+      "file": "tawod-cleaning-mirror-white-v4.webp",
+      "width": 1086,
+      "height": 1448,
+      "sourceType": "fieldwork",
+      "srcset": "/maintenance/assets/images/tawod-cleaning-mirror-white-v4-480.webp 480w, /maintenance/assets/images/tawod-cleaning-mirror-white-v4-800.webp 800w, /maintenance/assets/images/tawod-cleaning-mirror-white-v4.webp 1086w"
+    },
+    "ac": {
+      "file": "tawod-ac-duct-maintenance-white-v4.webp",
+      "width": 1086,
+      "height": 1448,
+      "sourceType": "fieldwork",
+      "srcset": "/maintenance/assets/images/tawod-ac-duct-maintenance-white-v4-480.webp 480w, /maintenance/assets/images/tawod-ac-duct-maintenance-white-v4-800.webp 800w, /maintenance/assets/images/tawod-ac-duct-maintenance-white-v4.webp 1086w"
+    },
+    "landscape": {
+      "file": "tawod-landscaping-team-white-v4.webp",
+      "width": 1200,
+      "height": 900,
+      "sourceType": "fieldwork",
+      "srcset": "/maintenance/assets/images/tawod-landscaping-team-white-v4-480.webp 480w, /maintenance/assets/images/tawod-landscaping-team-white-v4-800.webp 800w, /maintenance/assets/images/tawod-landscaping-team-white-v4.webp 1200w"
+    },
+    "irrigation": {
+      "file": "tawod-irrigation-controller-white-v4.webp",
+      "width": 1122,
+      "height": 1402,
+      "sourceType": "fieldwork",
+      "srcset": "/maintenance/assets/images/tawod-irrigation-controller-white-v4-480.webp 480w, /maintenance/assets/images/tawod-irrigation-controller-white-v4-800.webp 800w, /maintenance/assets/images/tawod-irrigation-controller-white-v4.webp 1122w"
+    },
+    "drain": {
+      "file": "tawod-drain-inspection-white-v4.webp",
+      "width": 1086,
+      "height": 1448,
+      "sourceType": "fieldwork",
+      "srcset": "/maintenance/assets/images/tawod-drain-inspection-white-v4-480.webp 480w, /maintenance/assets/images/tawod-drain-inspection-white-v4-800.webp 800w, /maintenance/assets/images/tawod-drain-inspection-white-v4.webp 1086w"
+    },
+    "meeting": {
+      "file": "tawod-cleaning-meeting-room-white-v4.webp",
+      "width": 1200,
+      "height": 900,
+      "sourceType": "fieldwork",
+      "srcset": "/maintenance/assets/images/tawod-cleaning-meeting-room-white-v4-480.webp 480w, /maintenance/assets/images/tawod-cleaning-meeting-room-white-v4-800.webp 800w, /maintenance/assets/images/tawod-cleaning-meeting-room-white-v4.webp 1200w"
+    },
+    "tank": {
+      "file": "tawod-tank-service-white-v4.webp",
+      "width": 1200,
+      "height": 800,
+      "sourceType": "concept",
+      "srcset": "/maintenance/assets/images/tawod-tank-service-white-v4-480.webp 480w, /maintenance/assets/images/tawod-tank-service-white-v4-800.webp 800w, /maintenance/assets/images/tawod-tank-service-white-v4.webp 1200w"
+    },
+    "insulation": {
+      "file": "tawod-roof-insulation-white-v4.webp",
+      "width": 1200,
+      "height": 800,
+      "sourceType": "concept",
+      "srcset": "/maintenance/assets/images/tawod-roof-insulation-white-v4-480.webp 480w, /maintenance/assets/images/tawod-roof-insulation-white-v4-800.webp 800w, /maintenance/assets/images/tawod-roof-insulation-white-v4.webp 1200w"
+    },
+    "spider": {
+      "file": "tawod-spider-facade-white-v4.webp",
+      "width": 1200,
+      "height": 800,
+      "sourceType": "concept",
+      "srcset": "/maintenance/assets/images/tawod-spider-facade-white-v4-480.webp 480w, /maintenance/assets/images/tawod-spider-facade-white-v4-800.webp 800w, /maintenance/assets/images/tawod-spider-facade-white-v4.webp 1200w"
+    },
+    "vacuum": {
+      "file": "tawod-ac-vacuum-cleaning-white-v4.webp",
+      "width": 1200,
+      "height": 800,
+      "sourceType": "concept",
+      "srcset": "/maintenance/assets/images/tawod-ac-vacuum-cleaning-white-v4-480.webp 480w, /maintenance/assets/images/tawod-ac-vacuum-cleaning-white-v4-800.webp 800w, /maintenance/assets/images/tawod-ac-vacuum-cleaning-white-v4.webp 1200w"
+    },
+    "upholstery": {
+      "file": "tawod-upholstery-curtain-cleaning-white-v4.webp",
+      "width": 1200,
+      "height": 800,
+      "sourceType": "concept",
+      "srcset": "/maintenance/assets/images/tawod-upholstery-curtain-cleaning-white-v4-480.webp 480w, /maintenance/assets/images/tawod-upholstery-curtain-cleaning-white-v4-800.webp 800w, /maintenance/assets/images/tawod-upholstery-curtain-cleaning-white-v4.webp 1200w"
+    }
+  }
+}

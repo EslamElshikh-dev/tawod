@@ -261,6 +261,7 @@
       photoImage.height = Number(original.getAttribute('height')) || 900;
       photoImage.src = link.href;
       photoDialog.querySelector('[data-photo-title]').textContent = link.getAttribute('data-photo-caption');
+      photoDialog.querySelector('[data-photo-source-label]').textContent = link.getAttribute('data-photo-source') || 'من صور العمل';
       photoDialog.querySelector('[data-photo-count]').textContent = (photoIndex + 1) + ' / ' + photoLinks.length;
       if (photoImage.complete && photoImage.naturalWidth) photoStage.classList.remove('is-loading');
     }
