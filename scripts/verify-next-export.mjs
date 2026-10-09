@@ -4,6 +4,7 @@ import { join, relative, sep } from "node:path";
 import { applyContractingDesign } from '../lib/contracting-design.mjs';
 import { optimizeArticleMarkup } from '../lib/article-presentation.mjs';
 import { sitemapFiles } from './generate-sitemaps.mjs';
+import { verifyMaintenanceImages } from './verify-maintenance-images.mjs';
 
 const root = process.cwd();
 const outputDirectory = join(root, "out");
@@ -213,4 +214,5 @@ if (mismatches.length) {
   throw new Error(`Next.js export parity failed:\n${mismatches.join("\n")}`);
 }
 
+await verifyMaintenanceImages(root, outputDirectory);
 console.log(`Verified ${sourceFiles.length} HTML pages, intentional project-image/title transforms, and critical static assets.`);
