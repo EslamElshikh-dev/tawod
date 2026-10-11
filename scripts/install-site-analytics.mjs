@@ -19,6 +19,10 @@ const whatsappAttributionVersion = createHash('sha256')
   .update(fs.readFileSync(path.join(root, 'assets/js/tawod-whatsapp-attribution.js')))
   .digest('hex')
   .slice(0, 12);
+const maintenanceAdsVersion = createHash('sha256')
+  .update(fs.readFileSync(path.join(root, 'maintenance/assets/js/ads-contact-clicks.js')))
+  .digest('hex')
+  .slice(0, 12);
 const contactConversionFile = path.join(root, 'assets/js/contact-conversion.js');
 const contactConversionVersion = fs.existsSync(contactConversionFile)
   ? createHash('sha256').update(fs.readFileSync(contactConversionFile)).digest('hex').slice(0, 12)
@@ -85,7 +89,10 @@ for (const file of walk(root).filter((candidate) => {
   html = html.replace(inlineScript, (block) => (
     block.includes('tawodLeadSubmitted') && block.includes('lead_confirmation') ? '' : block
   ));
-  html = html.replace(/<\/head>/i, `${install}</head>`);
+  const pageInstall = relative(file).startsWith('maintenance/')
+    ? install.replace(end, `<script src="/maintenance/assets/js/ads-contact-clicks.js?v=${maintenanceAdsVersion}" defer></script>${end}`)
+    : install;
+  html = html.replace(/<\/head>/i, `${pageInstall}</head>`);
   html = normalizeLeadForms(html, relative(file));
   // Every contracting quote form shares validation and explicit provider
   // acceptance. The native CAPTCHA-enabled action remains the fallback.
