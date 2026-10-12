@@ -1,7 +1,8 @@
 /*
  * Tawod Google Business Profile -> Supabase reporting sync.
  * Create a standalone Google Apps Script, enable the Business Profile Performance API,
- * add the business.manage OAuth scope in appsscript.json, set the 4 constants below,
+ * add the business.manage OAuth scope in appsscript.json, set the sync key and
+ * location ID in Script Properties (TAWOD_PROFILE_SYNC_KEY / TAWOD_LOCATION_ID),
  * run main() once, then schedule it daily.
  */
 const TAWOD_PROFILE_SYNC_URL = 'https://vddoeiggfcwllfxpirep.supabase.co/functions/v1/tawod-analytics';
@@ -33,25 +34,29 @@ const FIELD_BY_METRIC = {
 };
 
 function main() {
-  if (TAWOD_PROFILE_SYNC_KEY.indexOf('PASTE_') === 0 || TAWOD_LOCATION_ID.indexOf('PASTE_') === 0) {
-    throw new Error('Set TAWOD_PROFILE_SYNC_KEY and TAWOD_LOCATION_ID first.');
+  const properties = PropertiesService.getScriptProperties();
+  const syncKey = properties.getProperty('TAWOD_PROFILE_SYNC_KEY') || TAWOD_PROFILE_SYNC_KEY;
+  const locationId = properties.getProperty('TAWOD_LOCATION_ID') || TAWOD_LOCATION_ID;
+  if (syncKey.indexOf('PASTE_') === 0 || !/^(?:locations\/)?\d+$/.test(locationId)) {
+    throw new Error('Set TAWOD_PROFILE_SYNC_KEY and TAWOD_LOCATION_ID in Script Properties first.');
   }
 
   const token = ScriptApp.getOAuthToken();
-  const end = new Date();
-  const start = new Date(end.getTime() - (PROFILE_LOOKBACK_DAYS - 1) * 86400000);
-  const location = `locations/${String(TAWOD_LOCATION_ID).replace(/\D/g, '')}`;
+  const { start, end } = profileRange_(new Date());
+  const location = locationId.indexOf('locations/') === 0 ? locationId : `locations/${locationId}`;
+  const fetchedAt = new Date().toISOString();
   const daily = fetchDailyMetrics_(location, start, end, token);
-  const keywords = fetchMonthlyKeywords_(location, end, token);
+  const keywords = fetchMonthlyKeywords_(location, start, end, token);
 
   const response = UrlFetchApp.fetch(TAWOD_PROFILE_SYNC_URL, {
     method: 'post',
     contentType: 'application/json',
     payload: JSON.stringify({
       mode: 'business_profile_sync',
-      syncKey: TAWOD_PROFILE_SYNC_KEY,
+      syncKey,
       locationId: location,
       profileName: TAWOD_PROFILE_NAME,
+      syncedAt: fetchedAt,
       daily,
       keywords
     }),
@@ -65,6 +70,12 @@ function main() {
   if (code < 200 || code >= 300) throw new Error(`Tawod profile sync failed: HTTP ${code} ${body}`);
 }
 
+function profileRange_(now) {
+  const today = new Date(Utilities.formatDate(now, 'Asia/Riyadh', 'yyyy-MM-dd') + 'T00:00:00Z');
+  const end = new Date(today.getTime() - 86400000);
+  return { start: new Date(end.getTime() - (PROFILE_LOOKBACK_DAYS - 1) * 86400000), end };
+}
+
 function fetchDailyMetrics_(location, start, end, token) {
   const params = DAILY_METRICS.map(metric => `dailyMetrics=${encodeURIComponent(metric)}`);
   addDateParams_(params, 'daily_range.start_date', start);
@@ -72,29 +83,45 @@ function fetchDailyMetrics_(location, start, end, token) {
   const url = `https://businessprofileperformance.googleapis.com/v1/${location}:fetchMultiDailyMetricsTimeSeries?${params.join('&')}`;
   const payload = googleGet_(url, token);
   const byDate = {};
-  const groups = payload.multiDailyMetricTimeSeries || [];
+  const groups = payload.multiDailyMetricTimeSeries;
+  if (!Array.isArray(groups) || !groups.length) throw new Error('Google returned no daily metric series.');
+  const seen = new Set();
+  const firstDate = start.toISOString().slice(0, 10), lastDate = end.toISOString().slice(0, 10);
 
   groups.forEach(group => {
-    (group.dailyMetricTimeSeries || []).forEach(series => {
+    if (!Array.isArray(group.dailyMetricTimeSeries)) throw new Error('Missing Google daily series.');
+    group.dailyMetricTimeSeries.forEach(series => {
       const field = FIELD_BY_METRIC[series.dailyMetric];
-      if (!field) return;
-      ((series.timeSeries || {}).datedValues || []).forEach(point => {
+      const points = (series.timeSeries || {}).datedValues;
+      if (!field || seen.has(field) || !Array.isArray(points) || (series.dailySubEntityType && Object.keys(series.dailySubEntityType).length)) throw new Error('Invalid or duplicate Google metric series.');
+      seen.add(field);
+      points.forEach(point => {
         const date = dateObjectToIso_(point.date);
-        if (!date) return;
-        if (!byDate[date]) byDate[date] = emptyDaily_(date);
-        byDate[date][field] = Number(point.value || 0);
+        if (!date || date < firstDate || date > lastDate) throw new Error('Invalid Google observation date.');
+        if (!byDate[date]) byDate[date] = { date };
+        if (Object.prototype.hasOwnProperty.call(byDate[date], field)) throw new Error('Duplicate Google metric point.');
+        // Documented DatedValue omission means zero; missing points/series do not.
+        // https://developers.google.com/my-business/reference/performance/rest/v1/TimeSeries
+        const value = Object.prototype.hasOwnProperty.call(point, 'value') ? point.value : 0;
+        if (!(typeof value === 'number' || (typeof value === 'string' && /^\d+$/.test(value))) || !Number.isSafeInteger(Number(value)) || Number(value) < 0) throw new Error('Invalid Google daily value.');
+        byDate[date][field] = Number(value);
       });
     });
   });
 
-  return Object.keys(byDate).sort().map(date => byDate[date]);
+  if (seen.size !== DAILY_METRICS.length || !Object.keys(byDate).length) throw new Error('Incomplete Google daily metrics.');
+  return Object.keys(byDate).sort().map(date => {
+    const row = byDate[date];
+    if (Object.values(FIELD_BY_METRIC).some(field => !Object.prototype.hasOwnProperty.call(row, field))) throw new Error('A Google date is missing a metric.');
+    return row;
+  });
 }
 
-function fetchMonthlyKeywords_(location, end, token) {
+function fetchMonthlyKeywords_(location, start, end, token) {
   const rows = [];
-  for (let offset = 0; offset < 3; offset += 1) {
-    const month = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth() - offset, 1));
+  for (let month = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), 1)); month <= end; month = new Date(Date.UTC(month.getUTCFullYear(), month.getUTCMonth() + 1, 1))) {
     let pageToken = '';
+    const seenTokens = new Set();
     do {
       const params = [
         `monthly_range.start_month.year=${month.getUTCFullYear()}`,
@@ -107,7 +134,9 @@ function fetchMonthlyKeywords_(location, end, token) {
       const url = `https://businessprofileperformance.googleapis.com/v1/${location}/searchkeywords/impressions/monthly?${params.join('&')}`;
       const fetchedAt = new Date().toISOString();
       const payload = googleGet_(url, token);
-      (payload.searchKeywordsCounts || []).forEach(item => {
+      const counts = payload.searchKeywordsCounts || [];
+      if (!Array.isArray(counts)) throw new Error('Invalid Google keyword page.');
+      counts.forEach(item => {
         const insight = item.insightsValue || {};
         const count = keywordCount_(insight);
         rows.push({
@@ -119,6 +148,9 @@ function fetchMonthlyKeywords_(location, end, token) {
         });
       });
       pageToken = payload.nextPageToken || '';
+      if (pageToken && (typeof pageToken !== 'string' || seenTokens.has(pageToken))) throw new Error('Repeated or invalid Google page token.');
+      seenTokens.add(pageToken);
+      if (rows.length > 2000 || seenTokens.size > 20) throw new Error('Google keyword batch exceeds the ingestion limit.');
     } while (pageToken);
   }
   return rows;
@@ -143,7 +175,9 @@ function googleGet_(url, token) {
   const code = response.getResponseCode();
   const body = response.getContentText();
   if (code < 200 || code >= 300) throw new Error(`Google API HTTP ${code}: ${body}`);
-  return JSON.parse(body || '{}');
+  const payload = JSON.parse(body);
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload) || payload.error) throw new Error('Invalid Google API response.');
+  return payload;
 }
 
 function addDateParams_(params, prefix, date) {
@@ -153,21 +187,7 @@ function addDateParams_(params, prefix, date) {
 }
 
 function dateObjectToIso_(value) {
-  if (!value || !value.year || !value.month || !value.day) return '';
-  return `${value.year}-${String(value.month).padStart(2, '0')}-${String(value.day).padStart(2, '0')}`;
-}
-
-function emptyDaily_(date) {
-  return {
-    date,
-    searchDesktopImpressions: 0,
-    searchMobileImpressions: 0,
-    mapsDesktopImpressions: 0,
-    mapsMobileImpressions: 0,
-    conversations: 0,
-    directionRequests: 0,
-    callClicks: 0,
-    websiteClicks: 0,
-    bookings: 0
-  };
+  if (![value?.year,value?.month,value?.day].every(Number.isInteger)) return '';
+  const date = `${String(value.year).padStart(4,'0')}-${String(value.month).padStart(2, '0')}-${String(value.day).padStart(2, '0')}`;
+  return Number.isFinite(Date.parse(date + 'T00:00:00Z')) && new Date(date + 'T00:00:00Z').toISOString().slice(0,10) === date ? date : '';
 }

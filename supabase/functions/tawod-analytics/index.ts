@@ -29,7 +29,7 @@ function cors(origin: string | null) {
   const allowed = isAdminOrigin(origin) ? origin! : 'https://tawodco.com';
   return {
     'Access-Control-Allow-Origin': allowed,
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-tawod-sync-key',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Max-Age': '86400',
     'Vary': 'Origin',
@@ -248,38 +248,71 @@ function enrichGoogleAdsWithFirstParty(googleAds: any, measurement: any) {
   };
 }
 
+const PROFILE_FIELDS: Record<string, string> = {
+  searchDesktopImpressions: 'search_desktop_impressions', searchMobileImpressions: 'search_mobile_impressions',
+  mapsDesktopImpressions: 'maps_desktop_impressions', mapsMobileImpressions: 'maps_mobile_impressions',
+  callClicks: 'call_clicks', websiteClicks: 'website_clicks', directionRequests: 'direction_requests', bookings: 'bookings'
+};
+const PROFILE_GOOGLE_METRICS: Record<string, string> = {
+  BUSINESS_IMPRESSIONS_DESKTOP_SEARCH: 'searchDesktopImpressions', BUSINESS_IMPRESSIONS_MOBILE_SEARCH: 'searchMobileImpressions',
+  BUSINESS_IMPRESSIONS_DESKTOP_MAPS: 'mapsDesktopImpressions', BUSINESS_IMPRESSIONS_MOBILE_MAPS: 'mapsMobileImpressions',
+  CALL_CLICKS: 'callClicks', WEBSITE_CLICKS: 'websiteClicks', BUSINESS_DIRECTION_REQUESTS: 'directionRequests', BUSINESS_BOOKINGS: 'bookings'
+};
+function profileDate(value: any) {
+  if (!validDate(value) || !Number.isFinite(Date.parse(value + 'T00:00:00Z')) || new Date(value + 'T00:00:00Z').toISOString().slice(0, 10) !== value) throw new Error('invalid_profile_date');
+  return value as string;
+}
+function profileCount(value: any, minimum = 0) {
+  if (!(typeof value === 'number' || (typeof value === 'string' && /^\d+$/.test(value)))) throw new Error('invalid_profile_count');
+  const count = Number(value);
+  if (!Number.isSafeInteger(count) || count < minimum) throw new Error('invalid_profile_count');
+  return count;
+}
+function profileTimestamp(row: any, body: any) {
+  const source = row?.syncedAt ?? row?.data_fetched_at ?? body?.syncedAt ?? body?.data_fetched_at;
+  if (typeof source !== 'string') throw new Error('missing_source_timestamp');
+  let timestamp = source;
+  // Windsor documents data_fetched_at as UTC, even when it omits the suffix.
+  if ((source === row?.data_fetched_at || source === body?.data_fetched_at) && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?$/.test(timestamp)) timestamp += 'Z';
+  if (!/^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d{1,6})?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$/.test(timestamp) || !Number.isFinite(Date.parse(timestamp))) throw new Error('invalid_source_timestamp');
+  profileDate(timestamp.slice(0, 10));
+  const normalized = new Date(timestamp).toISOString();
+  // Preserve sub-millisecond precision from cached observations as well.
+  const fraction = timestamp.match(/\.(\d{4,6})/);
+  return fraction ? normalized.replace(/\.\d{3}Z$/, '.' + fraction[1] + 'Z') : normalized;
+}
+function profileLocation(body: any) {
+  const value = body?.locationId;
+  if (typeof value !== 'string' || !/^locations\/\d{1,30}$/.test(value)) throw new Error('invalid_profile_location');
+  return value;
+}
 function cleanProfileRows(body: any) {
-  const locationId = text(body?.locationId, 180), profileName = text(body?.profileName, 300);
-  if (!locationId) return [];
-  return (Array.isArray(body?.daily) ? body.daily : []).slice(0, 400).flatMap((row: any) => {
-    const date = validDate(row?.date); if (!date) return [];
-    return [{ report_date: date, location_id: locationId, profile_name: profileName,
-      search_desktop_impressions: Math.max(0, Math.trunc(finite(row?.searchDesktopImpressions))),
-      search_mobile_impressions: Math.max(0, Math.trunc(finite(row?.searchMobileImpressions))),
-      maps_desktop_impressions: Math.max(0, Math.trunc(finite(row?.mapsDesktopImpressions))),
-      maps_mobile_impressions: Math.max(0, Math.trunc(finite(row?.mapsMobileImpressions))),
-      conversations: Math.max(0, Math.trunc(finite(row?.conversations))),
-      direction_requests: Math.max(0, Math.trunc(finite(row?.directionRequests))),
-      call_clicks: Math.max(0, Math.trunc(finite(row?.callClicks))),
-      website_clicks: Math.max(0, Math.trunc(finite(row?.websiteClicks))),
-      bookings: Math.max(0, Math.trunc(finite(row?.bookings))), synced_at: new Date().toISOString() }];
+  if (body?.daily === undefined) return [];
+  const locationId = profileLocation(body);
+  if (!Array.isArray(body.daily) || body.daily.length > 400) throw new Error('invalid_daily_rows');
+  const seen = new Set<string>(), today = new Date(Date.now() + 3 * 3600000).toISOString().slice(0, 10);
+  return body.daily.map((row: any) => {
+    const date = profileDate(row?.date);
+    if (date >= today || seen.has(date) || (row?.locationId !== undefined && row.locationId !== locationId) || (row?.location_id !== undefined && row.location_id !== locationId)) throw new Error('invalid_daily_rows');
+    seen.add(date);
+    const result: Record<string, any> = { report_date: date, location_id: locationId, profile_name: 'شركة تعاود للمقاولات · الرياض', synced_at: profileTimestamp(row, body) };
+    for (const [input, column] of Object.entries(PROFILE_FIELDS)) result[column] = profileCount(row?.[input]);
+    // conversations is discontinued and is deliberately absent from writes.
+    return result;
   });
 }
 function cleanKeywordRows(body: any) {
-  if (body?.keywords == null) return [];
-  const locationId = text(body?.locationId, 180);
-  if (!locationId || !/^locations\/\d+$/.test(locationId) || !Array.isArray(body.keywords) || body.keywords.length > 2000) throw new Error('invalid_keyword_rows');
+  if (body?.keywords === undefined) return [];
+  const locationId = profileLocation(body);
+  if (!Array.isArray(body.keywords) || body.keywords.length > 2000) throw new Error('invalid_keyword_rows');
   const count = (value: any, minimum: number) => {
     if (value == null) return null;
-    if (!(typeof value === 'number' || (typeof value === 'string' && /^\d+$/.test(value)))) throw new Error('invalid_keyword_rows');
-    const result = Number(value);
-    if (!Number.isSafeInteger(result) || result < minimum) throw new Error('invalid_keyword_rows');
-    return result;
+    return profileCount(value, minimum);
   };
   const seen = new Set<string>();
   return body.keywords.map((row: any) => {
-    const month = validDate(row?.month), keyword = text(row?.keyword, 300);
-    if (!month || new Date(month + 'T00:00:00Z').toISOString().slice(0, 10) !== month || !keyword || typeof row?.keyword !== 'string' || row.keyword.length > 300) throw new Error('invalid_keyword_rows');
+    const month = profileDate(row?.month), keyword = text(row?.keyword, 300);
+    if (!keyword || typeof row?.keyword !== 'string' || row.keyword.length > 300 || (row?.locationId !== undefined && row.locationId !== locationId) || (row?.location_id !== undefined && row.location_id !== locationId)) throw new Error('invalid_keyword_rows');
     let impressions = count(row?.impressions, 0);
     const threshold = count(row?.threshold, 1);
     if (threshold != null) {
@@ -290,38 +323,85 @@ function cleanKeywordRows(body: any) {
     const reportMonth = month.slice(0, 7) + '-01', key = reportMonth + '|' + keyword;
     if (seen.has(key)) throw new Error('invalid_keyword_rows');
     seen.add(key);
-    const sourceSync = row?.syncedAt ?? row?.data_fetched_at ?? body?.syncedAt;
-    let timestamp = sourceSync == null ? new Date().toISOString() : String(sourceSync);
-    if (sourceSync === row?.data_fetched_at && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(timestamp)) timestamp += 'Z';
-    if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(timestamp) || !Number.isFinite(Date.parse(timestamp))) throw new Error('invalid_keyword_rows');
     return { report_month: reportMonth, location_id: locationId, search_keyword: keyword,
-      impressions, threshold, synced_at: new Date(timestamp).toISOString() };
+      impressions, threshold, synced_at: profileTimestamp(row, body) };
   });
+}
+function normalizeGoogleProfile(body: any) {
+  profileLocation(body);
+  const syncedAt = profileTimestamp({}, body), normalized = { ...body, syncedAt };
+  if (body.daily !== undefined || body.keywords !== undefined) throw new Error('ambiguous_google_payload');
+  if (body.dailyResponse !== undefined) {
+    if (!body.dailyResponse || typeof body.dailyResponse !== 'object' || Array.isArray(body.dailyResponse) || Object.keys(body.dailyResponse).some(key => key !== 'multiDailyMetricTimeSeries')) throw new Error('invalid_google_daily_response');
+    const start = profileDate(body.rangeStart), end = profileDate(body.rangeEnd);
+    if (start > end || end >= new Date(Date.now() + 3 * 3600000).toISOString().slice(0, 10) || (Date.parse(end) - Date.parse(start)) / 86400000 >= 90) throw new Error('invalid_google_range');
+    const groups = body.dailyResponse?.multiDailyMetricTimeSeries;
+    if (!Array.isArray(groups) || !groups.length) throw new Error('missing_google_metrics');
+    const seen = new Set<string>(), byDate = new Map<string, Record<string, any>>();
+    for (const group of groups) {
+      if (!Array.isArray(group?.dailyMetricTimeSeries)) throw new Error('missing_google_metrics');
+      for (const series of group.dailyMetricTimeSeries) {
+        const field = PROFILE_GOOGLE_METRICS[series?.dailyMetric], points = series?.timeSeries?.datedValues;
+        if (!field || seen.has(field) || (series.dailySubEntityType && Object.keys(series.dailySubEntityType).length) || !Array.isArray(points)) throw new Error('invalid_google_series');
+        seen.add(field);
+        for (const point of points) {
+          const d = point?.date;
+          if (![d?.year, d?.month, d?.day].every(Number.isInteger)) throw new Error('invalid_google_date');
+          const date = profileDate(String(d.year).padStart(4, '0') + '-' + String(d.month).padStart(2, '0') + '-' + String(d.day).padStart(2, '0'));
+          if (date < start || date > end) throw new Error('google_date_outside_range');
+          const row = byDate.get(date) || { date };
+          if (Object.hasOwn(row, field)) throw new Error('duplicate_google_point');
+          // Only this documented Google DatedValue omission means zero. An absent
+          // series, absent date, explicit null or connector field never means zero.
+          // https://developers.google.com/my-business/reference/performance/rest/v1/TimeSeries
+          row[field] = Object.hasOwn(point, 'value') ? profileCount(point.value) : 0;
+          byDate.set(date, row);
+        }
+      }
+    }
+    if (seen.size !== 8 || !byDate.size) throw new Error('missing_google_metrics');
+    normalized.daily = [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));
+    // cleanProfileRows rejects any date without all eight observed metrics.
+  }
+  if (body.keywordResponse !== undefined) {
+    const month = profileDate(body.reportMonth);
+    if (!month.endsWith('-01') || !body.keywordResponse || typeof body.keywordResponse !== 'object' || Array.isArray(body.keywordResponse)) throw new Error('invalid_google_month');
+    if (Object.keys(body.keywordResponse).some(key => key !== 'searchKeywordsCounts' && key !== 'nextPageToken')) throw new Error('invalid_google_keyword_response');
+    const items = body.keywordResponse.searchKeywordsCounts === undefined ? [] : body.keywordResponse.searchKeywordsCounts;
+    if (!Array.isArray(items) || items.length > 100) throw new Error('invalid_google_keywords');
+    if (body.keywordResponse.nextPageToken !== undefined && typeof body.keywordResponse.nextPageToken !== 'string') throw new Error('invalid_google_page_token');
+    normalized.keywords = items.map((item: any) => {
+      const insight = item?.insightsValue;
+      if (!insight || (insight.value != null) === (insight.threshold != null)) throw new Error('invalid_google_keyword_count');
+      return { month, keyword: item.searchKeyword, impressions: insight.value != null ? profileCount(insight.value) : null, threshold: insight.threshold != null ? profileCount(insight.threshold, 1) : null };
+    });
+  }
+  if (normalized.daily === undefined && normalized.keywords === undefined) throw new Error('missing_google_payload');
+  return normalized;
 }
 async function syncBusinessProfile(body: any, origin: string | null) {
   if (!await verifySyncKey(body?.syncKey, 'business_profile')) {
     await new Promise((resolve) => setTimeout(resolve, 350));
     return json({ error: 'unauthorized' }, 401, origin);
   }
-  let keywords;
+  if (body.mode === 'business_profile_google_sync') {
+    try { body = normalizeGoogleProfile(body); }
+    catch { return json({ error: 'invalid_google_profile_response' }, 400, origin); }
+  }
+  let daily, keywords;
   try { keywords = cleanKeywordRows(body); }
   catch { return json({ error: 'invalid_keyword_rows' }, 400, origin); }
-  const daily = cleanProfileRows(body);
-  if (!daily.length && !keywords.length) return json({ error: 'no_sync_rows' }, 400, origin);
-  if (daily.length) {
-    const response = await supabase('/rest/v1/tawod_business_profile_daily?on_conflict=report_date,location_id', {
-      method: 'POST', headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify(daily)
-    });
-    if (!response.ok) return json({ error: 'profile_sync_failed', detail: await response.text() }, 500, origin);
-  }
-  if (keywords.length) {
-    const response = await supabase('/rest/v1/tawod_business_profile_keywords_monthly?on_conflict=report_month,location_id,search_keyword', {
-      method: 'POST', headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify(keywords)
-    });
-    if (!response.ok) return json({ error: 'keyword_sync_failed', detail: await response.text() }, 500, origin);
-  }
+  try { daily = cleanProfileRows(body); }
+  catch { return json({ error: 'invalid_daily_rows' }, 400, origin); }
+  const nextPageToken = body.keywordResponse?.nextPageToken ?? null;
+  const empty = !daily.length && !keywords.length;
+  if (empty && !(body.mode === 'business_profile_google_sync' && body.keywordResponse !== undefined && !nextPageToken)) return json({ error: 'no_sync_rows' }, 400, origin);
+  const response = await supabase('/rest/v1/rpc/tawod_business_profile_ingest', { method: 'POST', body: JSON.stringify({ p_location_id: body.locationId, p_daily: daily, p_keywords: keywords }) });
+  if (!response.ok) return json({ error: 'profile_sync_failed' }, 500, origin);
+  const receipt = await response.json();
+  if (receipt?.verified !== true) return json({ error: 'profile_totals_mismatch' }, 500, origin);
   await supabase('/rest/v1/tawod_sync_keys?name=eq.business_profile', { method: 'PATCH', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify({ last_used_at: new Date().toISOString() }) });
-  return json({ ok: true, daily: daily.length, keywords: keywords.length, syncedAt: new Date().toISOString() }, 200, origin);
+  return json({ ok: true, daily: daily.length, keywords: keywords.length, empty, syncedAt: receipt.sourceFetchedAt ?? body.syncedAt, nextPageToken, receipt }, 200, origin);
 }
 
 function normalizeSalesRow(row: any) {
@@ -837,7 +917,7 @@ Deno.serve(async (req) => {
   if (body?.mode === 'social_reports_import' || body?.mode === 'social_reports_sync') return importSocialReports(body,origin,body.mode==='social_reports_sync');
 
   if (body?.mode === 'google_ads_sync') return syncGoogleAds(body, origin);
-  if (body?.mode === 'business_profile_sync') return syncBusinessProfile(body, origin);
+  if (body?.mode === 'business_profile_sync' || body?.mode === 'business_profile_google_sync') return syncBusinessProfile({ ...body, syncKey: req.headers.get('x-tawod-sync-key') ?? body.syncKey }, origin);
   if (body?.mode === 'google_sheets_export') return exportQualifiedWhatsAppLeads(body, origin);
   if (body?.mode === 'google_sheets_ack') return acknowledgeQualifiedWhatsAppLeads(body, origin);
 
