@@ -290,6 +290,27 @@ body.tawod-contracting {
 }
 .tawod-contracting :is(.footer, footer) .logo-img { filter: none !important; }
 
+/* Keep landscape service detail rather than magnifying a narrow central crop. */
+.tawod-contracting .premium-card .card-img-wrap {
+  height: auto !important;
+  aspect-ratio: 3 / 2;
+}
+.tawod-contracting .premium-card .card-img-wrap .card-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+}
+.tawod-contracting img.tawod-native-photo {
+  display: block;
+  width: 100% !important;
+  max-width: var(--photo-native-width) !important;
+  height: auto !important;
+  aspect-ratio: auto !important;
+  object-fit: contain !important;
+  margin-inline: auto;
+  transform: none !important;
+}
+
 /* A compact, right-aligned footer with one clear group at a time on phones. */
 .tawod-contracting footer.footer {
   padding: 48px 0 0 !important;
