@@ -66,11 +66,11 @@ const edge = fs.readFileSync('supabase/functions/tawod-analytics/index.ts','utf8
 const calls = [];
 const sandbox = vm.createContext({
   text:(x,max)=>String(x??'').trim().slice(0,max),validDate:x=>typeof x==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(x)?x:null,
-  verifySyncKey:async()=>true,cleanProfileRows:body=>body.daily||[],
-  supabase:async(path,init)=>{ calls.push({path,body:JSON.parse(init.body)}); return new Response(null,{status:204}); },
+  verifySyncKey:async()=>true,
+  supabase:async(path,init)=>{ calls.push({path,body:JSON.parse(init.body)}); return path.includes('/rpc/') ? new Response(JSON.stringify({verified:true,sourceFetchedAt:'2020-01-02T03:04:05Z'})) : new Response(null,{status:204}); },
   json:(body,status=200)=>new Response(JSON.stringify(body),{status}),Response
 });
-const snippet = edge.slice(edge.indexOf('function cleanKeywordRows('),edge.indexOf('function normalizeSalesRow('));
+const snippet = edge.slice(edge.indexOf('const PROFILE_FIELDS:'),edge.indexOf('function normalizeSalesRow('));
 vm.runInContext(ts.transpile(snippet,{target:ts.ScriptTarget.ES2022}),sandbox);
 const fixture = {month:'2026-07-01',keyword:'synthetic',syncedAt:'2020-01-02T03:04:05Z'};
 const body = keywords=>({locationId:'locations/111',keywords});
@@ -96,7 +96,8 @@ assert.throws(()=>sandbox.cleanKeywordRows(body(Array(2001).fill({...fixture,thr
 calls.length=0;
 const synced = await sandbox.syncBusinessProfile(body([{...fixture,threshold:15}]),null);
 assert.equal(synced.status,200);
-assert.equal(calls[0].body[0].impressions,null,'actual sync sends JSON null, not zero');
+assert.equal(calls[0].body.p_keywords[0].impressions,null,'actual sync sends JSON null, not zero');
+assert.equal(calls[0].path,'/rest/v1/rpc/tawod_business_profile_ingest','both datasets use the atomic ingestion RPC');
 
 const script = vm.createContext({});
 vm.runInContext(fs.readFileSync('scripts/google-business-profile-sync.js','utf8'),script);
