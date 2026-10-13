@@ -121,6 +121,19 @@ test('existing campaign srcsets, English photos and small field photos use the c
   assert.equal(applyContractingImagePresentation('maintenance/index.html', campaign), campaign);
 });
 
+test('large featured projects and two-column campaign cards select enough source pixels', () => {
+  const featured = '<article class="tawod-project-card tawod-project-card-featured"><a class="tawod-project-media"><img src="/images/projects/faisaliah-villa-facades-finishing-01-v3.webp" alt="فيلا حي الفيصلية"></a></article>';
+  const rendered = applyContractingImagePresentation('projects.html', featured);
+  assert.ok(rendered.includes('data-image-slot="featured-project"'));
+  assert.ok(rendered.includes('85vw, 860px'), 'the 741px-wide featured photo must not use a 440px slot');
+  assert.equal(applyContractingImagePresentation('projects.html', rendered), rendered);
+  const campaign = '<article class="article-card"><div class="card-media card-media--campaign"><a><img src="/images/blog/tawod-gbp-floor-alignment-480.webp" alt="تفاصيل الأرضيات"></a></div></article>';
+  const campaignRendered = applyContractingImagePresentation('blog/index.html', campaign);
+  assert.ok(campaignRendered.includes('data-image-slot="campaign-card"'));
+  assert.ok(campaignRendered.includes('60vw, 620px'), 'the 542px-wide campaign card must not use a 480px slot');
+  assert.equal(applyContractingImagePresentation('blog/index.html', campaignRendered), campaignRendered);
+});
+
 test('an English company name keeps the same verified office identity', () => {
   const english = companySchema({ name: 'Tawod General Contracting Company' });
   assert.equal(english.name, 'Tawod General Contracting Company');
