@@ -129,6 +129,13 @@ function isBlogArticle(relativePath: string) {
 
 
 function normalizeProjectPresentation(relativePath: string, html: string) {
+  if (relativePath === "project-modon-eight-warehouses-riyadh.html") {
+    // Lead with the large retained photograph; keep the small steel-frame
+    // photograph in the gallery at its native size.
+    html = html.replace(/<img\b(?=[^>]*\bsrc="images\/projects\/modon-eight-warehouses-02-v3\.webp")(?=[^>]*\bloading="eager")[^>]*>/i,
+      tag => tag.replace("modon-eight-warehouses-02-v3.webp", "modon-eight-warehouses-01-v4.webp")
+        .replace(/\balt="[^"]*"/i, 'alt="تجهيز وعزل القواعد الخرسانية لمشروع 8 مستودعات في المدينة الصناعية الثانية بالرياض"'));
+  }
   if (relativePath === "index.html") {
     return html.replaceAll(
       ">فيلا حي الفيصلية<",

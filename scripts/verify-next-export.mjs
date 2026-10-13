@@ -153,6 +153,13 @@ for (const sourceFile of sourceFiles) {
   const sourceHtml = expectedExportHtml(relativePath, readFileSync(sourceFile, "utf8"));
   const outputHtml = readFileSync(outputFile, "utf8");
 
+  if (relativePath === "project-modon-eight-warehouses-riyadh.html") {
+    const leadPhoto = outputHtml.match(/<img\b[^>]*\bsrc="images\/projects\/modon-eight-warehouses-[^"]+"[^>]*>/i)?.[0];
+    if (!leadPhoto?.includes('modon-eight-warehouses-01-v4.webp')) {
+      mismatches.push(`${relativePath}: the lead photo must use the full-size retained project image`);
+    }
+  }
+
   if (/href=["'](?:\.\.\/)*index\.html(?:[#?][^"']*)?["']/i.test(outputHtml)) {
     mismatches.push(`${relativePath}: exported HTML still links to index.html`);
   }
