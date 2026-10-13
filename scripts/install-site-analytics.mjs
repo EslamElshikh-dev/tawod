@@ -53,6 +53,7 @@ const legacyHomeTag = /\s*<!-- Google tag: queued immediately,[\s\S]*?-->\s*<scr
 const inlineScript = /<script\b(?![^>]*\bsrc=)[^>]*>[\s\S]*?<\/script>\s*/gi;
 const formName = (file) => {
   if (file === 'index.html') return 'home_quote_request';
+  if (file === 'en/index.html') return 'en_home_quote_request';
   if (file === 'contact.html') return 'contact_quote_request';
   if (file === 'en/contact/index.html') return 'en_quote_request';
   const city = file.match(/^(dammam|khobar|dhahran)\/contact\/index\.html$/)?.[1];

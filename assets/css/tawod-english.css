@@ -8,3 +8,65 @@
 
 /* Preserve the native resolution of historical project photographs. */
 img.tawod-native-photo{width:100%!important;max-width:var(--photo-native-width)!important;height:auto!important;aspect-ratio:auto!important;object-fit:contain!important;margin-inline:auto;transform:none!important}
+
+/* Share the Arabic identity; adjust only Latin typography and LTR geometry. */
+html body.tawod-contracting.tawod-english{direction:ltr!important;text-align:left!important;font-family:Inter,Arial,sans-serif!important;background:#fff}
+.tawod-english :is(h1,h2,h3,h4,p,a,span,button,input,select,textarea,label){font-family:inherit!important}
+.tawod-english :is(.card-body,.about-content,.en-project-copy,.footer,.footer-about,.footer-links,.contracting-office-details){text-align:start!important}
+.tawod-english .en-header>.container{min-height:0;gap:20px}
+.tawod-english .en-header .logo{flex-shrink:0}
+.tawod-english .en-nav .nav-links{display:flex;gap:23px;padding:0;margin:0;list-style:none}
+.tawod-english .en-nav .nav-links>li>a{font-size:.8rem!important;letter-spacing:0!important}
+.tawod-english .nav-services-toggle{display:grid!important;place-items:center;min-width:28px;min-height:40px;padding:0;background:transparent;border:0;cursor:pointer}
+.tawod-english .nav-services-toggle svg{width:12px;height:12px}
+.tawod-english .nav-services-dropdown{display:grid!important;list-style:none;right:auto!important;left:50%!important;transform:translate(-50%,12px) scale(.985)!important}
+.tawod-english .nav-services-item:is(:hover,:focus-within,.is-open)>.nav-services-dropdown{transform:translate(-50%) scale(1)!important}
+.tawod-english .en-menu{display:none}
+.tawod-english .hero-content:before{left:0;right:auto}
+.tawod-english .hero>.contracting-hero-grid:before{left:auto;right:-22px}
+.tawod-english .hero>.contracting-hero-grid>.hero-media{border-radius:24px 80px 24px 24px}
+.tawod-english .hero .hero-title-main{font-size:clamp(2rem,3.6vw,3.3rem)!important;line-height:1.2!important;letter-spacing:-.025em}
+.tawod-english .hero .hero-title-sub{font-size:clamp(1.1rem,1.5vw,1.45rem)!important;line-height:1.5!important;margin-top:16px!important}
+.tawod-english .hero h1{line-height:1.2!important}
+.tawod-english .hero p{line-height:1.8!important}
+.tawod-contracting.tawod-english .premium-card .card-body h3{white-space:normal!important;font-size:1.15rem!important;line-height:1.45!important}
+.tawod-contracting.tawod-english .premium-card .card-body p{line-height:1.8!important;text-align:start!important}
+.tawod-english .service-meta{flex-wrap:wrap}
+.tawod-english .service-meta span{font-size:.75rem;white-space:normal}
+.tawod-contracting.tawod-english .premium-card .card-icon-wrap{right:auto!important;left:28px!important}
+.tawod-english #services .premium-card:after{right:auto;left:16px}
+.tawod-english .card-link{margin-inline-start:auto;margin-inline-end:0!important}
+.tawod-english .card-link i,.tawod-english .footer-links i,.tawod-english .tawod-project-link i{transform:scaleX(-1)}
+.tawod-english .en-hero{padding:165px 0 60px}
+.tawod-english .en-hero .eyebrow,.tawod-english .en-content-grid .eyebrow,.tawod-english .section-heading .eyebrow{color:var(--copper);letter-spacing:.045em}
+.tawod-english .en-steps .en-step:before{background:#fff6eb;color:var(--copper);border:1px solid #ead5bd}
+.tawod-english .en-card{border-radius:22px;border-color:#e6e1d8}
+.tawod-english .en-card .text-link{color:var(--copper)}
+.tawod-english .footer-bottom p{text-align:start!important}
+.tawod-english .float-btns{right:16px!important;left:auto!important}
+.tawod-english .contracting-office-details p{margin:0 0 8px}
+.tawod-english .en-map-frame{display:block;width:100%;height:320px;border:0;border-radius:12px;margin-top:16px}
+@media(max-width:1100px){
+ .tawod-english .en-menu{display:grid!important;place-items:center}
+ .tawod-english .en-nav{position:absolute;inset:calc(100% + 12px) 0 auto;display:none!important;padding:16px;background:#fff;border:1px solid #e8ddce;border-radius:18px;box-shadow:0 18px 40px #62432615;max-height:calc(100dvh - 120px);overflow:auto}
+ .tawod-english .en-nav.open{display:block!important}
+ .tawod-english .en-nav .nav-links{display:flex!important;flex-direction:column;align-items:stretch;gap:2px}
+ .tawod-english .en-nav .nav-links>li>a{min-height:44px;padding:10px 12px!important}
+ .tawod-english .nav-services-item{flex-wrap:wrap}
+ .tawod-english .nav-services-toggle{margin-inline-start:auto;margin-inline-end:8px}
+ .tawod-english .nav-services-dropdown{position:static!important;display:none!important;flex-basis:100%;width:100%;grid-template-columns:1fr;visibility:visible;opacity:1;pointer-events:auto;transform:none!important;box-shadow:none!important}
+ .tawod-english .nav-services-item.is-open>.nav-services-dropdown{display:grid!important;transform:none!important}
+ .tawod-english .nav-services-dropdown:after,.tawod-english .nav-services-dropdown:before{display:none}
+}
+@media(max-width:767px){
+ .tawod-english .en-header>.container{gap:8px}
+ .tawod-english .en-hero{padding:125px 0 38px}
+ .tawod-english .hero .hero-title-main{font-size:2rem!important}
+ .tawod-english .hero>.contracting-hero-grid>.hero-media{border-radius:20px 54px 20px 20px!important}
+ .tawod-english .hero>.contracting-hero-grid:before{right:-15px;left:auto}
+ .tawod-english .hero-buttons .btn{font-size:.7rem!important}
+ .tawod-english .card-body{padding:24px!important}
+ .tawod-english .footer-grid{direction:ltr}
+ .tawod-english .float-btns{right:12px!important}
+}
+@media(max-width:380px){.tawod-english .en-header .header-actions>.btn{display:none!important}}
