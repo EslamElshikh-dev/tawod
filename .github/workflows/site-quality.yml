@@ -81,6 +81,21 @@ jobs:
               raise SystemExit(1)
           print(f'Asset-size checks passed for {len(changed)} changed files.')
           PY
+
+      - name: Export generated public fixtures for synchronization
+        run: |
+          python3 - <<'PY'
+          import base64,json,subprocess
+          from pathlib import Path
+          paths=subprocess.check_output(['git','diff','--name-only','--diff-filter=ACM'],text=True).splitlines()
+          paths += ['en/about/index.html']
+          paths=[p for p in dict.fromkeys(paths) if p.endswith(('.html','.xml')) or p in ['data/sitemap-state.json','lib/legacy-html-files.ts']]
+          for p in paths:
+              encoded=base64.b64encode(Path(p).read_bytes()).decode()
+              for offset in range(0,len(encoded),4000):
+                  print('TAWOD_GENERATED '+json.dumps({'path':p,'offset':offset,'total':len(encoded),'data':encoded[offset:offset+4000]}))
+          PY
+
       - name: Verify generated public content
         run: |
           node scripts/verify-contracting-design.mjs --source-baseline
