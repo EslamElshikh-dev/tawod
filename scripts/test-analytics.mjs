@@ -241,7 +241,7 @@ for (const file of htmlFiles('.')) {
 }
 assert.deepEqual(organicForms.map(form => form.file.replace(/^\.\//, '')).sort(), [
   'contact.html', 'dammam/contact/index.html', 'dhahran/contact/index.html',
-  'en/contact/index.html', 'index.html', 'khobar/contact/index.html'
-].sort(), 'the five existing quote forms and the new English form must remain intact');
+  'en/contact/index.html', 'en/index.html', 'index.html', 'khobar/contact/index.html'
+].sort(), 'the Arabic quote forms and both English quote forms must remain intact');
 
 console.log('Verified call/WhatsApp-only Ads landing flow, immediate contact navigation, GA4-only diagnostics, attribution storage, and zero website Google Ads conversion events.');

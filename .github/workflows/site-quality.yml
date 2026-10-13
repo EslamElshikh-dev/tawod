@@ -85,3 +85,4 @@ jobs:
         run: |
           node scripts/verify-contracting-design.mjs --source-baseline
           node scripts/run-static-pages.mjs --check
+          node --test scripts/test-english-parity.mjs
