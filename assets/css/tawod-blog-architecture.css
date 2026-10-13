@@ -298,6 +298,11 @@
   transition: transform 260ms ease;
 }
 
+.tawod-contracting .topic-article-media img.tawod-field-card {
+  height: 100%;
+  object-fit: cover;
+}
+
 .topic-article-card:hover .topic-article-media img {
   transform: scale(1.035);
 }

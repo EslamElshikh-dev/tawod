@@ -632,6 +632,15 @@ ul {
   transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1), filter 700ms ease;
 }
 
+/* Keep field-photo previews consistent when the shared theme sets image height to auto. */
+.tawod-contracting .card-media img.tawod-field-card {
+  height: 256px;
+  object-fit: cover;
+}
+@media (max-width: 767px) {
+  .tawod-contracting .card-media img.tawod-field-card { height: 222px; }
+}
+
 /* Preserve the complete Riyadh campaign artwork, including its Arabic copy. */
 .card-media--campaign a { clip-path: none; border-radius: 12px; }
 .card-media--campaign img { height: auto; aspect-ratio: 4 / 5; object-fit: contain; }

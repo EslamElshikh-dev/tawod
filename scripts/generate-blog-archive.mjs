@@ -139,7 +139,7 @@ function articleCard(article, { featured = false, eager = false } = {}) {
   const campaign = article.image.includes('/tawod-gbp-');
   const campaignStem = campaign ? article.image.replace(/-1200\.webp$/, '') : '';
   const responsiveImage = campaign ? ` width="1122" height="1402" srcset="${campaignStem}-480.webp 480w, ${campaignStem}-960.webp 960w" sizes="(max-width: 767px) calc(100vw - 76px), 360px"` : '';
-  const photoPosition = article.imagePosition ? ` style="object-position:${escapeHtml(article.imagePosition)}"` : '';
+  const photoPosition = article.imagePosition ? ` class="tawod-field-card" style="object-position:${escapeHtml(article.imagePosition)}"` : '';
   return `<article class="article-card${featured ? "" : " reveal"}">
     <div class="card-media${campaign ? ' card-media--campaign' : ''}">${badge}<a href="${url}" aria-label="${escapeHtml(article.title)}"><img alt="${escapeHtml(article.alt)}" decoding="async" loading="${eager ? "eager" : "lazy"}" src="${escapeHtml(campaign ? `${campaignStem}-480.webp` : article.image)}"${responsiveImage}${photoPosition}></a></div>
     <div class="card-body">

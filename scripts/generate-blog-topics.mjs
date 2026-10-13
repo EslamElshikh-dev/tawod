@@ -86,7 +86,7 @@ function formatDate(date) {
 
 function supportingCard(article) {
   return `<article class="topic-article-card">
-    <a class="topic-article-media" href="/blog/${article.slug}/"><img src="${escapeHtml(article.image)}" loading="lazy" decoding="async" alt="${escapeHtml(article.alt)}"${article.imagePosition ? ` style="object-position:${escapeHtml(article.imagePosition)}"` : ''}></a>
+    <a class="topic-article-media" href="/blog/${article.slug}/"><img src="${escapeHtml(article.image)}" loading="lazy" decoding="async" alt="${escapeHtml(article.alt)}"${article.imagePosition ? ` class="tawod-field-card" style="object-position:${escapeHtml(article.imagePosition)}"` : ''}></a>
     <div class="topic-article-copy"><time datetime="${article.datePublished}"><i class="fa-regular fa-calendar" aria-hidden="true"></i> ${formatDate(article.datePublished)}</time><h3><a href="/blog/${article.slug}/">${escapeHtml(article.title)}</a></h3><p>${escapeHtml(article.description)}</p><a class="topic-article-link" href="/blog/${article.slug}/">اقرأ الدليل <i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i></a></div>
   </article>`;
 }
