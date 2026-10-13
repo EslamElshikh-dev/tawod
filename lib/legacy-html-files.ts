@@ -436,7 +436,7 @@ export const legacyHtmlHashes = {
   "en/services/renovation/index.html": "8ccf5ed25af38c231acf045d63bdef3169d1e34d50b127cf4218e1088b509455",
   "en/services/turnkey/index.html": "f6a895ca036c7b27d8101a968852fafabcec4239e1ca2c843a057500eb399a97",
   "en/thank-you.html": "2c604057f0eeb768fd8b7b07b199640035d0a470bbbfcff87718e82973149062",
-  "index.html": "c5c6bf19ff8551d9ca8bdb0df3143cc8f035969e7adfc8a677e207c65f6fdeab",
+  "index.html": "5c165a9e3c4706a9e168b1be15d987474a6e02d6b1a15acc0b1dab51760b29ce",
   "khobar/about/index.html": "df59b970dd8d37d8b6c092eab905c6d87c547e266018c69f4b637528d5b37399",
   "khobar/blog/best-general-contracting-company-khobar/index.html": "8a76804c0b2adc6fb0a48e427451ba4627b780bc7dc89c0bc8c8c44485be6194",
   "khobar/blog/bone-construction-quality-checklist-khobar/index.html": "5086b5ace6c7577c684abe6a8a76fca01dfdf6db8a55a1645a3cfe2b85c71693",

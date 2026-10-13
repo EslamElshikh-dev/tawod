@@ -293,12 +293,30 @@ body.tawod-contracting {
 /* Keep landscape service detail rather than magnifying a narrow central crop. */
 .tawod-contracting .premium-card .card-img-wrap {
   height: auto !important;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: auto;
+  padding: 14px 14px 0 !important;
 }
 .tawod-contracting .premium-card .card-img-wrap .card-img {
+  display: block;
   width: 100% !important;
-  height: 100% !important;
+  height: auto !important;
+  aspect-ratio: 3 / 2;
   object-fit: cover;
+  clip-path: none !important;
+  border-radius: 12px !important;
+}
+/* Keep service badges fully inside the photo, clear of the card heading. */
+.tawod-contracting .premium-card .card-icon-wrap {
+  right: 28px !important;
+  left: auto !important;
+  bottom: 14px !important;
+  transform: none !important;
+  z-index: 2;
+  width: 44px !important;
+  height: 44px !important;
+  font-size: 20px !important;
+  border-radius: 12px !important;
+  pointer-events: none;
 }
 .tawod-contracting img.tawod-native-photo {
   display: block;
