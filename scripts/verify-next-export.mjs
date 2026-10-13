@@ -40,7 +40,7 @@ const intentionalHtmlTransforms = new Map([
       'src="images/projects/faisaliah-villa-facades-finishing-01-v3.webp"',
       'src="images/projects/villa-plaster-ceramic-marble-uhud-riyadh-01.webp"',
       'src="images/projects/alrajhi-tanks-king-salman-park-01.webp"',
-      'src="images/projects/modon-eight-warehouses-02-v3.webp"',
+      'src="images/projects/modon-eight-warehouses-01-v4.webp"',
       "فيلا سكنية | حي الفيصلية",
       "فيلا سكنية | حي أحد",
       "مسجد و ٢ فيلا | حي العروبة",

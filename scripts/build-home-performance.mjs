@@ -41,7 +41,7 @@ const homepageScripts = [...new Set([
   'assets/js/tawod-contracting-layout.js','assets/js/tawod-contracting-motion.js'
 ])];
 const vocabulary = cssVocabulary(
-  homepage+' tawod-contracting contracting-brand-copy contracting-logo-art contracting-footer-group tawod-input-active contracting-hero-grid contracting-icon contracting-city tawod-entered contracting-office-details',
+  homepage+' tawod-contracting contracting-brand-copy contracting-logo-art contracting-footer-group tawod-input-active contracting-hero-grid contracting-icon contracting-city tawod-entered contracting-office-details tawod-native-photo',
   homepageScripts.map(file=>fs.readFileSync(path.join(root,file),'utf8')).join('\n')
 );
 const legacySource = cssSources.filter(file=>!file.includes('tawod-contracting-')).map((file) => {

@@ -5,6 +5,8 @@ import { repairContractingSeo } from '../lib/contracting-seo.mjs';
 import { company, companySchema, riyadh } from './business-branches.mjs';
 import { responsiveImages } from '../lib/contracting-image-assets.mjs';
 import { optimizeArticleMarkup } from '../lib/article-presentation.mjs';
+import sharp from 'sharp';
+import { applyContractingImagePresentation } from '../lib/contracting-image-presentation.mjs';
 
 const scripts = html => [...html.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)]
   .flatMap(m => { const d = JSON.parse(m[1]); return d['@graph'] || [d]; });
@@ -63,7 +65,7 @@ test('responsive sets exist while original source URLs and image alternatives re
   for (const [original, variants] of Object.entries(responsiveImages)) {
     assert.ok(fs.existsSync(original));
     assert.equal(variants[0].width, 480);
-    assert.ok(fs.statSync(variants[0].url.slice(1)).size < fs.statSync(original).size);
+    assert.ok(fs.statSync(variants[0].url.slice(1)).size < 150 * 1024, `${original}: card variant is too large`);
     for (const variant of variants) assert.ok(fs.existsSync(variant.url.slice(1)));
     const input = `<img src="/${original}" width="1200" height="1600" alt="مشروع تعاود" loading="lazy">`;
     const output = repairContractingSeo('blog/example/index.html', input);
@@ -74,6 +76,49 @@ test('responsive sets exist while original source URLs and image alternatives re
   }
   const hero = '<img src="/images/hero-bg-desktop-optimized.webp" alt="" loading="eager">';
   assert.equal(repairContractingSeo('index.html', hero), hero);
+});
+
+test('service images retain the native original detail instead of enlarged thumbnails', async () => {
+  const photographs = {
+    construction: 'images/projects/construction-01.webp',
+    turnkey: 'images/projects/villa-finishing-01.webp',
+    restoration: 'images/projects/faisaliah-villa-facades-finishing-01-gbp.jpg',
+    finishing: 'images/projects/interior-01.webp',
+    decor: 'images/landing/finishing-riyadh.webp',
+  };
+  for (const service of ['construction', 'turnkey', 'restoration', 'finishing', 'decor']) {
+    const stem = `images/services/service-${service}-riyadh`;
+    const source = await sharp(photographs[service]).metadata();
+    const fallback = await sharp(`${stem}.webp`).metadata();
+    assert.deepEqual([fallback.width, fallback.height], [source.width, source.height], service);
+    const variants = responsiveImages[`${stem}.webp`];
+    assert.equal(variants.at(-1).width, source.width, `${service}: full-density variant is missing`);
+    for (const variant of variants) {
+      const actual = await sharp(variant.url.slice(1)).metadata();
+      assert.equal(actual.width, variant.width, `${service}: incorrect srcset width`);
+      assert.ok(actual.width <= source.width, `${service}: original was upscaled`);
+    }
+    const originalPixels = await sharp(photographs[service]).removeAlpha().raw().toBuffer();
+    const restoredPixels = await sharp(`${stem}.webp`).removeAlpha().raw().toBuffer();
+    assert.equal(restoredPixels.length, originalPixels.length);
+    let squaredError = 0;
+    for (let i = 0; i < originalPixels.length; i++) squaredError += (originalPixels[i] - restoredPixels[i]) ** 2;
+    const psnr = 10 * Math.log10(255 ** 2 / (squaredError / originalPixels.length));
+    assert.ok(psnr > 35, `${service}: excessive compression (${psnr.toFixed(1)} dB)`);
+  }
+});
+
+test('existing campaign srcsets, English photos and small field photos use the correct master', () => {
+  const campaign = '<div class="card-media"><img src="/images/blog/tawod-gbp-floor-alignment-480.webp" srcset="/images/blog/tawod-gbp-floor-alignment-480.webp 480w, /images/blog/tawod-gbp-floor-alignment-960.webp 960w" alt="تفاصيل الأرضيات" loading="lazy"></div>';
+  const rendered = applyContractingImagePresentation('blog/index.html', campaign);
+  assert.ok(rendered.includes('1122w'), 'retained campaign master must be available on dense screens');
+  assert.equal(applyContractingImagePresentation('blog/index.html', rendered), rendered);
+  const small = '<img src="/images/projects/arouba-mosque-villas-01.webp" alt="صورة ميدانية">';
+  const smallRendered = applyContractingImagePresentation('en/projects/arouba-mosque-villas/index.html', small);
+  assert.ok(smallRendered.includes('--photo-native-width:420px;'));
+  assert.ok(smallRendered.includes('tawod-native-photo'));
+  assert.equal(applyContractingImagePresentation('en/projects/arouba-mosque-villas/index.html', smallRendered), smallRendered);
+  assert.equal(applyContractingImagePresentation('maintenance/index.html', campaign), campaign);
 });
 
 test('an English company name keeps the same verified office identity', () => {
