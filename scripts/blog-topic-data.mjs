@@ -201,7 +201,7 @@ export const legacyTopicHubSlugs = new Set(blogTopics.map((topic) => topic.url?.
 
 export function topicForArticle(slug) {
   if (/turnkey/.test(slug)) return topicsBySlug.get("turnkey");
-  if (/bone/.test(slug)) return topicsBySlug.get("bone-construction");
+  if (/(bone|structural-shell)/.test(slug)) return topicsBySlug.get("bone-construction");
   if (/(saudi-code|saudi-building-code)/.test(slug)) return topicsBySlug.get("saudi-building-code");
   if (/(robot|drone|digital-twin|bim|smart-construction|future-construction|modern-construction-technolog)/.test(slug)) return topicsBySlug.get("construction-technology");
   if (/(electrical|plumbing|mechanical|mep)/.test(slug)) return topicsBySlug.get("mep");

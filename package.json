@@ -22,6 +22,7 @@
     "check:home": "node scripts/build-home-performance.mjs --check",
     "check:mobile-performance": "node scripts/validate-mobile-performance.mjs",
     "generate:blog": "node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/build-static-pages.mjs && node scripts/install-site-analytics.mjs",
+    "generate:construction-2026-10-13": "node scripts/generate-riyadh-construction-articles-2026-10-13.mjs && node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/build-static-pages.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-sitemaps.mjs",
     "check:blog": "node scripts/validate-blog-archive.mjs",
     "check:blogger-redirects": "node scripts/validate-blogger-redirects.mjs",
     "generate:blog-architecture": "node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/build-static-pages.mjs && node scripts/install-site-analytics.mjs",

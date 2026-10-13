@@ -69,7 +69,7 @@ function articleFromDirectory(slug) {
     /["']dateModified["']\s*:\s*["'](\d{4}-\d{2}-\d{2})/i,
   ]) || "2026-07-13";
   if (!title || !description) throw new Error(`Missing title or description for blog/${slug}/`);
-  return { slug, title, description, image, alt, datePublished, topic: topicForArticle(slug) };
+  return { slug, title, description, image, alt, imagePosition: metaContent(html, "name", "tawod:image-position"), datePublished, topic: topicForArticle(slug) };
 }
 
 function getArticles() {
@@ -86,7 +86,7 @@ function formatDate(date) {
 
 function supportingCard(article) {
   return `<article class="topic-article-card">
-    <a class="topic-article-media" href="/blog/${article.slug}/"><img src="${escapeHtml(article.image)}" loading="lazy" decoding="async" alt="${escapeHtml(article.alt)}"></a>
+    <a class="topic-article-media" href="/blog/${article.slug}/"><img src="${escapeHtml(article.image)}" loading="lazy" decoding="async" alt="${escapeHtml(article.alt)}"${article.imagePosition ? ` style="object-position:${escapeHtml(article.imagePosition)}"` : ''}></a>
     <div class="topic-article-copy"><time datetime="${article.datePublished}"><i class="fa-regular fa-calendar" aria-hidden="true"></i> ${formatDate(article.datePublished)}</time><h3><a href="/blog/${article.slug}/">${escapeHtml(article.title)}</a></h3><p>${escapeHtml(article.description)}</p><a class="topic-article-link" href="/blog/${article.slug}/">اقرأ الدليل <i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i></a></div>
   </article>`;
 }
