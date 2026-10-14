@@ -4,6 +4,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { legacyArchiveCopy, legacyArticleTitles, legacyCardOverrides } from "./blog-archive-content.mjs";
 import { blogTopics, legacyTopicHubSlugs, topicForArticle, topicUrl } from "./blog-topic-data.mjs";
+import { decisionGuides } from './project-decision-guides-2026-10-14.mjs';
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const blogDir = join(rootDir, "blog");
@@ -220,13 +221,14 @@ function archiveContent(page, totalPages, articles, featuredArticles) {
     : `تابع تصفح مقالات تعاود المرتبة من الأحدث إلى الأقدم. تعرض هذه الصفحة المقالات من ${start + 1} إلى ${end}.`;
   const featured = page === 1 ? featuredSection(featuredArticles) : "";
   const topics = page === 1 ? topicExplorerSection(articles) : "";
+  const series = page === 1 ? `<section class="decision-archive" id="project-decision-guides"><div class="container"><span class="eyebrow">محدثة في 14 أكتوبر 2026</span><h2>10 أدلة لقرار أوضح من اختيار المقاول إلى الاستلام</h2><p>ابدأ بالسؤال الذي يشغل مشروعك: نطاق التنفيذ، الجودة، الميزانية، التجهيز أو التسليم.</p><ol class="decision-archive-list">${decisionGuides.map(item => `<li><a href="/blog/${item.slug}/">${escapeHtml(item.title)}</a></li>`).join('')}</ol></div></section>` : '';
   const cards = pageArticles.map((article, index) => articleCard(article, { eager: index < 2 })).join("\n");
 
   return `<!-- BLOG_ARCHIVE_CONTENT_START -->
   <section class="page-hero">
     <div class="container reveal"><nav aria-label="مسار التنقل" class="breadcrumb"><a href="/">الرئيسية</a><i aria-hidden="true" class="fa-solid fa-angle-left"></i>${page === 1 ? "" : '<a href="/blog/">المدونة</a><i aria-hidden="true" class="fa-solid fa-angle-left"></i>'}<span aria-current="page">${pageLabel}</span></nav><h1>${page === 1 ? legacyArchiveCopy.hero.title : `مدونة تعاود — الصفحة ${page}`}</h1><p>${intro}</p></div>
   </section>
-  ${topics ? `${topics}\n  ` : ""}${featured ? `${featured}\n  ` : ""}<section aria-labelledby="latest-title" class="section">
+  ${topics ? `${topics}\n  ` : ""}${featured ? `${featured}\n  ` : ""}${series}<section aria-labelledby="latest-title" class="section">
     <div class="container">
       <div class="section-heading reveal"><div class="section-heading-copy"><span class="eyebrow"><i aria-hidden="true" class="fa-solid fa-clock-rotate-left"></i> ${eyebrow}</span><h2 id="latest-title">${heading}</h2><p>${sectionDescription}</p></div><span class="archive-status"><i aria-hidden="true" class="fa-regular fa-file-lines"></i> المقالات ${start + 1}–${end} من ${articles.length}</span></div>
       <div class="latest-grid">${cards}</div>
@@ -260,6 +262,9 @@ function normalizeShell(html) {
   }
   if (!output.includes(jsSrc)) {
     output = output.replace("</body>", `<script defer src="${jsSrc}"></script></body>`);
+  }
+  if (!output.includes('/assets/css/tawod-decision-guides.css')) {
+    output = output.replace('</head>', '<link href="/assets/css/tawod-decision-guides.css?v=20261014" rel="stylesheet"></head>');
   }
   return output;
 }

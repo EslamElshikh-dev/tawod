@@ -1,3 +1,5 @@
+import { decisionGuides } from './project-decision-guides-2026-10-14.mjs';
+
 export const legacyArchiveCopy = {
   head: {
     title: "مدونة تعاود للمقاولات | مقاولات حديثة وبناء مستقبلي بالرياض",
@@ -156,3 +158,14 @@ export const legacyCardOverrides = {
     description: "رحلة التصميم الداخلي من احتياجات المستخدم إلى مخططات قابلة للتنفيذ وتسليم منظم."
   }
 };
+
+// Approved October decision-guide titles supersede historical card copy.
+for (const article of decisionGuides) {
+  legacyArticleTitles[article.slug] = article.title;
+  legacyCardOverrides[article.slug] = {
+    ...(legacyCardOverrides[article.slug] || {}),
+    title: article.title, description: article.description,
+    category: article.number === 3 ? 'بناء عظم' : article.service === 'turnkey' ? 'تسليم مفتاح' : article.service === 'finishing' ? 'تشطيبات' : article.service === 'restoration' ? 'ترميم وتجديد' : 'مقاولات وبناء',
+    image: `/images/projects/${article.cover}`, alt: article.caption, location: 'الرياض',
+  };
+}

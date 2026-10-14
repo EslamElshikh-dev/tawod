@@ -4,6 +4,16 @@
   "outputDirectory": "out",
   "redirects": [
     {
+      "source": "/commercial-office-fitout-riyadh/:path*",
+      "destination": "/blog/turnkey-commercial-fitout-riyadh/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/commercial-office-fitout-riyadh/:path*",
+      "destination": "/blog/turnkey-commercial-fitout-riyadh/",
+      "permanent": true
+    },
+    {
       "source": "/2026/06/blog-post_25.html",
       "destination": "https://tawodco.com/blog/general-contracting-project-management-riyadh/",
       "statusCode": 301,

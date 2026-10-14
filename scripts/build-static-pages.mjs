@@ -7,6 +7,7 @@ import {optimizePaidServicePage} from './optimize-paid-service-pages.mjs';
 import {newArticleSlugs as riyadhArticleSlugs} from './riyadh-articles-2026-10-08.mjs';
 import {newArticleSlugs as constructionArticleSlugs} from './riyadh-construction-articles-2026-10-13.mjs';
 import {articleProjectExample,articleProjectExamples} from './service-project-evidence.mjs';
+import {decisionSlugs} from './project-decision-guides-2026-10-14.mjs';
 
 const root=process.cwd(),check=process.argv.includes('--check'),domain='https://tawodco.com',date='2026-07-13';
 const marks=['TRUST','TOC','TAKEAWAYS','TOOLS','TOPIC','RELATED','GUIDES','DECISION','CONTEXT','FAQ','SCHEMA','FIELD'];
@@ -157,6 +158,9 @@ function articleSchema(r,h,c,q,stats,metadata){const slug=r.split('/')[1],topic=
 const changes=[];
 for(const f of walk(root).filter(x=>x.endsWith('.html')&&!rel(x).startsWith('assets/project-pages/'))){
   const r=rel(f);
+  // These authored guides own their content, FAQs, dates, service graph and
+  // series navigation through their dedicated source generator.
+  if(decisionSlugs.has(r.match(/^blog\/([^/]+)\/index\.html$/)?.[1]))continue;
   // These self-contained silos and archives own their layout, links, content
   // and schema through dedicated generators. The generic enhancer must never
   // inject cross-silo navigation or duplicate their structured data.

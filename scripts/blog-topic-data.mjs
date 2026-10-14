@@ -200,6 +200,7 @@ const topicsBySlug = new Map(blogTopics.map((topic) => [topic.slug, topic]));
 export const legacyTopicHubSlugs = new Set(blogTopics.map((topic) => topic.url?.match(/^\/blog\/([^/]+)\/$/)?.[1]).filter(Boolean));
 
 export function topicForArticle(slug) {
+  if (slug === 'turnkey-commercial-fitout-riyadh') return topicsBySlug.get('finishing-interior');
   if (/turnkey/.test(slug)) return topicsBySlug.get("turnkey");
   if (/(bone|structural-shell)/.test(slug)) return topicsBySlug.get("bone-construction");
   if (/(saudi-code|saudi-building-code)/.test(slug)) return topicsBySlug.get("saudi-building-code");
