@@ -53,7 +53,7 @@
     "test:social-attribution": "node scripts/test-social-attribution.mjs",
     "build:design": "node scripts/build-contracting-design.mjs",
     "check:design": "node scripts/verify-contracting-design.mjs",
-    "test:seo-repairs": "node --test scripts/test-contracting-seo.mjs scripts/test-article-cover-layout.mjs",
+    "test:seo-repairs": "node --test scripts/test-contracting-seo.mjs scripts/test-article-cover-layout.mjs scripts/test-article-reader.mjs",
     "test:contact-submission": "node scripts/test-contact-submission.mjs",
     "build:report-followup": "node scripts/build-report-followup.mjs && node scripts/install-site-analytics.mjs",
     "test:english-parity": "node --test scripts/test-english-parity.mjs"

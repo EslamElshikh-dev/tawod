@@ -299,6 +299,19 @@
         if (event.key === 'Escape') close(true);
       });
     }
+    if (sidebar) {
+      sidebar.setAttribute('aria-hidden', 'true');
+      sidebar.inert = true;
+      sidebar.addEventListener('keydown', function (event) {
+        if (event.key !== 'Tab' || !sidebar.classList.contains('active')) return;
+        var items = qa('a[href],button:not([disabled]),[tabindex="0"]', sidebar).filter(function (item) { return item.getClientRects().length > 0; });
+        if (!items.length) return;
+        var first = items[0], last = items[items.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      });
+      window.addEventListener('resize', function () { if (window.innerWidth > 1050 && sidebar.classList.contains('active')) close(false); }, { passive: true });
+    }
   }
 
   function setupHeaderScrollState() {
@@ -418,17 +431,28 @@
     var share = q('[data-share-article]');
     var print = q('[data-print-article]');
     var whatsapp = q('[data-whatsapp-share]');
-    if (whatsapp) whatsapp.href = 'https://wa.me/?text=' + encodeURIComponent(document.title + ' ' + location.href);
+    var url = q('link[rel="canonical"]')?.href || location.href;
+    var status = q('[data-share-status]');
+    function fallback() {
+      var holder = q('[data-share-fallback]');
+      if (holder) { holder.hidden = false; var input = q('input', holder); if (input) { input.value = url; input.focus(); input.select(); } }
+      if (status) status.textContent = 'انسخ رابط المقال، أو شاركه عبر واتساب.';
+    }
+    function copy() {
+      if (!navigator.clipboard) return fallback();
+      navigator.clipboard.writeText(url).then(function () {
+        if (status) status.textContent = 'تم نسخ رابط المقال.';
+      }).catch(fallback);
+    }
+    if (whatsapp) whatsapp.href = 'https://wa.me/?text=' + encodeURIComponent(document.title + ' ' + url);
     if (share) share.addEventListener('click', function () {
-      if (navigator.share) {
-        navigator.share({ title: document.title, url: location.href }).catch(function () {});
-      } else if (navigator.clipboard) {
-        navigator.clipboard.writeText(location.href).then(function () {
-          share.textContent = 'تم نسخ الرابط';
-        });
-      }
+      if (navigator.share) navigator.share({ title: document.title, url: url }).catch(function (error) { if (error.name !== 'AbortError') copy(); });
+      else copy();
     });
     if (print) print.addEventListener('click', function () { window.print(); });
+    var printClosed = [];
+    window.addEventListener('beforeprint', function () { printClosed = qa('.reader-faq:not([open])'); printClosed.forEach(function (item) { item.open = true; }); });
+    window.addEventListener('afterprint', function () { printClosed.forEach(function (item) { item.open = false; }); printClosed = []; });
   }
 
   function improveMedia() {

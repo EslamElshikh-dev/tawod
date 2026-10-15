@@ -8,7 +8,10 @@ import * as regular from '@fortawesome/free-regular-svg-icons';
 import * as brands from '@fortawesome/free-brands-svg-icons';
 import { compileContractingCss, cssVocabulary } from './contracting-css.mjs';
 
-execFileSync(process.execPath,['scripts/build-contracting-images.mjs'],{stdio:'inherit'});
+if (!process.argv.includes('--styles-only')) execFileSync(process.execPath,['scripts/build-contracting-images.mjs'],{stdio:'inherit'});
+// The reader imports the generated photo manifest, so load it only after
+// image preparation has completed on a clean checkout.
+const { optimizeArticleMarkup } = await import('../lib/article-presentation.mjs');
 
 const modern=fs.readFileSync('assets/css/tawod-contracting-design.css','utf8')+'\n'+fs.readFileSync('assets/css/tawod-contracting-polish.css','utf8')+'\n'+fs.readFileSync('assets/css/tawod-finishing-stage.css','utf8');
 const urls=[...fs.readFileSync('sitemap.xml','utf8').matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>new URL(m[1]).pathname).filter(p=>!p.startsWith('/maintenance/'));
@@ -29,17 +32,19 @@ function readCss(relative,seen) {
   return fs.readFileSync(relative,'utf8').replace(/@import\s+(?:url\()?['"]([^'"]+)['"]\)?[^;]*;/g,(_,href)=>/^https?:/.test(href)?'':readCss(path.posix.normalize(path.posix.join(path.posix.dirname(relative),href.split('?')[0])),seen));
 }
 const pageStyles={'index.html':'/assets/css/tawod-home-performance.css'},profiles=new Map(),pageProfiles=new Map();
+const readerCss=fs.readFileSync('assets/css/tawod-reader.css','utf8');
 for(const file of files.filter(f=>f!=='index.html')) {
   const html=fs.readFileSync(file,'utf8');
-  const cssFiles=[...html.matchAll(/<link\b[^>]*>/gi)].map(m=>m[0]).filter(t=>/rel=["']stylesheet["']/.test(t)).map(t=>t.match(/href=["']([^"']+)["']/)?.[1]).filter(h=>h&&!/^https?:/.test(h)).map(h=>path.posix.normalize(path.posix.join(h.startsWith('/')?'':path.posix.dirname(file),h.replace(/^\//,'').split('?')[0])));
+  const isArticle=/<article\b[^>]*class=["'][^"']*\barticle-content\b/.test(html);
+  const cssFiles=[...html.matchAll(/<link\b[^>]*>/gi)].map(m=>m[0]).filter(t=>/rel=["']stylesheet["']/.test(t)).map(t=>t.match(/href=["']([^"']+)["']/)?.[1]).filter(h=>h&&!/^https?:/.test(h)).map(h=>path.posix.normalize(path.posix.join(h.startsWith('/')?'':path.posix.dirname(file),h.replace(/^\//,'').split('?')[0]))).filter(f=>!isArticle||!/(?:tawod-article(?:-premium|-headings)?|tawod-decision-guides)\.css$/.test(f));
   if(file==='projects.html')cssFiles.push('assets/css/tawod-projects-showcase.css');
-  const key=cssFiles.join('|');if(!profiles.has(key))profiles.set(key,{cssFiles,html:''});profiles.get(key).html+='\n'+html;pageProfiles.set(file,key);
+  const key=cssFiles.join('|')+(isArticle?'|reader-v1':'');if(!profiles.has(key))profiles.set(key,{cssFiles,html:'',isArticle});profiles.get(key).html+='\n'+(isArticle?optimizeArticleMarkup(file,html):html);pageProfiles.set(file,key);
 }
 for(const [key,profile] of profiles) {
   const vocabulary=cssVocabulary(profile.html+extra,interaction),seen=new Set();
   const layout=compileContractingCss(profile.cssFiles.map(f=>readCss(f,seen)).join('\n'),vocabulary,'legacy-layout.css',true).toString();
   const name=`tawod-contracting-${createHash('sha256').update(key).digest('hex').slice(0,10)}.css`;
-  fs.writeFileSync(`assets/css/${name}`,compileContractingCss(layout+'\n'+modern,vocabulary,name));
+  fs.writeFileSync(`assets/css/${name}`,compileContractingCss(layout+'\n'+modern+(profile.isArticle?'\n'+readerCss:''),vocabulary,name));
   for(const [file,pageKey] of pageProfiles)if(pageKey===key)pageStyles[file]=`/assets/css/${name}`;
 }
 const imageSizes={},images=new Set([...allHtml.matchAll(/<img\b[^>]*\bsrc=["']([^"']+)["']/gi)].map(m=>m[1].replace(/^\//,'').replace(/^(?:\.\.\/)+/,'').split('?')[0]).filter(p=>!/^https?:|^data:/.test(p)));

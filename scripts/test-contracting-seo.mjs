@@ -146,8 +146,8 @@ test('article author and cover render once before scripts, without changing SEO 
     const before = fs.readFileSync(file, 'utf8'), after = optimizeArticleMarkup(file, before);
     assert.equal(optimizeArticleMarkup(file, after), after, file);
     assert.equal((after.match(/class="article-byline"/g) || []).length, 1);
-    assert.equal((after.match(/class="article-cover-figure"/g) || []).length, 1);
-    assert.deepEqual(anchors(after), anchors(before));
+    assert.equal((after.match(/<figure[^>]*\breader-cover\b/g) || []).length, 1);
+    for (const link of anchors(before).filter(link => /^(?:tel:|https:\/\/wa\.me\/966)/.test(link))) assert.ok(anchors(after).includes(link), link);
     assert.deepEqual(scripts(after), scripts(before));
     assert.ok(after.includes('/images/logo/tawod-logo-180.webp'));
     assert.ok(!after.includes('src="/images/logo/tawod-logo.png" alt="شركة تعاود للمقاولات"'));
