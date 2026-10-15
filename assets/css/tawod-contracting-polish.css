@@ -323,7 +323,7 @@ body.tawod-contracting {
   width: 100% !important;
   max-width: var(--photo-native-width) !important;
   height: auto !important;
-  aspect-ratio: auto !important;
+  aspect-ratio: var(--photo-native-ratio) !important;
   object-fit: contain !important;
   margin-inline: auto;
   transform: none !important;

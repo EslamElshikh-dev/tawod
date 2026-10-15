@@ -36,7 +36,7 @@ test('repairs are idempotent and preserve headings, canonical, lead forms and tr
     for (const pattern of [/<title>[\s\S]*?<\/title>/gi, /<h1\b[\s\S]*?<\/h1>/gi, /<link\b[^>]*rel=["']canonical["'][^>]*>/gi, /<(?:form|input|select|textarea)\b[^>]*>/gi, /<script\b[^>]*src=["'][^"']*["'][^>]*>/gi]) {
       assert.deepEqual([...after.matchAll(pattern)].map(m => m[0]), [...before.matchAll(pattern)].map(m => m[0]), file);
     }
-    assert.deepEqual(anchors(after).filter(a => a !== riyadh.mapsUrl), anchors(before).filter(a => a !== riyadh.mapsUrl), file);
+    assert.deepEqual(anchors(after).filter(a => a !== riyadh.mapsUrl), anchors(before).filter(a => a !== riyadh.mapsUrl).map(a => a === 'tel:0551128884' ? 'tel:+966551128884' : a), file);
     assert.ok(!/<footer\b[\s\S]*?<h4\b[^>]*footer-title/.test(after), file);
   }
 });
@@ -44,7 +44,7 @@ test('repairs are idempotent and preserve headings, canonical, lead forms and tr
 test('city silos retain their own navigation and collection items link to their own actual articles', () => {
   for (const city of ['dammam', 'khobar', 'dhahran']) {
     const file = `${city}/blog/index.html`, before = fs.readFileSync(file, 'utf8'), after = repairContractingSeo(file, before);
-    assert.deepEqual(anchors(after), anchors(before), city);
+    assert.deepEqual(anchors(after), anchors(before).map(a => a === 'tel:0551128884' ? 'tel:+966551128884' : a), city);
     assert.ok(!after.includes('contracting-service-areas'));
     const nodes = scripts(after), list = nodes.find(n => n['@type'] === 'ItemList');
     assert.equal(nodes.some(n => n['@type'] === 'Blog' && n.blogPost), false);

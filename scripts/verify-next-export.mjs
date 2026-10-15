@@ -168,9 +168,15 @@ for (const sourceFile of sourceFiles) {
     if (/<article\b[^>]*class=["'][^"']*\barticle-content\b[^"']*\breveal-up\b/i.test(outputHtml)) {
       mismatches.push(`${relativePath}: article content can still be hidden by reveal animation`);
     }
-    const cover = outputHtml.match(/<article\b[^>]*class=["'][^"']*\barticle-content\b[^"']*["'][^>]*>[\s\S]*?<img\b([^>]*)>/i)?.[1] || "";
-    if (cover && (!/loading=["']lazy["']/i.test(cover) || !/fetchpriority=["']low["']/i.test(cover))) {
-      mismatches.push(`${relativePath}: article cover does not use low-priority lazy loading`);
+    const cover = outputHtml.match(/<img\b(?=[^>]*data-article-cover=["']true["'])([^>]*)>/i)?.[1] || "";
+    if (cover && (!/loading=["']eager["']/i.test(cover) || !/fetchpriority=["']high["']/i.test(cover))) {
+      mismatches.push(`${relativePath}: article cover is not prioritized before first paint`);
+    }
+    if (cover) {
+      const width = cover.match(/\bwidth=["'](\d+)/i)?.[1], height = cover.match(/\bheight=["'](\d+)/i)?.[1];
+      if (width && height && !cover.includes(`aspect-ratio:auto ${width} / ${height} !important`)) {
+        mismatches.push(`${relativePath}: article cover does not reserve its final image ratio`);
+      }
     }
   }
 
