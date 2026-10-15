@@ -900,7 +900,7 @@ body.photo-open{overflow:hidden}
 }
 /* October client review: clear service sharing and a distinct lower team statement. */
 .service-request-checklist{display:grid;gap:10px;margin:20px 0;padding:0;list-style:none}
-.service-request-checklist li{display:flex;align-items:flex-start;gap:9px;font-size:.76rem;line-height:1.9;color:var(--ink)}
+.service-request-checklist li{display:flex;align-items:flex-start;gap:9px;font-size:.76rem;line-height:1.9;color:#eee7de}
 .service-request-checklist .icon{width:18px;height:18px;flex:none;margin-top:3px;color:var(--copper)}
 .service-request-options{padding-block:42px;background:#fbf8f2;border-block:1px solid #e8e0d4}
 .service-request-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
