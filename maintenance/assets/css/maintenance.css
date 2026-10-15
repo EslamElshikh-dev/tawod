@@ -899,6 +899,17 @@ body.photo-open{overflow:hidden}
  .reveal-pending{opacity:1;translate:none}
 }
 /* October client review: clear service sharing and a distinct lower team statement. */
+.service-request-checklist{display:grid;gap:10px;margin:20px 0;padding:0;list-style:none}
+.service-request-checklist li{display:flex;align-items:flex-start;gap:9px;font-size:.76rem;line-height:1.9;color:var(--ink)}
+.service-request-checklist .icon{width:18px;height:18px;flex:none;margin-top:3px;color:var(--copper)}
+.service-request-options{padding-block:42px;background:#fbf8f2;border-block:1px solid #e8e0d4}
+.service-request-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.service-request-card{display:flex;flex-direction:column;min-width:0;padding:25px;border:1px solid #e5dbcd;border-radius:20px;background:#fff}
+.service-request-card h3{margin:0 0 12px;font-size:1.05rem;line-height:1.8;color:var(--ink)}
+.service-request-card p{margin:0 0 20px;font-size:.78rem;line-height:2;color:#625c55}
+.service-request-card .text-link{margin-top:auto;min-height:44px;align-self:flex-start;line-height:1.8;font-size:.76rem}
+@media(max-width:700px){.service-request-grid{grid-template-columns:1fr}.service-request-card{padding:20px}.service-request-options{padding-block:30px}.service-request-checklist li{font-size:.73rem}}
+@media print{.service-request-options{display:none!important}}
 .maintenance-page .team-section{padding-top:20px}
 .maintenance-page .team-highlight{position:relative;isolation:isolate;max-width:1050px;margin:auto;padding:clamp(30px,5vw,64px);overflow:hidden;border:1px solid #e7ddce;border-radius:30px;background:linear-gradient(135deg,#fffdf9,#f8efe1);text-align:center;box-shadow:0 14px 40px #46331c08}
 .maintenance-page .team-highlight:before{content:"";position:absolute;z-index:-1;inset:12px;border:1px solid #c9986333;border-radius:22px;pointer-events:none}
