@@ -26,7 +26,7 @@ const pages=files.map(file=>{
  html=html.replace(/<header\b[\s\S]*?<\/header>|<footer\b[\s\S]*?<\/footer>|<aside\b(?=[^>]*class=["']mobile-sidebar["'])[\s\S]*?<\/aside>/gi,intern);
  return{file,title:html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1].replace(/<[^>]+>/g,''),html};
 });
-const js=['assets/js/tawod-inner.js','assets/js/tawod-contracting-ui.js'].map(f=>fs.readFileSync(f,'utf8')).join('\n');
+const js=fs.readFileSync('assets/js/tawod-reader.js','utf8');
 const compressed=gzipSync(Buffer.from(JSON.stringify({pages,styles,fragments,js}))).toString('base64');
 const html=`<!doctype html><html lang="ar" dir="rtl"><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>مراجعة قالب المقالات</title>
 <style>*{box-sizing:border-box}body{margin:0;font:14px system-ui;background:#edf0e9;color:#20352e}header{padding:12px 18px;background:#fff;display:flex;gap:12px;flex-wrap:wrap;align-items:center;border-bottom:1px solid #cdd7cb;position:sticky;top:0;z-index:9}button,select,input{font:inherit;padding:9px;max-width:430px}button{cursor:pointer;background:#24574c;color:#fff;border:0;border-radius:5px}label{display:flex;gap:7px;align-items:center}#status{padding:9px 18px;direction:ltr;text-align:left;white-space:pre-wrap;font:13px monospace;max-height:170px;overflow:auto}iframe{display:block;background:#fff;height:900px;border:0;margin:0 auto;max-width:none}#summary{font-weight:700;padding:8px 18px}</style>
@@ -54,7 +54,7 @@ function measure(doc){
  const win=doc.defaultView,vw=doc.documentElement.clientWidth,content=doc.querySelector('.article-content'),cover=doc.querySelector('[data-article-cover]'),figure=cover.closest('figure');
  const errors=[];if(doc.documentElement.scrollWidth>vw+1)errors.push('document overflow '+doc.documentElement.scrollWidth+' > '+vw);
  const bounds=doc.documentElement.getBoundingClientRect();for(const e of [content,figure,doc.querySelector('.article-byline')]){const r=e.getBoundingClientRect();if(r.left<bounds.left-.5||r.right>bounds.right+.5)errors.push('element outside viewport: '+e.className)}
- const controls=[...doc.querySelectorAll('main .btn,.article-sidebar .btn,.tawod-article-tools button,.tawod-article-tools a')];
+ const controls=[...doc.querySelectorAll('main .btn,.article-sidebar .btn,.tawod-article-tools button,.tawod-article-tools a,.reader-toc summary,.reader-faq summary')];
  for(const e of controls){const r=e.getBoundingClientRect(),s=win.getComputedStyle(e);if(!r.width||!r.height)continue;if(r.height<43.9)errors.push('short target: '+e.textContent.trim());
   let bg=s.backgroundColor,parent=e;while(bg==='rgba(0, 0, 0, 0)'&&parent.parentElement){parent=parent.parentElement;bg=win.getComputedStyle(parent).backgroundColor}
   const a=lum(color(s.color)),b=lum(color(bg)),ratio=(Math.max(a,b)+.05)/(Math.min(a,b)+.05);if(ratio<4.49)errors.push('low contrast '+ratio.toFixed(2)+': '+e.textContent.trim());

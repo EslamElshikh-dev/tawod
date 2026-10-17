@@ -33,6 +33,7 @@ function readCss(relative,seen) {
 }
 const pageStyles={'index.html':'/assets/css/tawod-home-performance.css'},profiles=new Map(),pageProfiles=new Map();
 const readerCss=fs.readFileSync('assets/css/tawod-reader.css','utf8');
+const readerInteraction=fs.readFileSync('assets/js/tawod-reader.js','utf8');
 for(const file of files.filter(f=>f!=='index.html')) {
   const html=fs.readFileSync(file,'utf8');
   const isArticle=/<article\b[^>]*class=["'][^"']*\barticle-content\b/.test(html);
@@ -41,11 +42,18 @@ for(const file of files.filter(f=>f!=='index.html')) {
   const key=cssFiles.join('|')+(isArticle?'|reader-v1':'');if(!profiles.has(key))profiles.set(key,{cssFiles,html:'',isArticle});profiles.get(key).html+='\n'+(isArticle?optimizeArticleMarkup(file,html):html);pageProfiles.set(file,key);
 }
 for(const [key,profile] of profiles) {
-  const vocabulary=cssVocabulary(profile.html+extra,interaction),seen=new Set();
+  const vocabulary=cssVocabulary(profile.html+extra,profile.isArticle?readerInteraction:interaction),seen=new Set();
   const layout=compileContractingCss(profile.cssFiles.map(f=>readCss(f,seen)).join('\n'),vocabulary,'legacy-layout.css',true).toString();
-  const name=`tawod-contracting-${createHash('sha256').update(key).digest('hex').slice(0,10)}.css`;
-  fs.writeFileSync(`assets/css/${name}`,compileContractingCss(layout+'\n'+modern+(profile.isArticle?'\n'+readerCss:''),vocabulary,name));
+  const bytes=compileContractingCss(layout+'\n'+modern+(profile.isArticle?'\n'+readerCss:''),vocabulary,'contracting.css');
+  // Immutable URLs describe their bytes, not just their input profile.
+  const name=`tawod-contracting-${createHash('sha256').update(bytes).digest('hex').slice(0,10)}.css`;
+  fs.writeFileSync(`assets/css/${name}`,bytes);
   for(const [file,pageKey] of pageProfiles)if(pageKey===key)pageStyles[file]=`/assets/css/${name}`;
+}
+const currentStyles=new Set(Object.values(pageStyles).map(p=>path.posix.basename(p)));
+let removedStyles=0;
+for(const name of fs.readdirSync('assets/css')) if(/^tawod-contracting-[a-f0-9]{10}\.css$/.test(name)&&!currentStyles.has(name)) {
+  fs.unlinkSync(`assets/css/${name}`);removedStyles++;
 }
 const imageSizes={},images=new Set([...allHtml.matchAll(/<img\b[^>]*\bsrc=["']([^"']+)["']/gi)].map(m=>m[1].replace(/^\//,'').replace(/^(?:\.\.\/)+/,'').split('?')[0]).filter(p=>!/^https?:|^data:/.test(p)));
 for(const file of images) {
@@ -67,4 +75,5 @@ const dynamic={'fa-clock':iconMarkup['regular-clock'],'fa-circle-check':iconMark
 fs.writeFileSync('assets/js/tawod-contracting-ui.js',`/* Generated local icons for shared article interactions. */\n(()=>{const icons=${JSON.stringify(dynamic)};function decorate(){for(const [name,svg]of Object.entries(icons))document.querySelectorAll('i.'+name+':empty').forEach(i=>{i.innerHTML=svg;i.setAttribute('aria-hidden','true')});document.querySelectorAll('.article-byline img').forEach(i=>{i.src='/images/logo/tawod-logo-180.webp';i.width=180;i.height=80;i.decoding='async'})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',decorate,{once:true});else decorate()})();\n`);
 fs.appendFileSync('assets/js/tawod-contracting-ui.js','\n'+fs.readFileSync('assets/js/tawod-contracting-layout.js','utf8')+'\n'+fs.readFileSync('assets/js/tawod-contracting-motion.js','utf8'));
 fs.appendFileSync('lib/contracting-design-assets.mjs',`export const uiRevision='${createHash('sha256').update(fs.readFileSync('assets/js/tawod-contracting-ui.js')).digest('hex').slice(0,12)}';\n`);
-console.log(`Prepared contracting design: ${files.length} pages, ${profiles.size} CSS profiles, ${Object.keys(imageSizes).length} image dimensions, ${Buffer.byteLength(critical)} critical bytes.`);
+fs.appendFileSync('lib/contracting-design-assets.mjs',`export const readerRevision='${createHash('sha256').update(readerInteraction).digest('hex').slice(0,12)}';\n`);
+console.log(`Prepared contracting design: ${files.length} pages, ${profiles.size} CSS profiles, ${Object.keys(imageSizes).length} image dimensions, ${Buffer.byteLength(critical)} critical bytes; removed ${removedStyles} obsolete generated styles.`);

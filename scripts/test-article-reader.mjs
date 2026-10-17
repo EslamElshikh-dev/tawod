@@ -3,6 +3,10 @@ import fs from 'node:fs';
 import { test } from 'node:test';
 import { optimizeArticleMarkup } from '../lib/article-presentation.mjs';
 import { applyContractingImagePresentation } from '../lib/contracting-image-presentation.mjs';
+import { applyContractingDesign } from '../lib/contracting-design.mjs';
+import { pageStyles, readerRevision } from '../lib/contracting-design-assets.mjs';
+import { createHash } from 'node:crypto';
+import { gzipSync } from 'node:zlib';
 
 export const articleFiles = ['blog', 'dammam/blog', 'khobar/blog', 'dhahran/blog'].flatMap(root => fs.readdirSync(root, { withFileTypes: true }).filter(item => item.isDirectory() && fs.existsSync(`${root}/${item.name}/index.html`)).map(item => `${root}/${item.name}/index.html`)).filter(file => /<article\b[^>]*class=["'][^"']*\barticle-content\b/.test(fs.readFileSync(file, 'utf8')));
 const attr = (tag, name) => tag.match(new RegExp(`\\b${name}=["']([^"']*)["']`))?.[1];
@@ -33,9 +37,33 @@ for (const file of articleFiles) test(`reader contract: ${file}`, () => {
   for (const match of toc.matchAll(/href="#([^"]+)"/g)) assert.ok(html.includes(`id="${match[1]}"`), `broken contents target ${match[1]}`);
   assert.equal((html.match(/<table\b/g) || []).length, (html.match(/class="reader-table"/g) || []).length, 'every table gets an independent scroll region');
   assert.ok(html.includes('data-share-fallback hidden') && html.includes('data-share-status'), 'sharing must include an accessible fallback');
+  assert.ok(html.includes('class="reader-skip"'), 'keyboard readers can skip navigation');
+  assert.ok(!/class=["']seo-faq-item["']/.test(html), 'old FAQs use native disclosure');
+  const rendered = applyContractingDesign(file, html);
+  assert.equal((rendered.match(/src="[^"']*\/tawod-reader\.js\?/g) || []).length, 1, 'one article interaction bundle');
+  assert.ok(!/src="[^"']*\/(?:tawod-inner|tawod-contracting-ui)\.js/.test(rendered), 'general page scripts must not run again on articles');
+  const tracking = value => [...value.matchAll(/<script\b[^>]*src=["']([^"']*(?:tawod-analytics|tawod-first-party|tawod-whatsapp-attribution)[^"']*)["']/g)].map(m => m[1]);
+  assert.deepEqual(tracking(rendered), tracking(source), 'lead attribution stays intact');
   const final = applyContractingImagePresentation(file, html);
   const finalCover = final.match(/<img\b(?=[^>]*data-article-cover="true")[^>]*>/)[0];
   assert.ok(finalCover.includes(`aspect-ratio:auto ${attr(finalCover, 'width')} / ${attr(finalCover, 'height')} !important`));
+});
+
+test('immutable compiled styles match their content and obsolete profiles are absent', () => {
+  const current = new Set(Object.values(pageStyles).map(p => p.split('/').at(-1)));
+  for (const file of fs.readdirSync('assets/css').filter(f => /^tawod-contracting-[a-f0-9]{10}\.css$/.test(f))) {
+    assert.ok(current.has(file), `obsolete stylesheet shipped: ${file}`);
+    assert.ok(file.includes(createHash('sha256').update(fs.readFileSync(`assets/css/${file}`)).digest('hex').slice(0,10)), `stale immutable URL: ${file}`);
+  }
+  assert.equal(readerRevision, createHash('sha256').update(fs.readFileSync('assets/js/tawod-reader.js')).digest('hex').slice(0,12));
+});
+
+test('article interaction and style payloads stay within their budgets', () => {
+  const js = fs.readFileSync('assets/js/tawod-reader.js');
+  assert.ok(js.length < 6 * 1024 && gzipSync(js).length < 2 * 1024, 'article interaction budget exceeded');
+  const oldBytes = fs.statSync('assets/js/tawod-inner.js').size + fs.statSync('assets/js/tawod-contracting-ui.js').size;
+  assert.ok(js.length < oldBytes * .25, 'articles must shed at least 75% of the general interaction payload');
+  for (const css of new Set(articleFiles.map(file => pageStyles[file]))) assert.ok(gzipSync(fs.readFileSync(css.slice(1))).length < 16 * 1024, `article CSS exceeds 16 KiB gzip: ${css}`);
 });
 
 test('article system leaves archives, service pages and nonarticle pages untouched', () => {

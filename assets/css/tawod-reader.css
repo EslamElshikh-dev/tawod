@@ -55,6 +55,23 @@ html body.tawod-reader .article-content li::before { display:none!important; }
 html body.tawod-reader .article-content li::marker { color:var(--reader-copper); font-weight:650; }
 html body.tawod-reader .article-content a { color:var(--reader-green)!important; text-decoration:underline!important; text-decoration-thickness:1px!important; text-underline-offset:4px; overflow-wrap:anywhere; }
 html body.tawod-reader :is(a,button,summary,input,select,textarea):focus-visible { outline:3px solid #936036!important; outline-offset:4px!important; }
+html body.tawod-reader .reader-skip { position:fixed; inset:10px auto auto 50%; z-index:3000; transform:translate(-50%,-160%); padding:14px 22px; border-radius:9px; background:#25584d; color:#fff; font-size:.9rem; text-decoration:none; }
+html body.tawod-reader .reader-skip:focus { transform:translate(-50%,0); }
+/* Native service menus reserve their space before scripts or fonts arrive. */
+html body.tawod-reader .reader-services-item { position:relative; display:flex; align-items:center; gap:2px; }
+html body.tawod-reader .reader-services>summary { display:flex; align-items:center; justify-content:center; width:44px; min-height:44px; padding:10px; margin:0; border:0; border-radius:8px; background:transparent; cursor:pointer; list-style:none; }
+html body.tawod-reader .reader-services>summary .reader-faq-icon { margin-inline-start:0; }
+html body.tawod-reader :is(.reader-services,.reader-services-mobile)>summary::-webkit-details-marker { display:none; }
+html body.tawod-reader .reader-services-list { position:absolute; inset:calc(100% + 14px) auto auto 50%; transform:translateX(-50%); z-index:1250; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; width:min(520px,80vw); padding:14px; border:1px solid var(--reader-line); border-radius:13px; background:#fff; box-shadow:0 12px 32px #20352e15; }
+html body.tawod-reader .header .reader-services-list>a { display:flex; flex-direction:column; gap:5px; min-height:70px; padding:12px!important; border-radius:8px; background:#f5f7f2; color:var(--reader-green)!important; white-space:normal; text-decoration:none; line-height:1.8; }
+html body.tawod-reader .header .reader-services-list>a::after { display:none; }
+html body.tawod-reader .reader-services-list strong { font-size:.79rem; font-weight:600; }
+html body.tawod-reader .reader-services-list small { font-size:.66rem; color:var(--reader-copy); }
+html body.tawod-reader .reader-services-mobile>summary { display:flex; align-items:center; min-height:52px; padding:13px 0; border-bottom:1px solid var(--reader-line); cursor:pointer; font-size:.96rem; list-style:none; }
+html body.tawod-reader .reader-services-mobile>div { padding:0 12px 12px; background:#f3f6f0; border-radius:0 0 9px 9px; }
+html body.tawod-reader .reader-services-mobile strong { font-size:.82rem; font-weight:500; }
+html body.tawod-reader .reader-services-mobile small { display:none; }
+html body.tawod-reader .reader-services-mobile a:last-child { font-size:.78rem!important; color:var(--reader-green)!important; }
 /* The logo, author name and descriptor use separate boxes at every width. */
 html body.tawod-reader .article-byline { display:flex!important; align-items:center!important; gap:14px!important; padding:0 0 22px!important; margin:0 0 24px!important; border:0!important; border-bottom:1px solid var(--reader-line)!important; border-radius:0!important; background:none!important; box-shadow:none!important; }
 html body.tawod-reader .reader-brand { display:flex!important; align-items:center; justify-content:center; flex:0 0 74px; width:74px; height:48px; border:1px solid var(--reader-line); border-radius:9px; background:#fff; }
@@ -84,7 +101,7 @@ html body.tawod-reader .reader-toc summary::-webkit-details-marker,html body.taw
 html body.tawod-reader .reader-toc-hint { margin-inline-start:auto; color:#67736d; font-size:.7rem; font-weight:400; }
 html body.tawod-reader .reader-toc ol { columns:2; column-gap:28px; padding:0 38px 14px 18px!important; margin:0!important; }
 html body.tawod-reader .reader-toc li { break-inside:avoid; margin:8px 0!important; padding:0!important; font-size:.8rem!important; line-height:1.9!important; }
-html body.tawod-reader .reader-toc a { display:inline-block; padding-block:5px; text-decoration:none!important; }
+html body.tawod-reader .reader-toc a { display:inline-flex; align-items:center; min-height:44px; padding-block:8px; text-decoration:none!important; }
 /* Scroll the table region, never the document. Real table semantics remain. */
 html body.tawod-reader :is(.decision-table,.tawod-table-scroll) { margin:22px 0!important; padding:0!important; border:0!important; border-radius:0!important; overflow:visible!important; }
 html body.tawod-reader .reader-table { width:100%; min-width:0; max-width:100%; overflow-x:auto; overscroll-behavior-inline:contain; -webkit-overflow-scrolling:touch; border:1px solid var(--reader-line); border-radius:10px; margin:22px 0; background:#fff; }
@@ -93,6 +110,7 @@ html body.tawod-reader .reader-table :is(th,td) { padding:14px 16px!important; t
 html body.tawod-reader .reader-table th { background:#edf2eb!important; color:var(--reader-ink)!important; font-weight:600; }
 html body.tawod-reader .reader-table caption { padding:15px 16px; text-align:start; background:#fafaf5; color:var(--reader-ink); font-weight:600; }
 html body.tawod-reader .reader-table tr:last-child td { border-bottom:0!important; }
+html body.tawod-reader .reader-table tbody tr:nth-child(even) { background:#fafbf8; }
 /* Action colors override legacy article-link colors, with a 48px target. */
 html body.tawod-reader :is(a.btn,button.btn,.tawod-article-tools button,.tawod-article-tools a) { display:inline-flex!important; align-items:center!important; justify-content:center!important; gap:8px!important; min-height:48px!important; min-width:44px!important; max-width:100%!important; padding:12px 18px!important; margin:0!important; border:1px solid #c7d1c9!important; border-radius:9px!important; background:#fff!important; color:var(--reader-green)!important; box-shadow:none!important; text-decoration:none!important; text-align:center!important; white-space:normal!important; font:inherit; font-size:.82rem!important; font-weight:600!important; line-height:1.7!important; cursor:pointer; transform:none!important; transition:background .15s ease,border-color .15s ease; overflow:visible!important; }
 html body.tawod-reader :is(.btn-primary,button[type="submit"].btn) { background:#edb77c!important; border-color:#c58a4c!important; color:#252b24!important; }
@@ -137,6 +155,9 @@ html body.tawod-reader .reader-faq-icon { display:inline-block; width:9px; heigh
 html body.tawod-reader details[open]>summary .reader-faq-icon { transform:rotate(225deg); margin-block-start:5px; }
 html body.tawod-reader .reader-faq-answer { padding:0 20px 20px; font-size:.9rem; line-height:2; color:var(--reader-copy); }
 html body.tawod-reader .reader-faq-answer p { font-size:.9rem!important; margin:0!important; }
+html body.tawod-reader .seo-faq { display:grid; gap:12px; margin-block:24px; }
+html body.tawod-reader .reader-faq[open] { border-color:#9db6a6; }
+html body.tawod-reader .reader-faq[open]>summary { color:var(--reader-green); }
 html body.tawod-reader .decision-form-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
 html body.tawod-reader .decision-form-grid label { display:flex; flex-direction:column; gap:8px; min-width:0; font-size:.85rem; }
 html body.tawod-reader :is(input,select,textarea) { max-width:100%; font:inherit; font-size:16px!important; min-height:48px; }
@@ -185,6 +206,7 @@ html body.tawod-reader :is(input,select,textarea) { max-width:100%; font:inherit
   html body.tawod-reader .reader-toc summary { padding:13px 14px; font-size:.78rem; gap:10px; }
   html body.tawod-reader .reader-toc-hint { font-size:.62rem; }
   html body.tawod-reader .reader-toc ol { columns:1; padding-inline-start:32px!important; }
+  html body.tawod-reader .reader-table::after { content:'↔ مرّر الجدول أفقيًا لقراءة جميع الأعمدة'; display:block; position:sticky; right:0; width:100%; padding:9px 12px; font-size:.68rem; line-height:1.8; color:var(--reader-copy); background:#f5f7f2; border-top:1px solid var(--reader-line); }
   html body.tawod-reader :is(.decision-gallery,.seo-info-grid,.decision-form-grid,.tawod-related-grid,.tawod-article-related-grid) { grid-template-columns:1fr!important; }
   html body.tawod-reader :is(.decision-cta,.seo-inline-cta,.tawod-key-takeaways,.article-note,.decision-sources) { padding:19px 16px!important; }
   html body.tawod-reader .decision-actions { display:grid!important; grid-template-columns:1fr!important; gap:10px!important; }
@@ -208,6 +230,13 @@ html body.tawod-reader :is(input,select,textarea) { max-width:100%; font:inherit
   html body.tawod-reader .tawod-article-tools a { grid-column:1/-1; }
 }
 @media(prefers-reduced-motion:reduce) { html body.tawod-reader *,html body.tawod-reader *::before,html body.tawod-reader *::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
+/* A compositor-only reading line; unsupported browsers simply omit it. */
+@supports (animation-timeline:view()) {
+  html body.tawod-reader .article-content { view-timeline-name:--article-reading; view-timeline-axis:block; }
+  html body.tawod-reader .article-content::before { content:''; position:fixed; inset:0 0 auto; height:3px; z-index:2100; background:#25584d; transform:scaleX(0); transform-origin:right; animation:reader-progress linear both; animation-timeline:--article-reading; animation-range:contain 0% contain 100%; pointer-events:none; }
+  @keyframes reader-progress { to { transform:scaleX(1); } }
+}
+@media(prefers-reduced-motion:reduce) { html body.tawod-reader .article-content::before { display:none!important; } }
 @media print {
   html body.tawod-reader { background:#fff!important; }
   html body.tawod-reader :is(.header,.footer,.float-btns,.mobile-sidebar,.sidebar-overlay,.article-sidebar,.reader-toc,.tawod-article-tools,.tawod-inner-trust,.hero-actions) { display:none!important; }
@@ -215,6 +244,7 @@ html body.tawod-reader :is(input,select,textarea) { max-width:100%; font:inherit
   html body.tawod-reader main .container { width:100%!important; max-width:none!important; }
   html body.tawod-reader .article-layout { display:block!important; }
   html body.tawod-reader .article-content { padding:0!important; border:0!important; }
+  html body.tawod-reader .article-content::before,html body.tawod-reader .reader-skip { display:none!important; }
   html body.tawod-reader .reader-faq-answer { display:block!important; }
   html body.tawod-reader .reader-table { overflow:visible; }
   html body.tawod-reader .reader-table table { min-width:0; font-size:10pt!important; }
