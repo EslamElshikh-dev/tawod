@@ -39,6 +39,7 @@ for (const file of articleFiles) test(`reader contract: ${file}`, () => {
   assert.ok(html.includes('data-share-fallback hidden') && html.includes('data-share-status'), 'sharing must include an accessible fallback');
   assert.ok(html.includes('class="reader-skip"'), 'keyboard readers can skip navigation');
   assert.ok(!/class=["']seo-faq-item["']/.test(html), 'old FAQs use native disclosure');
+  for (const faq of html.matchAll(/<details class="reader-faq">([\s\S]*?)<\/details>/g)) assert.match(faq[1], /^<summary><span>/, 'the question label, not the arrow, must receive the flexible width');
   const rendered = applyContractingDesign(file, html);
   assert.equal((rendered.match(/src="[^"']*\/tawod-reader\.js\?/g) || []).length, 1, 'one article interaction bundle');
   assert.ok(!/src="[^"']*\/(?:tawod-inner|tawod-contracting-ui)\.js/.test(rendered), 'general page scripts must not run again on articles');

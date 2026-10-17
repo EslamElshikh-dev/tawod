@@ -150,7 +150,7 @@ html body.tawod-reader .tawod-faq-section { padding:48px 0!important; background
 html body.tawod-reader .faq-wrap { display:grid!important; grid-template-columns:1fr!important; gap:12px!important; max-width:960px!important; margin-inline:auto!important; }
 html body.tawod-reader .reader-faq { min-width:0; border:1px solid var(--reader-line); background:#fff; border-radius:11px; overflow:hidden; }
 html body.tawod-reader .reader-faq summary { display:flex; align-items:center; gap:16px; min-height:62px; padding:18px 20px; cursor:pointer; color:var(--reader-ink); font-size:.9rem; font-weight:600; line-height:1.9; list-style:none; }
-html body.tawod-reader .reader-faq summary>span:first-child { flex:1; }
+html body.tawod-reader .reader-faq summary>span:first-child:not(.reader-faq-icon) { flex:1; }
 html body.tawod-reader .reader-faq-icon { display:inline-block; width:9px; height:9px; flex:0 0 9px; border:solid #557469; border-width:0 2px 2px 0; transform:rotate(45deg); margin-inline-start:auto; margin-block-start:-5px; }
 html body.tawod-reader details[open]>summary .reader-faq-icon { transform:rotate(225deg); margin-block-start:5px; }
 html body.tawod-reader .reader-faq-answer { padding:0 20px 20px; font-size:.9rem; line-height:2; color:var(--reader-copy); }
