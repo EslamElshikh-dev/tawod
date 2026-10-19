@@ -908,6 +908,18 @@ body.photo-open{overflow:hidden}
 .service-request-card h3{margin:0 0 12px;font-size:1.05rem;line-height:1.8;color:var(--ink)}
 .service-request-card p{margin:0 0 20px;font-size:.78rem;line-height:2;color:#625c55}
 .service-request-card .text-link{margin-top:auto;min-height:44px;align-self:flex-start;line-height:1.8;font-size:.76rem}
+.service-request-actions{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:auto}
+.service-request-actions .text-link{margin-top:0}
+.service-request-actions .request-call{color:var(--ink);font-weight:700}
+.maintenance-page .service-hero-grid>div>.service-contact-number{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:12px;font-size:.76rem;line-height:1.8;color:#635c54}
+.service-contact-number a{font-size:1.02rem;font-weight:750;color:var(--ink);text-decoration:underline;text-underline-offset:5px}
+.service-hero-highlights{display:flex;flex-wrap:wrap;gap:10px 20px;margin:22px 0 0;padding:0;list-style:none;color:#5d564e}
+.service-hero-highlights li{display:flex;align-items:flex-start;gap:6px;font-size:.7rem;line-height:1.9}
+.service-hero-highlights .icon{width:16px;height:16px;flex:none;margin-top:3px;color:var(--copper)}
+.service-quote-note{display:flex;align-items:flex-start;gap:15px;margin-top:22px;padding:20px 24px;border:1px solid #e4dacb;border-radius:18px;background:#f4efe6}
+.service-quote-note>span{display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:12px;background:#fff;color:var(--copper)}
+.service-quote-note h3{margin:0 0 5px;font-size:.88rem;color:var(--ink)}
+.service-quote-note p{margin:0;max-width:900px;font-size:.76rem;line-height:2;color:#625c55}
 @media(max-width:700px){.service-request-grid{grid-template-columns:1fr}.service-request-card{padding:20px}.service-request-options{padding-block:30px}.service-request-checklist li{font-size:.73rem}}
 @media print{.service-request-options{display:none!important}}
 .maintenance-page .team-section{padding-top:20px}
