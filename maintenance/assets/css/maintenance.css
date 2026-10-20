@@ -960,3 +960,6 @@ body.photo-open{overflow:hidden}
 .emergency-badge{display:flex;align-items:center;gap:8px;width:fit-content;margin-bottom:18px;padding:8px 13px;border:1px solid var(--line);border-radius:8px;background:#fbf1e4;color:var(--copper)}
 .service-hero-grid>div>.service-search-intent{font-weight:600;color:var(--copper)}
 @media(max-width:700px){.site-header .brand-copy>.brand-audience{max-width:150px;font-size:.48rem}.commitments-compact .principles-grid{padding-block:16px}}
+
+/* Hide only the legacy decorative duplicate; privacy HTML remains unchanged. */
+.brand-logo>img.brand-icon-color[aria-hidden="true"]{display:none}
