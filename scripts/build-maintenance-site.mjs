@@ -243,7 +243,13 @@ function privacy(){return shell({title:'الخصوصية | تعاود للصيا
 
 writeFileSync('maintenance/index.html',home());
 writeFileSync('maintenance/services.html',catalog());
-// Keep maintenance/privacy.html verbatim; campaign copy does not regenerate privacy.
+// Preserve privacy content and markup; refresh only shared asset cache keys.
+const privacyPath='maintenance/privacy.html';
+const privacyHtml=readFileSync(privacyPath,'utf8');
+const privacyWithCurrentAssets=privacyHtml
+ .replace(/(href="\/maintenance\/assets\/css\/maintenance\.css\?v=)[a-f0-9]+(?=")/g,(_,prefix)=>prefix+revision('maintenance/assets/css/maintenance.css'))
+ .replace(/(src="\/maintenance\/assets\/js\/maintenance\.js\?v=)[a-f0-9]+(?=")/g,(_,prefix)=>prefix+revision('maintenance/assets/js/maintenance.js'));
+if(privacyWithCurrentAssets!==privacyHtml)writeFileSync(privacyPath,privacyWithCurrentAssets);
 for(const s of services)writeFileSync(`maintenance/${s.slug}.html`,servicePage(s));
 // Preserve existing sitemap image/alternate metadata while adding the sector page.
 const urls=['', 'services.html','privacy.html',...services.map(s=>s.slug+'.html')].map(p=>B.url+p);
