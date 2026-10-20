@@ -48,7 +48,7 @@ bdi{font-family:Arial,sans-serif;letter-spacing:.015em}
 .brand{display:flex;align-items:center;gap:13px;flex-shrink:0;min-width:0}
 .brand-logo{position:relative;display:block;flex:0 0 98px;width:98px;aspect-ratio:917/408}
 .brand .brand-logo img{width:100%;height:auto;filter:brightness(0)}
-.brand .brand-logo .brand-icon-color{position:absolute;inset:0;filter:none;clip-path:inset(0 0 0 62%);pointer-events:none}
+.site-header .brand-logo::after{content:"";position:absolute;inset:0;background:url('/images/logo/tawod-logo-180.webp') center/contain no-repeat;clip-path:inset(0 0 0 62%);pointer-events:none}
 .brand-copy{display:flex;flex-direction:column;min-width:0;padding-inline-start:13px;border-inline-start:1px solid #dab085;line-height:1.8}
 .brand-copy strong{color:var(--ink);font-size:.77rem;font-weight:700;white-space:nowrap}
 .brand-copy>.brand-translation{color:var(--ink);font:500 .59rem/1.8 Arial,sans-serif;white-space:nowrap;text-align:right}
@@ -949,3 +949,14 @@ body.photo-open{overflow:hidden}
 .maintenance-page .service-photo-grid figcaption small{font-size:.6rem;color:#817260;font-weight:400}
 .maintenance-page .hero-field-note img{object-position:center 72%}
 @media(max-width:700px){.maintenance-page .team-highlight{border-radius:24px;padding:28px 20px}.maintenance-page .team-highlight>p{font-size:.76rem}.maintenance-page .team-points{gap:10px 13px;font-size:.68rem}.maintenance-page .service-share{grid-template-columns:1fr;justify-items:start;gap:14px;padding:20px}.maintenance-page .service-share h3{font-size:.9rem}.maintenance-page .service-share p{font-size:.72rem}.maintenance-page .team-highlight .button{font-size:.74rem}}
+
+/* Campaign content components: inherit the existing palette, cards and type. */
+.brand-copy>.brand-audience{max-width:220px;font-size:.57rem;line-height:1.8;color:var(--ink);white-space:normal}
+.site-footer .brand-copy>.brand-audience{color:#cbc4bb}
+.commitments-full .principles-grid{margin-top:0}
+.commitments-compact{padding-block:18px}
+.commitments-compact .principles-grid{margin-top:0;padding-block:20px;box-shadow:none}
+.commitments .principles-grid>div>span .icon{width:18px;height:18px}
+.emergency-badge{display:flex;align-items:center;gap:8px;width:fit-content;margin-bottom:18px;padding:8px 13px;border:1px solid var(--line);border-radius:8px;background:#fbf1e4;color:var(--copper)}
+.service-hero-grid>div>.service-search-intent{font-weight:600;color:var(--copper)}
+@media(max-width:700px){.site-header .brand-copy>.brand-audience{max-width:150px;font-size:.48rem}.commitments-compact .principles-grid{padding-block:16px}}
