@@ -3,6 +3,7 @@ import { join } from "node:path";
 import process from "node:process";
 
 import { articles, newArticleSlugs } from "./bone-construction-series-2026-08-29.mjs";
+import { decisionGuides, updated as decisionGuideDate } from "./project-decision-guides-2026-10-14.mjs";
 
 const root = process.cwd();
 const errors = [];
@@ -98,19 +99,40 @@ for (const article of articles) {
   const articleBody = html.match(/<article[^>]*class=["'][^"']*article-content[^"']*["'][^>]*>([\s\S]*?)<\/article>/i)?.[1] || "";
   const wordCount = plainText(articleBody).split(/\s+/).filter(Boolean).length;
   const faqCount = (html.match(/class=["'][^"']*faq-item[^"']*["']/g) || []).length;
+  // The pillar was rewritten in the October decision series. Keep validating
+  // its published metadata and FAQ markup instead of the superseded August copy.
+  const decisionGuide = article.slug === pillarSlug
+    ? decisionGuides.find((guide) => guide.slug === article.slug) : null;
+  const expected = decisionGuide || article;
+  let expectedFaqs = article.faqs;
+  if (decisionGuide) {
+    if (!html.includes(`data-decision-series="${decisionGuideDate}"`)) errors.push(`${article.slug}: decision-series marker missing`);
+    const faqSchemas = [...html.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)]
+      .flatMap((match) => {
+        try {
+          const schema = JSON.parse(match[1]);
+          return [schema, ...(schema["@graph"] || [])].filter((entry) => entry["@type"] === "FAQPage");
+        } catch { return []; } // Invalid JSON-LD is reported by articleEntityCount below.
+      });
+    if (faqSchemas.length !== 1) errors.push(`${article.slug}: expected exactly one FAQPage entity`);
+    expectedFaqs = (faqSchemas[0]?.mainEntity || []).map((entry) => [entry.name, entry.acceptedAnswer?.text]);
+    if (expectedFaqs.length !== 4) errors.push(`${article.slug}: expected four current decision FAQs`);
+    if (new Set(expectedFaqs.map(([question]) => question)).size !== expectedFaqs.length) errors.push(`${article.slug}: duplicate FAQ questions`);
+  }
 
-  if (title !== article.seoTitle) errors.push(`${article.slug}: unexpected SEO title (${title})`);
-  if (h1 !== article.title) errors.push(`${article.slug}: unexpected H1 (${h1})`);
-  if (description !== article.description) errors.push(`${article.slug}: meta description drifted from source data`);
+  if (title !== expected.seoTitle) errors.push(`${article.slug}: unexpected SEO title (${title})`);
+  if (h1 !== expected.title) errors.push(`${article.slug}: unexpected H1 (${h1})`);
+  if (description !== expected.description) errors.push(`${article.slug}: meta description drifted from source data`);
   if (canonical !== `${domain}/blog/${article.slug}/`) errors.push(`${article.slug}: canonical mismatch (${canonical})`);
   if (!/name=["']robots["'][^>]*content=["'][^"']*index/i.test(head)) errors.push(`${article.slug}: indexable robots directive missing`);
   if (/عضم|\bافضل\b/.test(`${title} ${h1} ${description}`)) errors.push(`${article.slug}: typo variant appears in a primary SEO field`);
   if (wordCount < 900) errors.push(`${article.slug}: article body is thin at ${wordCount} words`);
-  if (faqCount !== article.faqs.length) errors.push(`${article.slug}: expected ${article.faqs.length} authored FAQs, found ${faqCount}`);
-  if (!html.includes("TAWOD_AUTHORED_FAQ_START")) errors.push(`${article.slug}: authored FAQ marker missing`);
-  for (const [question, answer] of article.faqs) {
-    if (!html.includes(question)) errors.push(`${article.slug}: authored FAQ question missing (${question})`);
-    if (!html.includes(answer)) errors.push(`${article.slug}: authored FAQ answer missing (${question})`);
+  if (faqCount !== expectedFaqs.length) errors.push(`${article.slug}: expected ${expectedFaqs.length} authored FAQs, found ${faqCount}`);
+  if (!decisionGuide && !html.includes("TAWOD_AUTHORED_FAQ_START")) errors.push(`${article.slug}: authored FAQ marker missing`);
+  const visibleMarkup = plainText(html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ""));
+  for (const [question, answer] of expectedFaqs) {
+    if (!question || !visibleMarkup.includes(plainText(question))) errors.push(`${article.slug}: authored FAQ question missing (${question})`);
+    if (!answer || !visibleMarkup.includes(plainText(answer))) errors.push(`${article.slug}: authored FAQ answer missing (${question})`);
   }
   if (!html.includes(`href="${hubUrl}"`)) errors.push(`${article.slug}: topic hub link missing`);
   if (!html.includes(`href="${serviceUrl}"`)) errors.push(`${article.slug}: service link missing`);

@@ -49,10 +49,15 @@ assert.equal(dammam.googleBusinessProfile.locationId, null, 'Do not invent a Goo
 assert.equal(workingHours.days.length, 6);
 assert.ok(!workingHours.days.includes('Friday'));
 assert.deepEqual(workingHours.closedDays, ['Friday']);
+const sitemapState = JSON.parse(fs.readFileSync('data/sitemap-state.json', 'utf8'));
+const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Riyadh' });
 for (const file of ['sitemap.xml', 'sitemap-dammam.xml']) {
   const sitemap = fs.readFileSync(file, 'utf8');
   for (const url of [dammam.url, dammam.contactUrl, `${dammam.url}about/`]) {
-    assert.ok(sitemap.includes(`<loc>${url}</loc><lastmod>${dammam.updatedAt}</lastmod>`), `${file}: stale branch page date`);
+    const lastmod = sitemapState.pages[url]?.lastmod;
+    assert.match(lastmod || '', /^\d{4}-\d{2}-\d{2}$/, `${url}: missing sitemap state date`);
+    assert.ok(lastmod >= dammam.updatedAt && lastmod <= today, `${url}: invalid branch page date`);
+    assert.ok(sitemap.includes(`<loc>${url}</loc><lastmod>${lastmod}</lastmod>`), `${file}: stale branch page date`);
   }
 }
 console.log(`Branch checks passed: ${pages.length} Dammam pages, main contact page, provider links, visible details, hours, sitemap dates, and city isolation.`);
