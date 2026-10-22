@@ -295,7 +295,6 @@
     });
     photoDialog.addEventListener('close', function () {
       document.body.classList.remove('photo-open');
-      photoImage.removeAttribute('src');
       if (photoReturnFocus && document.contains(photoReturnFocus)) photoReturnFocus.focus({ preventScroll: true });
     });
   }

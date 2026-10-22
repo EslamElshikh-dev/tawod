@@ -10,7 +10,7 @@ export const queryOwnership = [
   { query: "مقاول عظم الرياض", intent: "commercial", file: "service-construction.html", url: "/service-construction.html", signal: "مقاول بناء عظم في الرياض" },
   { query: "اعمال mep", intent: "informational", file: "blog/mechanical-mep-works-riyadh/index.html", url: "/blog/mechanical-mep-works-riyadh/", signal: "ما هي أعمال MEP" },
   { query: "شركات مقاولات في الرياض", intent: "commercial", file: "index.html", url: "/", signal: "شركة مقاولات عامة في الرياض" },
-  { query: "اختيار شركة مقاولات", intent: "informational", file: "blog/best-contracting-company-riyadh/index.html", url: "/blog/best-contracting-company-riyadh/", signal: "كيف تختار أفضل شركة مقاولات في الرياض" },
+  { query: "اختيار شركة مقاولات", intent: "informational", file: "blog/best-contracting-company-riyadh/index.html", url: "/blog/best-contracting-company-riyadh/", signal: "شركة مقاولات في الرياض: 7 معايير لاختيار المقاول المناسب لمشروعك" },
   { query: "تسليم مفتاح للمشاريع التجارية", intent: "commercial", file: "service-turnkey.html", url: "/service-turnkey.html", signal: "تسليم مفتاح للمشاريع السكنية والتجارية في الرياض" },
   { query: "ترميم مباني", intent: "commercial", file: "service-restoration.html", url: "/service-restoration.html", signal: "ترميم مباني في الرياض" },
   { query: "ترميمات الرياض", intent: "commercial", file: "service-restoration.html", url: "/service-restoration.html", signal: "ترميم مباني في الرياض" },
