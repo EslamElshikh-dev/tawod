@@ -108,3 +108,4 @@ assert.doesNotMatch(sheetsSync, /SpreadsheetApp\.openById/);
 assert.doesNotMatch(sheetsSync, /TAWOD_SHEETS_SYNC_KEY\s*=\s*['"][^'"]{32}/);
 
 console.log('Verified dashboard definitions, source integrations, qualified WhatsApp Sheets sync, deduplication, and strict call qualification rules.');
+await import('./test-qualified-lead-export.mjs');

@@ -100,7 +100,7 @@ async function restFetch(url,init={}) {
     if (['select','order','limit','on_conflict'].includes(column)) continue;
     const col = identifier(column), dot = filter.indexOf('.'), op = filter.slice(0,dot), value = filter.slice(dot+1);
     if (op === 'eq' || op === 'gte') { params.push(value); conditions.push(`${col} ${op==='eq'?'=':'>='} $${params.length}`); }
-    else if (op === 'in') { params.push(value.slice(1,-1).split(',')); conditions.push(`${col}=any($${params.length}::text[])`); }
+    else if (op === 'in') { params.push(value.slice(1,-1).split(',')); conditions.push(`${col}::text=any($${params.length}::text[])`); }
     else if (filter === 'is.null' || filter === 'not.is.null') conditions.push(`${col} is ${filter==='not.is.null'?'not ':''}null`);
     else throw new Error('unexpected filter '+filter);
   }
@@ -190,13 +190,13 @@ assert.ok(signed.outcome.contractSignedAt);
 
 const eventId = randomUUID();
 await db.query(`insert into tawod_analytics_events(id,event_name,occurred_at,page_path,landing_path,utm_source,utm_medium,utm_campaign,click_id)
-  values($1,'whatsapp_click',now()-interval '60 days','/contact','/services/bone','google','cpc','verified-campaign','fixture-click-id-123456789')`,[eventId]);
+  values($1,'whatsapp_click',now()-interval '60 days','/contact','/services/bone?gclid=fixture-click-id-123456789','google','cpc','verified-campaign','fixture-click-id-123456789')`,[eventId]);
 const linked = await save({...review,stage:'qualified',sourceType:'whatsapp',sourceRef:eventId,campaignName:'forged-campaign'});
 assert.equal(linked.status,200);
 assert.equal(linked.outcome.sourceEventId,eventId);
 assert.equal(linked.outcome.acquisitionSource,'google-ads');
 assert.equal(linked.outcome.campaignName,'verified-campaign');
-assert.equal(linked.outcome.landingPath,'/services/bone');
+assert.equal(linked.outcome.landingPath,'/services/bone?gclid=fixture-click-id-123456789');
 assert.equal((await save({sourceType:'whatsapp',sourceRef:eventId})).error,'referral_already_linked');
 assert.equal((await save({...review,id:linked.outcome.id,stage:'qualified',sourceType:'call',sourceRef:eventId})).error,'source_is_locked');
 assert.equal((await call({mode:'sales_outcome_get',token,sourceRef:eventId})).outcome.id,linked.outcome.id);
@@ -206,6 +206,7 @@ assert.equal(pipeline.followups.overdue,1);
 assert.ok(pipeline.openEntries.find(row=>row.id===linked.outcome.id),'old active opportunities remain actionable');
 assert.ok(!pipeline.entries.find(row=>row.id===linked.outcome.id),'period report remains a referral cohort');
 const sheets = await call({mode:'google_sheets_export',syncKey:fakeSyncKey});
+assert.equal(sheets.status,200);
 const exported = sheets.leads.find(row=>row.outcomeId===linked.outcome.id);
 assert.equal(exported.qualificationStatus,'Qualified');
 assert.equal(exported.projectLocation,'الرياض');
