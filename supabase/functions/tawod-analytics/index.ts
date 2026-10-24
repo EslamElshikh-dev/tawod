@@ -767,12 +767,41 @@ function isTestSalesRow(row: any) {
   return /^(?:TEST|DUMMY|EXAMPLE|FAKE)(?:-|_|$)/i.test(row.click_id || row.clickId || '') ||
     /\bTEST_ONLY\b/i.test(row.notes || '');
 }
-function normalizeSheetLead(row: any) {
+function sheetImportBlockReason(row: any, clickId: string | null, referral: any) {
+  if (isTestSalesRow(row)) return 'TEST_ONLY';
+  if (!clickId || !/^[a-zA-Z0-9._~-]{10,300}$/.test(clickId)) return 'INVALID_AD_CLICK_ID';
+  const qualifiedAt = validTimestamp(row.qualified_at);
+  const lastContactAt = validTimestamp(row.last_contact_at);
+  if (!qualifiedAt || new Date(qualifiedAt).getTime() > Date.now() + 60000) return 'INVALID_QUALIFICATION_TIME';
+  if (!SALES_STAGES.has(row.stage) || !text(row.service_type, 160) || row.service_fit !== 'suitable' ||
+    row.contact_result !== 'contacted' || !lastContactAt || new Date(lastContactAt).getTime() > Date.now() + 60000) {
+    return 'QUALIFICATION_NOT_VERIFIED';
+  }
+  // The shared click_id field can contain GCLID, GBRAID or WBRAID. Only an
+  // exact, linked WhatsApp referral can establish which parameter was captured.
+  if (!isUuid(row.source_event_id) || !referral || referral.id !== row.source_event_id ||
+    referral.event_name !== 'whatsapp_click' || referral.click_id !== clickId) return 'AD_REFERRAL_NOT_VERIFIED';
+  const clickedAt = validTimestamp(referral.occurred_at);
+  if (!clickedAt || new Date(qualifiedAt).getTime() < new Date(clickedAt).getTime() ||
+    Date.now() - new Date(clickedAt).getTime() > 90 * 86400000) return 'AD_CLICK_OUTSIDE_IMPORT_WINDOW';
+  let parameters: URLSearchParams;
+  try { parameters = new URL(referral.landing_path, 'https://tawodco.com').searchParams; }
+  catch { return 'AD_CLICK_TYPE_NOT_VERIFIED'; }
+  const types = ['gclid', 'gbraid', 'wbraid'].filter((name) => {
+    const values = parameters.getAll(name);
+    return values.length === 1 && values[0] === clickId;
+  });
+  if (types.length !== 1) return 'AD_CLICK_TYPE_NOT_VERIFIED';
+  // This existing Sheet maps only Google Click ID. Do not put a BRAID in it.
+  return types[0] === 'gclid' ? null : `${types[0].toUpperCase()}_REQUIRES_SEPARATE_MAPPING`;
+}
+function normalizeSheetLead(row: any, referral?: any) {
   // A click ID is opaque. Never trim or truncate it into an apparently valid ID.
   const clickId = typeof row.click_id === 'string' ? row.click_id : null;
   const disposition = sheetQualificationStatus(row, clickId);
   const qualificationTime = riyadhTimestamp(row.qualified_at);
-  const importable = disposition !== 'TEST_ONLY' && disposition !== 'QUALIFIED_NO_AD_CLICK_ID' && !!qualificationTime;
+  const blockReason = sheetImportBlockReason(row, clickId, referral);
+  const importable = !blockReason;
   const testPrefix = disposition === 'TEST_ONLY' ? 'TEST_ONLY — ' : '';
   return {
     outcomeId: row.id,
@@ -799,7 +828,7 @@ function normalizeSheetLead(row: any) {
     quotationRequested: 'غير محدد',
     firstContactTime: '', // A referral click or latest contact is not a verified first conversation time.
     reviewedBy: 'Tawod Command Center',
-    evidence: `${testPrefix}Supabase referral ${row.source_event_id || row.source_ref || row.id}`,
+    evidence: `${testPrefix}Supabase referral ${row.source_event_id || row.source_ref || row.id}${blockReason ? ' | BLOCKED: ' + blockReason : ' | GCLID referral and staff qualification verified'}`,
   };
 }
 async function exportQualifiedWhatsAppLeads(body: any, origin: string | null) {
@@ -808,7 +837,7 @@ async function exportQualifiedWhatsAppLeads(body: any, origin: string | null) {
     return json({ error: 'unauthorized' }, 401, origin);
   }
   const query = new URLSearchParams({
-    select: 'id,occurred_at,source_ref,source_event_id,click_id,first_contact_at,qualified_at,stage,service_type,project_location,execution_timing,last_contact_at,estimated_value,notes,updated_at',
+    select: 'id,occurred_at,source_ref,source_event_id,click_id,first_contact_at,qualified_at,stage,service_type,service_fit,contact_result,project_location,execution_timing,last_contact_at,estimated_value,notes,updated_at',
     source_type: 'eq.whatsapp',
     qualified_at: 'not.is.null',
     sheets_synced_at: 'is.null',
@@ -817,7 +846,20 @@ async function exportQualifiedWhatsAppLeads(body: any, origin: string | null) {
   });
   const response = await supabase(`/rest/v1/tawod_sales_outcomes?${query.toString()}`);
   if (!response.ok) return json({ error: 'qualified_leads_query_failed' }, 500, origin);
-  const leads = (await response.json()).map(normalizeSheetLead);
+  const rows = await response.json();
+  const eventIds = [...new Set(rows.map((row: any) => row.source_event_id).filter(isUuid))];
+  const referrals = new Map<string, any>();
+  if (eventIds.length) {
+    const eventQuery = new URLSearchParams({
+      id: `in.(${eventIds.join(',')})`,
+      select: 'id,event_name,click_id,landing_path,occurred_at',
+      limit: '100',
+    });
+    const events = await supabase(`/rest/v1/tawod_analytics_events?${eventQuery.toString()}`);
+    if (!events.ok) return json({ error: 'qualified_lead_attribution_query_failed' }, 500, origin);
+    for (const event of await events.json()) referrals.set(event.id, event);
+  }
+  const leads = rows.map((row: any) => normalizeSheetLead(row, referrals.get(row.source_event_id)));
   await supabase('/rest/v1/tawod_sync_keys?name=eq.google_sheets', { method: 'PATCH', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify({ last_used_at: new Date().toISOString() }) });
   return json({ ok: true, leads, exportedAt: new Date().toISOString() }, 200, origin);
 }
