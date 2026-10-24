@@ -192,7 +192,7 @@ def main():
     denied("server analytics UPDATE forbidden", "tawod_analytics_events?event_name=eq.page_view", service, "PATCH", {"page_path": "/changed"})
     analytics = rpc("tawod_admin_analytics", {"p_days": 30}, service)
     check("analytics report compiles on PostgreSQL 17 and counts call/WhatsApp clicks",
-          analytics["summary"]["calls"] == 1 and analytics["summary"]["whatsapp"] == 1)
+          analytics["summary"]["callClicks"] == 1 and analytics["summary"]["whatsappClicks"] == 1)
     check("Google Ads report callable by server", isinstance(rpc("tawod_google_ads_analytics", {"p_days": 30}, service), dict))
 
     # Synthetic local catalog only: never production rows, mappings, or credentials.
