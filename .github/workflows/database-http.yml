@@ -1,0 +1,35 @@
+name: PostgreSQL 17 Auth and Data API acceptance
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/**'
+      - 'tests/helpers/supabase-postgres.mjs'
+      - 'tests/integration/supabase17/**'
+      - '.github/workflows/database-http.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/**'
+      - 'tests/helpers/supabase-postgres.mjs'
+      - 'tests/integration/supabase17/**'
+      - '.github/workflows/database-http.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  http-acceptance:
+    # Standard public-repository runner; no paid cloud project or repository secrets.
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Replay schema and exercise real Auth and PostgREST
+        run: python3 tests/integration/supabase17/run.py
+      - name: Service diagnostics on failure
+        if: failure()
+        run: docker compose -f tests/integration/supabase17/compose.yml logs --tail=80 db auth rest
+      - name: Remove isolated services and data
+        if: always()
+        run: docker compose -f tests/integration/supabase17/compose.yml down --volumes --remove-orphans
