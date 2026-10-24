@@ -129,7 +129,7 @@ def main():
             sql(source)
         except subprocess.CalledProcessError as error:
             raise RuntimeError(f"Migration {file.name}: {error.stderr}") from error
-    check("all 29 migrations replay on PostgreSQL 17.6", len(files) == 29)
+    check("all 30 migrations replay on PostgreSQL 17.6", len(files) == 30)
     check("22 application tables have RLS", sql(
         "select count(*)=22 and bool_and(rowsecurity) from pg_tables where schemaname='public';") == "t")
     check("six maintenance tables have RLS", sql(
@@ -327,15 +327,34 @@ def main():
     invalid = request("rest", "tawod_analytics_events", token="invalid-jwt", expected=(401,))
     check("invalid JWT rejected", invalid["code"].startswith("PGRST"))
 
-    # Do not silently label a full workspace rebuild complete if its dispatcher targets a missing RPC.
-    submit_exists = sql("select to_regprocedure('public.tawod_maintenance_submit(text,jsonb,text)') is not null;") == "t"
+    # The current website sends WhatsApp messages. Its unimplemented database
+    # submit route must reject explicitly, with no missing-function lookup or writes.
+    check("all supported maintenance RPC targets resolve", sql(
+        "select bool_and(to_regprocedure('public.tawod_maintenance_'||name||'(text,jsonb,text)') is not null) "
+        "from unnest(array['overview','listing','detail','contacts','catalog','save','archive']) name;") == "t")
+    dispatcher = sql("select pg_get_functiondef('public.tawod_maintenance_workspace(text,jsonb,text)'::regprocedure);")
+    check("dispatcher has no dangling submit dependency", "public.tawod_maintenance_submit(" not in dispatcher)
+    counts_query = ("select jsonb_object_agg(tablename,n) from ("
+        "select 'customers' tablename,count(*) n from public.tawod_maintenance_customers union all "
+        "select 'staff',count(*) from public.tawod_maintenance_staff union all "
+        "select 'requests',count(*) from public.tawod_maintenance_requests union all "
+        "select 'activity',count(*) from public.tawod_maintenance_activity union all "
+        "select 'rate_limits',count(*) from public.tawod_maintenance_rate_limits) counts;")
+    before_submit = sql(counts_query)
+    for actor in ["website", "admin"]:
+        application_error(f"unsupported submit explicitly rejected for {actor}",
+            lambda actor=actor: workspace("submit", payload, actor=actor, token=service, expected=(400,)),
+            "0A000", "website_submission_not_enabled")
+    for label, token in [("visitor", None), ("member A", at), ("member B", bt)]:
+        denied(label + " cannot invoke website submit", "rpc/tawod_maintenance_workspace", token, "POST",
+               {"p_action": "submit", "p_payload": payload, "p_actor": "website"})
+    check("unsupported submit creates no customer request audit or rate-limit rows", sql(counts_query) == before_submit)
     summary = {"postgres": "17.6", "migrations": len(files), "rls_tables": 22,
-        "passed": len(RESULTS), "cases": RESULTS, "missing_maintenance_submit": not submit_exists,
+        "passed": len(RESULTS), "cases": RESULTS, "website_database_submit": "explicitly disabled",
         "environment": "disposable local services; no managed resources",
         "limits": ["No hosted Supabase gateway/Storage/Edge deployment", "No Google API/Make external sync",
                    "cron/network are no-op local scaffolding; Storage schema only"]}
     print(json.dumps(summary), flush=True)
-    check("maintenance workspace submit target exists", submit_exists)
 
 
 if __name__ == "__main__":

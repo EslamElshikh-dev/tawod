@@ -3,7 +3,7 @@ import { fresh,replayMigrations,asRole,denied,assertRls } from '../tests/helpers
 
 const db=await fresh();
 try {
- const files=await replayMigrations(db);assert.ok(files.length>=29);
+ const files=await replayMigrations(db);assert.ok(files.length>=30);
  await assertRls(db,22);
  for(const role of ['anon','authenticated']) {
   await denied(db,role,null,'select * from public.tawod_analytics_events');
@@ -20,5 +20,12 @@ try {
  assert.equal((await asRole(db,'service_role',null,'select count(*)::int n from public.tawod_maintenance_requests')).rows[0].n,1);
  await asRole(db,'service_role',null,"update public.tawod_maintenance_customers set district='Test district' where id=$1",[customer]);
  await denied(db,'service_role',null,'delete from public.tawod_maintenance_customers');
+ const beforeSubmit=(await db.query('select (select count(*)::int from public.tawod_maintenance_customers) customers,(select count(*)::int from public.tawod_maintenance_requests) requests,(select count(*)::int from public.tawod_maintenance_activity) activity')).rows[0];
+ for(const actor of ['website','admin']) {
+  await assert.rejects(()=>asRole(db,'service_role',null,"select public.tawod_maintenance_workspace('submit','{}',$1)",[actor]),e=>e.code==='0A000'&&e.message==='website_submission_not_enabled');
+ }
+ const afterSubmit=(await db.query('select (select count(*)::int from public.tawod_maintenance_customers) customers,(select count(*)::int from public.tawod_maintenance_requests) requests,(select count(*)::int from public.tawod_maintenance_activity) activity')).rows[0];
+ assert.deepEqual(afterSubmit,beforeSubmit,'unsupported website submission must not create partial records');
+ for(const role of ['anon','authenticated']) await denied(db,role,null,"select public.tawod_maintenance_workspace('submit','{}','website')");
  console.log(`Verified complete replay of ${files.length} migrations, 22 RLS-protected public tables, analytics INSERT/SELECT-only access, service maintenance RPC/CRUD, and browser denial.`);
 } finally { await db.close(); }

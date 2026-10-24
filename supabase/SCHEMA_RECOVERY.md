@@ -62,14 +62,26 @@ rollback, audit history, archive/restore and rate-limit cleanup; and GBP atomic
 ingestion, location isolation, 7/30/90-day totals, cache age, timestamp precision,
 keyword bounds and rollback on reconciliation failure.
 
-The full workspace acceptance also requires the dispatcher target
-`tawod_maintenance_submit(text,jsonb,text)` to exist. The restored history currently
-references it but does not define it. This is an explicit acceptance blocker,
-not a reason to invent its implementation or modify the production database.
-The public maintenance form currently prepares a WhatsApp message; this test
-does not claim it submits a database request. Recover the missing schema-only
-function from an authorized source before treating the entire dispatcher as
-reproducible.
+The dispatcher target `tawod_maintenance_submit(text,jsonb,text)` is absent from
+both the recovered history and the managed public schema, confirmed by a
+definition-only catalog lookup on 24 October 2026. There is no implementation to
+restore. The public maintenance form currently prepares a WhatsApp message and
+does not submit to this database route.
+
+A separate corrective migration preserves the recovered historical SQL and
+replaces the unsupported `submit` branch with an explicit
+`website_submission_not_enabled` error (SQLSTATE `0A000`). It does not create a
+placeholder submit function or implement new submission semantics. The isolated
+rebuild now runs 30 migrations: the 29 recovered/application migrations plus this
+correction. All seven supported maintenance RPC targets must resolve. Acceptance
+exercises both service actors and all three browser identities, and verifies
+that a rejected submit creates no customer, request, audit or rate-limit rows.
+Administrative `save_request` remains covered by actual create/update tests.
+
+This corrective migration is included for new/rebuilt environments. It was not
+applied to the managed database. Deploying it separately to an existing managed
+database, or introducing a future website-to-database submit feature, requires
+its own scoped rollout; do not replay the historical migrations to do so.
 
 All data and JWT secrets in this stack are disposable fixtures. The workflow
 always removes containers, volumes and its network. For a local run, clean up
