@@ -33,4 +33,3 @@ jobs:
       - name: Remove isolated services and data
         if: always()
         run: docker compose -f tests/integration/supabase17/compose.yml down --volumes --remove-orphans
-
