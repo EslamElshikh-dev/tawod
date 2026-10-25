@@ -23,6 +23,7 @@
   var profilePhotoTicket = 0;
   var navTrigger = null;
   var loadTicket = 0;
+  var loadController = null;
 
   function icon(name) {
     return /^[a-z-]+$/.test(name) ? '<svg class="cc-icon" aria-hidden="true" focusable="false"><use href="#cc-i-' + name + '"></use></svg>' : '';
@@ -148,7 +149,7 @@
     var cards = [
       { title: 'الموقع', connected: !!q.lastEventAt, at: q.lastEventAt, hours: 26, detail: 'آخر حدث مقاس؛ هدوء الزيارات لا يعني تعطل التتبع.' },
       { title: 'Google Ads', connected: !!(data.googleAds || {}).connected, at: (data.googleAds || {}).lastSyncAt, hours: 2, detail: 'الإنفاق والتحويلات · قياس المكالمات له اتصال مستقل.' },
-      { title: 'الملف التجاري', connected: !!(data.businessProfile || {}).connected, at: (data.businessProfile || {}).lastSyncAt, hours: 26, detail: 'مزامنة يومية عبر Windsor؛ آخر أيام Google قابلة للمراجعة.' }
+      { title: 'الملف التجاري', connected: !!(data.businessProfile || {}).connected, at: (data.businessProfile || {}).lastSyncAt, hours: 26, detail: 'آخر دفعة محفوظة من Google؛ راجع تاريخ المصدر وتغطية الأيام.' }
     ];
     el('sourceQualityGrid').innerHTML = cards.map(function (row) {
       var stale = row.connected && (!row.at || Date.now() - new Date(row.at).getTime() > row.hours * 3600000);
@@ -599,7 +600,7 @@
     el('profileCoverageNote').hidden = !bp.connected;
     if (bp.connected) {
       var rangeLabel = esc(bp.rangeStart || '—') + ' إلى ' + esc(bp.rangeEnd || '—');
-      el('profileCoverageNote').innerHTML = '<details class="report-details"><summary>تغطية البيانات · ' + n(bp.reportingDays) + ' من ' + n(bp.periodDays) + ' يوم</summary><strong>مزامنة يومية من ملف الرياض</strong> · الأيام الحديثة قابلة للمراجعة بعد معالجة Google. ضغط زر الاتصال لا يثبت مكالمة مستلمة؛ وضغط رابط الموقع لا يثبت جلسة في الموقع.<div class="profile-coverage"><span>فترة الملف: ' + rangeLabel + '</span><span>أيام متاحة: ' + n(bp.reportingDays) + ' من ' + n(bp.periodDays) + '</span><span>آخر يوم ورد: ' + esc(bp.lastReportDate || '—') + '</span></div></details>';
+      el('profileCoverageNote').innerHTML = '<details class="report-details"><summary>تغطية البيانات · ' + n(bp.reportingDays) + ' من ' + n(bp.periodDays) + ' يوم</summary><strong>بيانات محفوظة من ملف الرياض</strong> · الأيام الحديثة قابلة للمراجعة بعد معالجة Google. ضغط زر الاتصال لا يثبت مكالمة مستلمة؛ وضغط رابط الموقع لا يثبت جلسة في الموقع.<div class="profile-coverage"><span>فترة الملف: ' + rangeLabel + '</span><span>أيام متاحة: ' + n(bp.reportingDays) + ' من ' + n(bp.periodDays) + '</span><span>آخر يوم ورد: ' + esc(bp.lastReportDate || '—') + '</span></div></details>';
     }
     if (!bp.connected) {
       el('profileSummaryMetrics').innerHTML = unavailableMetrics(['ظهور البحث', 'ظهور الخرائط', 'ضغطات الاتصال', 'ضغطات الموقع', 'طلبات الاتجاهات', 'الحجوزات', 'مجموع الإجراءات', 'معدل الإجراء'], 'الملف التجاري');
@@ -928,13 +929,15 @@
 
   function render(data) {
     payload = data;
-    insights = buildInsights(data);
+    insights = data.partial ? [] : buildInsights(data);
     renderCurrentView(); renderAccount(data.adminProfile);
-    renderNotifications(data.notifications || {connected:false,entries:[]});
+    el('copyButton').disabled = !!data.partial;
+    if (!data.partial) renderNotifications(data.notifications || {connected:false,entries:[]});
     el('headerSyncStatus').textContent = 'آخر تحديث ' + (data.generatedAt ? new Intl.DateTimeFormat('ar-SA',{timeStyle:'short',timeZone:'Asia/Riyadh'}).format(new Date(data.generatedAt)) : '—');
   }
   function renderCurrentView() {
     if (!payload) return;
+    if (payload.partial && activeView !== payload.view) { load({ quiet: true }); return; }
     var data = payload;
     if (activeView === 'executive') { renderExecutive(data); renderSourceQuality(data); }
     else if (activeView === 'followups') renderFollowups(data);
@@ -953,8 +956,8 @@
     else if (activeView === 'decisions') { renderInsights(); renderDecisions(data); }
   }
 
-  async function request(body) {
-    var response = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), cache: 'no-store', credentials: 'omit' });
+  async function request(body, options) {
+    var response = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), cache: 'no-store', credentials: 'omit', signal: options && options.signal });
     var data = await response.json().catch(function () { return {}; });
     if (!response.ok) { var failure = new Error(data.error || 'request_failed'); failure.status = response.status; failure.outcomeId = data.outcomeId; failure.decisionId = data.decisionId; throw failure; }
     return data;
@@ -963,19 +966,32 @@
     options = options || {};
     if (!token) return null;
     var auth = token, ticket = ++loadTicket;
+    if (loadController) loadController.abort();
+    var controller = typeof AbortController === 'function' ? new AbortController() : null;
+    loadController = controller;
+    var timer = controller ? setTimeout(function () { controller.abort(); }, 15000) : null;
     if (!options.background) setLoading(true);
     try {
-      var data = await request({ mode: 'admin', token: auth, days: number(el('periodSelect').value) || 30 });
+      var body = { mode: 'admin', token: auth, days: number(el('periodSelect').value) || 30 };
+      if (activeView === 'business-profile') body.view = activeView;
+      var data = await request(body, { signal: controller && controller.signal });
       if (auth !== token || ticket !== loadTicket) return null;
       render(data);
-      if (!options.quiet) showToast('تم تحديث البيانات وفحص الإجماليات');
+      if (!options.quiet) showToast('تم تحديث البيانات المعروضة');
       return data;
     } catch (error) {
       if (auth !== token || ticket !== loadTicket) return null;
       if (error.status === 401) logoutNow('انتهت الجلسة. سجّل الدخول من جديد.');
-      else showToast('تعذر تحميل البيانات الآن', true);
+      else {
+        if (payload && payload.periodDays) el('periodSelect').value = String(payload.periodDays);
+        var message = error.name === 'AbortError' ? 'انتهت مهلة تحميل التقارير.' : 'تعذر تحميل البيانات الآن.';
+        showToast(message + (payload ? ' ما زالت أرقام الفترة السابقة معروضة؛ لم يتم تحديثها.' : ' لم تصل أرقام لعرضها.'), true);
+      }
       return null;
-    } finally { if (ticket === loadTicket) setLoading(false); }
+    } finally {
+      if (timer) clearTimeout(timer);
+      if (ticket === loadTicket) { loadController = null; setLoading(false); }
+    }
   }
   async function refreshGoogleAds() {
     var button = el('googleAdsSyncButton');
@@ -1022,6 +1038,8 @@
     } finally { button.disabled = false; button.textContent = 'تسجيل الدخول'; }
   }
   function logoutNow(message) {
+    if (loadController) loadController.abort();
+    loadController = null;
     sessionStorage.removeItem(TOKEN_KEY); token = ''; payload = null;
     loadTicket++; notificationTicket++; notificationPending = false;
     notificationFeed = null; notificationRows = []; closeHeaderPanels(); closeNavigation();
@@ -1693,3 +1711,4 @@
     el('adminLogin').hidden = true; el('adminApp').hidden = false; document.body.classList.add('is-authenticated'); load();
   }
 })();
+

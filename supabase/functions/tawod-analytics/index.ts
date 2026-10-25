@@ -980,6 +980,14 @@ Deno.serve(async (req) => {
     if (!authorized && typeof body.password === 'string' && body.password) authorized = await sha256(body.password) === await adminPasswordHash();
     if (!authorized) return json({ error: 'unauthorized' }, 401, origin);
     const days = Math.max(7, Math.min(Number(body.days) || 30, 90));
+    // This view does not depend on website, advertising, sales or social reports.
+    // Keep the same administrator authorization before its bounded read.
+    if (body.view === 'business-profile') {
+      const profileResponse = await supabase('/rest/v1/rpc/tawod_business_profile_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) });
+      if (!profileResponse.ok) return json({ error: 'business_profile_query_failed' }, 503, origin);
+      const businessProfile = await profileResponse.json();
+      return json({ partial: true, view: 'business-profile', generatedAt: new Date().toISOString(), periodDays: days, businessProfile, adminProfile: { username: ADMIN_USERNAME } }, 200, origin);
+    }
     const [siteResponse, adsResponse, profileResponse, salesPipeline, recentReferrals, commercial, decisions, notifications, paidResponse, verificationResponse] = await Promise.all([
       supabase('/rest/v1/rpc/tawod_admin_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
       supabase('/rest/v1/rpc/tawod_google_ads_analytics', { method: 'POST', body: JSON.stringify({ p_days: days }) }),
@@ -1073,3 +1081,4 @@ Deno.serve(async (req) => {
   if (!response.ok) return json({ error: 'insert_failed' }, 500, origin);
   return json({ ok: true, inserted: rows.length }, 200, origin);
 });
+
