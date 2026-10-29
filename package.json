@@ -57,7 +57,8 @@
     "test:contact-submission": "node scripts/test-contact-submission.mjs",
     "build:report-followup": "node scripts/build-report-followup.mjs && node scripts/install-site-analytics.mjs",
     "test:english-parity": "node --test scripts/test-english-parity.mjs",
-    "test:database": "node scripts/test-database-replay.mjs"
+    "test:database": "node scripts/test-database-replay.mjs",
+    "test:maintenance-contracts": "node scripts/test-maintenance-contracts.mjs"
   },
   "dependencies": {
     "next": "16.4.2",
@@ -77,4 +78,3 @@
     "typescript": "^5.9.3"
   }
 }
-

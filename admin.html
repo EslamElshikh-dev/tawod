@@ -162,6 +162,7 @@
           <label id="pipelineLostReasonLabel" hidden><span>سبب عدم التعاقد</span><select id="pipelineLostReason"><option value="">اختر السبب</option><option value="price">السعر</option><option value="timing">تأجيل المشروع</option><option value="outside_scope">خارج نطاق الخدمة</option><option value="no_response">انقطاع الرد</option><option value="competitor">التعاقد مع منافس</option><option value="other">سبب آخر موضح بالملاحظة</option></select></label>
           <label><span>قيمة متوقعة (ر.س)</span><input id="pipelineEstimatedValue" type="number" min="0" max="999999999" step="0.01" inputmode="decimal" value="0"></label>
           <label><span>قيمة العقد (ر.س)</span><input id="pipelineContractValue" type="number" min="0" max="999999999" step="0.01" inputmode="decimal" value="0"></label>
+          <label><span>تسجيل طلب غير مناسب بسرعة</span><select id="pipelineMisfitPreset" aria-describedby="pipelineMisfitHelp"><option value="">اختر سببًا بعد مراجعة الطلب</option><option value="other_company">يبحث عن شركة أخرى</option><option value="service_not_offered">خدمة غير مقدمة</option><option value="automotive">صيانة سيارة أو ورشة</option><option value="television">تلفزيون أو أجهزة منزلية</option><option value="outside_area">خارج النطاق الجغرافي للخدمة</option></select><small id="pipelineMisfitHelp">يجهز سبب عدم الملاءمة للمراجعة والحفظ. تظل نتيجة التواصل ووقته الفعلي من تسجيل الفريق.</small></label>
           <label class="pipeline-notes"><span>ملاحظة تشغيلية قصيرة</span><input id="pipelineNotes" type="text" maxlength="500" placeholder="مثال: أُرسل العرض وينتظر اعتماد المخططات"></label>
           <p class="pipeline-guidance">التأهيل يتطلب خدمة مناسبة وتواصلًا مُراجعًا. الفرصة المؤهلة المفتوحة تحتاج مسؤولًا وإجراءً وموعد متابعة. لا تُحتسب نقرة التواصل مراجعةً فعلية.</p>
           <p id="pipelineError" class="form-error" role="alert"></p>
@@ -272,6 +273,6 @@
 <div class="toast" id="adminToast" aria-live="polite"></div>
 <script src="/assets/js/tawod-charts.js?v=20261005-charts-1" defer></script>
 <script src="/assets/js/tawod-command-center.js?v=20261025-profile-fast-1" defer></script>
-</body>
+<script src="assets/js/tawod-lead-fit.js?v=a8a915c2cff7" defer></script></body>
 </html>
 
