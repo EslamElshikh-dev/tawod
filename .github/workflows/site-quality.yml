@@ -47,6 +47,8 @@ jobs:
         run: npm run check:home
       - name: Prepare site assets
         run: npm run prepare:assets
+      - name: Verify maintenance contract journeys and lead classification
+        run: npm run test:maintenance-contracts
       - name: Enhance contact conversion flow
         run: |
           if [ -f scripts/enhance-contact-page.mjs ]; then node scripts/enhance-contact-page.mjs; fi
