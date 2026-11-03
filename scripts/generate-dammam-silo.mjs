@@ -32,7 +32,7 @@ function writeIfChanged(file, content) {
   const analytics = old.match(/<!-- TAWOD_ANALYTICS_START -->[\s\S]*?<!-- TAWOD_ANALYTICS_END -->/)?.[0] || '';
   let normalized = content.replace(/[ \t]+$/gm, '').replace(/\n{3,}/g, '\n\n').trim() + '\n';
   if (analytics && !normalized.includes('<!-- TAWOD_ANALYTICS_START -->') && /<\/head>/i.test(normalized)) {
-    normalized = normalized.replace(/<\/head>/i, `${analytics}<meta name="creator" content="المهندس إسلام الشيخ"><style id="eslam-developer-credit-style">:root{--es-credit-accent:#e7ab4b}
+    normalized = normalized.replace(/<!-- TAWOD_BRANCH_STYLE_START -->|<\/head>/i, anchor => `<meta name="creator" content="المهندس إسلام الشيخ"><style id="eslam-developer-credit-style">:root{--es-credit-accent:#e7ab4b}
 /* Unified developer signature: Eslam Elshikh. Keep client branding and rights intact. */
 .eslam-credit.eslam-credit{display:inline-flex;align-items:center;justify-content:flex-start;gap:10px;position:relative;isolation:isolate;flex:0 1 auto;max-width:100%;min-height:52px;width:max-content;padding:8px 12px;border:1px solid color-mix(in srgb,var(--es-credit-accent) 36%,transparent);border-radius:14px;background:color-mix(in srgb,var(--es-credit-accent) 7%,transparent);color:inherit;font:inherit;line-height:1.6;text-align:start;text-decoration:none;box-shadow:inset 0 1px 0 #ffffff0c;transition:border-color .2s ease,background-color .2s ease,transform .2s ease;white-space:normal;vertical-align:middle;box-sizing:border-box}
 .eslam-credit.eslam-credit::before,.eslam-credit.eslam-credit::after{content:none;display:none}
@@ -47,7 +47,8 @@ function writeIfChanged(file, content) {
 .eslam-credit-slot{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:12px;width:100%;max-width:1200px;margin:0 auto;padding:16px 20px;box-sizing:border-box}
 @media(max-width:480px){.eslam-credit.eslam-credit{gap:8px;padding:8px 10px;min-height:50px}.eslam-credit .eslam-credit__name{font-size:11px}.eslam-credit .eslam-credit__role{font-size:9px}.eslam-credit-slot{justify-content:center;padding:16px}}
 @media(prefers-reduced-motion:reduce){.eslam-credit.eslam-credit{transition:none}.eslam-credit.eslam-credit:hover{transform:none}}
-</style><script id="eslam-developer-credit-schema" type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://www.eslam-elshikh.com/#person","name":"إسلام الشيخ","alternateName":["المهندس إسلام الشيخ","Eslam Elshikh"],"url":"https://www.eslam-elshikh.com/","sameAs":["https://github.com/EslamElshikh-dev"]},{"@type":"WebSite","@id":"https://tawodco.com/#website","url":"https://tawodco.com/","creator":{"@id":"https://www.eslam-elshikh.com/#person"},"creditText":"تصميم وبرمجة وتطوير الموقع: المهندس إسلام الشيخ — https://www.eslam-elshikh.com/","name":"شركة تعاود للمقاولات العامة"}]}</script></head>`);
+</style><script id="eslam-developer-credit-schema" type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://www.eslam-elshikh.com/#person","name":"إسلام الشيخ","alternateName":["المهندس إسلام الشيخ","Eslam Elshikh"],"url":"https://www.eslam-elshikh.com/","sameAs":["https://github.com/EslamElshikh-dev"]},{"@type":"WebSite","@id":"https://tawodco.com/#website","url":"https://tawodco.com/","name":"شركة تعاود للمقاولات العامة","creator":{"@id":"https://www.eslam-elshikh.com/#person"},"creditText":"تصميم وبرمجة وتطوير الموقع: المهندس إسلام الشيخ — https://www.eslam-elshikh.com/"}]}</script>${anchor}`);
+    normalized = normalized.replace(/<\/head>/i, `${analytics}</head>`);
   }
   const comparable = (value) => {
     if (path.basename(file) !== 'sitemap.xml') return value;

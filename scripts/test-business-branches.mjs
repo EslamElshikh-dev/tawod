@@ -53,6 +53,7 @@ const sitemapState = JSON.parse(fs.readFileSync('data/sitemap-state.json', 'utf8
 const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Riyadh' });
 for (const file of ['sitemap.xml', 'sitemap-dammam.xml']) {
   const sitemap = fs.readFileSync(file, 'utf8');
+  assert.equal(enhanceBranchHtml(sitemap, file), sitemap, `${file}: preserve recorded sitemap dates`);
   for (const url of [dammam.url, dammam.contactUrl, `${dammam.url}about/`]) {
     const lastmod = sitemapState.pages[url]?.lastmod;
     assert.match(lastmod || '', /^\d{4}-\d{2}-\d{2}$/, `${url}: missing sitemap state date`);

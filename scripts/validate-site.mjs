@@ -4,6 +4,7 @@ import process from 'node:process';
 import { createHash } from 'node:crypto';
 import { generateSitemaps } from './generate-sitemaps.mjs';
 import { sharingKeys, sharingMetadata } from './normalize-seo-sharing.mjs';
+import { htmlReferences, homepageSchemaErrors } from './site-validation-helpers.mjs';
 
 const root=process.cwd(),domain='https://tawodco.com',errors=[],warnings=[];
 const assetRevision=file=>createHash('sha256').update(fs.readFileSync(path.join(root,'assets','js',file))).digest('hex').slice(0,12);
@@ -17,6 +18,7 @@ const pagePath=r=>r==='index.html'?'/':r.endsWith('/index.html')?'/'+r.slice(0,-
 const htmlFiles=walk(root).filter(f=>f.endsWith('.html')&&rel(f)!=='admin.html');
 const pages=new Map(htmlFiles.map(f=>[rel(f),fs.readFileSync(f,'utf8')]));
 const titles=new Map(),canonicals=new Map(),indexable=new Set();
+let homeSchemas=[];
 
 function schemaHas(node,type){if(!node||typeof node!=='object')return false;if(node['@type']===type||(Array.isArray(node['@type'])&&node['@type'].includes(type)))return true;return Object.values(node).some(v=>Array.isArray(v)?v.some(x=>schemaHas(x,type)):schemaHas(v,type))}
 function schemaCount(node,type){if(!node||typeof node!=='object')return 0;let count=node['@type']===type||(Array.isArray(node['@type'])&&node['@type'].includes(type))?1:0;for(const value of Object.values(node))count+=Array.isArray(value)?value.reduce((sum,item)=>sum+schemaCount(item,type),0):schemaCount(value,type);return count}
@@ -57,6 +59,7 @@ for(const [r,h] of pages){
   }
   const ids=all(h,/\bid=["']([^"']+)["']/gi).map(m=>m[1]);[...new Set(ids.filter((x,i,a)=>a.indexOf(x)!==i))].forEach(id=>errors.push(`${r}: duplicate id ${id}`));
   const schemas=[];all(h,/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi).forEach((m,i)=>{try{schemas.push(JSON.parse(m[1].trim()))}catch(e){errors.push(`${r}: invalid JSON-LD block ${i+1}: ${e.message}`)}});
+  if(r==='index.html')homeSchemas=schemas;
   if(r.startsWith('lp/')&&!/<meta\b(?=[^>]*name=["']robots["'])[^>]*content=["'][^"']*noindex/i.test(h))errors.push(`${r}: ads-only landing page must be noindex,follow`);
   const excluded=r==='index.html'||r==='privacy-policy.html'||r==='404.html'||r.startsWith('en/')||/noindex/i.test(h);
   const localMatch=r.match(/^(dammam|khobar|dhahran)\//),localCity=localMatch?.[1]||'',localSilo=Boolean(localCity),localArticle=localCity&&new RegExp(`^${localCity}/blog/[^/]+/index\\.html$`).test(r);
@@ -102,7 +105,20 @@ for(const [r,h] of pages){
       if(!schemas.some(x=>schemaHas(x,expected)))errors.push(`${r}: missing maintenance ${expected} schema`);
     }else if(!['WebPage','AboutPage','ContactPage','CollectionPage','Service'].some(type=>schemas.some(x=>schemaHas(x,type))))errors.push(`${r}: missing page schema`);
   }
-  all(h,/<(?:a|link|script|img|source|iframe)\b[^>]*(?:href|src|srcset)=["']([^"']+)["'][^>]*>/gi).forEach(m=>m[1].split(',').map(x=>x.trim().split(/\s+/)[0]).filter(Boolean).forEach(v=>{const t=localTarget(r,v);if(!t)return;const full=path.join(root,t.file);if(!fs.existsSync(full)){errors.push(`${r}: broken reference ${v} -> ${t.file}`);return}if(t.anchor&&t.file.endsWith('.html')){const target=pages.get(t.file)||fs.readFileSync(full,'utf8');const safe=t.anchor.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');if(!new RegExp(`\\bid=["']${safe}["']`).test(target))errors.push(`${r}: missing anchor #${t.anchor} in ${t.file}`)}}));
+  for(const value of htmlReferences(h)){
+    const target=localTarget(r,value);
+    if(!target)continue;
+    const full=path.join(root,target.file);
+    if(!fs.existsSync(full)){
+      errors.push(`${r}: broken reference ${value} -> ${target.file}`);
+      continue;
+    }
+    if(target.anchor&&target.file.endsWith('.html')){
+      const html=pages.get(target.file)||fs.readFileSync(full,'utf8');
+      const safe=target.anchor.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+      if(!new RegExp(`\\bid=["']${safe}["']`).test(html))errors.push(`${r}: missing anchor #${target.anchor} in ${target.file}`);
+    }
+  }
 }
 
 if(!fs.existsSync('sitemap.xml'))errors.push('sitemap.xml missing');else{const s=fs.readFileSync('sitemap.xml','utf8'),listed=all(s,/<loc>([^<]+)<\/loc>/gi).map(m=>new URL(m[1]).pathname),urls=new Set(listed);if(listed.length!==urls.size)errors.push(`sitemap.xml contains ${listed.length-urls.size} duplicate URL(s)`);for(const p of indexable)if(!urls.has(p))errors.push(`sitemap.xml missing ${p}`);for(const p of urls){let r=p==='/'?'index.html':p.slice(1);if(r.endsWith('/'))r+='index.html';if(!pages.has(r))errors.push(`sitemap URL does not resolve: ${p}`)}}
@@ -115,7 +131,8 @@ for(const file of ['assets/js/tawod-home.js','assets/js/tawod-inner.js','assets/
 if(fs.existsSync('assets/js/contact-conversion.js')){const js=fs.readFileSync('assets/js/contact-conversion.js','utf8');for(const marker of ['form_submit_attempt','tawodLeadSubmitted','generate_lead'])if(js.includes(marker))errors.push(`contact-conversion.js must leave ${marker} to sitewide analytics`)}
 for(const [file,html] of pages){for(const form of all(html,/<form\b(?=[^>]*\baction=["']https:\/\/(?:www\.)?formsubmit\.co\/[^"']+["'])[^>]*>[\s\S]*?<\/form>/gi)){if(!/\bdata-analytics-form=["'][^"']+["']/i.test(form[0]))errors.push(`${file}: lead form missing data-analytics-form`);const next=form[0].match(/<input\b(?=[^>]*\bname=["']_next["'])[^>]*\bvalue=["']([^"']+)["'][^>]*>/i)?.[1];const expectedNext=domain+(file.startsWith('en/')?'/en/thank-you.html':'/thank-you.html');if(next!==expectedNext)errors.push(`${file}: lead form must redirect to the corresponding language confirmation page`)}}
 const thankYou=pages.get('thank-you.html')||'';for(const marker of ['TAWOD_STATIC_CONTEXT','TAWOD_STATIC_FAQ','TAWOD_STATIC_SCHEMA','lead_confirmation'])if(thankYou.includes(marker))errors.push(`thank-you.html still contains ${marker}`);
-const home=pages.get('index.html')||'';for(const required of ['"@type": "GeneralContractor"','"@id": "https://tawodco.com/#organization"','"value": "7033495099"','"hasOfferCatalog"'])if(!home.includes(required))errors.push(`index.html entity graph missing ${required}`);for(const stale of ['https://tawodco.com/#localbusiness','"priceRange"'])if(home.includes(stale))errors.push(`index.html entity graph still contains ${stale}`);
+const home=pages.get('index.html')||'';
+errors.push(...homepageSchemaErrors(homeSchemas));
 for(const required of ["hreflang='ar-SA' href='https://tawodco.com/'","hreflang='en-SA' href='https://tawodco.com/en/'","hreflang='x-default' href='https://tawodco.com/'","href='/en/' lang='en' hreflang='en-SA'"])if(!home.includes(required))errors.push(`index.html language navigation missing ${required}`);
 const socialImage='images/social/tawod-og-1200x630.png';if(!fs.existsSync(path.join(root,socialImage)))errors.push(`${socialImage} missing`);else if(fs.statSync(path.join(root,socialImage)).size<50000)errors.push(`${socialImage} appears incomplete`);
 for(const file of ['index.html','contact.html','privacy-policy.html','en/index.html']){const html=pages.get(file)||'';if(!html.includes('https://tawodco.com/images/social/tawod-og-1200x630.png'))errors.push(`${file}: missing branded social image`);for(const dimension of ['og:image:width','og:image:height'])if(!html.includes(dimension))errors.push(`${file}: missing ${dimension}`)}

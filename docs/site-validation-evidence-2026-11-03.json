@@ -1,0 +1,154 @@
+{
+  "date": "2026-11-03",
+  "timezone": "Asia/Riyadh",
+  "repository": "EslamElshikh-dev/tawod",
+  "base_commit": "9be0f601e6011bc34569d102ae21e037abe3db71",
+  "local_branch": "fix/site-reference-validation-20261103",
+  "original_ci": {
+    "run_id": 41583553306,
+    "job_id": 125743672580,
+    "validation_errors": 267,
+    "data_url_false_positives": 264,
+    "json_format_false_positives": 3
+  },
+  "baseline_commands": [
+    {
+      "name": "baseline-home",
+      "command": [
+        "npm",
+        "run",
+        "check:home"
+      ],
+      "exit": 0,
+      "seconds": 0.31
+    },
+    {
+      "name": "baseline-generate",
+      "command": [
+        "node",
+        "scripts/run-static-pages.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.37
+    },
+    {
+      "name": "baseline-idempotence",
+      "command": [
+        "node",
+        "scripts/run-static-pages.mjs",
+        "--check"
+      ],
+      "exit": 0,
+      "seconds": 0.31
+    },
+    {
+      "name": "baseline-build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exit": 0,
+      "seconds": 99.69
+    },
+    {
+      "name": "baseline-validate",
+      "command": [
+        "node",
+        "scripts/validate-site.mjs"
+      ],
+      "exit": 1,
+      "seconds": 0.79
+    },
+    {
+      "name": "baseline-mobile",
+      "command": [
+        "npm",
+        "run",
+        "check:mobile-performance"
+      ],
+      "exit": 0,
+      "seconds": 0.2
+    }
+  ],
+  "final_full_check": {
+    "command": [
+      "npm",
+      "run",
+      "check"
+    ],
+    "exit": 0,
+    "seconds": 125.42
+  },
+  "additional_checks": [
+    {
+      "script": "test:sitemaps",
+      "exit": 0,
+      "seconds": 0.4
+    },
+    {
+      "script": "test:seo-sharing",
+      "exit": 0,
+      "seconds": 0.38
+    },
+    {
+      "script": "check:seo-sharing",
+      "exit": 0,
+      "seconds": 0.71
+    },
+    {
+      "script": "check:sitemaps",
+      "exit": 0,
+      "seconds": 0.6
+    },
+    {
+      "script": "test:maintenance-contracts",
+      "exit": 0,
+      "seconds": 0.27
+    }
+  ],
+  "generation_drift": {
+    "exit": 0,
+    "output": ""
+  },
+  "preservation": {
+    "exportedPages": 271,
+    "jsonLdBlocks": 578,
+    "signatureCounts": {
+      "1": 269,
+      "0": 2
+    },
+    "unchangedPublicAssets": 586,
+    "changedAssets": [],
+    "differences": {
+      "main": [],
+      "signature": [],
+      "language": [],
+      "schema": []
+    }
+  },
+  "embedded_logo": {
+    "format": "webp",
+    "width": 96,
+    "height": 96,
+    "bytes": 3200
+  },
+  "regression_tests": {
+    "passed": 11,
+    "failed": 0,
+    "includes_full_validator_negative_cases": true
+  },
+  "scope": {
+    "implementation_configuration_test_files": 11,
+    "regenerated_html": 268,
+    "regenerated_xml": 10,
+    "sitemap_state_and_route_manifest": 2
+  },
+  "publication": {
+    "github_pushed": false,
+    "vercel_deployed": false,
+    "explicit_approval_required": false,
+    "snapshot_phase": "pre_publication_verification",
+    "explicit_approval_received": true
+  }
+}

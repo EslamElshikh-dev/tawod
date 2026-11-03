@@ -66,6 +66,7 @@ jobs:
         run: npm run build
       - name: Validate generated site and performance
         run: |
+          npm run test:site-validation
           node scripts/validate-site.mjs
           npm run check:home
           npm run check:mobile-performance
