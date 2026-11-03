@@ -8,7 +8,7 @@
     "prepare:assets": "node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/build-report-followup.mjs && node scripts/install-site-analytics.mjs && node scripts/build-contracting-design.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "build:maintenance": "node scripts/build-maintenance-site.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "build": "next build",
-    "postbuild": "node scripts/finalize-next-export.mjs && node scripts/verify-next-export.mjs",
+    "postbuild": "node scripts/finalize-next-export.mjs && node scripts/developer-credit.mjs out && node scripts/verify-next-export.mjs",
     "typecheck": "tsc --noEmit",
     "test:next-export": "node scripts/verify-next-export.mjs",
     "build:analytics": "node scripts/install-site-analytics.mjs",

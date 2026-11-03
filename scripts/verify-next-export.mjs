@@ -1,3 +1,4 @@
+import { normalize as normalizeDeveloperCredit } from './developer-credit.mjs';
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, relative, sep } from "node:path";
@@ -119,12 +120,12 @@ function isBlogArticle(relativePath) {
 
 
 function expectedExportHtml(relativePath, html) {
-  if (relativePath === "404.html") return normalizeInternalHomepageLinks(html);
-  return versionLocalAssets(
+  if (relativePath === "404.html") return normalizeDeveloperCredit(normalizeInternalHomepageLinks(html));
+  return normalizeDeveloperCredit(versionLocalAssets(
     applyContractingDesign(relativePath, optimizeFontLoading(
       optimizeArticleMarkup(relativePath, normalizeInternalHomepageLinks(html)),
     )),
-  );
+  ));
 }
 
 if (!existsSync(outputDirectory)) {
