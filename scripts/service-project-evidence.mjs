@@ -88,9 +88,16 @@ export function enhanceServiceEvidence(html, file) {
   const profile = profiles[file];
   if (!profile) return html;
   html = html.replace(/\s*<!-- TAWOD_SERVICE_EVIDENCE_START -->[\s\S]*?<!-- TAWOD_SERVICE_EVIDENCE_END -->\s*/g, '');
-  html = html.replace(/<link\b[^>]*href=["'][^"']*tawod-service-evidence\.css[^"']*["'][^>]*>\s*/gi, '');
   const stylesheet = `<link rel="stylesheet" href="/${style}?v=${revision}">\n`;
-  html = html.includes('<!-- TAWOD_ANALYTICS_START -->') ? html.replace('<!-- TAWOD_ANALYTICS_START -->', stylesheet + '<!-- TAWOD_ANALYTICS_START -->') : html.replace(/<\/head>/i, stylesheet + '</head>');
+  // Refresh in place: moving this link around the developer metadata on every
+  // pass made a completed prebuild look stale to the static-page checker.
+  let installed = false;
+  html = html.replace(/<link\b[^>]*href=["'][^"']*tawod-service-evidence\.css[^"']*["'][^>]*>\s*/gi, () => {
+    if (installed) return '';
+    installed = true;
+    return stylesheet;
+  });
+  if (!installed) html = html.includes('<!-- TAWOD_ANALYTICS_START -->') ? html.replace('<!-- TAWOD_ANALYTICS_START -->', stylesheet + '<!-- TAWOD_ANALYTICS_START -->') : html.replace(/<\/head>/i, stylesheet + '</head>');
   html = html.replace(/<section\b[^>]*class=["'][^"']*page-hero[^"']*["'][^>]*>[\s\S]*?<\/section>/i, hero => {
     hero = hero.replace(/<a\b[^>]*class=["'][^"']*tawod-evidence-hero-link[^"']*["'][^>]*>[\s\S]*?<\/a>/gi, '');
     hero = hero.replace(/<a\b[^>]*class=["'][^"']*btn-whatsapp[^"']*["'][^>]*>/gi, tag => tag.replace(/href=["'][^"']*["']/i, `href="${whatsapp(profile.introMessage || profile.quoteMessage)}"`));

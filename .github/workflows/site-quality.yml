@@ -57,7 +57,9 @@ jobs:
       - name: Build and verify Next.js static export
         run: npm run build
       - name: Validate pages links metadata schema and sitemap
-        run: node scripts/validate-site.mjs
+        run: |
+          npm run test:site-validation
+          node scripts/validate-site.mjs
       - name: Verify contracting content and SEO preservation
         run: npm run check:design
       - name: Detect unresolved merge markers

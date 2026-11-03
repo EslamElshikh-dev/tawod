@@ -72,8 +72,11 @@ function branchSection() {
 export function enhanceBranchHtml(html, relativePath) {
   if (['sitemap.xml', 'sitemap-dammam.xml'].includes(relativePath)) {
     const updatedPages = new Set([dammam.url, dammam.contactUrl, `${dammam.url}about/`]);
+    // The shared sitemap generator records later content changes. Do not reset
+    // those dates to the original branch launch date after regenerating pages.
+    const state = JSON.parse(fs.readFileSync(path.join(root, 'data/sitemap-state.json'), 'utf8'));
     return html.replace(/<url><loc>([^<]+)<\/loc><lastmod>[^<]+<\/lastmod><\/url>/g,
-      (entry, url) => updatedPages.has(url) ? entry.replace(/<lastmod>[^<]+<\/lastmod>/, `<lastmod>${dammam.updatedAt}</lastmod>`) : entry);
+      (entry, url) => updatedPages.has(url) ? entry.replace(/<lastmod>[^<]+<\/lastmod>/, `<lastmod>${state.pages[url]?.lastmod || dammam.updatedAt}</lastmod>`) : entry);
   }
   const local = relativePath.startsWith('dammam/') && relativePath.endsWith('.html');
   const mainContact = relativePath === 'contact.html';
