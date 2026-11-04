@@ -7,6 +7,7 @@ import { newArticleSlugs as riyadhArticleSlugs } from "./riyadh-articles-2026-10
 import { newArticleSlugs as constructionArticleSlugs } from "./riyadh-construction-articles-2026-10-13.mjs";
 import { newArticleSlugs as projectDecisionSlugs } from "./project-decision-guides-2026-10-14.mjs";
 import { newArticleSlugs as ownerGuideSlugs } from "./owner-project-guides-2026-10-15.mjs";
+import { newArticleSlugs as exactTitleSlugs } from "./exact-title-articles-2026-11-04.mjs";
 
 const root = process.cwd();
 const blogRoot = join(root, "blog");
@@ -36,7 +37,7 @@ function articleEntityCount(html) {
   return count;
 }
 
-const expectedContentUrls = 82 + newArticleSlugs.length + decisionGuideSlugs.length + riyadhArticleSlugs.length + constructionArticleSlugs.length + projectDecisionSlugs.length + ownerGuideSlugs.length;
+const expectedContentUrls = 82 + newArticleSlugs.length + decisionGuideSlugs.length + riyadhArticleSlugs.length + constructionArticleSlugs.length + projectDecisionSlugs.length + ownerGuideSlugs.length + exactTitleSlugs.length;
 if (articleSlugs.length + legacyTopicHubSlugs.size !== expectedContentUrls) errors.push(`Expected ${expectedContentUrls} content URLs after the bone-construction series, found ${articleSlugs.length + legacyTopicHubSlugs.size}`);
 
 const blogIndex = readFileSync(join(blogRoot, "index.html"), "utf8");

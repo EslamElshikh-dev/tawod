@@ -59,7 +59,8 @@
     "test:english-parity": "node --test scripts/test-english-parity.mjs",
     "test:database": "node scripts/test-database-replay.mjs",
     "test:maintenance-contracts": "node scripts/test-maintenance-contracts.mjs",
-    "test:site-validation": "node --test scripts/test-site-validation.mjs"
+    "test:site-validation": "node --test scripts/test-site-validation.mjs",
+    "generate:exact-titles-2026-11-04": "node scripts/generate-exact-title-articles-2026-11-04.mjs && node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/run-static-pages.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-sitemaps.mjs"
   },
   "dependencies": {
     "next": "16.4.2",
