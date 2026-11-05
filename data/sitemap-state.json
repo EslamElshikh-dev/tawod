@@ -2,8 +2,8 @@
   "version": 1,
   "pages": {
     "https://tawodco.com/": {
-      "fingerprint": "bb4a151034dd667f0212abbcab570e6450e997862df3873836454da8f6909233",
-      "lastmod": "2026-11-03"
+      "fingerprint": "c0bd227e2796b337a269fbc2b4a79eb5ae14a55068634af7d96acdc93bad26e6",
+      "lastmod": "2026-11-05"
     },
     "https://tawodco.com/about.html": {
       "fingerprint": "2694f55edba8717bb2c04d39774a25f7f842985768599dfcc53a514c2948d214",
@@ -786,8 +786,8 @@
       "lastmod": "2026-11-04"
     },
     "https://tawodco.com/en/": {
-      "fingerprint": "1791d620418f8afd459de194e16b0cfa449d131a6fbc55410523b667b588a612",
-      "lastmod": "2026-10-22"
+      "fingerprint": "5de747bf02ba46907436ea6a555c2dc5b63b89aa8ebe3555eb0db8035dcb6b0d",
+      "lastmod": "2026-11-05"
     },
     "https://tawodco.com/en/about/": {
       "fingerprint": "b1baa5baf302651958041ce9e8aaff3421bfb4ee9fc8cc4d525706c054c6bd37",
@@ -1092,12 +1092,12 @@
   },
   "files": {
     "sitemap.xml": {
-      "fingerprint": "a5a57e2d6a839ec11f16a641745843a1c6f235b96ece848535a71482ed62f36c",
-      "lastmod": "2026-11-04"
+      "fingerprint": "2d0ef5ccacee3d8497b07f6db689fd611ce54ebc258cd385433c3017cdcf7ecb",
+      "lastmod": "2026-11-05"
     },
     "sitemap-pages.xml": {
-      "fingerprint": "681234d0d53c4f29b924bcf15b19449056a1d0fe8f76df398ecd3c61eb842ec5",
-      "lastmod": "2026-11-04"
+      "fingerprint": "f2588c818f5c531d26ad560fe63504e00eeed3aa530df9c51ab97cc1d2c03f0a",
+      "lastmod": "2026-11-05"
     },
     "sitemap-blog.xml": {
       "fingerprint": "1d625f28daef321ec01a1dbf3db17679b4eaf9fb4bb9b40024ab23a91346a044",

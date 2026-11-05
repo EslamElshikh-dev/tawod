@@ -5,9 +5,11 @@ import process from 'node:process';
 import { fileURLToPath } from 'node:url';
 import { transform } from 'lightningcss';
 import { compileContractingCss, cssVocabulary } from './contracting-css.mjs';
+import { syncHomepageLatest } from './home-blog.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const check = process.argv.includes('--check');
+await syncHomepageLatest({ check });
 const cssSources = [
   'assets/css/tawod-home.css',
   'assets/css/tawod-upgrades.css',
