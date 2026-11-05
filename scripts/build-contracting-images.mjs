@@ -61,7 +61,7 @@ fs.mkdirSync(output, { recursive: true });
 const profiles = {}, avifProfiles = {}, nativePhotos = {}, generated = new Set();
 const previousManifest = fs.existsSync('lib/contracting-image-assets.mjs') ? fs.readFileSync('lib/contracting-image-assets.mjs', 'utf8') : '';
 const previousAvifProfiles = JSON.parse(previousManifest.match(/export const avifImages=(.*);\n/)?.[1] || '{}');
-const avifOptions = { quality: 80, effort: 6, chromaSubsampling: '4:4:4' };
+const avifOptions = { quality: 80, effort: 4, chromaSubsampling: '4:4:4' };
 let originalBytes = 0, smallBytes = 0;
 for (const file of [...originals].sort()) {
   // Hero art direction and vector credentials retain their existing treatment.
