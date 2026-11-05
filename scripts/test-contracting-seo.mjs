@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import { test } from 'node:test';
 import { repairContractingSeo } from '../lib/contracting-seo.mjs';
 import { company, companySchema, riyadh } from './business-branches.mjs';
-import { responsiveImages } from '../lib/contracting-image-assets.mjs';
+import { responsiveImages, avifImages } from '../lib/contracting-image-assets.mjs';
 import { optimizeArticleMarkup } from '../lib/article-presentation.mjs';
 import sharp from 'sharp';
 import { applyContractingImagePresentation } from '../lib/contracting-image-presentation.mjs';
@@ -76,6 +76,26 @@ test('responsive sets exist while original source URLs and image alternatives re
   }
   const hero = '<img src="/images/hero-bg-desktop-optimized.webp" alt="" loading="eager">';
   assert.equal(repairContractingSeo('index.html', hero), hero);
+});
+
+test('large blog photos offer AVIF without losing the WebP fallback or nesting pictures', async () => {
+  assert.ok(Object.keys(avifImages).length > 0);
+  for (const [original, variants] of Object.entries(avifImages)) {
+    assert.deepEqual(variants.map(row => row.width), responsiveImages[original].map(row => row.width));
+    const input = `<a href="/${original}"><img src="/${original}" width="1152" height="1536" alt="صورة مشروع تعاود" loading="lazy" decoding="async"></a>`;
+    const output = applyContractingImagePresentation('blog/example/index.html', input);
+    assert.match(output, /<source type="image\/avif"/);
+    assert.ok(output.includes(`href="/${original}"`) && output.includes(`src="/${original}"`));
+    assert.match(output, /alt="صورة مشروع تعاود" loading="lazy" decoding="async"/);
+    assert.equal(applyContractingImagePresentation('blog/example/index.html', output), output);
+    const customPicture = `<picture><source type="image/webp" srcset="/${original}">${input.match(/<img[^>]*>/)[0]}</picture>`;
+    assert.equal((applyContractingImagePresentation('blog/example/index.html', customPicture).match(/<picture/g) || []).length, 1);
+    for (const variant of variants) {
+      const metadata = await sharp(variant.url.slice(1)).metadata();
+      assert.equal(metadata.width, variant.width);
+      assert.equal(metadata.hasAlpha, false);
+    }
+  }
 });
 
 test('service images retain the native original detail instead of enlarged thumbnails', async () => {
