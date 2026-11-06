@@ -1,0 +1,349 @@
+/* Scoped to the Al Sahafa and Al Wadi villa records. Keep these visual rules
+   in the modern bundle so the legacy layout pass cannot remove them. */
+.tawod-contracting .tawod-villa-case {
+  --villa-line: #e4e5df;
+  --villa-accent: #8d623a;
+}
+
+.tawod-contracting .tawod-villa-case > .section-padding {
+  padding-block: 64px !important;
+}
+
+.tawod-contracting .tawod-villa-case .page-hero {
+  padding-block: 150px 56px !important;
+}
+
+.tawod-contracting .tawod-villa-case .page-hero h1 {
+  max-width: 1040px;
+  margin-block: 18px 16px;
+  font-size: clamp(32px, 4.3vw, 58px) !important;
+  line-height: 1.45 !important;
+}
+
+.tawod-contracting .tawod-villa-case .page-hero p {
+  max-width: 820px;
+  font-size: 17px !important;
+  line-height: 1.95 !important;
+}
+
+.tawod-contracting .tawod-villa-case .villa-case-summary {
+  margin-block: 22px;
+  gap: 8px;
+}
+
+.tawod-contracting .tawod-villa-case .villa-case-summary > span {
+  padding: 7px 12px;
+  border: 1px solid var(--villa-line);
+  border-radius: 10px;
+  background: #f5f4ef;
+  color: #4d5d55;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.tawod-contracting .tawod-villa-case .tawod-case-section-intro {
+  margin-bottom: 26px;
+}
+
+.tawod-contracting .tawod-villa-case h2 {
+  margin-block: 8px 14px;
+  font-size: clamp(24px, 2.6vw, 34px) !important;
+  line-height: 1.55 !important;
+}
+
+.tawod-contracting .tawod-villa-case h3 {
+  font-size: 19px !important;
+  line-height: 1.7 !important;
+}
+
+.tawod-contracting .tawod-villa-case .tawod-case-image {
+  border: 1px solid var(--villa-line);
+  border-radius: 18px;
+  box-shadow: none;
+}
+
+.tawod-contracting .tawod-villa-case .tawod-case-image figcaption {
+  padding: 14px 18px;
+  border-top: 1px solid var(--villa-line);
+  background: #fff;
+  color: #647068;
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.tawod-contracting .tawod-villa-case .tawod-case-facts {
+  gap: 14px;
+}
+
+.tawod-contracting .tawod-villa-case .tawod-case-fact {
+  min-height: 140px;
+  padding: 20px 16px;
+}
+
+.tawod-contracting .tawod-villa-case .tawod-case-fact > i {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  background: #f6f0e7;
+  color: var(--villa-accent);
+  font-size: 18px;
+}
+
+.tawod-contracting .tawod-villa-case .tawod-case-fact strong {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.tawod-contracting .tawod-villa-case .tawod-case-fact span {
+  color: #647068;
+  font-size: 14px;
+}
+
+.tawod-contracting .tawod-villa-case .tawod-case-highlight {
+  padding: 26px;
+}
+
+.tawod-contracting .tawod-villa-case .tawod-case-highlight p {
+  font-size: 15px;
+  line-height: 1.95;
+}
+
+.tawod-contracting .tawod-villa-case .tawod-case-related {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.tawod-contracting .tawod-villa-case .tawod-case-related a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  min-height: 76px;
+  padding: 16px;
+  border: 1px solid var(--villa-line);
+  border-radius: 14px;
+  background: #fff;
+  color: #26352e;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.8;
+  text-decoration: none;
+  transition: border-color .2s ease, background-color .2s ease;
+}
+
+.tawod-contracting .tawod-villa-case .tawod-case-related a:hover {
+  transform: none;
+  border-color: #bc936b;
+  background: #fcfaf6;
+}
+
+.tawod-contracting .tawod-villa-case .villa-related-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: #f6f0e7;
+  color: var(--villa-accent);
+}
+
+.tawod-contracting .tawod-villa-case .villa-related-label {
+  flex: 1;
+  min-width: 0;
+}
+
+.tawod-contracting .tawod-villa-case .tawod-case-related a > i:last-child {
+  flex: 0 0 16px;
+  margin: 0;
+  color: var(--villa-accent);
+  font-size: 14px;
+}
+
+.tawod-contracting .tawod-villa-case .faq-list {
+  display: grid;
+  gap: 12px;
+  max-width: 900px;
+  margin-inline: auto;
+}
+
+.tawod-contracting .tawod-villa-case .faq-item {
+  overflow: hidden;
+  margin-bottom: 0 !important;
+  border: 1px solid var(--villa-line) !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+}
+
+.tawod-contracting .tawod-villa-case .faq-question {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  min-height: 66px;
+  margin: 0;
+  padding: 17px 20px;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  color: #26352e !important;
+  font: inherit;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 1.8 !important;
+  text-align: start;
+  cursor: pointer;
+}
+
+.tawod-contracting .tawod-villa-case .faq-question > span {
+  flex: 1;
+  min-width: 0;
+}
+
+.tawod-contracting .tawod-villa-case .faq-question > i {
+  display: grid;
+  place-items: center;
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: #f6f4ef;
+  color: var(--villa-accent);
+  font-size: 12px;
+  transition: transform .2s ease;
+}
+
+.tawod-contracting .tawod-villa-case .faq-item.active {
+  border-color: #bc936b !important;
+}
+
+.tawod-contracting .tawod-villa-case .faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .25s ease;
+}
+
+.tawod-contracting .tawod-villa-case .faq-answer p {
+  margin: 0;
+  padding: 0 20px 18px;
+  color: #647068 !important;
+  font-size: 15px;
+  line-height: 1.95;
+}
+
+.tawod-contracting .tawod-villa-case .faq-question:focus-visible,
+.tawod-contracting .tawod-villa-case .tawod-case-related a:focus-visible {
+  outline: 2px solid #a5784d;
+  outline-offset: -3px;
+}
+
+.tawod-contracting .tawod-villa-case > .villa-case-cta {
+  padding-top: 0 !important;
+}
+
+.tawod-contracting .tawod-villa-case .villa-case-cta > .container {
+  padding: 28px;
+  border: 1px solid var(--villa-line);
+  border-radius: 20px;
+  background: #f7f5ef;
+}
+
+.tawod-contracting .tawod-villa-case .villa-case-cta .hero-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 10px;
+  flex: 0 0 400px;
+}
+
+.tawod-contracting .tawod-villa-case .villa-case-cta .btn {
+  min-height: 48px;
+  padding: 12px 14px !important;
+  font-size: 13px !important;
+  line-height: 1.7 !important;
+  white-space: normal;
+}
+
+@media (max-width: 900px) {
+  .tawod-contracting .tawod-villa-case .tawod-case-related {
+    grid-template-columns: 1fr;
+  }
+  .tawod-contracting .tawod-villa-case .villa-case-cta > .container {
+    display: block;
+  }
+  .tawod-contracting .tawod-villa-case .villa-case-cta .hero-actions {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 767px) {
+  .tawod-contracting .tawod-villa-case > .section-padding {
+    padding-block: 38px !important;
+  }
+  .tawod-contracting .tawod-villa-case .page-hero {
+    padding-block: 122px 36px !important;
+  }
+  .tawod-contracting .tawod-villa-case .page-hero p {
+    font-size: 15px !important;
+  }
+  .tawod-contracting .tawod-villa-case .tawod-case-section-intro {
+    margin-bottom: 20px;
+  }
+  .tawod-contracting .tawod-villa-case h2 {
+    font-size: 24px !important;
+  }
+  .tawod-contracting .tawod-villa-case h3 {
+    font-size: 18px !important;
+  }
+  .tawod-contracting .tawod-villa-case .tawod-case-facts {
+    gap: 10px;
+  }
+  .tawod-contracting .tawod-villa-case .tawod-case-fact {
+    min-height: 128px;
+    padding: 17px 12px;
+  }
+  .tawod-contracting .tawod-villa-case .tawod-case-highlight {
+    padding: 20px;
+  }
+  .tawod-contracting .tawod-villa-case .tawod-case-related {
+    gap: 10px;
+  }
+  .tawod-contracting .tawod-villa-case .tawod-case-related a {
+    min-height: 64px;
+    padding: 12px 14px;
+    gap: 10px;
+    font-size: 14px;
+  }
+  .tawod-contracting .tawod-villa-case .faq-list {
+    gap: 10px;
+  }
+  .tawod-contracting .tawod-villa-case .faq-question {
+    min-height: 62px;
+    padding: 14px 16px;
+    font-size: 15px !important;
+  }
+  .tawod-contracting .tawod-villa-case .faq-answer p {
+    padding: 0 16px 16px;
+    font-size: 14px;
+  }
+  .tawod-contracting .tawod-villa-case .villa-case-cta > .container {
+    padding: 22px 18px;
+  }
+}
+
+@media (max-width: 420px) {
+  .tawod-contracting .tawod-villa-case .villa-case-cta .hero-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tawod-contracting .tawod-villa-case .tawod-case-related a,
+  .tawod-contracting .tawod-villa-case .faq-question > i,
+  .tawod-contracting .tawod-villa-case .faq-answer {
+    transition: none;
+  }
+}
