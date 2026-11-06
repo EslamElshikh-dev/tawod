@@ -2,8 +2,8 @@
   "version": 1,
   "pages": {
     "https://tawodco.com/": {
-      "fingerprint": "c0bd227e2796b337a269fbc2b4a79eb5ae14a55068634af7d96acdc93bad26e6",
-      "lastmod": "2026-11-05"
+      "fingerprint": "7d4cbe6b034c88f87ea960133668dfbfcbfb98ddcd0d516f021fe1bb502c72fc",
+      "lastmod": "2026-11-07"
     },
     "https://tawodco.com/about.html": {
       "fingerprint": "2694f55edba8717bb2c04d39774a25f7f842985768599dfcc53a514c2948d214",
@@ -786,8 +786,8 @@
       "lastmod": "2026-11-04"
     },
     "https://tawodco.com/en/": {
-      "fingerprint": "5de747bf02ba46907436ea6a555c2dc5b63b89aa8ebe3555eb0db8035dcb6b0d",
-      "lastmod": "2026-11-05"
+      "fingerprint": "e9c51491e2c0a62bb24aa660a1ede709f6499a0edfb96f41b2bfe8c3a0201f83",
+      "lastmod": "2026-11-07"
     },
     "https://tawodco.com/en/about/": {
       "fingerprint": "b1baa5baf302651958041ce9e8aaff3421bfb4ee9fc8cc4d525706c054c6bd37",
@@ -798,28 +798,36 @@
       "lastmod": "2026-10-14"
     },
     "https://tawodco.com/en/projects/": {
-      "fingerprint": "2127238e206e5ec68f79b643b3242583e677fb147706491b4aafc5cebede6a17",
-      "lastmod": "2026-10-22"
+      "fingerprint": "c1375a4111b428278af3b3b0e3917a89193f5b6c0e273b0eb7ee68c8b29df63d",
+      "lastmod": "2026-11-07"
     },
     "https://tawodco.com/en/projects/arouba-mosque-villas/": {
-      "fingerprint": "745b5d1d1a1a06f7f73bf57ea218472fdf66e64e51104d136feb492f5026c3d6",
-      "lastmod": "2026-10-22"
+      "fingerprint": "0020d49be48e6badbc94b2d5ff166a4a242db008664ad95fd0fabc427962ca6d",
+      "lastmod": "2026-11-07"
     },
     "https://tawodco.com/en/projects/eight-warehouses-riyadh/": {
-      "fingerprint": "91bf90b330ddc375ea1032dddf7abc38d0841373dab6560d6b909e3351a0e54e",
-      "lastmod": "2026-10-14"
+      "fingerprint": "653970999dacac9a6fe978b2eea122b16fe46c28d78ca487a6276cd839a3886a",
+      "lastmod": "2026-11-07"
     },
     "https://tawodco.com/en/projects/faisaliah-villa/": {
-      "fingerprint": "369913e5e6463153c7ab0350430a674c5d149e6116e9c574cec121a0fd0e8613",
-      "lastmod": "2026-10-22"
+      "fingerprint": "dc6bc8aaff088d71d2a5157c4f9aeacd88167b2030cd421e32a72ee4d7dfa1d8",
+      "lastmod": "2026-11-07"
     },
     "https://tawodco.com/en/projects/king-salman-park-tanks/": {
-      "fingerprint": "9f2a1fd99a863142322d0ba34217e485f136e66f013828d7841ab4d531a3da30",
-      "lastmod": "2026-10-14"
+      "fingerprint": "0bec5c710777f3e0ca0d39cc7dfb3631fcb953778c95e92973a5e98d5c1a4ccf",
+      "lastmod": "2026-11-07"
+    },
+    "https://tawodco.com/en/projects/sahafa-villa/": {
+      "fingerprint": "0765fd6f4b491c6a540927c4ec5d5612dd4c6c2e9ae1529bacbc579ec5f0eef3",
+      "lastmod": "2026-11-07"
     },
     "https://tawodco.com/en/projects/uhud-villa/": {
-      "fingerprint": "4c24a48038e237e75eb99e6e9d47bff70423d227978960413cc57dfd625cce77",
-      "lastmod": "2026-10-15"
+      "fingerprint": "2e1ba96fed408efd4d61d80ebf3ea0a177967bf58fee4c8ea4093b261b6d1237",
+      "lastmod": "2026-11-07"
+    },
+    "https://tawodco.com/en/projects/wadi-villa/": {
+      "fingerprint": "47e524fe83b866ebdfb35bcb8ac69ca9f3d3d3f2eff28b589ec5acaead9adeb2",
+      "lastmod": "2026-11-07"
     },
     "https://tawodco.com/en/services/construction/": {
       "fingerprint": "0ed1868b959d21543d7e0b73c2ac359f3f16e341eef7b498b636fe0619c9df49",
@@ -1057,9 +1065,17 @@
       "fingerprint": "468416fa85c25bbccc4132d33d58646e13e288c8b5c4e77f10f55dc90f383147",
       "lastmod": "2026-11-03"
     },
+    "https://tawodco.com/project-sahafa-villa-renovation-finishing.html": {
+      "fingerprint": "85f1eefe1c15fc95d6290234fd2a0f32022624eff943e919c1a794b2f09d7d47",
+      "lastmod": "2026-11-07"
+    },
     "https://tawodco.com/project-villa-plaster-ceramic-marble-uhud-riyadh.html": {
       "fingerprint": "494dee8d9d24724012b24b3bc6b172a84c795953a512c48d9110360e1e33344d",
       "lastmod": "2026-11-03"
+    },
+    "https://tawodco.com/project-wadi-villa-construction-finishing.html": {
+      "fingerprint": "baf7b2c9f4bfa0ce59415bc89f2a2b309a9cb3dd7540babdc220bb1d70541dc5",
+      "lastmod": "2026-11-07"
     },
     "https://tawodco.com/projects.html": {
       "fingerprint": "7804df4245952dca8da46c62a4c98e699f790c4c1a0bcc65d5d7fb9af1fdb8de",
@@ -1092,20 +1108,20 @@
   },
   "files": {
     "sitemap.xml": {
-      "fingerprint": "2d0ef5ccacee3d8497b07f6db689fd611ce54ebc258cd385433c3017cdcf7ecb",
-      "lastmod": "2026-11-05"
+      "fingerprint": "950a344eb856366162354c366d1dd1bf81cc251f9b1d3b59de39e8850559e5c6",
+      "lastmod": "2026-11-07"
     },
     "sitemap-pages.xml": {
-      "fingerprint": "f2588c818f5c531d26ad560fe63504e00eeed3aa530df9c51ab97cc1d2c03f0a",
-      "lastmod": "2026-11-05"
+      "fingerprint": "da1dfd1a224a5ecc916fe7d8c254cae3414bcdc2e7a146901fb7e6547d6f304b",
+      "lastmod": "2026-11-07"
     },
     "sitemap-blog.xml": {
       "fingerprint": "1d625f28daef321ec01a1dbf3db17679b4eaf9fb4bb9b40024ab23a91346a044",
       "lastmod": "2026-11-04"
     },
     "sitemap-projects.xml": {
-      "fingerprint": "68826ccd1bd0acc258ef9f7fa54f2fd55c231ea0f3a86f61f92150c63976ef0c",
-      "lastmod": "2026-11-03"
+      "fingerprint": "8919987a86074eb4335250a771b06eec400fb822d8f5b597fffdc8b5890d1fdd",
+      "lastmod": "2026-11-07"
     },
     "sitemap-maintenance.xml": {
       "fingerprint": "d5aae5ff655187b532505cbc5fbcecb89fc91b80be457b0837ebcf344ef6bd11",

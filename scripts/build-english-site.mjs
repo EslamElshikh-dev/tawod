@@ -80,6 +80,72 @@ const services = [
   },
 ];
 const projects = [
+{
+  "id": "sahafa-villa",
+  "nativePhoto": true,
+  "slug": "sahafa-villa",
+  "ar": "/project-sahafa-villa-renovation-finishing.html",
+  "name": "Renovation and finishing of a villa in Al Sahafa",
+  "location": "Al Sahafa, Riyadh",
+  "duration": "1 month",
+  "intro": "Tawod renovated and finished a residential villa in Al Sahafa, Riyadh, in one month. The interior photograph shows coordinated ceiling, wall and floor finishes.",
+  "scope": [
+    "Renovation and finishing of a residential villa."
+  ],
+  "stages": [
+    [
+      "Project type",
+      "Residential villa."
+    ],
+    [
+      "Location",
+      "Al Sahafa, Riyadh"
+    ]
+  ],
+  "photos": [
+    [
+      "images/projects/sahafa-villa-renovation-finishing.webp",
+      "Interior finishes of a residential villa in Al Sahafa, Riyadh, executed by Tawod."
+    ]
+  ],
+  "services": [
+    "renovation",
+    "finishing"
+  ]
+},
+{
+  "id": "wadi-villa",
+  "nativePhoto": true,
+  "slug": "wadi-villa",
+  "ar": "/project-wadi-villa-construction-finishing.html",
+  "name": "Construction and finishing of a villa in Al Wadi",
+  "location": "Al Wadi, Riyadh",
+  "duration": null,
+  "intro": "A residential villa construction and finishing project by Tawod in Al Wadi, Riyadh. The photograph shows the façade and entrance with classical architectural details.",
+  "scope": [
+    "Construction and finishing of a residential villa."
+  ],
+  "stages": [
+    [
+      "Project type",
+      "Residential villa."
+    ],
+    [
+      "Location",
+      "Al Wadi, Riyadh"
+    ]
+  ],
+  "photos": [
+    [
+      "images/projects/wadi-villa-construction-finishing.webp",
+      "Façade and entrance of a residential villa in Al Wadi, Riyadh, executed by Tawod."
+    ]
+  ],
+  "services": [
+    "construction",
+    "finishing"
+  ]
+},
   {
     id: 'faisaliah', slug: 'faisaliah-villa', ar: '/project-faisaliah-villa-facades-finishing.html',
     name: 'Al Faisaliah villa façades and finishing', location: 'Al Faisaliah, Riyadh', area: '900 m²', duration: '2 months',
@@ -156,7 +222,7 @@ function documentPage({ url, ar, title, description, main, schema, noindex = fal
   return `<!DOCTYPE html>\n<html lang="en-SA" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#1d1e26"><title>${escape(title)} | Tawod</title><meta name="description" content="${escape(description)}"><meta name="robots" content="${noindex ? 'noindex,follow' : 'index,follow,max-image-preview:large'}"><link rel="canonical" href="${domain + url}">${ar ? alternates(ar, url) : ''}<meta property="og:type" content="website"><meta property="og:locale" content="en_SA"><meta property="og:locale:alternate" content="ar_SA"><meta property="og:site_name" content="Tawod General Contracting Company"><meta property="og:url" content="${domain + url}"><meta property="og:title" content="${escape(title)} | Tawod"><meta property="og:description" content="${escape(description)}"><meta property="og:image" content="${domain}/images/social/tawod-og-1200x630.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Tawod General Contracting Company"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escape(title)} | Tawod"><meta name="twitter:description" content="${escape(description)}"><meta name="twitter:image" content="${domain}/images/social/tawod-og-1200x630.png"><link rel="icon" href="/images/logo/tawod-logo-180.webp" type="image/webp"><link rel="preload" href="/assets/fonts/inter-latin-variable.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="${sharedStyle}?v=${revision(sharedStyle.slice(1))}"><link rel="stylesheet" href="/assets/css/tawod-english.css?v=${revision('assets/css/tawod-english.css')}">${url === '/en/' ? `<link rel="preload" href="/images/hero-bg-mobile-optimized.webp" as="image" media="(max-width: 767px)" fetchpriority="high"><link rel="preload" href="/images/hero-bg-desktop-optimized.webp" as="image" media="(min-width: 768px)" fetchpriority="high">` : ''}${hasForm ? `<link rel="stylesheet" href="/assets/css/contact-conversion.css?v=${revision('assets/css/contact-conversion.css')}">` : ''}${heroImage ? `<link rel="preload" href="/${heroImage}" as="image" fetchpriority="high">` : ''}<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c')}</script></head><body class="tawod-contracting tawod-english${url === '/en/' ? ' home-page' : ''}">${header(ar || '/', url)}<main id="main">${main}</main>${footer()}${englishFloatingContact()}${hasForm ? `<script src="/assets/js/contact-conversion.js?v=${revision('assets/js/contact-conversion.js')}" defer></script>` : ''}<script src="/assets/js/tawod-english.js?v=${revision('assets/js/tawod-english.js')}" defer></script></body></html>\n`;
 }
 const steps = items => `<div class="en-steps">${items.map(([title, text]) => `<div class="en-step"><h3>${escape(title)}</h3><p>${escape(text)}</p></div>`).join('')}</div>`;
-const projectCards = ids => `<div class="en-grid">${projects.filter(p => !ids || ids.includes(p.id)).map(p => `<article class="en-card en-project-card">${image(p.photos[0][0], p.photos[0][1])}<div class="en-project-copy"><h3>${escape(p.name)}</h3><div class="en-facts"><span>${p.area}</span><span>${p.duration}</span></div><p>${escape(p.intro)}</p><a class="text-link" href="${projectUrl(p)}">View scope and site photographs →</a></div></article>`).join('')}</div>`;
+const projectCards = ids => `<div class="en-grid">${projects.filter(p => !ids || ids.includes(p.id)).map(p => `<article class="en-card en-project-card">${image(p.photos[0][0], p.photos[0][1])}<div class="en-project-copy"><h3>${escape(p.name)}</h3><div class="en-facts">${[p.area, p.duration].filter(Boolean).map(value => `<span>${escape(value)}</span>`).join('')}</div><p>${escape(p.intro)}</p><a class="text-link" href="${projectUrl(p)}">View scope and site photographs →</a></div></article>`).join('')}</div>`;
 const brief = (service, inputs) => `<section class="section soft"><div class="container"><div class="en-brief"><div><span class="eyebrow">Your next step</span><h2>Discuss your ${service ? service.name.toLowerCase() : 'project'} scope</h2><p>${escape(inputs)}</p></div><div class="en-hero-actions"><a class="btn btn-whatsapp" href="${whatsapp(`Hello Tawod, I would like to discuss ${service ? service.name.toLowerCase() : 'a project'} in Riyadh. Location: … Area: … Current stage: …`)}" data-contact-service="${service?.key || 'general_contracting'}" data-contact-position="english_project_brief">WhatsApp</a><a class="btn btn-outline" href="/en/contact/${service ? `?service=${service.key}` : ''}#form">Send a request</a></div></div></div></section>`;
 
 function servicePage(s) {
@@ -164,8 +230,8 @@ function servicePage(s) {
   return documentPage({ url: serviceUrl(s), ar: s.ar, title: s.title, description: s.description, main, schema: { '@type': 'Service', name: s.title, description: s.description, url: domain + serviceUrl(s), provider: { '@id': organization['@id'] }, areaServed: { '@type': 'City', name: 'Riyadh' } } });
 }
 function projectPage(p) {
-  const main = `<section class="en-hero"><div class="container"><div class="en-breadcrumbs"><a href="/en/">Home</a> / <a href="/en/projects/">Projects</a> / Case study</div><span class="eyebrow">Project record · ${p.location}</span><h1>${escape(p.name)}</h1><p class="lead">${escape(p.intro)}</p><div class="en-facts"><span>${p.area}</span><span>${p.duration}</span><span>${escape(p.location)}</span></div><a class="btn btn-primary" href="#site-photographs">View site photographs</a></div></section><section class="section"><div class="container en-content-grid"><div><span class="eyebrow">Published project scope</span><h2>What the work covers</h2><ul>${p.scope.map(text => `<li>${escape(text)}</li>`).join('')}</ul><p>This English case study reflects the details and photographs published in <a class="text-link" href="${p.ar}" lang="ar">the Arabic project record</a>. The duration shown is for this project.</p></div>${steps(p.stages)}</div></section><section class="section soft" id="site-photographs"><div class="container"><div class="section-heading"><span class="eyebrow">From the site</span><h2>Photographs of execution</h2><p>The captions describe the stages visible in the available project photographs.</p></div><div class="en-gallery">${p.photos.map(([src, caption]) => `<figure>${image(src, caption)}<figcaption>${escape(caption)}</figcaption></figure>`).join('')}</div></div></section><section class="section"><div class="container"><h2>Explore related services</h2><div class="en-hero-actions">${services.filter(s => p.services.includes(s.slug)).map(s => `<a class="btn btn-outline" href="${serviceUrl(s)}">${s.name}</a>`).join('')}</div></div></section>${brief(null, 'Share your location, approximate area, current stage and required scope. Available drawings or photographs help us understand the next step.')}`;
-  return documentPage({ url: projectUrl(p), ar: p.ar, title: p.name, description: `${p.name}: published scope, ${p.area}, ${p.duration}, and site photographs from Tawod’s project record.`, main });
+  const main = `<section class="en-hero"><div class="container"><div class="en-breadcrumbs"><a href="/en/">Home</a> / <a href="/en/projects/">Projects</a> / Case study</div><span class="eyebrow">Project record · ${p.location}</span><h1>${escape(p.name)}</h1><p class="lead">${escape(p.intro)}</p><div class="en-facts">${[p.area, p.duration].filter(Boolean).map(value => `<span>${escape(value)}</span>`).join('')}<span>${escape(p.location)}</span></div><a class="btn btn-primary" href="#site-photographs">View site photographs</a></div></section><section class="section"><div class="container en-content-grid"><div><span class="eyebrow">Published project scope</span><h2>What the work covers</h2><ul>${p.scope.map(text => `<li>${escape(text)}</li>`).join('')}</ul><p>This English case study reflects the details and photographs published in <a class="text-link" href="${p.ar}" lang="ar">the Arabic project record</a>. ${p.duration ? 'The duration shown is for this project.' : ''}</p></div>${steps(p.stages)}</div></section><section class="section soft" id="site-photographs"><div class="container"><div class="section-heading"><span class="eyebrow">From the site</span><h2>Photographs of execution</h2><p>The captions describe the stages visible in the available project photographs.</p></div><div class="en-gallery${p.nativePhoto ? ' en-gallery-native' : ''}">${p.photos.map(([src, caption]) => `<figure>${image(src, caption)}<figcaption>${escape(caption)}</figcaption></figure>`).join('')}</div></div></section><section class="section"><div class="container"><h2>Explore related services</h2><div class="en-hero-actions">${services.filter(s => p.services.includes(s.slug)).map(s => `<a class="btn btn-outline" href="${serviceUrl(s)}">${s.name}</a>`).join('')}</div></div></section>${brief(null, 'Share your location, approximate area, current stage and required scope. Available drawings or photographs help us understand the next step.')}`;
+  return documentPage({ url: projectUrl(p), ar: p.ar, title: p.name, description: `${p.name}: ${[p.area, p.duration].filter(Boolean).join(', ')}${p.area || p.duration ? ', ' : ''}published scope and site photographs from Tawod’s project record.`, main });
 }
 function homePage() {
   return documentPage({ url: '/en/', ar: '/', title: 'General contracting in Riyadh', description: 'Tawod construction, turnkey delivery, renovation, finishing, interior design, electrical and plumbing in Riyadh, with completed project case studies.', main: englishMainFromArabic('index.html', englishRoutes) });
@@ -180,7 +246,7 @@ function thankYouPage() {
 
 export function buildEnglishSite() {
   const pages = new Map([
-    ['/en/', homePage()], ['/en/projects/', documentPage({ url: '/en/projects/', ar: '/projects.html', title: 'Tawod project case studies in Riyadh', description: 'Five published Tawod case studies: villas, turnkey mosque and villas, industrial warehouses and tank works, with scopes and site photographs.', main: `<section class="page-hero tawod-projects-hero"><div class="container"><div class="tawod-projects-hero-copy"><div class="breadcrumbs"><a href="/en/">Home</a> / Projects</div><span class="tawod-projects-kicker">${englishIcon('helmet-safety')} Real project record</span><h1>Projects that speak through results</h1><p>Documented residential, industrial and integrated projects delivered by Tawod in Riyadh.</p><div class="hero-actions"><a class="btn btn-primary" href="#projects-showcase-title">Explore projects</a><a class="btn btn-outline-white" href="/en/contact/">Discuss your project</a></div><div class="tawod-projects-proof"><span>${englishIcon('camera')} Site photographs</span><span>${englishIcon('list-check')} Clear scope</span><span>${englishIcon('clock', 'regular')} Execution period</span></div></div></div></section>${englishProjectShowcase(englishRoutes)}${brief(null, 'Share your project location, current stage and required scope to discuss the appropriate next step.')}` })],
+    ['/en/', homePage()], ['/en/projects/', documentPage({ url: '/en/projects/', ar: '/projects.html', title: 'Tawod project case studies in Riyadh', description: 'Seven published Tawod case studies: villas, turnkey mosque and villas, industrial warehouses and tank works, with scopes and site photographs.', main: `<section class="page-hero tawod-projects-hero"><div class="container"><div class="tawod-projects-hero-copy"><div class="breadcrumbs"><a href="/en/">Home</a> / Projects</div><span class="tawod-projects-kicker">${englishIcon('helmet-safety')} Real project record</span><h1>Projects that speak through results</h1><p>Documented residential, industrial and integrated projects delivered by Tawod in Riyadh.</p><div class="hero-actions"><a class="btn btn-primary" href="#projects-showcase-title">Explore projects</a><a class="btn btn-outline-white" href="/en/contact/">Discuss your project</a></div><div class="tawod-projects-proof"><span>${englishIcon('camera')} Site photographs</span><span>${englishIcon('list-check')} Clear scope</span><span>${englishIcon('clock', 'regular')} Execution period</span></div></div></div></section>${englishProjectShowcase(englishRoutes)}${brief(null, 'Share your project location, current stage and required scope to discuss the appropriate next step.')}` })],
     ...services.map(s => [serviceUrl(s), servicePage(s)]),
     ...projects.map(p => [projectUrl(p), projectPage(p)]),
     ['/en/about/', documentPage({ url: '/en/about/', ar: '/about.html', title: 'About Tawod General Contracting Company in Riyadh', description: 'Tawod’s approach to construction, renovation, finishing and turnkey projects: clear scope, engineering coordination, stage reviews and organized handover.', main: englishMainFromArabic('about.html', englishRoutes) })],

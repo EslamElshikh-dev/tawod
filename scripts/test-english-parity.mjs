@@ -40,11 +40,11 @@ test('English pages keep their language, shared design, paired navigation and re
  }
  assert.match(read('en/index.html'), /data-analytics-form="en_home_quote_request"/);
 });
-test('the English catalogue reuses the Arabic featured-card template and all five records', () => {
+test('the English catalogue reuses the Arabic featured-card template and all seven records', () => {
  const en = main(read('en/projects/index.html'));
  const template = read('lib/legacy-pages.ts').match(/const projectsShowcaseMarkup = `([\s\S]*?)`;/)[1];
  assert.deepEqual(sources(en), sources(template));
- assert.equal((en.match(/data-project=/g) ?? []).length, 5);
+ assert.equal((en.match(/data-project=/g) ?? []).length, 7);
  assert.equal((en.match(/tawod-project-card-featured/g) ?? []).length, 1);
  assert.match(en, /29,122 m²/);
 });

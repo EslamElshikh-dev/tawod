@@ -70,3 +70,6 @@ html body.tawod-contracting.tawod-english{direction:ltr!important;text-align:lef
  .tawod-english .float-btns{right:12px!important}
 }
 @media(max-width:380px){.tawod-english .en-header .header-actions>.btn{display:none!important}}
+
+/* Preserve the complete photograph in the two villa project records. */
+.en-gallery-native{grid-template-columns:1fr;max-width:900px;margin-inline:auto}.en-gallery-native img{height:auto;object-fit:contain}
