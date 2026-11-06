@@ -14,6 +14,7 @@ if (!process.argv.includes('--styles-only')) execFileSync(process.execPath,['scr
 const { optimizeArticleMarkup } = await import('../lib/article-presentation.mjs');
 
 const modern=fs.readFileSync('assets/css/tawod-contracting-design.css','utf8')+'\n'+fs.readFileSync('assets/css/tawod-contracting-polish.css','utf8')+'\n'+fs.readFileSync('assets/css/tawod-finishing-stage.css','utf8');
+const villaCaseCss=fs.readFileSync('assets/css/tawod-villa-case.css','utf8');
 const urls=[...fs.readFileSync('sitemap.xml','utf8').matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>new URL(m[1]).pathname).filter(p=>!p.startsWith('/maintenance/'));
 // English pages have their own small LTR sheet and navigation, avoiding the
 // Arabic layout bundle and its font download for English-only visitors.
@@ -44,7 +45,8 @@ for(const file of files.filter(f=>f!=='index.html')) {
 for(const [key,profile] of profiles) {
   const vocabulary=cssVocabulary(profile.html+extra,profile.isArticle?readerInteraction:interaction),seen=new Set();
   const layout=compileContractingCss(profile.cssFiles.map(f=>readCss(f,seen)).join('\n'),vocabulary,'legacy-layout.css',true).toString();
-  const bytes=compileContractingCss(layout+'\n'+modern+(profile.isArticle?'\n'+readerCss:''),vocabulary,'contracting.css');
+  const villaStyles=profile.html.includes('class="tawod-villa-case"')?'\n'+villaCaseCss:'';
+  const bytes=compileContractingCss(layout+'\n'+modern+villaStyles+(profile.isArticle?'\n'+readerCss:''),vocabulary,'contracting.css');
   // Immutable URLs describe their bytes, not just their input profile.
   const name=`tawod-contracting-${createHash('sha256').update(bytes).digest('hex').slice(0,10)}.css`;
   fs.writeFileSync(`assets/css/${name}`,bytes);
