@@ -3,9 +3,11 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as THREE from 'three';
 import { buildVillaModel, disposeModel } from '../lib/villa-3d/models.mjs';
+import { buildProjectModel } from '../lib/villa-3d/project-models.mjs';
+import { projectExperiences, enhanceArabicProject, renderVilla3D } from './villa-experience.mjs';
 import { collectFaces, createSoftwareRenderer, rasterizeTriangle } from '../lib/villa-3d/software-renderer.mjs';
 
-for (const [variant, details] of [['interior', ['living', 'kitchen', 'terrace']], ['entrance', ['entrance', 'columns', 'garden']]]) {
+for (const [variant, details] of [['interior', ['living', 'kitchen', 'terrace']], ['entrance', ['entrance', 'columns', 'garden']], ['faisaliah', ['facade','cornice','living']], ['uhud', ['facade','grooves','living']]]) {
   test(`${variant}: geometry, cameras and detail views stay finite and within the rendering budget`, () => {
     const model = buildVillaModel(variant), tags = new Set(); let triangles = 0, meshes = 0;
     model.group.updateMatrixWorld(true);
@@ -66,6 +68,69 @@ test('the lightweight controller imports the renderer on demand and the hashed b
   assert.doesNotMatch(controller, /class WebGLRenderer|from ['"]three/);
   assert.ok(fs.statSync('assets/js/tawod-villa-viewer.js').size < 15000);
   assert.ok(fs.existsSync('assets/licenses/three-MIT.txt'));
+});
+
+for (const [variant, modes] of [['arouba',['exterior','mosque','villas']], ['warehouses',['exterior','structure','foundations']], ['tanks',['exterior','reinforcement','waterproofing']]]) {
+  test(`${variant}: distinct layers, bounded geometry and every advertised camera are available`, () => {
+    const model = buildProjectModel(variant), counts = [];
+    for (const mode of modes) {
+      model.setMode(mode); model.group.updateMatrixWorld(true);
+      const faces = collectFaces(model.group); counts.push(faces.length);
+      assert.ok(faces.length > 300 && faces.length < 18000);
+      assert.ok(faces.every(face=>face.vertices.every(Number.isFinite)));
+      let meshes = 0; model.group.traverseVisible(object=>{if(object.isMesh) meshes++;});
+      assert.ok(meshes < 100, `Active draw objects: ${meshes}`);
+    }
+    assert.equal(new Set(counts).size, 3, 'Layer switches must change the rendered scene');
+    assert.throws(()=>model.setMode('ground'), /Unknown project display mode/);
+    const data = projectExperiences[variant];
+    for (const id of [...modes,...data.ar.map(detail=>detail[0]),'general','front','rear','top']) {
+      const view = model.presets[id === 'exterior' ? 'general' : id]; assert.ok(view, `Missing view: ${id}`);
+      const distance = new THREE.Vector3(...view.position).distanceTo(new THREE.Vector3(...view.target));
+      assert.ok(Number.isFinite(distance) && distance >= model.minDistance && distance <= model.maxDistance);
+      assert.ok(modes.includes(view.mode));
+    }
+    model.setLighting(true); model.setLighting(false); disposeModel(model.group);
+  });
+}
+test('the industrial and mixed-use models retain the published component counts', () => {
+  const warehouse = buildProjectModel('warehouses'), arouba = buildProjectModel('arouba');
+  assert.equal(warehouse.group.userData.warehouseUnits.length,8);
+  assert.equal(new Set(warehouse.group.userData.warehouseUnits.map(unit=>`${unit.x},${unit.z}`)).size,8);
+  assert.deepEqual(arouba.group.userData.components,['mosque','villa-1','villa-2']);
+  warehouse.setMode('foundations'); assert.equal(warehouse.parts.frames.visible,false); assert.equal(warehouse.parts.cladding.visible,false);
+  arouba.setMode('mosque'); assert.equal(arouba.parts.mosqueRoof.visible,false); assert.equal(arouba.parts.prayer.visible,true);
+  arouba.setMode('villas'); assert.equal(arouba.parts.villaRoofs.visible,false); assert.equal(arouba.parts.villaUpper.visible,false); assert.equal(arouba.parts.villaInterior.visible,true);
+  disposeModel(warehouse.group); disposeModel(arouba.group);
+});
+test('tank layers expose reinforcement and membrane without an opaque cover', () => {
+  const model = buildProjectModel('tanks');
+  for (const [mode,tag] of [['reinforcement','rebar'],['waterproofing','waterproofing']]) {
+    model.setMode(mode); const tags = new Set(); model.group.traverseVisible(object=>{if(object.isMesh)tags.add(object.userData.detail);});
+    assert.ok(tags.has(tag)); assert.equal(model.parts.lid.visible,false); assert.equal(model.parts.walls.visible,false);
+  }
+  model.group.updateMatrixWorld(true);
+  const visible = []; model.group.traverseVisible(object=>{if(object.isMesh)visible.push(object);});
+  const hit = new THREE.Raycaster(new THREE.Vector3(0,8,0),new THREE.Vector3(0,-1,0)).intersectObjects(visible,false)[0];
+  assert.equal(hit?.object.userData.detail,'waterproofing','The earth surface must leave the excavation open');
+  disposeModel(model.group);
+});
+test('all project controls resolve to model views in both languages and Arabic regeneration is stable', () => {
+  for (const [variant,data] of Object.entries(projectExperiences)) {
+    const model = buildProjectModel(variant);
+    for (const lang of ['ar','en']) {
+      const html = renderVilla3D(variant,lang);
+      for (const match of html.matchAll(/data-3d-(?:mode|preset|detail)="([^"]+)"/g)) assert.ok(model.presets[match[1] === 'exterior' ? 'general' : match[1]],`${variant}: ${match[1]}`);
+      assert.doesNotMatch(html,/villa-3d-note|لا توثّق أبعاد|الأجزاء غير الظاهرة/);
+      assert.ok(fs.existsSync(data.poster.slice(1)));
+    }
+    if (data.summary) {
+      const source = fs.readFileSync(data.file,'utf8'), enhanced = enhanceArabicProject(source,variant);
+      assert.equal(enhanced,source,`${variant}: enhancer must be repeatable`);
+      for (const id of ['project-overview','project-photo','project-3d','project-facts']) assert.equal([...source.matchAll(new RegExp(`id="${id}"`,'g'))].length,1,`${variant}: duplicate or missing ${id}`);
+    }
+    disposeModel(model.group);
+  }
 });
 test('unknown model identifiers cannot create a misleading blank model', () => {
   assert.throws(() => buildVillaModel('unknown'), /Unknown villa illustration/);
