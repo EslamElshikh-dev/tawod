@@ -8,7 +8,45 @@ import { buildProjectModel } from '../lib/villa-3d/project-models.mjs';
 import { projectExperiences, enhanceArabicProject, renderVilla3D } from './villa-experience.mjs';
 import { createPresentation } from '../lib/villa-3d/presentation.mjs';
 import { resolveViewpoint } from '../lib/villa-3d/viewpoints.mjs';
+import { createOrbitTour } from '../lib/villa-3d/tour.mjs';
 import { collectFaces, createSoftwareRenderer, rasterizeTriangle } from '../lib/villa-3d/software-renderer.mjs';
+
+test('the orbit tour starts explicitly, stops cleanly and respects reduced motion', () => {
+  const controls = {}, changes = []; let renders = 0, reduced = false;
+  const tour = createOrbitTour(controls, { requestRender() { renders++; }, onChange(active) { changes.push(active); }, reduced: () => reduced });
+  assert.equal(tour.active, false); assert.equal(controls.autoRotate, false); assert.equal(renders, 0);
+  tour.set(true); assert.equal(tour.active, true); assert.equal(controls.autoRotate, true);
+  tour.set(true); assert.equal(renders, 1, 'Starting an active tour must not request another loop');
+  tour.stop(); assert.equal(tour.active, false); assert.equal(controls.autoRotate, false);
+  reduced = true; tour.set(true); assert.equal(tour.active, false);
+  reduced = false; tour.set(true); reduced = true; tour.set(true);
+  assert.equal(tour.active, false); assert.equal(controls.autoRotate, false);
+  assert.deepEqual(changes, [true, false, true, false]); assert.equal(renders, 4);
+});
+
+test('expanded view stays usable when native fullscreen is rejected and Escape restores focus', async () => {
+  const source = fs.readFileSync('lib/villa-3d/controller.js', 'utf8').replace("import('__ENGINE_URL__')", 'Promise.resolve(testEngine)');
+  const makeNode = dataset => ({ dataset, listeners: {}, attributes: {},
+    addEventListener(type, listener) { this.listeners[type] = listener; },
+    setAttribute(name, value) { this.attributes[name] = value; }, removeAttribute(name) { delete this.attributes[name]; },
+    querySelector() { return null; }, closest() { return this; }, focus() { this.focused = true; } });
+  const start = makeNode({}), fullscreen = makeNode({ '3dAction': 'fullscreen' }), stage = makeNode({});
+  start.querySelector = () => ({ textContent: '' }); stage.requestFullscreen = async () => { throw new Error('Fullscreen denied'); };
+  const nodes = { '.villa-3d-stage': stage, '[data-3d-start]': start, '[data-3d-action="fullscreen"]': fullscreen,
+    '[data-3d-mount]': { replaceChildren() {} }, '[data-3d-view]': {}, '[data-3d-tools]': {}, '[data-3d-hint]': {}, '[data-3d-overlay]': {} };
+  const root = makeNode({ lang: 'en', model: 'entrance', defaultMode: 'exterior' });
+  Object.assign(root, { querySelector(selector) { return nodes[selector]; }, querySelectorAll() { return []; },
+    closest() { return { querySelector() { return {}; } }; }, getAttribute() { return null; }, contains() { return true; } });
+  const listeners = {}, testEngine = { async createVillaViewer() { return { canvas: { focus() {} }, resize() {}, visibility() {}, dispose() {} }; } };
+  vm.runInNewContext(source, { testEngine, console, document: { fullscreenEnabled: true, querySelectorAll() { return [root]; }, addEventListener(type, listener) { listeners[type] = listener; } },
+    window: { addEventListener() {} }, IntersectionObserver: class { observe() {} disconnect() {} } });
+  await start.listeners.click(); await root.listeners.click({ target: fullscreen });
+  assert.equal(root.dataset.expanded, 'true'); assert.equal(stage.attributes['aria-modal'], 'true');
+  assert.equal(fullscreen.attributes['aria-pressed'], 'true'); assert.equal(root.dataset.state, 'ready');
+  let prevented = false; listeners.keydown({ key: 'Escape', preventDefault() { prevented = true; } });
+  assert.equal(root.dataset.expanded, 'false'); assert.equal(fullscreen.attributes['aria-pressed'], 'false');
+  assert.equal(stage.attributes['aria-modal'], undefined); assert.equal(fullscreen.focused, true); assert.equal(prevented, true);
+});
 
 test('the Reset view button keeps every selected floor or construction stage', async () => {
   const source = fs.readFileSync('lib/villa-3d/controller.js', 'utf8')
