@@ -16,13 +16,13 @@ export function renderVilla3D(variant, lang = 'ar') {
     kicker: 'Explore the complete concept', title: 'A complete villa, from every angle', intro: 'Explore all sides and the roof, or open either floor to discover an illustrative interior layout.', badge: 'Architectural concept',
     startTitle: 'Explore a complete villa concept', startText: 'Rotate freely around the villa, courtyard and roof, then open a furnished floor cutaway.', start: 'Start the 3D experience', photo: 'View the project photograph',
     mode: 'Explore the villa', exterior: 'Complete villa', ground: 'Ground floor', upper: 'Upper floor', modeHint: 'Exterior or open-floor view', view: 'Viewpoint', general: 'Overview', front: 'Front', rear: 'Rear', top: 'Above',
-    lighting: 'Lighting', day: 'Daytime', night: 'Evening', details: 'Explore details', note: 'The complete building, floor layouts and grounds are illustrative. Areas not visible in the photographs are conceptual and do not document actual project dimensions or construction drawings.',
+    lighting: 'Lighting', day: 'Daytime', night: 'Evening', details: 'Explore details',
     hint: 'Drag to explore all sides · Pinch or use + / − to zoom', zoomIn: 'Zoom in', zoomOut: 'Zoom out', reset: 'Reset view', expand: 'Expand view', restore: 'Return to the photograph'
   } : {
     kicker: 'استكشف التصور الكامل', title: 'فيلا كاملة… من كل زاوية', intro: 'استكشف الواجهات والسطح، أو اكشف كل دور للتعرّف على توزيع داخلي توضيحي للمساحات.', badge: 'تصور معماري',
     startTitle: 'استكشف تصور فيلا كاملة', startText: 'جولة حرة حول الفيلا والحوش والسطح، مع كشف داخلي للأدوار والجلسات.', start: 'تشغيل العرض ثلاثي الأبعاد', photo: 'شاهد صورة المشروع',
     mode: 'استكشف الفيلا', exterior: 'الفيلا كاملة', ground: 'كشف الأرضي', upper: 'كشف الأول', modeHint: 'عرض خارجي أو كشف داخلي', view: 'زاوية المشاهدة', general: 'منظور عام', front: 'من الأمام', rear: 'من الخلف', top: 'من الأعلى',
-    lighting: 'الإضاءة', day: 'نهارية', night: 'مسائية', details: 'تفاصيل تستحق الاكتشاف', note: 'المبنى وتوزيع الأدوار والمحيط تصور توضيحي. الأجزاء غير الظاهرة في الصور افتراضية، ولا توثّق أبعاد المشروع الفعلية أو مخططًا للتنفيذ.',
+    lighting: 'الإضاءة', day: 'نهارية', night: 'مسائية', details: 'تفاصيل تستحق الاكتشاف',
     hint: 'اسحب لاستكشاف جميع الجهات · استخدم إصبعين أو + / − للتقريب', zoomIn: 'تقريب النموذج', zoomOut: 'إبعاد النموذج', reset: 'إعادة ضبط العرض', expand: 'تكبير العرض', restore: 'العودة إلى الصورة'
   };
   const photoAnchor = en ? '#site-photographs' : '#project-photo';
@@ -38,7 +38,7 @@ export function renderVilla3D(variant, lang = 'ar') {
 <aside class="villa-3d-panel" aria-label="${t.view}"><div class="villa-3d-control"><span class="villa-3d-label">${t.view}</span><div class="villa-3d-presets" role="group" aria-label="${t.view}">${[['general',t.general],['front',t.front],['rear',t.rear],['top',t.top]].map(([id,label])=>`<button type="button" data-3d-preset="${id}" aria-pressed="${id==='general'}" disabled>${label}</button>`).join('')}</div></div>
 <div class="villa-3d-control"><span class="villa-3d-label">${t.lighting}</span><div class="villa-3d-light" role="group" aria-label="${t.lighting}"><button type="button" data-3d-light="day" aria-pressed="true" disabled>${t.day}</button><button type="button" data-3d-light="night" aria-pressed="false" disabled>${t.night}</button></div></div>
 <div class="villa-3d-detail-list"><span class="villa-3d-label">${t.details}</span>${data[lang].map(([id,label,desc],index)=>`<button class="villa-3d-detail" type="button" data-3d-detail="${id}" aria-pressed="false" disabled><span class="villa-3d-detail-number">0${index+1}</span><span><strong>${label}</strong><small>${desc}</small></span></button>`).join('')}</div>
-<p class="villa-3d-note">${t.note}</p></aside></div><p class="villa-3d-status" data-3d-status role="status" aria-live="polite"></p></div></section>
+</aside></div><p class="villa-3d-status" data-3d-status role="status" aria-live="polite"></p></div></section>
 <!-- TAWOD_VILLA_3D_END -->`;
 }
 export function buildArabicVillaExperience() {
