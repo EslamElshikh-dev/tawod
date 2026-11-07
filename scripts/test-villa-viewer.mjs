@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import vm from 'node:vm';
 import * as THREE from 'three';
 import { buildVillaModel, disposeModel } from '../lib/villa-3d/models.mjs';
 import { buildProjectModel } from '../lib/villa-3d/project-models.mjs';
@@ -8,6 +9,53 @@ import { projectExperiences, enhanceArabicProject, renderVilla3D } from './villa
 import { createPresentation } from '../lib/villa-3d/presentation.mjs';
 import { resolveViewpoint } from '../lib/villa-3d/viewpoints.mjs';
 import { collectFaces, createSoftwareRenderer, rasterizeTriangle } from '../lib/villa-3d/software-renderer.mjs';
+
+test('the Reset view button keeps every selected floor or construction stage', async () => {
+  const source = fs.readFileSync('lib/villa-3d/controller.js', 'utf8')
+    .replace("import('__ENGINE_URL__')", 'Promise.resolve(testEngine)');
+  for (const [variant, data] of Object.entries(projectExperiences)) {
+    const model = buildProjectModel(variant), modes = data.modes?.map(([id]) => id) || ['exterior', 'ground', 'upper'];
+    const makeButton = (dataset, textContent = '') => ({ dataset, textContent, listeners: {},
+      addEventListener(type, listener) { this.listeners[type] = listener; },
+      setAttribute() {}, querySelector() { return null; }, closest() { return this; } });
+    const start = makeButton({}), reset = makeButton({ '3dAction': 'reset' });
+    start.querySelector = () => ({ textContent: '' });
+    const buttons = modes.map(mode => makeButton({ '3dMode': mode }, mode));
+    const nodes = {
+      '.villa-3d-stage': {}, '[data-3d-mount]': { replaceChildren() {} }, '[data-3d-start]': start,
+      '[data-3d-view]': { textContent: '' }, '[data-3d-tools]': {}, '[data-3d-action="fullscreen"]': makeButton({}),
+      '[data-3d-hint]': {}, '[data-3d-overlay]': {},
+    };
+    const root = { dataset: { lang: 'en', model: variant, defaultMode: data.initialMode || 'exterior' }, listeners: {},
+      querySelector(selector) { return nodes[selector]; }, querySelectorAll() { return buttons; },
+      closest() { return { querySelector() { return { textContent: '' }; } }; },
+      getAttribute() { return null; }, contains() { return true; },
+      addEventListener(type, listener) { this.listeners[type] = listener; } };
+    const testEngine = { async createVillaViewer({ onMode, onView }) {
+      function apply(preset, name) { model.setMode(preset.mode); onMode(model.mode); onView(name); }
+      model.setMode(model.presets.general.mode); onMode(model.mode);
+      return { canvas: { focus() {} }, resize() {}, dispose() {}, visibility() {},
+        mode(name) { apply(model.presets[name] || model.presets.general, name); },
+        view(name) { apply(model.presets[name], name); },
+        viewpoint(name) { apply(resolveViewpoint(model, name), name); },
+      };
+    } };
+    vm.runInNewContext(source, { testEngine, console,
+      document: { querySelectorAll() { return [root]; }, addEventListener() {}, fullscreenEnabled: false },
+      window: { addEventListener() {} }, IntersectionObserver: class { observe() {} disconnect() {} },
+    });
+    await start.listeners.click();
+    assert.equal(root.dataset.state, 'ready');
+    for (const button of buttons) {
+      await root.listeners.click({ target: button });
+      const selected = button.dataset['3dMode'];
+      assert.equal(model.mode, selected);
+      await root.listeners.click({ target: reset });
+      assert.equal(model.mode, selected, `${variant}: reset must retain ${selected}`);
+    }
+    disposeModel(model.group);
+  }
+});
 
 for (const [variant, details] of [['interior', ['living', 'kitchen', 'terrace']], ['entrance', ['entrance', 'columns', 'garden']], ['faisaliah', ['facade','cornice','living']], ['uhud', ['facade','grooves','living']]]) {
   test(`${variant}: geometry, cameras and detail views stay finite and within the rendering budget`, () => {
