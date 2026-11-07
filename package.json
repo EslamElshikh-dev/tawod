@@ -2,10 +2,10 @@
   "name": "tawod-nextjs-site",
   "private": true,
   "scripts": {
-    "predev": "node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/build-report-followup.mjs && node scripts/install-site-analytics.mjs && node scripts/build-contracting-design.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "predev": "node scripts/build-villa-viewer.mjs && node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/build-report-followup.mjs && node scripts/install-site-analytics.mjs && node scripts/build-contracting-design.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/build-report-followup.mjs && node scripts/install-site-analytics.mjs && node scripts/build-contracting-design.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
-    "prepare:assets": "node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/build-report-followup.mjs && node scripts/install-site-analytics.mjs && node scripts/build-contracting-design.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "prebuild": "node scripts/build-villa-viewer.mjs && node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/build-report-followup.mjs && node scripts/install-site-analytics.mjs && node scripts/build-contracting-design.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
+    "prepare:assets": "node scripts/build-villa-viewer.mjs && node scripts/business-branches.mjs && node scripts/build-maintenance-site.mjs && node scripts/optimize-paid-service-pages.mjs && node scripts/build-report-followup.mjs && node scripts/install-site-analytics.mjs && node scripts/build-contracting-design.mjs && node scripts/prepare-next-public.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "build:maintenance": "node scripts/build-maintenance-site.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-legacy-html-manifest.mjs",
     "build": "next build",
     "postbuild": "node scripts/finalize-next-export.mjs && node scripts/developer-credit.mjs out && node scripts/verify-next-export.mjs",
@@ -60,7 +60,9 @@
     "test:database": "node scripts/test-database-replay.mjs",
     "test:maintenance-contracts": "node scripts/test-maintenance-contracts.mjs",
     "test:site-validation": "node --test scripts/test-site-validation.mjs",
-    "generate:exact-titles-2026-11-04": "node scripts/generate-exact-title-articles-2026-11-04.mjs && node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/run-static-pages.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-sitemaps.mjs"
+    "generate:exact-titles-2026-11-04": "node scripts/generate-exact-title-articles-2026-11-04.mjs && node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/run-static-pages.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-sitemaps.mjs",
+    "build:villa-3d": "node scripts/build-villa-viewer.mjs",
+    "test:villa-3d": "node --test scripts/test-villa-viewer.mjs"
   },
   "dependencies": {
     "next": "16.4.2",
@@ -76,7 +78,9 @@
     "@types/node": "^24.0.0",
     "@types/react": "19.2.18",
     "@types/react-dom": "^19.2.3",
+    "esbuild": "0.28.2",
     "lightningcss": "1.33.0",
+    "three": "0.187.0",
     "typescript": "^5.9.3"
   }
 }
