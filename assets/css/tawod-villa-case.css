@@ -1,4 +1,4 @@
-/* Scoped to the Al Sahafa and Al Wadi villa records. Keep these visual rules
+/* Scoped to the dedicated project records. Keep these visual rules
    in the modern bundle so the legacy layout pass cannot remove them. */
 .tawod-contracting .tawod-villa-case {
   --villa-line: #e4e5df;

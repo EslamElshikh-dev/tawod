@@ -15,7 +15,8 @@
     const controls = [...root.querySelectorAll('[data-3d-preset],[data-3d-detail],[data-3d-light],[data-3d-mode]')];
     let api, generation = 0, light = 'day';
     function onView(name) {
-      viewLabel.textContent = t[name] || t.free;
+      const button = [...root.querySelectorAll('[data-3d-preset],[data-3d-detail],[data-3d-mode]')].find(value => (value.dataset['3dPreset'] || value.dataset['3dDetail'] || value.dataset['3dMode']) === name);
+      viewLabel.textContent = button ? (button.querySelector('strong') || button).textContent.trim() : t[name] || t.free;
       for (const button of root.querySelectorAll('[data-3d-preset],[data-3d-detail]')) button.setAttribute('aria-pressed', String((button.dataset['3dPreset'] || button.dataset['3dDetail']) === name));
     }
     function onMode(name) {
@@ -40,7 +41,7 @@
       if (root.dataset.state === 'loading' || api) return;
       const token = ++generation; setState('loading');
       try {
-        engine ||= import('/assets/js/tawod-villa-engine-9e01b12c0418.mjs');
+        engine ||= import('/assets/js/tawod-villa-engine-8678448cd38c.mjs');
         const module = await engine;
         if (token !== generation) return;
         const viewer = await module.createVillaViewer({ mount, variant: root.dataset.model, label: t.canvas, onView, onMode, onFailure: () => stop('error') });

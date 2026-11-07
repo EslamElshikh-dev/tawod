@@ -1,4 +1,13 @@
 /* Project storytelling and a self-contained, progressive 3D viewer. */
+.tawod-contracting .tawod-villa-case [id]{scroll-margin-top:112px}
+.tawod-contracting .tawod-villa-case .villa-overview-text .check-list{grid-column:2;list-style:none;padding:0;margin:12px 0 0;display:grid;gap:8px;font-size:14px;color:#526456}
+.tawod-contracting .tawod-villa-case .villa-overview-text .check-list i{color:#8d623a;margin-inline-end:6px}
+.tawod-contracting .tawod-villa-case .tawod-case-gallery img{height:auto;aspect-ratio:auto;object-fit:contain}
+.tawod-contracting .tawod-villa-case .tawod-case-scope-card,.tawod-contracting .tawod-villa-case .tawod-case-stage{box-shadow:none;border-radius:16px}
+.tawod-contracting .tawod-villa-case .project-facts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.tawod-contracting .project-facts-grid article{min-width:0;padding:22px;border:1px solid #dfe3d8;border-radius:15px;background:#fff}
+.tawod-contracting .project-facts-grid article span{display:block;color:#707c70;font-size:12px;margin-bottom:10px}
+.tawod-contracting .project-facts-grid article strong{display:block;color:#304e40;font-size:18px;line-height:1.6}
 .tawod-contracting .tawod-villa-case .villa-experience-hero {padding-bottom:0!important;background:radial-gradient(ellipse at 9% 20%,#ecdfcb77,transparent 58%),#fafaf6!important}
 .tawod-contracting .villa-experience-hero>.container>.breadcrumbs {margin-bottom:30px}
 .tawod-contracting .villa-hero-grid {display:grid;grid-template-columns:minmax(0,1.13fr) minmax(0,.87fr);align-items:center;gap:clamp(28px,5vw,64px);padding-bottom:44px}
@@ -132,3 +141,10 @@
  .tawod-contracting .villa-3d-light{grid-template-columns:1fr}.tawod-contracting .villa-3d-light button{min-height:35px}
 }
 @media(prefers-reduced-motion:reduce){.tawod-contracting .villa-3d-poster{transition:none}.tawod-contracting .villa-hero-photo{transform:none}}
+
+/* English typography follows the same responsive layout. */
+.tawod-english .tawod-villa-case .page-hero{padding-top:54px!important}
+.tawod-english .tawod-villa-case .villa-hero-copy h1{font-size:clamp(30px,3.2vw,44px)!important;line-height:1.25!important}
+.tawod-english .tawod-villa-case .villa-hero-copy>p{line-height:1.8!important}
+.tawod-english .tawod-villa-case .villa-case-summary{display:flex;flex-wrap:wrap}
+.tawod-english .tawod-villa-case .villa-3d-heading h2{line-height:1.3!important}

@@ -11,6 +11,7 @@ import { dirname, join } from "node:path";
 import { generateSitemaps, sitemapFiles } from './generate-sitemaps.mjs';
 import { normalizeSiteSharing } from './normalize-seo-sharing.mjs';
 import { buildEnglishSite } from './build-english-site.mjs';
+import { enhanceArabicProject } from './villa-experience.mjs';
 
 const root = process.cwd();
 const publicDirectory = join(root, "public");
@@ -103,7 +104,7 @@ for (const page of generatedProjectPages) {
     JSON.parse(match[1]);
   }
 
-  writeFileSync(join(root, page.output), html);
+  writeFileSync(join(root, page.output), enhanceArabicProject(html, 'faisaliah'));
 }
 
 for (const image of encodedProjectImages) {
