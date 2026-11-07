@@ -45,7 +45,7 @@
       if (root.dataset.state === 'loading' || api) return;
       const token = ++generation; setState('loading');
       try {
-        engine ||= import('/assets/js/tawod-villa-engine-3fe582a7ea49.mjs');
+        engine ||= import('/assets/js/tawod-villa-engine-165af9671783.mjs');
         const module = await engine;
         if (token !== generation) return;
         const viewer = await module.createVillaViewer({ mount, variant: root.dataset.model, label: t.canvas, onView, onMode, onFailure: () => stop('error') });
@@ -68,7 +68,7 @@
       const action = button.dataset['3dAction'];
       if (action === 'in') api.zoom(.85);
       if (action === 'out') api.zoom(1.18);
-      if (action === 'reset') api.view('general');
+      if (action === 'reset') api.viewpoint('general');
       if (action === 'photo') stop();
       if (action === 'fullscreen') {
         try { if (document.fullscreenElement === stage) await document.exitFullscreen(); else await stage.requestFullscreen(); } catch { /* The normal view remains usable. */ }
