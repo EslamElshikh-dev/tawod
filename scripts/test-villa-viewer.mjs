@@ -6,6 +6,7 @@ import { buildVillaModel, disposeModel } from '../lib/villa-3d/models.mjs';
 import { buildProjectModel } from '../lib/villa-3d/project-models.mjs';
 import { projectExperiences, enhanceArabicProject, renderVilla3D } from './villa-experience.mjs';
 import { createPresentation } from '../lib/villa-3d/presentation.mjs';
+import { resolveViewpoint } from '../lib/villa-3d/viewpoints.mjs';
 import { collectFaces, createSoftwareRenderer, rasterizeTriangle } from '../lib/villa-3d/software-renderer.mjs';
 
 for (const [variant, details] of [['interior', ['living', 'kitchen', 'terrace']], ['entrance', ['entrance', 'columns', 'garden']], ['faisaliah', ['facade','cornice','living']], ['uhud', ['facade','grooves','living']]]) {
@@ -135,6 +136,30 @@ test('all project controls resolve to model views in both languages and Arabic r
 });
 test('unknown model identifiers cannot create a misleading blank model', () => {
   assert.throws(() => buildVillaModel('unknown'), /Unknown villa illustration/);
+});
+test('camera viewpoints preserve every project layer and focus, including the complete Sahafa villa', () => {
+  for (const [variant, data] of Object.entries(projectExperiences)) {
+    const model = buildProjectModel(variant);
+    const modes = data.modes?.map(([id]) => id) || ['exterior', 'ground', 'upper'];
+    const original = JSON.stringify(model.presets);
+    for (const mode of modes) {
+      model.setMode(mode);
+      const active = model.presets[mode] || model.presets.general;
+      for (const name of ['general', 'front', 'rear', 'top']) {
+        const view = resolveViewpoint(model, name);
+        assert.equal(view.mode, mode, `${variant}: ${name} must not close ${mode}`);
+        assert.deepEqual(view.target, active.target, `${variant}: keep the layer's focal point`);
+        const distance = Math.hypot(...view.position.map((value, index) => value - view.target[index]));
+        assert.ok(distance >= model.minDistance && distance <= model.maxDistance);
+        assert.ok([...view.position, ...view.target].every(Number.isFinite));
+        if (name === 'general') assert.deepEqual(view.position, active.position);
+      }
+      assert.equal(model.mode, mode);
+    }
+    assert.equal(JSON.stringify(model.presets), original, 'Changing viewpoint must not mutate the stored detail cameras');
+    assert.equal(resolveViewpoint(model, 'missing'), undefined);
+    disposeModel(model.group);
+  }
 });
 test('Faisaliah preserves three open upper windows below its raised blind arch',()=>{
   const model=buildProjectModel('faisaliah'),objects=[];model.group.updateMatrixWorld(true);model.group.traverseVisible(o=>{if(o.isMesh)objects.push(o);});

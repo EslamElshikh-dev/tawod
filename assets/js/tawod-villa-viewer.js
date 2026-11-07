@@ -36,14 +36,16 @@
       status.textContent = state === 'loading' ? t.loading : state === 'ready' ? t.ready : state === 'error' ? t.failure : '';
     }
     function stop(state = 'idle') {
-      generation++; const current = api; api = undefined; current?.dispose(); mount.replaceChildren(); root.dataset.lighting = 'day'; onMode(root.dataset.defaultMode||'exterior'); setState(state);
+      generation++; const current = api; api = undefined; current?.dispose(); mount.replaceChildren(); light = 'day'; root.dataset.lighting = 'day';
+      root.querySelectorAll('[data-3d-light]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset['3dLight'] === 'day')));
+      onView('general'); onMode(root.dataset.defaultMode||'exterior'); setState(state);
     }
     start.hidden = false;
     start.addEventListener('click', async () => {
       if (root.dataset.state === 'loading' || api) return;
       const token = ++generation; setState('loading');
       try {
-        engine ||= import('/assets/js/tawod-villa-engine-804512302b48.mjs');
+        engine ||= import('/assets/js/tawod-villa-engine-3fe582a7ea49.mjs');
         const module = await engine;
         if (token !== generation) return;
         const viewer = await module.createVillaViewer({ mount, variant: root.dataset.model, label: t.canvas, onView, onMode, onFailure: () => stop('error') });
@@ -55,8 +57,8 @@
     });
     root.addEventListener('click', async event => {
       const button = event.target.closest('button'); if (!button || !root.contains(button) || !api) return;
-      const preset = button.dataset['3dPreset'] || button.dataset['3dDetail'];
-      if (preset) api.view(preset);
+      if (button.dataset['3dPreset']) api.viewpoint(button.dataset['3dPreset']);
+      if (button.dataset['3dDetail']) api.view(button.dataset['3dDetail']);
       if (button.dataset['3dMode']) api.mode(button.dataset['3dMode']);
       if (button.dataset['3dLight']) {
         const mode = button.dataset['3dLight']; if (mode !== light) { light = mode; api.lighting(mode); }
