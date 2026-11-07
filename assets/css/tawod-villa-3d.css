@@ -1,4 +1,12 @@
 /* Project storytelling and a self-contained, progressive 3D viewer. */
+.tawod-contracting .villa-3d-reference{display:flex;align-items:center;gap:13px;padding:10px;background:#f7f7f0;border:1px solid #e2e6db;border-radius:12px;text-decoration:none;color:#344d3e;margin-bottom:20px;min-width:0}
+.tawod-contracting .villa-3d-reference img{flex:0 0 60px;width:60px!important;height:72px!important;max-height:none!important;object-fit:cover!important;border-radius:8px}
+.tawod-contracting .villa-3d-reference small{display:block;color:#7c8676;font-size:10px;margin-bottom:5px}
+.tawod-contracting .villa-3d-reference strong{display:block;font-size:12px;line-height:1.8}
+.tawod-contracting [data-model=interior] .villa-3d-modes{flex-wrap:wrap}
+.tawod-contracting .villa-3d-stage{background:linear-gradient(#d6e3e7,#f3eddf)}
+.tawod-contracting [data-lighting=night] .villa-3d-stage{background:linear-gradient(#182e44,#627181)}
+@media(max-width:767px){.tawod-contracting [data-model=interior] .villa-3d-modes{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .tawod-contracting .tawod-villa-case [id]{scroll-margin-top:112px}
 .tawod-contracting .tawod-villa-case .villa-overview-text .check-list{grid-column:2;list-style:none;padding:0;margin:12px 0 0;display:grid;gap:8px;font-size:14px;color:#526456}
 .tawod-contracting .tawod-villa-case .villa-overview-text .check-list i{color:#8d623a;margin-inline-end:6px}

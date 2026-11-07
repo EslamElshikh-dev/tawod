@@ -21,6 +21,8 @@
     }
     function onMode(name) {
       root.dataset.display = name;
+      const reference=root.querySelector('[data-3d-reference-image]'),source=root.getAttribute('data-reference-'+name);
+      if(reference&&source&&reference.getAttribute('src')!==source)reference.src=source;
       root.querySelectorAll('[data-3d-mode]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset['3dMode'] === name)));
     }
     function setState(state) {
@@ -34,14 +36,14 @@
       status.textContent = state === 'loading' ? t.loading : state === 'ready' ? t.ready : state === 'error' ? t.failure : '';
     }
     function stop(state = 'idle') {
-      generation++; const current = api; api = undefined; current?.dispose(); mount.replaceChildren(); root.dataset.lighting = 'day'; onMode('exterior'); setState(state);
+      generation++; const current = api; api = undefined; current?.dispose(); mount.replaceChildren(); root.dataset.lighting = 'day'; onMode(root.dataset.defaultMode||'exterior'); setState(state);
     }
     start.hidden = false;
     start.addEventListener('click', async () => {
       if (root.dataset.state === 'loading' || api) return;
       const token = ++generation; setState('loading');
       try {
-        engine ||= import('/assets/js/tawod-villa-engine-8678448cd38c.mjs');
+        engine ||= import('/assets/js/tawod-villa-engine-804512302b48.mjs');
         const module = await engine;
         if (token !== generation) return;
         const viewer = await module.createVillaViewer({ mount, variant: root.dataset.model, label: t.canvas, onView, onMode, onFailure: () => stop('error') });
