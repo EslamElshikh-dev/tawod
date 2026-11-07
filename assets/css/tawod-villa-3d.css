@@ -26,6 +26,14 @@
 .tawod-contracting .villa-3d-heading h2 {margin:10px 0 0!important;font-size:clamp(25px,2.6vw,36px)!important;line-height:1.6!important;color:#22372d!important}
 .tawod-contracting .villa-3d-heading>p {max-width:360px;margin:0;color:#677368;line-height:1.95;font-size:14px}
 .tawod-contracting .villa-3d-shell {display:grid;grid-template-columns:minmax(0,1fr) 292px;direction:ltr;background:#fff;border:1px solid #dce1d5;border-radius:22px;overflow:hidden;box-shadow:0 14px 36px #27372d08;min-width:0}
+.tawod-contracting .villa-3d-modebar {grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:17px 22px;background:#fcfcf7;border-bottom:1px solid #e0e5d9;direction:rtl}
+.tawod-contracting [data-lang=en] .villa-3d-modebar {direction:ltr}
+.tawod-contracting .villa-3d-modebar strong {display:block;color:#405744;font-size:13px;line-height:1.8}
+.tawod-contracting .villa-3d-modebar>div>span {display:block;font-size:11px;color:#7c8574;margin-top:3px}
+.tawod-contracting .villa-3d-modes {display:flex;gap:7px}
+.tawod-contracting .villa-3d-modes button {min-height:43px;padding:10px 18px;border:1px solid #dbe2d3;border-radius:9px;background:#fff;color:#60715c;font:inherit;font-size:12px;line-height:1.6;cursor:pointer}
+.tawod-contracting .villa-3d-modes button[aria-pressed=true] {background:#315f54;color:#fff;border-color:#315f54;box-shadow:0 3px 10px #315f5414}
+.tawod-contracting .villa-3d-presets {grid-template-columns:repeat(2,minmax(0,1fr))!important}
 .tawod-contracting .villa-3d-stage {position:relative;min-width:0;min-height:574px;overflow:hidden;overflow:clip;background:#e8e6df;isolation:isolate;direction:ltr}
 .tawod-contracting .villa-3d-stage:fullscreen {width:100vw;height:100vh;min-height:0;border-radius:0}
 .tawod-contracting .villa-3d-mount,.tawod-contracting .villa-3d-poster {position:absolute;inset:0;width:100%;height:100%}
@@ -84,6 +92,11 @@
  .tawod-contracting .villa-3d-heading{display:block}.tawod-contracting .villa-3d-heading>p{max-width:700px;margin-top:14px}
 }
 @media(max-width:767px){
+ .tawod-contracting .villa-3d-modebar{display:block;padding:16px}
+ .tawod-contracting .villa-3d-modebar>div:first-child{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:11px}
+ .tawod-contracting .villa-3d-modebar strong{font-size:12px}.tawod-contracting .villa-3d-modebar>div>span{font-size:9px;margin:0}
+ .tawod-contracting .villa-3d-modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+ .tawod-contracting .villa-3d-modes button{min-height:44px;font-size:10px;padding:8px 5px}
  .tawod-contracting .villa-experience-hero>.container>.breadcrumbs{margin-bottom:20px;font-size:10px}
  .tawod-contracting .villa-hero-grid{grid-template-columns:1fr;gap:28px;padding-bottom:28px}
  .tawod-contracting .tawod-villa-case .villa-hero-copy h1{font-size:31px!important}
@@ -106,7 +119,7 @@
  .tawod-contracting .villa-3d-cube{width:60px;height:60px;border-radius:17px}.tawod-contracting .villa-3d-cube svg{width:34px;height:34px}
  .tawod-contracting .villa-3d-overlay h3{font-size:18px!important}.tawod-contracting .villa-3d-overlay p{font-size:12px}
  .tawod-contracting .villa-3d-start{padding:12px 14px;font-size:11px;min-height:48px;max-width:100%}
- .tawod-contracting .villa-3d-tools{inset:auto auto 16px 12px;padding:5px;gap:4px}.tawod-contracting .villa-3d-tools button{width:37px;height:39px}
+ .tawod-contracting .villa-3d-tools{inset:auto auto 16px 50%;transform:translateX(-50%);padding:5px;gap:4px}.tawod-contracting .villa-3d-tools button{width:37px;height:39px}
  .tawod-contracting .villa-3d-hint{bottom:78px;font-size:9px}
  .tawod-contracting .villa-3d-panel{border:0;border-top:1px solid #dde3d6;padding:20px 16px;display:grid;grid-template-columns:1fr 1fr;gap:18px 12px}
  .tawod-contracting .villa-3d-detail-list,.tawod-contracting .villa-3d-note{grid-column:1/-1}

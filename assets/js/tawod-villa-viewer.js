@@ -2,8 +2,8 @@
 (() => {
   'use strict';
   const copy = {
-    ar: { loading: 'جارٍ تجهيز النموذج…', ready: 'العرض جاهز للتفاعل', start: 'تشغيل العرض ثلاثي الأبعاد', failure: 'العرض ثلاثي الأبعاد غير متاح الآن. صورة المشروع متاحة للمشاهدة.', retry: 'إعادة تشغيل العرض', free: 'عرض حر', general: 'منظور عام', front: 'من الأمام', top: 'من الأعلى', lighting: 'تفاصيل الإنارة', floor: 'الأرضيات', walls: 'الجدران', entrance: 'المدخل', columns: 'الأعمدة والشرفة', steps: 'الدرج والإنارة', full: 'تكبير العرض', exit: 'تصغير العرض', canvas: 'نموذج معماري توضيحي تفاعلي. استخدم الأسهم للتحريك، وزري الجمع والطرح للتقريب، وHome لإعادة العرض.' },
-    en: { loading: 'Preparing the model…', ready: 'Ready to explore', start: 'Start the 3D experience', failure: 'The 3D view is currently unavailable. You can still view the project photograph.', retry: 'Restart the 3D view', free: 'Free view', general: 'Overview', front: 'Front view', top: 'Top view', lighting: 'Lighting details', floor: 'Floor finishes', walls: 'Walls', entrance: 'Entrance', columns: 'Columns and balcony', steps: 'Steps and lighting', full: 'Expand view', exit: 'Exit expanded view', canvas: 'Interactive architectural illustration. Use arrow keys to rotate, plus and minus to zoom, and Home to reset.' },
+    ar: { loading: 'جارٍ تجهيز النموذج…', ready: 'العرض جاهز للتفاعل', start: 'تشغيل العرض ثلاثي الأبعاد', failure: 'العرض ثلاثي الأبعاد غير متاح الآن. صورة المشروع متاحة للمشاهدة.', retry: 'إعادة تشغيل العرض', free: 'عرض حر', general: 'منظور عام', front: 'من الأمام', top: 'من الأعلى', rear: 'من الخلف', ground: 'كشف الدور الأرضي', upper: 'كشف الدور الأول', living: 'المجلس والجلسات', kitchen: 'المطبخ والخدمات', terrace: 'السطح والتراس', garden: 'الحوش والمحيط', lighting: 'تفاصيل الإنارة', floor: 'الأرضيات', walls: 'الجدران', entrance: 'المدخل', columns: 'الأعمدة والشرفة', steps: 'الدرج والإنارة', full: 'تكبير العرض', exit: 'تصغير العرض', canvas: 'نموذج معماري توضيحي تفاعلي. استخدم الأسهم للتحريك، وزري الجمع والطرح للتقريب، وHome لإعادة العرض.' },
+    en: { loading: 'Preparing the model…', ready: 'Ready to explore', start: 'Start the 3D experience', failure: 'The 3D view is currently unavailable. You can still view the project photograph.', retry: 'Restart the 3D view', free: 'Free view', general: 'Overview', front: 'Front view', top: 'Top view', rear: 'Rear view', ground: 'Ground floor cutaway', upper: 'Upper floor cutaway', living: 'Living spaces', kitchen: 'Kitchen and service spaces', terrace: 'Roof terrace', garden: 'Courtyard and grounds', lighting: 'Lighting details', floor: 'Floor finishes', walls: 'Walls', entrance: 'Entrance', columns: 'Columns and balcony', steps: 'Steps and lighting', full: 'Expand view', exit: 'Exit expanded view', canvas: 'Interactive architectural illustration. Use arrow keys to rotate, plus and minus to zoom, and Home to reset.' },
   };
   let engine;
   for (const root of document.querySelectorAll('[data-villa-viewer]')) {
@@ -12,11 +12,15 @@
     const status = root.closest('.villa-3d-section')?.querySelector('[data-3d-status]'), viewLabel = root.querySelector('[data-3d-view]');
     const tools = root.querySelector('[data-3d-tools]'), fullscreen = root.querySelector('[data-3d-action="fullscreen"]');
     if (!mount || !start || !status || !viewLabel || !tools || !fullscreen) continue;
-    const controls = [...root.querySelectorAll('[data-3d-preset],[data-3d-detail],[data-3d-light]')];
+    const controls = [...root.querySelectorAll('[data-3d-preset],[data-3d-detail],[data-3d-light],[data-3d-mode]')];
     let api, generation = 0, light = 'day';
     function onView(name) {
       viewLabel.textContent = t[name] || t.free;
       for (const button of root.querySelectorAll('[data-3d-preset],[data-3d-detail]')) button.setAttribute('aria-pressed', String((button.dataset['3dPreset'] || button.dataset['3dDetail']) === name));
+    }
+    function onMode(name) {
+      root.dataset.display = name;
+      root.querySelectorAll('[data-3d-mode]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset['3dMode'] === name)));
     }
     function setState(state) {
       root.dataset.state = state; start.disabled = state === 'loading';
@@ -29,17 +33,17 @@
       status.textContent = state === 'loading' ? t.loading : state === 'ready' ? t.ready : state === 'error' ? t.failure : '';
     }
     function stop(state = 'idle') {
-      generation++; const current = api; api = undefined; current?.dispose(); mount.replaceChildren(); root.dataset.lighting = 'day'; setState(state);
+      generation++; const current = api; api = undefined; current?.dispose(); mount.replaceChildren(); root.dataset.lighting = 'day'; onMode('exterior'); setState(state);
     }
     start.hidden = false;
     start.addEventListener('click', async () => {
       if (root.dataset.state === 'loading' || api) return;
       const token = ++generation; setState('loading');
       try {
-        engine ||= import('/assets/js/tawod-villa-engine-6b4e5a6ff9ad.mjs');
+        engine ||= import('/assets/js/tawod-villa-engine-9e01b12c0418.mjs');
         const module = await engine;
         if (token !== generation) return;
-        const viewer = await module.createVillaViewer({ mount, variant: root.dataset.model, label: t.canvas, onView, onFailure: () => stop('error') });
+        const viewer = await module.createVillaViewer({ mount, variant: root.dataset.model, label: t.canvas, onView, onMode, onFailure: () => stop('error') });
         if (token !== generation) { viewer.dispose(); return; }
         api = viewer; light = 'day';
         root.querySelectorAll('[data-3d-light]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset['3dLight'] === 'day')));
@@ -50,6 +54,7 @@
       const button = event.target.closest('button'); if (!button || !root.contains(button) || !api) return;
       const preset = button.dataset['3dPreset'] || button.dataset['3dDetail'];
       if (preset) api.view(preset);
+      if (button.dataset['3dMode']) api.mode(button.dataset['3dMode']);
       if (button.dataset['3dLight']) {
         const mode = button.dataset['3dLight']; if (mode !== light) { light = mode; api.lighting(mode); }
         root.querySelectorAll('[data-3d-light]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset['3dLight'] === light)));

@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { buildVillaModel, disposeModel } from '../lib/villa-3d/models.mjs';
 import { collectFaces, createSoftwareRenderer, rasterizeTriangle } from '../lib/villa-3d/software-renderer.mjs';
 
-for (const [variant, details] of [['interior', ['lighting', 'floor', 'walls']], ['entrance', ['entrance', 'columns', 'steps']]]) {
+for (const [variant, details] of [['interior', ['living', 'kitchen', 'terrace']], ['entrance', ['entrance', 'columns', 'garden']]]) {
   test(`${variant}: geometry, cameras and detail views stay finite and within the rendering budget`, () => {
     const model = buildVillaModel(variant), tags = new Set(); let triangles = 0, meshes = 0;
     model.group.updateMatrixWorld(true);
@@ -30,6 +30,33 @@ for (const [variant, details] of [['interior', ['lighting', 'floor', 'walls']], 
     }
     disposeModel(model.group);
   });
+  test(`${variant}: the complete exterior and both furnished cutaways stay distinct and inexpensive`, () => {
+    const model = buildVillaModel(variant);
+    let exteriorCount;
+    for (const mode of ['exterior', 'ground', 'upper', 'exterior']) {
+      model.setMode(mode); const faces = collectFaces(model.group), tags = new Set(); let visibleMeshes = 0;
+      model.group.traverseVisible(object => { if (object.isMesh) { visibleMeshes++; tags.add(object.userData.detail); } });
+      assert.ok(visibleMeshes < 110, `Active mesh budget exceeded: ${visibleMeshes}`);
+      assert.ok(faces.length > 3000 && faces.length < 24000);
+      if (mode === 'exterior') { assert.ok(tags.has('terrace')); assert.ok(!tags.has('bedrooms')); exteriorCount ??= faces.length; assert.equal(faces.length, exteriorCount); }
+      if (mode === 'ground') { assert.ok(tags.has('kitchen') && tags.has('living') && tags.has('stairs')); assert.ok(!tags.has('bedrooms')); assert.ok(!model.parts.roof.visible && !model.parts.upperShell.visible); }
+      if (mode === 'upper') { assert.ok(tags.has('bedrooms') && tags.has('bathrooms') && tags.has('stairs')); assert.ok(!tags.has('kitchen')); assert.ok(model.parts.lowerShell.visible && !model.parts.roof.visible); }
+    }
+    assert.throws(() => model.setMode('missing'), /Unknown villa display mode/);
+    disposeModel(model.group);
+  });
+  test(`${variant}: all four facades have visible glazing and the foundation supports the raised floor`, () => {
+    const model = buildVillaModel(variant), objects = [];
+    model.group.updateMatrixWorld(true); model.group.traverseVisible(o => { if (o.isMesh) objects.push(o); });
+    const y = variant === 'entrance' ? 3.1 : 2.516;
+    for (const [origin, direction] of [[[-2.5, y, 11], [0, 0, -1]], [[12, y, -5.1], [-1, 0, 0]], [[-12, y, -4.6], [1, 0, 0]], [[.3, y, -15], [0, 0, 1]]]) {
+      const hit = new THREE.Raycaster(new THREE.Vector3(...origin), new THREE.Vector3(...direction)).intersectObjects(objects, false)[0];
+      assert.ok(hit?.object.material.userData.windowGlow, `A facade opening is obscured at ${origin}`);
+    }
+    const foundation = new THREE.Raycaster(new THREE.Vector3(5, .2, -6), new THREE.Vector3(-1, 0, 0)).intersectObjects(objects, false)[0];
+    assert.ok(foundation && Math.abs(foundation.point.x - 4.3) < .02, 'The raised villa must not float above an empty foundation');
+    disposeModel(model.group);
+  });
 }
 test('the lightweight controller imports the renderer on demand and the hashed bundle exists', () => {
   const controller = fs.readFileSync('assets/js/tawod-villa-viewer.js', 'utf8');
@@ -45,14 +72,15 @@ test('unknown model identifiers cannot create a misleading blank model', () => {
 });
 test('software rendering preserves instanced balcony placement and wall cutouts', () => {
   const model = buildVillaModel('entrance'), faces = collectFaces(model.group);
-  assert.ok(faces.length > 9000 && faces.length < 11000);
+  assert.ok(faces.length > 13000 && faces.length < 24000);
   assert.ok(faces.every(face => face.vertices.every(Number.isFinite)));
   const balusters = faces.filter(face => face.center.y > 6.3 && face.center.y < 7.2 && face.center.z > .5);
   assert.ok(balusters.some(face => face.center.x < -1));
   assert.ok(balusters.some(face => face.center.x > 1));
   for (const x of [.32, 3.2]) {
+    const visible = []; model.group.traverseVisible(object => { if (object.isMesh) visible.push(object); });
     const ray = new THREE.Raycaster(new THREE.Vector3(x, 3.1, 10), new THREE.Vector3(0, 0, -1));
-    const nearest = ray.intersectObject(model.group, true)[0];
+    const nearest = ray.intersectObjects(visible, false)[0];
     assert.equal(nearest?.object.material.color.getHexString(), '243334', 'Glazing must remain visible through the facade openings');
   }
   disposeModel(model.group);
@@ -82,5 +110,9 @@ test('the software fallback renders an actual model frame without a GPU', () => 
     for (let i = 0; i < rendered.data.length; i += 4) shades.add(`${rendered.data[i]},${rendered.data[i + 1]},${rendered.data[i + 2]}`);
     assert.ok(shades.size > 8, `Expected architectural surfaces, received ${shades.size} colors`);
     assert.equal(renderer.domElement.dataset.renderer, 'software');
+    const exterior = rendered.data.slice();
+    model.setMode('ground'); renderer.invalidateScene(); renderer.render(scene, camera);
+    assert.ok(rendered.data.some((value, index) => value !== exterior[index]), 'The fallback must remove the hidden exterior when a floor is opened');
+    model.setMode('upper'); renderer.invalidateScene(); renderer.render(scene, camera);
   } finally { renderer?.dispose(); disposeModel(scene); globalThis.document = previousDocument; }
 });
