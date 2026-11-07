@@ -1,0 +1,17 @@
+import fs from 'node:fs';
+import { createHash } from 'node:crypto';
+import { gzipSync } from 'node:zlib';
+import { build } from 'esbuild';
+import { buildArabicVillaExperience } from './villa-experience.mjs';
+const result = await build({ entryPoints: ['lib/villa-3d/engine.mjs'], bundle: true, format: 'esm', target: 'es2020', minify: true, write: false, legalComments: 'none', treeShaking: true });
+const bytes = result.outputFiles[0].contents;
+const name = `tawod-villa-engine-${createHash('sha256').update(bytes).digest('hex').slice(0,12)}.mjs`;
+if (gzipSync(bytes).length > 210000) throw new Error('3D engine exceeds its lazy-load budget');
+const write = (file, content) => { if (!fs.existsSync(file) || !fs.readFileSync(file).equals(Buffer.from(content))) fs.writeFileSync(file, content); };
+write(`assets/js/${name}`, bytes);
+for (const old of fs.readdirSync('assets/js')) if (/^tawod-villa-engine-[a-f0-9]{12}\.mjs$/.test(old) && old !== name) fs.unlinkSync(`assets/js/${old}`);
+write('assets/js/tawod-villa-viewer.js', fs.readFileSync('lib/villa-3d/controller.js', 'utf8').replace('__ENGINE_URL__', `/assets/js/${name}`));
+fs.mkdirSync('assets/licenses', { recursive: true });
+write('assets/licenses/three-MIT.txt', fs.readFileSync('node_modules/three/LICENSE'));
+buildArabicVillaExperience();
+console.log(`Built on-demand 3D viewer: ${bytes.length} bytes (${gzipSync(bytes).length} gzip); no third-party runtime requests.`);

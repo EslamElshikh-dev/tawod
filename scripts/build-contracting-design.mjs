@@ -14,7 +14,7 @@ if (!process.argv.includes('--styles-only')) execFileSync(process.execPath,['scr
 const { optimizeArticleMarkup } = await import('../lib/article-presentation.mjs');
 
 const modern=fs.readFileSync('assets/css/tawod-contracting-design.css','utf8')+'\n'+fs.readFileSync('assets/css/tawod-contracting-polish.css','utf8')+'\n'+fs.readFileSync('assets/css/tawod-finishing-stage.css','utf8');
-const villaCaseCss=fs.readFileSync('assets/css/tawod-villa-case.css','utf8');
+const villaCaseCss=fs.readFileSync('assets/css/tawod-villa-case.css','utf8')+'\n'+fs.readFileSync('assets/css/tawod-villa-3d.css','utf8');
 const urls=[...fs.readFileSync('sitemap.xml','utf8').matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>new URL(m[1]).pathname).filter(p=>!p.startsWith('/maintenance/'));
 // English pages have their own small LTR sheet and navigation, avoiding the
 // Arabic layout bundle and its font download for English-only visitors.

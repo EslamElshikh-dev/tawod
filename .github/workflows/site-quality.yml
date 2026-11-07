@@ -47,6 +47,8 @@ jobs:
         run: npm run check:home
       - name: Prepare site assets
         run: npm run prepare:assets
+      - name: Verify interactive villa geometry and renderer fallbacks
+        run: npm run test:villa-3d
       - name: Verify maintenance contract journeys and lead classification
         run: npm run test:maintenance-contracts
       - name: Enhance contact conversion flow
