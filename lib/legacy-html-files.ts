@@ -560,7 +560,7 @@ export const legacyHtmlHashes = {
   "privacy-policy.html": "49b55efdb8f3d0cdbd6b0f701165521494b7d343ca3c9748c49127846ae58d3f",
   "project-alrajhi-tanks-king-salman-park.html": "5de33a5569dbb6ce81b966a1acea3dce5fd08aaca21a89d485bfb8997350cebd",
   "project-arouba-mosque-villas.html": "b7709b94d5f7f1186e59a842bb27e7c8081c99d7c94b405072119783b1dc0f3e",
-  "project-faisaliah-villa-facades-finishing.html": "1513ba9adc450395bc41d7bde478225c8f1c8aa5dfaf3b910a20335a6074dee2",
+  "project-faisaliah-villa-facades-finishing.html": "a444e1a65dd4cc4ae5f20740a774d8e87c51352b646312e4f9a5d4c28de4432f",
   "project-modon-eight-warehouses-riyadh.html": "c7bc4fad57265ccfe9e43e094cb453237ca052a2d1cbe099bf2627400fd7845c",
   "project-sahafa-villa-renovation-finishing.html": "310e98c4a3da5548fd83e4e824ee9d29d70417f6338d33527de2deece9733f07",
   "project-villa-plaster-ceramic-marble-uhud-riyadh.html": "558c112ca850f803386227bd84692d10155032ce15ac407bbdecb39f5a0b0525",
