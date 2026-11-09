@@ -1,7 +1,9 @@
-import { chromium } from 'playwright';
+import { createRequire } from 'node:module';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+const require = createRequire(import.meta.url);
+const { chromium } = require(process.env.TAWOD_PLAYWRIGHT_MODULE || 'playwright');
 
 // Exercise the real static export in a browser; external requests are blocked.
 const output = resolve('out');
