@@ -15,7 +15,8 @@ concurrency:
 jobs:
   quality:
     name: Next.js export and SEO validation
-    runs-on: ubuntu-latest
+    # Keep the browser gate on a distribution supported by Playwright 1.55.
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout pull request branch
         uses: actions/checkout@v4
@@ -58,6 +59,14 @@ jobs:
         run: node scripts/run-static-pages.mjs
       - name: Build and verify Next.js static export
         run: npm run build
+      - name: Exercise exported service pages and all seven 3D viewers in Chromium
+        run: |
+          npm install --prefix "$RUNNER_TEMP/tawod-browser" --no-save --ignore-scripts --no-audit --no-fund playwright@1.55.0
+          "$RUNNER_TEMP/tawod-browser/node_modules/.bin/playwright" install --with-deps chromium
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory out > /tmp/tawod-browser.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          TAWOD_PLAYWRIGHT_MODULE="$RUNNER_TEMP/tawod-browser/node_modules/playwright" node scripts/qa-next-export-browser.mjs
       - name: Validate pages links metadata schema and sitemap
         run: |
           npm run test:site-validation
