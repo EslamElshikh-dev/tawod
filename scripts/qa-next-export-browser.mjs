@@ -60,9 +60,11 @@ try {
         await night.click();
         assert.equal(await root.getAttribute('data-lighting'), 'night');
         await root.locator('[data-3d-action="fullscreen"]').click();
-        assert.equal(await root.getAttribute('data-expanded'), 'true');
-        await page.keyboard.press('Escape');
-        await page.waitForFunction(() => document.querySelector('[data-villa-viewer]')?.dataset.expanded === 'false');
+        await page.waitForFunction(() => document.fullscreenElement === document.querySelector('.villa-3d-stage') || document.querySelector('[data-villa-viewer]')?.dataset.expanded === 'true');
+        const nativeFullscreen = await page.evaluate(() => Boolean(document.fullscreenElement));
+        if (nativeFullscreen) await page.evaluate(() => document.exitFullscreen());
+        else await page.keyboard.press('Escape');
+        await page.waitForFunction(() => !document.fullscreenElement && document.querySelector('[data-villa-viewer]')?.dataset.expanded !== 'true');
         viewer = await root.evaluate(node => ({ state: node.dataset.state, model: node.dataset.model, renderer: node.dataset.renderer, lighting: node.dataset.lighting }));
       }
       assert.deepEqual(errors, [], path + ': JavaScript errors');
