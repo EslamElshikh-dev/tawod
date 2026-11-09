@@ -15,7 +15,8 @@ concurrency:
 jobs:
   quality:
     name: Next.js export and SEO validation
-    runs-on: ubuntu-latest
+    # Keep the browser gate on a distribution supported by Playwright 1.55.
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout pull request branch
         uses: actions/checkout@v4
