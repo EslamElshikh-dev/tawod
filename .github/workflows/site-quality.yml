@@ -58,6 +58,14 @@ jobs:
         run: node scripts/run-static-pages.mjs
       - name: Build and verify Next.js static export
         run: npm run build
+      - name: Exercise exported service pages and all seven 3D viewers in Chromium
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.55.0
+          npx playwright install --with-deps chromium
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory out > /tmp/tawod-browser.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          node scripts/qa-next-export-browser.mjs
       - name: Validate pages links metadata schema and sitemap
         run: |
           npm run test:site-validation
