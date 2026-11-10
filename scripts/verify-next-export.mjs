@@ -224,6 +224,24 @@ for (const relativePath of [
   }
 }
 
+// App Router GET landings are exported as extensionless files, so the legacy
+// HTML parity loop above does not cover their immutable analytics URLs.
+const expectedAnalyticsRevision = createHash("sha256")
+  .update(readFileSync(join(root, "assets/js/tawod-analytics.js")))
+  .digest("hex")
+  .slice(0, 12);
+const expectedAnalyticsSrc = `/assets/js/tawod-analytics.js?v=${expectedAnalyticsRevision}`;
+const paidLandings = readdirSync(join(outputDirectory, "lp"), { withFileTypes: true })
+  .filter((entry) => entry.isFile() && !entry.name.includes("."));
+for (const entry of paidLandings) {
+  const html = readFileSync(join(outputDirectory, "lp", entry.name), "utf8");
+  const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']*\/assets\/js\/tawod-analytics\.js[^"']*)["'][^>]*>/g)]
+    .map((match) => match[1]);
+  if (scripts.length !== 1 || scripts[0] !== expectedAnalyticsSrc) {
+    mismatches.push(`lp/${entry.name}: analytics must use the current content revision`);
+  }
+}
+
 if (mismatches.length) {
   throw new Error(`Next.js export parity failed:\n${mismatches.join("\n")}`);
 }

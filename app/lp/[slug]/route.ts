@@ -1,3 +1,5 @@
+import { analyticsAssetSrc } from "../../../lib/analytics-asset";
+
 type LandingConfig = {
   slug: string;
   title: string;
@@ -213,7 +215,7 @@ function page(config: LandingConfig) {
 <link rel="canonical" href="${escapeHtml(config.canonical)}">
 <link rel="stylesheet" href="/assets/css/tawod-system.css">
 <link rel="stylesheet" href="/assets/css/tawod-ads-landing.css?v=20261018-1">
-<script src="/assets/js/tawod-analytics.js" defer></script>
+<script src="${analyticsAssetSrc}" defer></script>
 <script src="/assets/js/tawod-first-party.js" defer></script>
 <script src="/assets/js/tawod-whatsapp-attribution.js" defer></script>
 </head>

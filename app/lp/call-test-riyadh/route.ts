@@ -1,3 +1,5 @@
+import { analyticsAssetSrc } from "../../../lib/analytics-asset";
+
 export const dynamic = "force-static";
 
 const html = `<!doctype html>
@@ -189,7 +191,7 @@ a:focus-visible{outline:3px solid #f1ae5e;outline-offset:4px}
 @keyframes phone-nudge{0%,78%,100%{transform:rotate(0)}83%{transform:rotate(-10deg)}88%{transform:rotate(7deg)}93%{transform:rotate(0)}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.call,.top-phone,.service,.service-feature img,.call-observed .mobile-call{transition:none}.call:hover,.service:hover,.service-feature:hover img{transform:none}.mobile-call:before,.mobile-call svg{animation:none}}
 </style>
-<script src="/assets/js/tawod-analytics.js" defer></script>
+<script src="${analyticsAssetSrc}" defer></script>
 </head>
 <body>
 <header class="top"><div class="container">
