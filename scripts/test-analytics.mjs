@@ -76,14 +76,35 @@ function runAnalytics({ pathname = '/', leadFlag = null } = {}) {
 
 const normal = runAnalytics({ pathname: '/service-construction.html' });
 const configs = normal.window.dataLayer.filter((item) => item[0] === 'config').map((item) => item[1]);
-assert.deepEqual([...configs], ['G-4M3LNJF2ED'], 'the website must configure GA4 only, not a Google Ads website conversion destination');
+assert.deepEqual([...configs], ['G-4M3LNJF2ED', 'AW-18266173285'], 'contracting pages must configure GA4 and the Google Ads base tag');
 assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'conversion').length, 0);
 assert.equal(normal.appendedScripts.length, 0, 'Google Tag must stay off the critical loading path');
 normal.windowListeners.get('scroll')();
 assert.equal(normal.appendedScripts.length, 0, 'scrolling may schedule the tag but must not parse it during the input task');
 assert.equal(normal.timers.at(-1).delay, 2000, 'interaction loading must be delayed away from the input task');
 normal.rerun();
-assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'config').length, 1, 'analytics must initialize once');
+assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'config').length, 2, 'each measurement destination must initialize once');
+
+for (const pathname of [
+  '/', '/en/',
+  '/lp/annex-construction-riyadh/',
+  '/lp/bone-construction-riyadh/',
+  '/lp/facade-renovation-riyadh/',
+  '/lp/villa-finishing-riyadh/',
+  '/lp/villa-renovation-riyadh/'
+]) {
+  const landing = runAnalytics({ pathname });
+  assert.deepEqual([...landing.window.dataLayer.filter(item => item[0] === 'config').map(item => item[1])],
+    ['G-4M3LNJF2ED', 'AW-18266173285'], `${pathname} must include the contracting base tag`);
+  assert.equal(landing.window.dataLayer.some(item => item[0] === 'event' && item[1] === 'conversion'), false,
+    `${pathname} visits must not create Ads conversions`);
+}
+
+for (const pathname of ['/maintenance', '/maintenance/', '/maintenance/services/cleaning.html']) {
+  const maintenance = runAnalytics({ pathname });
+  assert.deepEqual([...maintenance.window.dataLayer.filter(item => item[0] === 'config').map(item => item[1])],
+    ['G-4M3LNJF2ED'], 'maintenance pages must not initialize the contracting Ads account');
+}
 
 const phoneLink = {
   target: '',
@@ -103,6 +124,7 @@ const phoneEvent = {
 normal.listeners.get('click')(phoneEvent);
 assert.equal(phoneEvent.defaultPrevented, false, 'phone navigation must stay immediate and must not be delayed for tracking');
 assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'tawod_call_click').length, 1);
+assert.equal(normal.window.dataLayer.find(item => item[1] === 'tawod_call_click')[2].send_to, 'G-4M3LNJF2ED', 'phone click diagnostics must stay routed to GA4');
 assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'conversion').length, 0, 'phone clicks must never fire an Ads conversion');
 
 // The same restoration CTA must identify its service and location in both
@@ -163,6 +185,7 @@ const whatsappEvent = {
 normal.listeners.get('click')(whatsappEvent);
 assert.equal(whatsappEvent.defaultPrevented, false, 'WhatsApp navigation must stay immediate and must not be delayed for tracking');
 assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'tawod_whatsapp_click').length, 1);
+assert.equal(normal.window.dataLayer.find(item => item[1] === 'tawod_whatsapp_click')[2].send_to, 'G-4M3LNJF2ED', 'WhatsApp click diagnostics must stay routed to GA4');
 assert.equal(normal.window.dataLayer.filter((item) => item[0] === 'event' && item[1] === 'conversion').length, 0, 'WhatsApp clicks must never fire an Ads conversion');
 
 const leadForm = {
