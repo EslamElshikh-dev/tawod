@@ -1,4 +1,4 @@
-/* Tawod sitewide analytics: GA4 diagnostics only. Google Ads conversions are intentionally not fired from website interactions. */
+/* Tawod sitewide analytics: GA4 diagnostics and the contracting Google Ads base tag. Google Ads conversions are intentionally not fired from website interactions. */
 (function () {
   'use strict';
 
@@ -24,6 +24,11 @@
 
   window.gtag('js', new Date());
   window.gtag('config', GA4_ID, { send_page_view: true });
+  // Maintenance configures its own Ads account in ads-contact-clicks.js.
+  // This base tag restores Ads measurement without sending a conversion event.
+  if (!/^\/maintenance(?:\/|$)/.test(window.location.pathname || '/')) {
+    window.gtag('config', GOOGLE_ADS_ID);
+  }
 
   var tagRequested = false;
   var idleTimer = 0;
