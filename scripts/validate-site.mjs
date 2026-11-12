@@ -65,6 +65,7 @@ for(const [r,h] of pages){
   const localMatch=r.match(/^(dammam|khobar|dhahran)\//),localCity=localMatch?.[1]||'',localSilo=Boolean(localCity),localArticle=localCity&&new RegExp(`^${localCity}/blog/[^/]+/index\\.html$`).test(r);
   const maintenanceHub=r==='maintenance/index.html';
   const maintenanceCatalog=r==='maintenance/services.html';
+  const maintenanceGallery=r==='maintenance/work-gallery.html';
   const maintenancePrivacy=r==='maintenance/privacy.html';
   const blogArchivePage=r==='blog/index.html'||/^blog\/page\/\d+\/index\.html$/.test(r),blogTopicPage=/^blog\/topics\/[^/]+\/index\.html$/.test(r)||r==='blog/turnkey-riyadh/index.html',blogArticle=/^blog\/[^/]+\/index\.html$/.test(r)&&r!=='blog/turnkey-riyadh/index.html';
   if(!excluded){
@@ -74,7 +75,7 @@ for(const [r,h] of pages){
       if(!h.includes('assets/js/maintenance.js'))errors.push(`${r}: missing maintenance.js`);
       all(h,/<a\b[^>]*href=["']([^"']+)["'][^>]*>/gi).map(m=>m[1]).forEach(v=>{const t=localTarget(r,v);if(t&&!t.file.startsWith('maintenance/'))errors.push(`${r}: maintenance silo link escapes to ${v}`)});
     }else if(!h.includes('tawod-system.css'))errors.push(`${r}: missing tawod-system.css`);
-    if(!localSilo&&!blogArchivePage&&!blogArticle&&!maintenanceCatalog&&!maintenancePrivacy&&r!=='contact.html'){
+    if(!localSilo&&!blogArchivePage&&!blogArticle&&!maintenanceCatalog&&!maintenanceGallery&&!maintenancePrivacy&&r!=='contact.html'){
       if(!/<section[^>]*(?:id=["']faq["']|class=["'][^"']*(?:seo-faq|tawod-faq-section)[^"']*["'])/i.test(h))errors.push(`${r}: missing visible FAQ section`);
       if(!schemas.some(x=>schemaHas(x,'FAQPage')))errors.push(`${r}: missing FAQPage schema`);
     }
@@ -101,8 +102,10 @@ for(const [r,h] of pages){
       const accepted=['WebPage','AboutPage','ContactPage','CollectionPage','Service'];
       if(!accepted.some(type=>schemas.some(x=>schemaHas(x,type))))errors.push(`${r}: missing local page schema`);
     }else if(maintenanceSilo){
-      const expected=maintenanceCatalog?'CollectionPage':maintenanceHub||maintenancePrivacy?'WebPage':'Service';
+      // Collections describe browsable content; service requirements stay on service pages.
+      const expected=maintenanceCatalog||maintenanceGallery?'CollectionPage':maintenanceHub||maintenancePrivacy?'WebPage':'Service';
       if(!schemas.some(x=>schemaHas(x,expected)))errors.push(`${r}: missing maintenance ${expected} schema`);
+      if(maintenanceGallery&&!schemas.some(x=>schemaHas(x,'ImageGallery')))errors.push(`${r}: missing maintenance ImageGallery schema`);
     }else if(!['WebPage','AboutPage','ContactPage','CollectionPage','Service'].some(type=>schemas.some(x=>schemaHas(x,type))))errors.push(`${r}: missing page schema`);
   }
   for(const value of htmlReferences(h)){
