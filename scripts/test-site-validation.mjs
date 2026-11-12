@@ -96,6 +96,83 @@ test('homepage rejects obsolete schema entities and priceRange', () => {
   ]);
 });
 
+test('maintenance gallery schema describes its visible photos without a service or FAQ', () => {
+  const html = readFileSync(path.join(root, 'maintenance/work-gallery.html'), 'utf8');
+  const graph = [...html.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)]
+    .flatMap(match => { const schema = JSON.parse(match[1]); return schema['@graph'] || [schema]; });
+  const hasType = (node, type) => [node['@type']].flat().includes(type);
+  const page = graph.find(node => node['@id'] === 'https://tawodco.com/maintenance/work-gallery.html#webpage');
+  const gallery = graph.find(node => hasType(node, 'ImageGallery'));
+  assert.ok(page && hasType(page, 'CollectionPage'));
+  assert.ok(graph.some(node => hasType(node, 'BreadcrumbList')));
+  assert.ok(gallery?.image?.length > 0);
+  const cards = [...html.matchAll(/<article class="work-gallery-card">([\s\S]*?)<\/article>/g)];
+  assert.equal(gallery.image.length, cards.length);
+  for (const [index, image] of gallery.image.entries()) {
+    assert.equal(image['@type'], 'ImageObject');
+    assert.ok(htmlReferences(cards[index][1]).some(url =>
+      new URL(url, 'https://tawodco.com').href === image.contentUrl), 'Schema image is visible in its gallery card.');
+    assert.ok(cards[index][1].includes(`<h2>${image.caption}</h2>`), 'Schema caption matches the visible heading.');
+  }
+  assert.ok(!graph.some(node => hasType(node, 'Service') || hasType(node, 'FAQPage')));
+  assert.doesNotMatch(html, /<section[^>]*\bid=["']faq["']/i);
+});
+
+test('full validator requires gallery schemas and preserves other page requirements', t => {
+  const fixture = mkdtempSync(path.join(tmpdir(), 'tawod-page-schema-validation-'));
+  t.after(() => rmSync(fixture, { recursive: true, force: true }));
+  const excluded = new Set(['.git', '.next', 'node_modules', 'out', 'public']);
+  cpSync(root, fixture, { recursive: true, filter: source => !excluded.has(path.relative(root, source).split(path.sep)[0]) });
+  const validate = () => spawnSync(process.execPath, [path.join(root, 'scripts/validate-site.mjs')], {
+    cwd: fixture, encoding: 'utf8', timeout: 30000, maxBuffer: 2 * 1024 * 1024,
+  });
+  const valid = validate();
+  assert.equal(valid.status, 0, valid.stdout + valid.stderr);
+
+  const withoutSchemas = (html, types) => html.replace(
+    /(<script\b[^>]*type=["']application\/ld\+json["'][^>]*>)([\s\S]*?)(<\/script>)/gi,
+    (all, start, raw, end) => {
+      const schema = JSON.parse(raw);
+      const keep = node => ![node['@type']].flat().some(type => types.includes(type));
+      if (!keep(schema)) return '';
+      if (schema['@graph']) schema['@graph'] = schema['@graph'].filter(keep);
+      return start + JSON.stringify(schema) + end;
+    });
+  const withoutFaq = html => html.replace(/<section\b[^>]*\bid=["']faq["'][^>]*>[\s\S]*?<\/section>/i, '');
+  const cases = [
+    ...['CollectionPage', 'ImageGallery', 'BreadcrumbList'].map(type => ({
+      file: 'maintenance/work-gallery.html', types: [type],
+      messages: [type === 'BreadcrumbList' ? 'missing BreadcrumbList schema' : `missing maintenance ${type} schema`],
+    })),
+    ...['maintenance/ac-maintenance.html', 'maintenance/building-maintenance-contracts.html'].map(file => ({
+      file, types: ['Service', 'FAQPage'], removeFaq: true,
+      messages: ['missing visible FAQ section', 'missing FAQPage schema', 'missing maintenance Service schema'],
+    })),
+    { file: 'maintenance/index.html', types: ['FAQPage'], removeFaq: true,
+      messages: ['missing visible FAQ section', 'missing FAQPage schema'] },
+    { file: 'maintenance/services.html', types: ['CollectionPage'], messages: ['missing maintenance CollectionPage schema'] },
+    { file: 'maintenance/privacy.html', types: ['WebPage'], messages: ['missing maintenance WebPage schema'] },
+    { file: 'service-construction.html', types: ['FAQPage'], removeFaq: true,
+      messages: ['missing visible FAQ section', 'missing FAQPage schema'] },
+  ];
+  for (const { file, types, removeFaq, messages } of cases) {
+    const target = path.join(fixture, file), original = readFileSync(target, 'utf8');
+    let changed = withoutSchemas(original, types);
+    if (removeFaq) changed = withoutFaq(changed);
+    // A service cannot opt out of validation by declaring itself a collection.
+    if (file === 'maintenance/ac-maintenance.html') changed = changed.replace('"@type":"WebPage"', '"@type":"CollectionPage"');
+    assert.notEqual(changed, original, `The ${file} mutation must change its source.`);
+    try {
+      writeFileSync(target, changed);
+      const result = validate(), output = result.stdout + result.stderr;
+      assert.equal(result.status, 1, output);
+      for (const message of messages) assert.ok(output.includes(`${file}: ${message}`), output);
+    } finally {
+      writeFileSync(target, original);
+    }
+  }
+});
+
 test('full validator accepts embedded images and still rejects real broken resources and schema', t => {
   const fixture = mkdtempSync(path.join(tmpdir(), 'tawod-site-validation-'));
   t.after(() => rmSync(fixture, { recursive: true, force: true }));
