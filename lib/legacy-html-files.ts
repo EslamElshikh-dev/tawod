@@ -557,7 +557,7 @@ export const legacyHtmlHashes = {
   "maintenance/tank-cleaning-disinfection.html": "b7aec1f9faa56395d7ab651c2c0cea5696a091a2243ad4320f452a3952e03e5c",
   "maintenance/technical-maintenance.html": "d667e3d4e553d5df0569853c583912e8c1470c2fbdf874a9eb0edc5701d0935f",
   "maintenance/tile-polishing.html": "1834d597178ad68ebe1c29c5497b85d949806e232b2f8b56acf918cb963553b6",
-  "maintenance/villa-cleaning-riyadh.html": "ef12e0bf5e63b7bc31db18026f54c9ae29b491bf55e3572f184d157dc79bab6d",
+  "maintenance/villa-cleaning-riyadh.html": "c2717bb99e101602e71135c5426ab14bf9eaeb7f008a8902b815fd8ad2807eb1",
   "maintenance/waterproofing-insulation.html": "ac0490b09ea3d5824c05e1cd373f9625451e5e281590d9ed32302ba7e1e15299",
   "maintenance/waterproofing-leak-detection.html": "a06242321b694bec70f298f82f0ce61d070bdafeb4c37749b1014c025f68753b",
   "maintenance/work-gallery.html": "501699c9d432568544238957cd3231faf77f7d1081cdfeb77be5da7b478c321e",
