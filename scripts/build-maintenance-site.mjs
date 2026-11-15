@@ -6,6 +6,7 @@ import { paidServiceContent } from '../data/maintenance-paid-content.mjs';
 import { contractPages } from '../data/maintenance-contracts.mjs';
 import { contractHeader, contractFooter, contractPageBody } from './maintenance-contract-pages.mjs';
 import { audience, commitments, emergencyServices, leakLanding, caseDetails, restaurant, restaurantServices } from '../data/maintenance-message-match.mjs';
+import { villaCleaningPage, villaCleaningSlug } from './maintenance-villa-cleaning-page.mjs';
 
 paidServiceContent['waterproofing-leak-detection'] = leakLanding;
 for (const [slug, fields] of Object.entries(caseDetails)) {
@@ -258,7 +259,7 @@ function servicePage(s){
   const body=`<section class="service-hero"><div class="container"><nav class="breadcrumbs" aria-label="مسار التنقل"><a href="${base}">الرئيسية</a><span>/</span><a href="${page('services')}">الخدمات</a><span>/</span><span aria-current="page">${s.name}</span></nav><div class="service-hero-grid"><div>${emergencyServices.has(s.slug)?`<span class="eyebrow emergency-badge">${icon("clock")} طوارئ على مدار الساعة داخل الرياض</span>`:""}<span class="eyebrow">${group?.label||'خدمات مساندة'} · الرياض</span><h1>${content?.heroTitle?esc(content.heroTitle):`${esc(content?.heading||s.name)}<span>في الرياض</span>`}</h1>${content?.heroLead?`<p class="service-search-intent">${esc(content.heroLead)}</p>`:""}<p>${esc(content?.heroDescription||content?.description||s.desc)}</p>${serviceHeroActions(s)}</div><aside class="service-brief"><span class="brief-icon">${icon(s.icon)}</span><h2>${content?esc(content.briefTitle):"قبل عرض السعر،<br>نفهم تفاصيل موقعك."}</h2><p>${content?esc(content.briefText):"شاركنا نوع المنشأة والحي ووصف الاحتياج، لنحدد المعلومات والمعاينة المطلوبة."}</p>${content?`<ul class="service-request-checklist">${content.fields.map(field=>`<li>${icon("check")}<span>${esc(field)}</span></li>`).join("")}</ul>`:""}<div><span>${icon('check')} نطاق واضح</span><span>${icon('check')} خدمة داخل الرياض</span></div></aside></div></div></section>
  ${commitmentsBlock("compact",s.slug+".html")}
  <nav class="service-subnav" aria-label="أقسام الخدمة"><div class="container">${content?`<a href="#request-options">اطلب خدمتك</a>`:""}<a href="#overview">عن الخدمة</a><a href="#scope">نطاق الأعمال</a><a href="#deliverables">ما الذي نحدده؟</a><a href="#faq">الأسئلة الشائعة</a><a href="${base}#request">كوّن طلبك ${arr()}</a></div></nav>
- ${serviceChoices(s)}<section class="section service-overview" id="overview"><div class="container overview-grid"><div><span class="eyebrow">خدمة مبنية على حالة المكان</span><h2>${content?esc(content.overview):"نبدأ بالتفاصيل<br>التي تصنع النتيجة."}</h2></div><div><p class="large-copy">${s.intro}</p><p>يمكن طلب الأعمال المناسبة بصورة مستقلة أو تنسيقها ضمن عقد تشغيل وصيانة. تُحدد الأعمال والمواد والتجهيزات وساعات التنفيذ بعد مراجعة الموقع، ويُوضح أي بند إضافي قبل اعتماده.</p>${existsSync(`maintenance/assets/qr/${s.slug}.svg`)?serviceQr(s.slug):""}</div></div></section>${photoGallery(s.slug)}
+ ${serviceChoices(s)}${s.slug==='home-cleaning'?`<div class="container"><aside class="service-quote-note"><div><h3>تبحث عن تنظيف فيلا بالرياض؟</h3><p>تعرف على نطاق تنظيف الفلل قبل السكن وبعد التشطيب ومع وجود الأثاث.</p><a class="text-link" href="${page(villaCleaningSlug)}">تنظيف الفلل بالتفصيل ${arr()}</a></div></aside></div>`:""}<section class="section service-overview" id="overview"><div class="container overview-grid"><div><span class="eyebrow">خدمة مبنية على حالة المكان</span><h2>${content?esc(content.overview):"نبدأ بالتفاصيل<br>التي تصنع النتيجة."}</h2></div><div><p class="large-copy">${s.intro}</p><p>يمكن طلب الأعمال المناسبة بصورة مستقلة أو تنسيقها ضمن عقد تشغيل وصيانة. تُحدد الأعمال والمواد والتجهيزات وساعات التنفيذ بعد مراجعة الموقع، ويُوضح أي بند إضافي قبل اعتماده.</p>${existsSync(`maintenance/assets/qr/${s.slug}.svg`)?serviceQr(s.slug):""}</div></div></section>${photoGallery(s.slug)}
  <section class="section scope-section" id="scope"><div class="container">${sectionHead('نطاق الخدمة','أعمال مترابطة.<br>ونطاق تختاره بوضوح.','تشمل الخيارات التالية ما يمكن دراسته للموقع؛ وتُثبت البنود المعتمدة في العرض.')}<div class="scope-grid">${s.scope.map(([t,d],i)=>`<article class="scope-card"><span class="index">${number(i)}</span><h3>${t}</h3><p>${d}</p></article>`).join('')}</div></div></section>
  <section class="section" id="deliverables"><div class="container deliverables-grid"><div><span class="eyebrow">وضوح قبل بدء التنفيذ</span><h2>هذه التفاصيل<br>جزء من اتفاقنا.</h2><p>حتى تكون التوقعات واضحة، نراجع معك نطاق الأعمال وحدود الخدمة والمواد والمواعيد المناسبة.</p><a class="text-link" href="${serviceInquiry(s)}" target="_blank" rel="noopener">اطلب دراسة نطاق الخدمة ${arr()}</a></div><ol class="deliverables-list">${s.deliverables.map((d,i)=>`<li><span>${number(i)}</span><strong>${d}</strong>${icon('check')}</li>`).join('')}<li><span>${number(s.deliverables.length)}</span><strong>سعر ثابت يُعتمد قبل بدء العمل ولا يتغير بعده</strong>${icon('check')}</li></ol></div></section>
  <section class="section faq-section" id="faq"><div class="container faq-layout"><div><span class="eyebrow">إجابات قبل الطلب</span><h2>ما الذي تحتاج<br>إلى معرفته؟</h2><p>لم تجد إجابة تناسب حالتك؟ شارك التفاصيل مع فريق التشغيل.</p></div>${faq(s.faqs)}</div></section>
@@ -271,6 +272,7 @@ function privacy(){return shell({title:'الخصوصية | تعاود للصيا
 writeFileSync('maintenance/index.html',home());
 writeFileSync('maintenance/services.html',catalog());
 writeFileSync('maintenance/work-gallery.html',workGallery());
+writeFileSync(`maintenance/${villaCleaningSlug}.html`,villaCleaningPage({B,shell,icon,whatsapp,faq,faqSchema,commitmentsBlock,photoAssets,photoUrl,revision}));
 // Preserve privacy content and markup; refresh only shared asset cache keys.
 const privacyPath='maintenance/privacy.html';
 const privacyHtml=readFileSync(privacyPath,'utf8');
@@ -283,7 +285,7 @@ for(const slug of Object.keys(contractPages)){
  if(!services.some(s=>s.slug===slug))writeFileSync(`maintenance/${slug}.html`,contractPage(slug));
 }
 // Preserve existing sitemap image/alternate metadata while adding the sector page.
-const urls=[...new Set(['', 'services.html','work-gallery.html','privacy.html',...services.map(s=>s.slug+'.html'),...Object.keys(contractPages).map(slug=>slug+'.html')])].map(p=>B.url+p);
+const urls=[...new Set(['', 'services.html','work-gallery.html','privacy.html',villaCleaningSlug+'.html',...services.map(s=>s.slug+'.html'),...Object.keys(contractPages).map(slug=>slug+'.html')])].map(p=>B.url+p);
 for(const file of ['sitemap.xml','sitemap-maintenance.xml']){
  let sitemap=readFileSync(file,'utf8');
  for(const url of urls){
@@ -292,11 +294,12 @@ for(const file of ['sitemap.xml','sitemap-maintenance.xml']){
   const existing=sitemap.match(re)?.[0];
   const previous=existing?.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1]||'2026-10-20';
   const changedContract=Object.keys(contractPages).some(slug=>url===B.url+slug+'.html');
-  const lastmod=url.endsWith('/privacy.html')?previous:[previous,changedContract?'2026-10-29':'2026-11-11'].sort().at(-1);
+  const changedVilla=[villaCleaningSlug,'home-cleaning'].some(slug=>url===B.url+slug+'.html');
+  const lastmod=url.endsWith('/privacy.html')?previous:[previous,changedVilla?'2026-11-15':changedContract?'2026-10-29':'2026-11-11'].sort().at(-1);
   const entry=existing?(existing.includes('<lastmod>')?existing.replace(/<lastmod>[^<]+<\/lastmod>/,`<lastmod>${lastmod}</lastmod>`):existing.replace('</loc>',`</loc><lastmod>${lastmod}</lastmod>`)):`<url><loc>${url}</loc><lastmod>${lastmod}</lastmod></url>`;
   sitemap=existing?sitemap.replace(existing,entry):sitemap.replace('</urlset>',`  ${entry}\n</urlset>`);
  }
  writeFileSync(file,sitemap);
 }
-console.log(`Generated ${services.length+4+Object.keys(contractPages).filter(slug=>!services.some(s=>s.slug===slug)).length} maintenance pages, with ${groups.length} service groups.`);
+console.log(`Generated ${services.length+5+Object.keys(contractPages).filter(slug=>!services.some(s=>s.slug===slug)).length} maintenance pages, with ${groups.length} service groups.`);
 

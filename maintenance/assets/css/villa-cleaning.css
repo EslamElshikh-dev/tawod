@@ -1,0 +1,76 @@
+.villa-cleaning-page .villa-hero{padding:24px 0 58px;background:radial-gradient(ellipse at 18% 35%,#efd9bf80,transparent 65%)}
+.villa-cleaning-page .villa-hero .breadcrumbs{margin-bottom:24px}
+.villa-hero-grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);gap:54px;align-items:center}
+.villa-hero-copy{padding-block:18px;min-width:0}
+.villa-hero-copy h1{font-size:clamp(2rem,3.8vw,3.6rem);line-height:1.45;letter-spacing:-.04em}
+.villa-hero-copy h1>span{display:block;color:var(--copper);font-size:.55em;line-height:1.8;letter-spacing:-.02em;margin-top:12px}
+.villa-hero-copy .eyebrow{font-size:.74rem}
+.villa-lead{font-size:1rem;line-height:2.05;margin-top:22px;max-width:570px}
+.villa-highlights{display:grid;gap:10px;list-style:none;margin:24px 0;font-size:.8rem}
+.villa-highlights li{display:flex;align-items:center;gap:10px}
+.villa-highlights .icon{width:19px;height:19px;color:var(--copper)}
+.villa-actions{display:flex;flex-wrap:wrap;gap:12px}
+.villa-actions .button{min-height:53px;padding:14px 22px;font-size:.8rem}
+.villa-phone{font-size:.72rem;margin-top:18px}
+.villa-phone a{display:inline-block;margin-inline-start:8px;color:var(--ink);font-weight:700;font-size:1.1rem}
+.villa-hero-photo{border:1px solid #d8c5ae;border-radius:28px;overflow:hidden;background:#e8e2d9;box-shadow:0 20px 60px #3d2e1c15}
+.villa-hero-photo img{width:100%;height:auto;aspect-ratio:1/1.05;object-fit:cover;object-position:center 48%}
+.villa-hero-photo figcaption{display:flex;align-items:center;justify-content:center;gap:9px;padding:13px 14px;background:#fffaf2;font-size:.65rem;color:#665340;line-height:1.8}
+.villa-hero-photo figcaption .icon{width:19px;height:19px}
+.villa-nav{border-block:1px solid var(--line);background:#fff}
+.villa-nav>.container{display:flex;justify-content:center;gap:40px;padding-block:16px}
+.villa-nav a{font-size:.78rem;font-weight:600;min-height:32px;display:flex;align-items:center;color:#64503c}
+.villa-section-head{max-width:740px;margin-bottom:32px}
+.villa-section-head h2{font-size:clamp(1.65rem,3vw,2.65rem)}
+.villa-section-head p{margin-top:13px;line-height:2;max-width:650px}
+.villa-case-grid,.villa-scope-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.villa-case{display:flex;flex-direction:column;align-items:flex-start;min-width:0;padding:26px;border:1px solid #d9cbb9;border-radius:22px;background:#fff}
+.villa-index{font:600 2.3rem/1.2 Arial,sans-serif;color:#9b714a;margin-bottom:27px}
+.villa-case h3{font-size:1.08rem;margin-bottom:13px}
+.villa-case p{font-size:.82rem;line-height:2;flex:1;margin-bottom:22px}
+.villa-case .text-link{font-size:.76rem;min-height:44px}
+.villa-scope{background:#eeece5}
+.villa-scope-card{padding:26px;border-radius:18px;background:#faf9f6;min-width:0}
+.villa-scope-icon{display:grid;place-items:center;width:46px;height:46px;border:1px solid #dac5aa;border-radius:14px;color:var(--copper);margin-bottom:19px}
+.villa-scope-card h3{font-size:1rem;margin-bottom:10px}
+.villa-scope-card p{font-size:.8rem;line-height:2}
+.villa-scope-note{display:flex;gap:13px;align-items:flex-start;padding:20px 22px;margin-top:24px;border:1px solid #d8d0c3;border-radius:16px;background:#f8f5ef}
+.villa-scope-note>.icon{color:var(--copper)}
+.villa-scope-note p{font-size:.76rem;line-height:1.9;color:#665d52}
+.villa-team-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:65px;align-items:center}
+.villa-team figure{min-width:0}
+.villa-team figure img{width:100%;aspect-ratio:1.1;object-fit:cover;border-radius:24px;border:1px solid var(--line)}
+.villa-team figcaption{font-size:.65rem;color:var(--muted);margin-top:12px;text-align:center}
+.villa-team h2{font-size:clamp(1.8rem,3vw,2.65rem);margin-bottom:18px}
+.villa-team-grid>div>p{font-size:.9rem;line-height:2}
+.villa-steps{list-style:none;display:grid;margin-top:26px}
+.villa-steps li{display:flex;gap:16px;align-items:flex-start;padding:17px 0;border-top:1px solid var(--line)}
+.villa-steps li>span{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border:1px solid #dbc7af;border-radius:50%;color:var(--copper);font:600 .9rem Arial,sans-serif}
+.villa-steps h3{font-size:.9rem;line-height:1.7}
+.villa-steps p{font-size:.75rem;margin-top:4px}
+.villa-quote{background:var(--ink);color:#fffdf7}
+.villa-quote-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:65px;align-items:center}
+.villa-quote .eyebrow{color:#f6c38e}
+.villa-quote h2{font-size:clamp(1.8rem,3vw,2.7rem)}
+.villa-quote-grid>div>p{color:#d4d0ca;font-size:.9rem;line-height:2;margin-top:20px;max-width:560px}
+.villa-quote-list{display:grid;gap:13px;list-style:none;margin-top:25px;font-size:.8rem;color:#efebe3}
+.villa-quote-list li{display:flex;gap:10px;align-items:center}
+.villa-quote-list .icon{color:var(--gold);width:20px;height:20px}
+.villa-quote-card{padding:32px;border:1px solid #595047;border-radius:24px;background:#303039;text-align:center;min-width:0}
+.villa-quote-symbol{display:grid;place-items:center;margin:0 auto 20px;width:52px;height:52px;background:#f6b26d1c;border:1px solid #f6b26d66;border-radius:16px;color:var(--gold)}
+.villa-quote-card h3{font-size:1.2rem}
+.villa-quote-card p{color:#d4d0ca;font-size:.78rem;line-height:2;margin:15px 0 22px}
+.villa-quote-card .villa-actions{justify-content:center}
+.villa-quote-card .button-outline{background:transparent;color:#fff;border-color:#a19688}
+.villa-quote-phone{display:block;font:600 1.6rem/1.5 Arial,sans-serif;margin:23px 0 14px;color:#f6c38e}
+.villa-quote-card small{display:block;font-size:.65rem;line-height:1.9;color:#ccc8c1}
+.villa-last-call{padding:50px 0;background:#eee5d6;border-top:1px solid #d9c7b0}
+.villa-last-call>.container{display:flex;align-items:center;justify-content:space-between;gap:28px}
+.villa-last-call h2{font-size:clamp(1.7rem,2.6vw,2.3rem)}
+.villa-last-call p{margin-top:12px;font-size:.84rem;max-width:690px}
+.villa-last-call .button{flex-shrink:0}
+.villa-cleaning-page .faq-list{min-width:0}
+.villa-cleaning-page .faq-section{padding-block:80px}
+@media(max-width:1050px){.villa-hero-grid{gap:30px}.villa-hero-copy h1{font-size:2.45rem}.villa-case-grid,.villa-scope-grid{gap:15px}.villa-case,.villa-scope-card{padding:22px}.villa-team-grid,.villa-quote-grid{gap:35px}.villa-quote-card{padding:25px}.villa-quote-card .villa-actions{flex-direction:column}.villa-quote-card .button{width:100%}}
+@media(max-width:760px){.villa-cleaning-page .container{width:calc(100% - 40px)}.villa-cleaning-page .section{padding-block:56px}.villa-cleaning-page .villa-hero{padding-block:20px 36px}.villa-hero-grid,.villa-team-grid,.villa-quote-grid{grid-template-columns:minmax(0,1fr);gap:28px}.villa-hero-copy{padding:0}.villa-hero-copy h1{font-size:clamp(1.9rem,7.3vw,2.9rem)}.villa-hero-copy h1>span{font-size:.62em}.villa-hero-copy .eyebrow{font-size:.65rem}.villa-lead{font-size:.9rem;margin-top:16px}.villa-highlights{font-size:.73rem;margin:20px 0}.villa-actions{gap:10px}.villa-actions .button{flex:1;min-width:0;padding:13px 11px;font-size:.73rem}.villa-phone{font-size:.67rem}.villa-hero-photo{border-radius:22px}.villa-hero-photo img{aspect-ratio:1.15;object-position:center 45%}.villa-nav>.container{gap:0;justify-content:space-between;flex-wrap:wrap;padding-block:10px}.villa-nav a{font-size:.67rem;min-height:40px;padding-inline:4px}.villa-section-head{margin-bottom:24px}.villa-section-head h2{font-size:1.8rem}.villa-section-head p{font-size:.84rem}.villa-case-grid,.villa-scope-grid{grid-template-columns:minmax(0,1fr);gap:16px}.villa-case{padding:24px}.villa-index{font-size:2rem;margin-bottom:18px}.villa-case h3{font-size:1.08rem}.villa-case p{margin-bottom:13px}.villa-scope-card{padding:23px}.villa-scope-icon{margin-bottom:14px}.villa-scope-note{padding:18px}.villa-team figure{order:2}.villa-team figure img{aspect-ratio:1.15}.villa-team-grid>div{order:1}.villa-quote-card{padding:27px 20px}.villa-quote-card .villa-actions{flex-direction:row}.villa-quote-card h3{font-size:1.1rem}.villa-quote-grid>div>p{font-size:.84rem}.villa-last-call>.container{align-items:flex-start;flex-direction:column;gap:23px}.villa-last-call .button{width:100%}.villa-last-call{padding-block:36px}.villa-cleaning-page .faq-section{padding-block:56px}}
+@media(max-width:360px){.villa-cleaning-page .container{width:calc(100% - 32px)}.villa-hero-copy h1{font-size:1.8rem}.villa-actions{flex-direction:column}.villa-actions .button{width:100%;flex:auto}.villa-quote-card .villa-actions{flex-direction:column}.villa-hero-photo figcaption{font-size:.59rem;padding-inline:10px}.villa-nav a{font-size:.6rem}.villa-phone a{font-size:1rem}}

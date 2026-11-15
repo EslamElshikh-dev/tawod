@@ -25,7 +25,7 @@ for (const file of await readdir(output)) {
   if (file.startsWith('project-') && file.endsWith('.html') && (await readFile(resolve(output, file), 'utf8')).includes('data-villa-viewer')) projects.push('/' + file);
 }
 assert.equal(projects.length, 7, 'All seven project experiences must be exported');
-const pages = ['/', '/service-construction.html', '/service-restoration.html', '/maintenance/', '/maintenance/facility-management.html', '/maintenance/building-maintenance-contracts.html', '/maintenance/property-management.html', '/en/', ...projects];
+const pages = ['/', '/service-construction.html', '/service-restoration.html', '/maintenance/', '/maintenance/villa-cleaning-riyadh.html', '/maintenance/facility-management.html', '/maintenance/building-maintenance-contracts.html', '/maintenance/property-management.html', '/en/', ...projects];
 const results = [];
 const browser = await chromium.launch({ headless: true, args: ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
 try {
