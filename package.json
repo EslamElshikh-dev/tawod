@@ -62,7 +62,8 @@
     "test:site-validation": "node --test scripts/test-site-validation.mjs",
     "generate:exact-titles-2026-11-04": "node scripts/generate-exact-title-articles-2026-11-04.mjs && node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/run-static-pages.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-sitemaps.mjs",
     "build:villa-3d": "node scripts/build-villa-viewer.mjs",
-    "test:villa-3d": "node --test scripts/test-villa-viewer.mjs"
+    "test:villa-3d": "node --test scripts/test-villa-viewer.mjs",
+    "generate:exact-titles-2026-11-21": "node scripts/generate-exact-title-articles.mjs 2026-11-21 && node scripts/generate-blog-archive.mjs && node scripts/generate-blog-topics.mjs && node scripts/run-static-pages.mjs && node scripts/build-home-performance.mjs && node scripts/install-site-analytics.mjs && node scripts/generate-sitemaps.mjs"
   },
   "dependencies": {
     "next": "16.4.5",

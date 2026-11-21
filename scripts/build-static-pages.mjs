@@ -6,7 +6,7 @@ import {articleRole,legacyTopicHubSlugs,topicForArticle,topicForService,topicUrl
 import {optimizePaidServicePage} from './optimize-paid-service-pages.mjs';
 import {newArticleSlugs as riyadhArticleSlugs} from './riyadh-articles-2026-10-08.mjs';
 import {newArticleSlugs as constructionArticleSlugs} from './riyadh-construction-articles-2026-10-13.mjs';
-import {newArticleSlugs as exactTitleArticleSlugs} from './exact-title-articles-2026-11-04.mjs';
+import {newArticleSlugs as exactTitleArticleSlugs} from './exact-title-articles.mjs';
 import {articleProjectExample,articleProjectExamples} from './service-project-evidence.mjs';
 import {decisionSlugs} from './project-decision-guides-2026-10-14.mjs';
 import {ownerGuideSlugs} from './owner-project-guides-2026-10-15.mjs';

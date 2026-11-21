@@ -7,7 +7,7 @@ import { newArticleSlugs as riyadhArticleSlugs } from "./riyadh-articles-2026-10
 import { newArticleSlugs as constructionArticleSlugs } from "./riyadh-construction-articles-2026-10-13.mjs";
 import { newArticleSlugs as projectDecisionSlugs } from "./project-decision-guides-2026-10-14.mjs";
 import { newArticleSlugs as ownerGuideSlugs } from "./owner-project-guides-2026-10-15.mjs";
-import { newArticleSlugs as exactTitleSlugs } from "./exact-title-articles-2026-11-04.mjs";
+import { newArticleSlugs as exactTitleSlugs } from "./exact-title-articles.mjs";
 
 const root = process.cwd();
 const blogRoot = join(root, "blog");
