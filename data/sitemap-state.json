@@ -2,16 +2,16 @@
   "version": 1,
   "pages": {
     "https://tawodco.com/": {
-      "fingerprint": "9edfe0b0351dd6d386305f5cbbb673b0f3b3652aedcc1d55d21244b84bbeda12",
-      "lastmod": "2026-11-21"
+      "fingerprint": "4c22bfd255831adef10ded1341d5d12ed77e7a75b917c26dbc002a1c0adf3bd1",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/about.html": {
       "fingerprint": "2694f55edba8717bb2c04d39774a25f7f842985768599dfcc53a514c2948d214",
       "lastmod": "2026-11-03"
     },
     "https://tawodco.com/blog/": {
-      "fingerprint": "35ed55ee98d5a4f2132abb61735c34332de79ddbabdaa220ead33717ef36528a",
-      "lastmod": "2026-11-21"
+      "fingerprint": "049ab5b380414ec21584788ac9747989ccef9792b6495665887ff5464df07e5b",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/best-bone-construction-company-formwork-safety-riyadh/": {
       "fingerprint": "ef06675da5e0f1ae9a78ffde51f543582a27aaec99bb76d980808c60391fea8e",
@@ -74,12 +74,12 @@
       "lastmod": "2026-11-21"
     },
     "https://tawodco.com/blog/best-interior-design-company-riyadh/": {
-      "fingerprint": "2755cac9cae7040a689a21a4a5975613fd46ff4b20f447f371224ca71cb541da",
-      "lastmod": "2026-11-03"
+      "fingerprint": "7b5c18655b6d83416dace9f3a9290dad857cd21d1fc86a0a9ffc9b35c1c5b3a6",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/best-interior-finishing-company-riyadh/": {
-      "fingerprint": "5d266f1eae26caf84bb3f4969e93934d4e135f8aa068d652ee804b4497ab17ba",
-      "lastmod": "2026-11-03"
+      "fingerprint": "2683238240badb6f0a35e83906c36000363f40ba4f752ba86ed0b3b16561f252",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/best-renovation-company-riyadh/": {
       "fingerprint": "d28d4acd94998acd431b06ca504c3e0fe054c457c8969ebc16993eb1ff9f8de9",
@@ -186,8 +186,8 @@
       "lastmod": "2026-11-21"
     },
     "https://tawodco.com/blog/commercial-interior-design-riyadh/": {
-      "fingerprint": "1c9a26a141b895fe666320e88a4ad8aeef84a5faf0e0bbdd82f9e805b1a80157",
-      "lastmod": "2026-11-03"
+      "fingerprint": "e6d7b1f427f291994a80608cb0d63b00e4e7b90ab478c7cbd38204280de78c3a",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/compare-bone-contractor-quotes-riyadh/": {
       "fingerprint": "694f3972bf9826a9271789205ef385a9546ab224f378d50a062569ba4cac70dd",
@@ -196,6 +196,10 @@
     "https://tawodco.com/blog/construction-apartment-parking-review-riyadh/": {
       "fingerprint": "9fc7bb63d44d2b35a85d3eac718ba72ee3d26464b6d711789febe1e9c28152fb",
       "lastmod": "2026-11-21"
+    },
+    "https://tawodco.com/blog/construction-apartment-unit-identifiers-riyadh/": {
+      "fingerprint": "8bc4688772fc47c040cbd8dcc7d027b34d5d343c160b5ca6b46521044f0a2e06",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/construction-bid-invitations-riyadh/": {
       "fingerprint": "c57680c849f31165b721e84ccdf8bd0b395717e9c20ffb816976fc8e060a8171",
@@ -213,17 +217,41 @@
       "fingerprint": "90392c52499edb141bcce67183aa69bfa4cd89cdc99d5d434e6fe21671ebbe67",
       "lastmod": "2026-11-21"
     },
+    "https://tawodco.com/blog/construction-contracting-entity-name-review/": {
+      "fingerprint": "452e429e5b109cc76bd4457188475ab83bd0b7639e9391276f836244073cf673",
+      "lastmod": "2026-11-26"
+    },
     "https://tawodco.com/blog/construction-contractor-reference-call-riyadh/": {
       "fingerprint": "e4dd24f0808651b49ffce761f63a0ace10546a61a97f367ffda6931e133131f8",
       "lastmod": "2026-11-21"
+    },
+    "https://tawodco.com/blog/construction-delivered-materials-payment-review/": {
+      "fingerprint": "1b09284f31f51dad029c78dbc215410895664c71b44660ba70d4628dd360b31e",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/construction-drawing-revision-register/": {
       "fingerprint": "44e6f788d20fea51a67023b27a9cb929ede1e2ea914a0767bfc97ddfc3a96452",
       "lastmod": "2026-11-21"
     },
+    "https://tawodco.com/blog/construction-earlier-handover-program-riyadh/": {
+      "fingerprint": "7b052bda32b01096c96a8b2d253585e5d32e5e57c68fc8ddedcb72ad0f2d1095",
+      "lastmod": "2026-11-26"
+    },
     "https://tawodco.com/blog/construction-engineering-supervision-riyadh/": {
       "fingerprint": "fcada459d8983bdcd49ed47ba48f72ed3199b3bdfb5004e6744621ff7060168f",
       "lastmod": "2026-11-21"
+    },
+    "https://tawodco.com/blog/construction-family-needs-project-brief-riyadh/": {
+      "fingerprint": "aa155ee669a26d92aaa6f4ebd5914d3330e33314396ba8bf59dc3d318efce706",
+      "lastmod": "2026-11-26"
+    },
+    "https://tawodco.com/blog/construction-final-contractor-interview-riyadh/": {
+      "fingerprint": "0a6d037eacfd099b8839e544d89b217594df7e395935bbc79b984dab5163d69f",
+      "lastmod": "2026-11-26"
+    },
+    "https://tawodco.com/blog/construction-finishing-material-substitution/": {
+      "fingerprint": "23707ec2568a974a4cff36ca4c0c88832bcbb1bb9bba620d7fe1a3e2e87b1c6a",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/construction-floor-area-price-quote-riyadh/": {
       "fingerprint": "8d0cf82b6cf04f72c30a5bb0cb85a5d5200cd97bc19bfd9c4458355f041d64c0",
@@ -241,6 +269,14 @@
       "fingerprint": "d52a826cc41b5e74a4dbe66a5f896280bc001bb61136cc7c72ccadc510b401a0",
       "lastmod": "2026-11-21"
     },
+    "https://tawodco.com/blog/construction-project-digital-handover-files/": {
+      "fingerprint": "8fd0616ec987ae1fc359d5570c47ccd62a983f11cc231dcc5fe5eb5ea0509f60",
+      "lastmod": "2026-11-26"
+    },
+    "https://tawodco.com/blog/construction-retail-first-delivery-riyadh/": {
+      "fingerprint": "6738ab7c813c3438d004b5f88618b62a01f755b4bfaab2343406e5f7403959dc",
+      "lastmod": "2026-11-26"
+    },
     "https://tawodco.com/blog/construction-robots-automation-riyadh/": {
       "fingerprint": "b75d52f8f9c685ce53def5731c4c26b3873c5c86cfb7c26dc0f1a6a9230dac89",
       "lastmod": "2026-11-03"
@@ -248,6 +284,10 @@
     "https://tawodco.com/blog/construction-robots-drones-saudi-arabia/": {
       "fingerprint": "1e808097169b681ae7fc08ba385cd7fd68d5a7c928dee0bd4424524b14d504e5",
       "lastmod": "2026-11-03"
+    },
+    "https://tawodco.com/blog/construction-site-questions-followup-register/": {
+      "fingerprint": "76b0ad76c7b0193f6f7f51c77ca5aacdebda8733787dd6eaf0c612b1f4bb565d",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/construction-subcontractor-package-scope/": {
       "fingerprint": "e7f2eb57af2625c4bc93f1a539af85845b4dc4a5ebd452d65c5cb76b2220156b",
@@ -286,8 +326,8 @@
       "lastmod": "2026-11-21"
     },
     "https://tawodco.com/blog/contractor-after-handover-follow-up/": {
-      "fingerprint": "661d5ee203c7b3e69eb8641d31030a4a7c1bd30d8b6b52faa3c263aea803b31f",
-      "lastmod": "2026-11-21"
+      "fingerprint": "bf79b24afdde907aa5c3e415259b60d151762d438e4e0bc41159fe4aa612cadf",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/digital-twin-construction-riyadh/": {
       "fingerprint": "af09ca12962e832d11dc96f7e088c7e58695269bc2a9b94664847297b9441256",
@@ -314,40 +354,40 @@
       "lastmod": "2026-11-03"
     },
     "https://tawodco.com/blog/facades-interior-decor-insulation-riyadh/": {
-      "fingerprint": "bcf1e973e76fa0c7188ff3c0e7478eaa4059eae1d437d52ad46bd0a0536993d1",
-      "lastmod": "2026-11-03"
+      "fingerprint": "8535d96a73d483d10aad5dd36927dc581ec4efce49e230e4fec9359ae3392881",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/finishing-apartment-riyadh/": {
-      "fingerprint": "7d5e8fdd0baeed93dfc94a708353bf9ba49cf79d5668bd52357647b17e713ca4",
-      "lastmod": "2026-11-03"
+      "fingerprint": "4a7069ee312582a71375ec2d8a9edae6fb7b5bfff45c91d36a6c2a9f8e15c988",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/finishing-cost-riyadh/": {
-      "fingerprint": "71ac7642591d095f2ac8591624056d1fe1ddb119c5ee3de58f8926683f958652",
-      "lastmod": "2026-11-03"
+      "fingerprint": "beaaa0d2dcf078284bf52c86875dc8fa11cbb734f7d5958c64d8ae3f07e6c592",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/finishing-facades-restoration-riyadh/": {
-      "fingerprint": "75db28e830cc5cd92aa5c931e269cb2e254b0d6492713c70f48a2c3a51c3773a",
-      "lastmod": "2026-11-03"
+      "fingerprint": "c080281b2700e651088aaae95fe35948fd7e56f55ec57c9ab15fed1979bf308c",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/finishing-interior-design-riyadh/": {
       "fingerprint": "2659a32b4c844b57d2652997064c77791ed4b38ada613c959a265aaba2ad1ff6",
       "lastmod": "2026-11-03"
     },
     "https://tawodco.com/blog/finishing-materials-riyadh/": {
-      "fingerprint": "38ff7b11d94ecf5f40d21b60ea00139b0656adf3b596970fb57b0a71275ada48",
-      "lastmod": "2026-11-03"
+      "fingerprint": "d935bc42b5218b32152818624cbd57931ee2be5c16459009f795445dac1fcdf4",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/finishing-mistakes-riyadh/": {
-      "fingerprint": "897e0cf1899356d706ab471d6f9c094f967c436cad75402cf05fbf2369e32e67",
-      "lastmod": "2026-11-03"
+      "fingerprint": "4c36e304010fc1d51b64f195674bede14a7861d92f8d6bf6873f2fffebb010e6",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/finishing-villa-completion-riyadh/": {
-      "fingerprint": "0d31247ffaeea805a500e246e2d4bccf7a8b78ce0e71c5ecae0d6c331337c136",
-      "lastmod": "2026-11-03"
+      "fingerprint": "d3b4b3e8b33b8e3ed01e3659b2e4673c3054db85d6a5b97a872dd7322f85e9eb",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/finishing-villa-riyadh-guide/": {
-      "fingerprint": "666c0f5b50dc1dedf0fb181f005f8840f6124c11cdae7e45d474f0258ec1f82a",
-      "lastmod": "2026-11-03"
+      "fingerprint": "8188214daffff8d9b75a798a118b35f7d730ba0aa7f4e6354fcd1bb6aeaf3b55",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/future-construction-technologies-riyadh/": {
       "fingerprint": "663dac610564471fff22606a2689da395b166c0a928d0e018cc51d55f9f1005a",
@@ -370,8 +410,8 @@
       "lastmod": "2026-11-03"
     },
     "https://tawodco.com/blog/general-contracting-one-door-from-plan-to-handover/": {
-      "fingerprint": "a46826ad4d790cacd2f45cfd5500a03e92253662373ab6025df3c89e25aafc76",
-      "lastmod": "2026-11-21"
+      "fingerprint": "d7e38692434f12fdbceef55dc87676dd37c3106adc05b14fd92e75baba05e2e6",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/general-contracting-project-management-riyadh/": {
       "fingerprint": "94fa253c3ea4fba3f39629e01a16c233d49e1949d8d43b1f083acebf6b281c12",
@@ -382,12 +422,12 @@
       "lastmod": "2026-11-21"
     },
     "https://tawodco.com/blog/general-contractor-riyadh-consistent-finishing/": {
-      "fingerprint": "1aa4e65489696e920b51bbaf7dadaaead464bf99f6bd3d4ba2e1107782826af9",
-      "lastmod": "2026-11-04"
+      "fingerprint": "47a9db6395a79b97d27434b541f61de9dc45d1747bf15e2e5cb4c8eef6974843",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/general-contractor-size-saudi-prequalification/": {
-      "fingerprint": "43d6becdd0f87be11318bce45b1d356bd25373feaa63ded898d997f681010107",
-      "lastmod": "2026-11-21"
+      "fingerprint": "8d46f8da88c9624fb2eb9076ee468f8a1c01a477ec080faa740f38f42ce388ab",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/general-contractor-trade-responsibilities-riyadh/": {
       "fingerprint": "ff221c145e5c0b5ca9a96010f93a0ba6d81a8f785b0e2f8acb2284d361387470",
@@ -398,28 +438,28 @@
       "lastmod": "2026-11-21"
     },
     "https://tawodco.com/blog/interior-design-company-riyadh/": {
-      "fingerprint": "6cdd08860446c4ce12f3c694944e1a1a6765372fa7f84c057e07cd0715adb5e6",
-      "lastmod": "2026-11-03"
+      "fingerprint": "d5502a45ca9e5f90b6a3e833628ddd7b9c544c11df85e29c13fc78feffd74a4a",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/interior-design-execution-stages-riyadh/": {
-      "fingerprint": "7175d7b3a3db7e6f39b6aa2c5aa5c60f8b80c4006455c857245a839cf8d3c5aa",
-      "lastmod": "2026-11-03"
+      "fingerprint": "23f045090577e862156c021ca24ddebac9a170a6841d41043d5dfda31d507369",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/interior-finishing-contract-checklist-riyadh/": {
-      "fingerprint": "d732cae8a7cebaa965ccf05b38cd04597b3a81bc857fb7a2c14d737f280e04f9",
-      "lastmod": "2026-11-03"
+      "fingerprint": "8c0a6709079995af990a5d37f9f3e2dbe2fa529db4ea5a2cdf7966cb21e17d3b",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/largest-contractor-global-enr-ranking/": {
-      "fingerprint": "2de07b87e487f8f778499a329a158c5bd8162750f180b1633cfd8c89fce57447",
-      "lastmod": "2026-11-21"
+      "fingerprint": "d5f70d322b785f28857a2144c30818659ae69da0df386fa11eaa4ce4a5776d98",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/largest-contractor-riyadh-project-capacity/": {
       "fingerprint": "cfe7864249a8199edc8573a6a5b128f87c756068bccb7e8377124d2935c94347",
       "lastmod": "2026-11-21"
     },
     "https://tawodco.com/blog/largest-riyadh-contractors-local-contracts/": {
-      "fingerprint": "88d84d8b91e556baa30b98a02caa6095a587e8750af4871dba1b8d4ce3e1f85f",
-      "lastmod": "2026-11-21"
+      "fingerprint": "9bfd5d21a5c36602aaa7fac06987146d1a96f0bb5b4ddce6d36e4354b33df11f",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/mechanical-mep-works-riyadh/": {
       "fingerprint": "1931d2921a9a0b67b1168dec2a999d040cf0955ac671c6aa1279d7428814e8d8",
@@ -434,68 +474,72 @@
       "lastmod": "2026-11-21"
     },
     "https://tawodco.com/blog/modern-interior-finishing-company-riyadh/": {
-      "fingerprint": "d398eaa0af5d598a5f43835240d532ef6021424e9d5a7becf33fb316b8d5defe",
-      "lastmod": "2026-11-03"
+      "fingerprint": "4a534eb690be62a446c2d7865a8dd1857fb7aff64c0fecfc7b5b2c3083362dce",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/modern-villa-construction-riyadh/": {
       "fingerprint": "d6d90fa5480bc76e51029ad3bf726d0be576096866728f37fab236f8ec9855df",
       "lastmod": "2026-11-21"
     },
     "https://tawodco.com/blog/page/10/": {
-      "fingerprint": "7188de59f8f1f4b0ca3dfc012da44a63f45b21e56acd93b08738a727747d4e31",
-      "lastmod": "2026-11-21"
+      "fingerprint": "9d2f56eba3c447592def287ea408ddbbfdf1a08392325b60986ee78c32726e37",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/page/11/": {
-      "fingerprint": "f9949fc868d8839d4454350deb0649d34c0160fd63584fa5afd31f9c2b2d6cd8",
-      "lastmod": "2026-11-21"
+      "fingerprint": "adf6f3035a9d7deaaa25c7ffae7f43697cf62b6b47500ea5cfc656d44545cc6c",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/page/12/": {
-      "fingerprint": "f9bbf063da3797c53d363edf513b41af0a0c41f381c97e87a95a930136c2f6f9",
-      "lastmod": "2026-11-21"
+      "fingerprint": "ad4dfce74adcc817b141779f269613665f0bb018ce2384a58fdacfa1632887cd",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/page/13/": {
-      "fingerprint": "105225d29905bf11a53c21d20757080811a513ef0fc7ee83bb82e833a2ed84d1",
-      "lastmod": "2026-11-21"
+      "fingerprint": "7a021c56f2e15d67a567e9d8efaa7e7982bc1e8bdf5ce86ac4be025aac7261c7",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/page/14/": {
-      "fingerprint": "ac5867fecfd99489fb7a2ddbc2aa42054940597edfe0177816a01b9dc0a3bd37",
-      "lastmod": "2026-11-21"
+      "fingerprint": "0865294146ac2aaafadaa81e072eeb412bb903767974e08a9f26754d05f71363",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/page/15/": {
-      "fingerprint": "0309764e039b7356f0debd7d0779ddc936812f6b83caea18179bc19badaad0fb",
+      "fingerprint": "91d13d8437bfe682f63ce1a42a87b6295afdbfaf03124acd4940d7a56334d98d",
+      "lastmod": "2026-11-26"
+    },
+    "https://tawodco.com/blog/page/16/": {
+      "fingerprint": "cfa18b5eb7fe13266f2930857c6577458d1ac358119dfe6715c094fa45764203",
       "lastmod": "2026-10-15"
     },
     "https://tawodco.com/blog/page/2/": {
-      "fingerprint": "12b2cbb67e68c4ee053ca97fae795a5403012a2fe016ac5bb2dd2e5c2cb773d0",
-      "lastmod": "2026-11-21"
+      "fingerprint": "7622af85ffc622ae90dbbd922a0be6139c75493f91ac436c3ace7889038b33e1",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/page/3/": {
-      "fingerprint": "1178da50dc25671a2f960ae21a4c3f38d5f1727eb780ed952a87f35340a6d6fc",
-      "lastmod": "2026-11-21"
+      "fingerprint": "494b0651015822fb8d330b97a0a7b9bc22a634a56521717fa3bb8be2f9614236",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/page/4/": {
-      "fingerprint": "a676e8af065081e07251ffc029af19bddc21cb7d673d6ca1bab3ffe6d52df515",
-      "lastmod": "2026-11-21"
+      "fingerprint": "b91ef8837465855963b461552e8bef0caf40a84be0f804c9b2c81730a8adb0be",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/page/5/": {
-      "fingerprint": "90da502614bfa3b4f382ae365e4917885c6e43f199903f850001daad4d625e9b",
-      "lastmod": "2026-11-21"
+      "fingerprint": "ec7c33bffe3d483852f0e5d0e59e1588993c1d3879c573153783468f9a4083e3",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/page/6/": {
-      "fingerprint": "6dc4b74d457d0528b303555b2133d3d2eac09af99225c855cb530944dca92ae0",
-      "lastmod": "2026-11-21"
+      "fingerprint": "97eb6693e2068cd5b9c860e53dab68311441de50aaeefc6778505b7ac56ae683",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/page/7/": {
-      "fingerprint": "68306c8bbfa5f38c7c14ca938bae022deb40d4cac813dba6251ca0a0fc60a9aa",
-      "lastmod": "2026-11-21"
+      "fingerprint": "6c7ff4df7f7c3b19b82b09486d57f8a8d4ca4c736b4d1ec749585e91c2771c21",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/page/8/": {
-      "fingerprint": "a424db162944ddd8121c6b87a89caa6d5b34d1dcaaec4ea099e7c8af5da9797a",
-      "lastmod": "2026-11-21"
+      "fingerprint": "9f355614b8570037e42b4974dc0c171e957ca7881fa759f897bd446a1d550e7c",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/page/9/": {
-      "fingerprint": "bbc931a08a9cd04f9a28478114fd0e8a0d51a556c44116432e0f30ac5b030b54",
-      "lastmod": "2026-11-21"
+      "fingerprint": "cb8b4cd18c2a1478fdbcc429dd3a012e7d5b88634a766b9faeeff7da8b7e54ce",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/plumbing-installation-riyadh/": {
       "fingerprint": "5e7384eae28cd65f91962b7d012fbd091b1c9fb405e087c54527d6f90d0c8755",
@@ -510,24 +554,24 @@
       "lastmod": "2026-11-03"
     },
     "https://tawodco.com/blog/riyadh-builder-labour-materials-quote/": {
-      "fingerprint": "c4b25d0fe0bded05c776277441ab8886b37c7b30a547c1813dd4137aaa5defd6",
-      "lastmod": "2026-11-21"
+      "fingerprint": "fe1f951dc4d1e9b3ecab6c4f335e0ebeaffcb9a95e1ae648a13247233b8fc7a9",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/riyadh-construction-rental-apartment-pilot/": {
-      "fingerprint": "b8587fe583c6b5f3c016b353bfdec5dc80d082c5ba6239d52f71c08b5e17a683",
-      "lastmod": "2026-11-21"
+      "fingerprint": "579b10db981fd79109f1d3d99f3c826d49bfa72aa94f4bc954c780b3541ba096",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/riyadh-contractor-occupied-villa/": {
-      "fingerprint": "6b79e12dcca2174b80dbdc0ae85956b9cf5975c62fe7e0b1fd2066ff1a069942",
-      "lastmod": "2026-11-21"
+      "fingerprint": "1389604d798f71626c43c4df34998d6786ad44caade2db5a32fd18106e685190",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/riyadh-general-contractor-retail-handover/": {
-      "fingerprint": "cf6a7b994af61d6c9e2c6b9fdd8b901768d93c7647c2664e31d4aba2a0da0575",
-      "lastmod": "2026-11-21"
+      "fingerprint": "89ec09633b385485e3a8de5cf965b73886efd88b300f0d3ad3ece48629e5be65",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/riyadh-ten-construction-companies-projects/": {
-      "fingerprint": "32a782040dff64c0c0d4fcb9a0ce7a429da3d1a85f97526223ede7ae8ebb0576",
-      "lastmod": "2026-11-21"
+      "fingerprint": "c8941e493662efbac3466313f5b756398476e10e8c799199f70139783668fac5",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/saudi-building-code-insulation-energy/": {
       "fingerprint": "6a66894e04c2da3ead7abb266f4e8431e2274689f9edaf76ee6717238c2b8d89",
@@ -570,12 +614,12 @@
       "lastmod": "2026-11-04"
     },
     "https://tawodco.com/blog/topics/finishing-interior/": {
-      "fingerprint": "4771cba694ba5ac230c8437b3830438143f87c7c8ba8bf3f17ee29e405b81e9a",
-      "lastmod": "2026-11-04"
+      "fingerprint": "44d844518d4cf5ce8307af0093167c50656c52ab42baed500710ea46bcc10533",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/topics/general-contracting/": {
-      "fingerprint": "5da97808f5a16d12a296bf3f856cbc43167a704542055f9d775c924c5367b68c",
-      "lastmod": "2026-11-21"
+      "fingerprint": "578d4a48fa6b2f46a71becea07c4d5f323c792f81516762cd80499ab4518622b",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/topics/mep/": {
       "fingerprint": "c2150c3095b7e399ccd44856e04c5ed2eb73453f6769c832047b0919920dff63",
@@ -670,20 +714,20 @@
       "lastmod": "2026-11-21"
     },
     "https://tawodco.com/blog/villa-finishing-detail-coordination-riyadh/": {
-      "fingerprint": "ead4c2573f2d057bf4c588176add618781ffa2bf5784032ed9660ff32470dc16",
-      "lastmod": "2026-11-03"
+      "fingerprint": "292c09f405d0ec12066bd5576064d085f2afb2c6cd57c1c1dcf99314b5f61646",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/villa-finishing-mockup-approval-riyadh/": {
-      "fingerprint": "9ed1695e0d59fb04b713037a576fb5f2c272c92002b838f7245d24d672ff1ac7",
-      "lastmod": "2026-11-03"
+      "fingerprint": "06a1606e0a4f96086a852bce707cb7c7da63633c4fe5a3bf291d981df3084b25",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/villa-interior-design-riyadh/": {
-      "fingerprint": "39e20ba5d1de9ebc3be7c76b3100f27d991e65c1a0a29bb890132b2ae87b36f3",
-      "lastmod": "2026-11-03"
+      "fingerprint": "56dca0ef539c8cc931e5068d54b489f97e01a697b972c3184732959c58c17b80",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/villa-interior-finishing-stages-riyadh/": {
-      "fingerprint": "d5a652597b8d6562eead6407a0a7159d721f2c30f0559668ab26de4069a260d7",
-      "lastmod": "2026-11-03"
+      "fingerprint": "5e3378de139f11e1e1a3ebfcd5b12eac1f04f9f198f7867ce0ac134f256e0d91",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/blog/what-is-general-contracting-project-roles/": {
       "fingerprint": "624ac3b5e23cc11f351f01b58f82f74d53f518379b7d8cdbc00742695668f007",
@@ -874,8 +918,8 @@
       "lastmod": "2026-11-04"
     },
     "https://tawodco.com/en/": {
-      "fingerprint": "f68bbbb136851e80e1a883a273d900efca91238ea6058fea9ecc19c05d45f9bc",
-      "lastmod": "2026-11-21"
+      "fingerprint": "31a5cc52add67d1a2f26c1ae4f97ace9bdb0678cb7c3d2a849d5268f6a800554",
+      "lastmod": "2026-11-26"
     },
     "https://tawodco.com/en/about/": {
       "fingerprint": "b1baa5baf302651958041ce9e8aaff3421bfb4ee9fc8cc4d525706c054c6bd37",
@@ -1204,16 +1248,16 @@
   },
   "files": {
     "sitemap.xml": {
-      "fingerprint": "b336bdcdaf5aa19ec0fed75915479ca901ae74a8bae6b76514e7137474b53962",
-      "lastmod": "2026-11-21"
+      "fingerprint": "59c8dc71e138e0cc25b109801f5effbf8e116a19b9c794a1fea60db26ac307c5",
+      "lastmod": "2026-11-26"
     },
     "sitemap-pages.xml": {
-      "fingerprint": "81d88dcdbb3c4c7fc4bbd06c6b0170b78617ad0e1e94339c9f5584ac57b3e94d",
-      "lastmod": "2026-11-21"
+      "fingerprint": "2abc0132ad3e256217cb904b784a74208d0b4b777328ff2e1014024c22a6c853",
+      "lastmod": "2026-11-26"
     },
     "sitemap-blog.xml": {
-      "fingerprint": "009472e6a7a1c59110475dd69acba1af455af38f16ad4769af67e5d738ad68d1",
-      "lastmod": "2026-11-21"
+      "fingerprint": "4f9a7ec9dfea05d9e8d1a9691a3a2de3d51fbd7579a2bde862028c7aeef52c47",
+      "lastmod": "2026-11-26"
     },
     "sitemap-projects.xml": {
       "fingerprint": "d7e392f9f112af2a3eb86cd06e69b0eb6563c383346115104d4dc5978fc06886",
