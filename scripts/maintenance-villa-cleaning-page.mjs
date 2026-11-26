@@ -73,7 +73,7 @@ export function villaCleaningPage({ B, shell, icon, whatsapp, faq, faqSchema, co
     faqSchema(questions),
     { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'الصيانة والتشغيل', item: B.url }, { '@type': 'ListItem', position: 2, name: 'تنظيف الفلل', item: url }] },
   ];
-  return shell({ title, desc: description, path: file, body, graph })
+  return shell({ title, desc: description, path: file, body, graph, contactInquiry: inquiry(), contactService: 'تنظيف الفلل' })
     .replace('<body class="maintenance-page">', '<body class="maintenance-page villa-cleaning-page">')
     .replace('</head>', `<link rel="stylesheet" href="/maintenance/assets/css/villa-cleaning.css?v=${revision('maintenance/assets/css/villa-cleaning.css')}"></head>`)
     .replace(/href="\/maintenance\/#request"/g, 'href="#villa-quote"')
