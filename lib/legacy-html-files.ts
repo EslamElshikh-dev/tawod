@@ -624,7 +624,7 @@ export const legacyHtmlHashes = {
   "maintenance/ac-maintenance.html": "06d6a8d24a2b64ed70f3fdb6cdd6aabefc6a70e41ab0090c2dea1bc5d9225ec6",
   "maintenance/building-maintenance-contracts.html": "835baba68a7740543d425a52822019c142401adb54f995f2c2ffa894671573b5",
   "maintenance/cctv-security-systems.html": "95a1a226e106d4c29f45978d144107e6450247ffc1c0cba34eccffe04103fca3",
-  "maintenance/cleaning-services.html": "36e6c9782cb4cb76de59a83f16dd23e6a37de39c6a66d3ea68c1af34e6039512",
+  "maintenance/cleaning-services.html": "479ab64ce73652a99ecbf7b01ed509eafa63a31d886ef0c8cad93973deea52e1",
   "maintenance/drain-unblocking.html": "a0026183ac280aaf902634f642d52f933c8b24ce87ac06eb2fb74d69ae9f6ce8",
   "maintenance/electrical-services.html": "ec6ebcfdd5ceddea39d9fcdc117fa09a123698bbc7e8952d843c5d71d5b5625d",
   "maintenance/elevator-maintenance.html": "ebca28f86ecad0c7baff923aee8d8c748d4387ac73bd73b23417ffba7ffff62a",
