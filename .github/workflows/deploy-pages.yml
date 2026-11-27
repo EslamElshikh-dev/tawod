@@ -1,4 +1,4 @@
-name: Deploy static site to GitHub Pages
+name: Verify static export
 
 on:
   push:
@@ -8,18 +8,13 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: github-pages
+  group: static-export-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  verify:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,12 +28,3 @@ jobs:
         run: npm ci --ignore-scripts
       - name: Build verified Next.js export
         run: npm run build
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload site files
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: out
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
