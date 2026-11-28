@@ -188,6 +188,14 @@ test('full validator accepts embedded images and still rejects real broken resou
   assert.equal(valid.status, 0, valid.stdout + valid.stderr);
   assert.match(valid.stdout, /Validated \d+ HTML files/);
 
+  // Named title pairs are intentional, but a third page must never inherit
+  // that exemption merely by using one of the same Arabic titles.
+  writeFileSync(file, original.replace(/<title>[\s\S]*?<\/title>/i, '<title>المقاولات العامة</title>'));
+  const accidentalDuplicate = validate();
+  assert.equal(accidentalDuplicate.status, 1, accidentalDuplicate.stdout + accidentalDuplicate.stderr);
+  assert.match(accidentalDuplicate.stderr, /duplicate title with 404\.html/);
+  writeFileSync(file, original);
+
   put(`<img src="/__missing-original.webp" srcset="${inlineImage} 1x, /__missing-responsive.webp 2x" alt="">
     <img src="UklGR-real-missing.webp" alt="">
     <a href="/__missing-page.html">page</a><a href="/index.html#__missing-anchor">anchor</a>
