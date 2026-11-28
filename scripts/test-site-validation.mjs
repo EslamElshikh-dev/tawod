@@ -188,9 +188,9 @@ test('full validator accepts embedded images and still rejects real broken resou
   assert.equal(valid.status, 0, valid.stdout + valid.stderr);
   assert.match(valid.stdout, /Validated \d+ HTML files/);
 
-  // Named title pairs are intentional, but a third page must never inherit
+  // Named title groups are intentional, but an unlisted page must never inherit
   // that exemption merely by using one of the same Arabic titles.
-  writeFileSync(file, original.replace(/<title>[\s\S]*?<\/title>/i, '<title>المقاولات العامة</title>'));
+  writeFileSync(file, original.replace(/<title>[\s\S]*?<\/title>/i, '<title>افضل شركة مقاولات في الرياض</title>'));
   const accidentalDuplicate = validate();
   assert.equal(accidentalDuplicate.status, 1, accidentalDuplicate.stdout + accidentalDuplicate.stderr);
   assert.match(accidentalDuplicate.stderr, /duplicate title with 404\.html/);
